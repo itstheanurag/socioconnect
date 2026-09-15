@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AlertCircle, CheckCircle2, Sparkles, XCircle } from "lucide-react";
+import { PlatformIcon } from "./platform-icons";
 
 export function BlastRadiusComparison() {
   const [activeTab, setActiveTab] = useState<"socioconnect" | "oldway">("socioconnect");
@@ -17,11 +18,11 @@ export function BlastRadiusComparison() {
               THE WORKFLOW TRANSFORMATION
             </div>
             <h2 className="mt-3 text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
-              Why manual cross-posting is burning your creator hours.
+              Why manual cross-posting burns creator hours.
             </h2>
             <p className="mt-2 max-w-2xl text-sm sm:text-base text-stone-600">
-              Compare the friction of juggling 8 different social tabs every morning with
-              SocioConnect&apos;s unified distribution queue and fault-isolated drops.
+              Compare juggling 8 different social tabs every day with SocioConnect&apos;s unified
+              distribution studio and fault-isolated drops.
             </p>
           </div>
 
@@ -100,8 +101,8 @@ export function BlastRadiusComparison() {
                     Visual Weekly Queue
                   </div>
                   <p className="text-xs text-stone-600 leading-normal font-sans">
-                    Slot your video premieres and community drops into weekly calendar times mapped
-                    to global audience timezones.
+                    Slot your releases into weekly calendar times mapped to per-platform audience
+                    peak hours.
                   </p>
                 </div>
 
@@ -119,34 +120,49 @@ export function BlastRadiusComparison() {
                 </div>
               </div>
 
-              {/* Status matrix */}
+              {/* Status matrix with Real SVG Icons */}
               <div className="border border-[#ede8df] bg-white p-4 font-mono text-xs space-y-2 rounded-xs">
                 <div className="text-[11px] uppercase text-stone-500 font-bold tracking-wider mb-2">
                   Unified Channel Confirmation:
                 </div>
                 <div className="flex items-center justify-between border-b border-dashed border-[#f0ede6] pb-2">
-                  <span className="text-stone-800 font-semibold">YouTube Premiere &amp; Post</span>
+                  <span className="text-stone-800 font-semibold flex items-center gap-2">
+                    <PlatformIcon platform="youtube" size={14} />
+                    <span>YouTube Premiere &amp; Post</span>
+                  </span>
                   <span className="text-emerald-700 flex items-center gap-1">
                     <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> Dispatched via Google
                     OAuth 2.0 PKCE
                   </span>
                 </div>
                 <div className="flex items-center justify-between border-b border-dashed border-[#f0ede6] pb-2">
-                  <span className="text-stone-800 font-semibold">Twitch Go-Live Alert</span>
+                  <span className="text-stone-800 font-semibold flex items-center gap-2">
+                    <PlatformIcon platform="twitch" size={14} />
+                    <span>Twitch Go-Live Alert</span>
+                  </span>
                   <span className="text-emerald-700 flex items-center gap-1">
                     <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> Stream announcement
                     broadcasted
                   </span>
                 </div>
                 <div className="flex items-center justify-between border-b border-dashed border-[#f0ede6] pb-2">
-                  <span className="text-stone-800 font-semibold">Instagram Caption &amp; Reel</span>
+                  <span className="text-stone-800 font-semibold flex items-center gap-2">
+                    <PlatformIcon platform="instagram" size={14} />
+                    <span>Instagram Caption &amp; Reel</span>
+                  </span>
                   <span className="text-emerald-700 flex items-center gap-1">
                     <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> Published via Meta
                     Graph API
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-stone-800 font-semibold">X (Twitter) &amp; LinkedIn</span>
+                  <span className="text-stone-800 font-semibold flex items-center gap-2">
+                    <div className="flex items-center gap-1">
+                      <PlatformIcon platform="x" size={13} />
+                      <PlatformIcon platform="linkedin" size={13} />
+                    </div>
+                    <span>X &amp; LinkedIn</span>
+                  </span>
                   <span className="text-emerald-700 flex items-center gap-1">
                     <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> Published with
                     character budget guardrails
@@ -168,8 +184,9 @@ export function BlastRadiusComparison() {
               {/* Steps */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 font-mono text-xs">
                 <div className="border border-[#ede8df] bg-white p-5 rounded-xs">
-                  <div className="text-stone-400 text-[10px] mb-1 uppercase tracking-wider">
-                    STEP 01 / YOUTUBE
+                  <div className="text-stone-400 text-[10px] mb-1 uppercase tracking-wider flex items-center gap-1.5">
+                    <PlatformIcon platform="youtube" size={12} />
+                    <span>STEP 01 / YOUTUBE</span>
                   </div>
                   <div className="font-bold text-stone-900 mb-2 font-sans text-sm">
                     Open YouTube Studio
@@ -180,8 +197,10 @@ export function BlastRadiusComparison() {
                 </div>
 
                 <div className="border border-dashed border-red-300 bg-red-50/30 p-5 rounded-xs">
-                  <div className="text-stone-400 text-[10px] mb-1 uppercase tracking-wider">
-                    STEP 02 / TWITCH &amp; IG
+                  <div className="text-stone-400 text-[10px] mb-1 uppercase tracking-wider flex items-center gap-1.5">
+                    <PlatformIcon platform="twitch" size={12} />
+                    <PlatformIcon platform="instagram" size={12} />
+                    <span>STEP 02 / TWITCH &amp; IG</span>
                   </div>
                   <div className="font-bold text-stone-900 mb-2 font-sans text-sm">
                     Twitch &amp; Instagram
@@ -193,8 +212,10 @@ export function BlastRadiusComparison() {
                 </div>
 
                 <div className="border border-dashed border-red-300 bg-red-50/50 p-5 rounded-xs">
-                  <div className="text-red-700 text-[10px] mb-1 uppercase tracking-wider">
-                    STEP 03 / X &amp; LINKEDIN
+                  <div className="text-red-700 text-[10px] mb-1 uppercase tracking-wider flex items-center gap-1.5">
+                    <PlatformIcon platform="x" size={11} />
+                    <PlatformIcon platform="linkedin" size={11} />
+                    <span>STEP 03 / X &amp; LINKEDIN</span>
                   </div>
                   <div className="font-bold text-red-950 mb-2 font-sans text-sm">
                     X Threads &amp; LinkedIn
@@ -225,19 +246,29 @@ export function BlastRadiusComparison() {
                   Fragmented Outcome:
                 </div>
                 <div className="flex items-center justify-between border-b border-dashed border-red-200/60 pb-2">
-                  <span className="text-stone-700">YouTube &amp; Twitch Post</span>
+                  <span className="text-stone-700 flex items-center gap-1.5">
+                    <PlatformIcon platform="youtube" size={13} />
+                    <PlatformIcon platform="twitch" size={13} />
+                    <span>YouTube &amp; Twitch Post</span>
+                  </span>
                   <span className="text-stone-500">
                     Published, but took 20 minutes of manual reformatting
                   </span>
                 </div>
                 <div className="flex items-center justify-between border-b border-dashed border-red-200/60 pb-2">
-                  <span className="text-stone-700">X (Twitter) Post</span>
+                  <span className="text-stone-700 flex items-center gap-1.5">
+                    <PlatformIcon platform="x" size={13} />
+                    <span>X (Twitter) Post</span>
+                  </span>
                   <span className="text-red-600 flex items-center gap-1">
                     <XCircle className="h-3.5 w-3.5" /> Truncated awkwardly mid-sentence
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-stone-700">Instagram Reel Drop</span>
+                  <span className="text-stone-700 flex items-center gap-1.5">
+                    <PlatformIcon platform="instagram" size={13} />
+                    <span>Instagram Reel Drop</span>
+                  </span>
                   <span className="text-red-600 flex items-center gap-1">
                     <AlertCircle className="h-3.5 w-3.5" /> Forgot to post in the chaos
                   </span>

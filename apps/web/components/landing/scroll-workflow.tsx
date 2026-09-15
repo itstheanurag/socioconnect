@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { PenTool, KeyRound, Calendar, Send, CheckCircle2, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { PlatformIcon } from "./platform-icons";
 
 interface WorkflowStep {
   number: string;
@@ -24,17 +25,17 @@ export function ScrollWorkflow() {
   const STEPS: WorkflowStep[] = [
     {
       number: "01",
-      badge: "CREATION",
+      badge: "DRAFT",
       title: "Write in One Calm Editor",
       subtitle: "Zero tab-switching, zero distraction.",
       description:
-        "Draft your video launch story, stream announcement, or community post in a clean composer. Format with markdown, check platform character budgets in real-time, and let our engine handle thread segmentation automatically.",
+        "Draft your video launch story, stream alert, or thread in a clean composer. Real-time character meters track platform limits for YouTube, Instagram, LinkedIn, and X.",
       points: [
-        "Live character meters for YouTube (5000c), Instagram (2200c), LinkedIn (3000c), and X (280c)",
-        "Automatic numbering and thread breaks for long-form thoughts",
-        "Unified media attachment handler for video thumbnails, reels & images",
+        "Live character meters for YouTube (5000c), Instagram (2200c), and X (280c)",
+        "Automatic thread breaks and splitters for long-form thoughts",
+        "Unified media attachments for video thumbnails, reels & images",
       ],
-      metricLabel: "Time Saved Writing",
+      metricLabel: "Time Saved",
       metricValue: "45 min / day",
       icon: <PenTool className="h-5 w-5 text-stone-800" />,
       visualSnippet: (
@@ -48,14 +49,17 @@ export function ScrollWorkflow() {
             tabs every morning. Write once, verify budgets, dispatch everywhere.&rdquo;
           </div>
           <div className="flex flex-wrap gap-2 text-[10px]">
-            <span className="bg-white px-2 py-0.5 border border-[#ede8df] text-stone-700">
-              YT YouTube: Ready
+            <span className="bg-white px-2.5 py-1 border border-[#ede8df] text-stone-700 flex items-center gap-1.5 rounded-xs">
+              <PlatformIcon platform="youtube" size={13} />
+              <span>YouTube: Ready</span>
             </span>
-            <span className="bg-white px-2 py-0.5 border border-[#ede8df] text-stone-700">
-              TW Twitch: Alert Set
+            <span className="bg-white px-2.5 py-1 border border-[#ede8df] text-stone-700 flex items-center gap-1.5 rounded-xs">
+              <PlatformIcon platform="twitch" size={13} />
+              <span>Twitch: Alert Set</span>
             </span>
-            <span className="bg-white px-2 py-0.5 border border-[#ede8df] text-stone-700">
-              IG Instagram: Caption Ready
+            <span className="bg-white px-2.5 py-1 border border-[#ede8df] text-stone-700 flex items-center gap-1.5 rounded-xs">
+              <PlatformIcon platform="instagram" size={13} />
+              <span>Instagram: Ready</span>
             </span>
           </div>
         </div>
@@ -64,7 +68,7 @@ export function ScrollWorkflow() {
     {
       number: "02",
       badge: "SECURITY",
-      title: "Zero-Knowledge App Connectors",
+      title: "Zero-Knowledge Connectors",
       subtitle: "We never take or store your passwords.",
       description:
         "Connect YouTube, Twitch, Instagram, X, LinkedIn, Reddit, and Peerlist directly through official OAuth 2.0 PKCE. SocioConnect only requests write permissions and stores tokens in hardware-grade AES-256-GCM encrypted vaults.",
@@ -73,7 +77,7 @@ export function ScrollWorkflow() {
         "AES-256-GCM encrypted token vaults with secret rotation",
         "Strict outbound write-only scopes — zero feed reading or scraping",
       ],
-      metricLabel: "Password Storage",
+      metricLabel: "Passwords Stored",
       metricValue: "0 (Zero)",
       icon: <KeyRound className="h-5 w-5 text-stone-800" />,
       visualSnippet: (
@@ -84,16 +88,25 @@ export function ScrollWorkflow() {
           </div>
           <div className="space-y-2">
             <div className="bg-white p-2.5 border border-[#ede8df] rounded-xs flex items-center justify-between text-xs">
-              <span className="font-bold text-stone-800">YouTube Google OAuth 2.0</span>
-              <span className="text-emerald-700 font-semibold">✓ Verified Scope</span>
+              <span className="flex items-center gap-2 font-bold text-stone-800">
+                <PlatformIcon platform="youtube" size={14} />
+                <span>YouTube Google OAuth 2.0</span>
+              </span>
+              <span className="text-emerald-700 font-semibold text-[11px]">✓ Verified</span>
             </div>
             <div className="bg-white p-2.5 border border-[#ede8df] rounded-xs flex items-center justify-between text-xs">
-              <span className="font-bold text-stone-800">Twitch Stream Token</span>
-              <span className="text-emerald-700 font-semibold">✓ Verified Scope</span>
+              <span className="flex items-center gap-2 font-bold text-stone-800">
+                <PlatformIcon platform="twitch" size={14} />
+                <span>Twitch Stream Token</span>
+              </span>
+              <span className="text-emerald-700 font-semibold text-[11px]">✓ Verified</span>
             </div>
             <div className="bg-white p-2.5 border border-[#ede8df] rounded-xs flex items-center justify-between text-xs">
-              <span className="font-bold text-stone-800">Instagram Creator Graph</span>
-              <span className="text-emerald-700 font-semibold">✓ Verified Scope</span>
+              <span className="flex items-center gap-2 font-bold text-stone-800">
+                <PlatformIcon platform="instagram" size={14} />
+                <span>Instagram Creator Graph</span>
+              </span>
+              <span className="text-emerald-700 font-semibold text-[11px]">✓ Verified</span>
             </div>
           </div>
         </div>
@@ -101,18 +114,18 @@ export function ScrollWorkflow() {
     },
     {
       number: "03",
-      badge: "STAGGERED QUEUE",
+      badge: "STAGGER",
       title: "Same Post, Staggered Peak Times",
       subtitle: "Hit your audience when they are actually online.",
       description:
-        "Your LinkedIn audience checks posts at 9 AM, but your Twitch stream or YouTube video performs best in the afternoon or evening. SocioConnect lets you schedule a single post to go out simultaneously or staggered at custom peak hours for each platform.",
+        "Your LinkedIn audience checks posts at 9 AM, but your Twitch stream or YouTube video performs best in the afternoon or evening. SocioConnect lets you schedule a single post to go out simultaneously or staggered at custom peak hours.",
       points: [
         "Choose between instant simultaneous blast or staggered per-platform peak hours",
         "Multi-timezone scheduling engine (UTC, PST, EST, IST, GMT)",
         "Automated queue cadence that spaces out announcements naturally",
       ],
-      metricLabel: "Peak Reach Multiplier",
-      metricValue: "3.4x Engagement",
+      metricLabel: "Engagement Lift",
+      metricValue: "3.4x Peak",
       icon: <Calendar className="h-5 w-5 text-stone-800" />,
       visualSnippet: (
         <div className="border border-[#ede8df] bg-[#faf8f5] p-5 rounded-xs space-y-3 font-mono text-xs">
@@ -122,15 +135,24 @@ export function ScrollWorkflow() {
           </div>
           <div className="space-y-1.5 text-[11px]">
             <div className="bg-white p-2 border border-[#ede8df] rounded-xs flex items-center justify-between">
-              <span className="font-bold text-stone-800">in LinkedIn</span>
+              <span className="flex items-center gap-2 font-bold text-stone-800">
+                <PlatformIcon platform="linkedin" size={13} />
+                <span>LinkedIn</span>
+              </span>
               <span className="text-stone-500">08:30 AM (Morning Coffee)</span>
             </div>
             <div className="bg-white p-2 border border-[#ede8df] rounded-xs flex items-center justify-between">
-              <span className="font-bold text-stone-800">YT YouTube</span>
+              <span className="flex items-center gap-2 font-bold text-stone-800">
+                <PlatformIcon platform="youtube" size={13} />
+                <span>YouTube</span>
+              </span>
               <span className="text-stone-500">03:00 PM (Afternoon Surge)</span>
             </div>
             <div className="bg-white p-2 border border-[#ede8df] rounded-xs flex items-center justify-between">
-              <span className="font-bold text-stone-800">TW Twitch</span>
+              <span className="flex items-center gap-2 font-bold text-stone-800">
+                <PlatformIcon platform="twitch" size={13} />
+                <span>Twitch</span>
+              </span>
               <span className="text-stone-500">06:30 PM (Evening Live)</span>
             </div>
           </div>
@@ -159,15 +181,24 @@ export function ScrollWorkflow() {
             <span className="text-emerald-700 font-semibold">● 100% OK</span>
           </div>
           <div className="bg-white p-2 border border-[#ede8df] rounded-xs flex items-center justify-between text-xs">
-            <span className="text-stone-800">YT YouTube Premiere</span>
+            <span className="flex items-center gap-2 text-stone-800">
+              <PlatformIcon platform="youtube" size={13} />
+              <span>YouTube Premiere</span>
+            </span>
             <span className="text-emerald-700 font-semibold">200 OK (94ms)</span>
           </div>
           <div className="bg-white p-2 border border-[#ede8df] rounded-xs flex items-center justify-between text-xs">
-            <span className="text-stone-800">TW Twitch Stream Alert</span>
+            <span className="flex items-center gap-2 text-stone-800">
+              <PlatformIcon platform="twitch" size={13} />
+              <span>Twitch Stream Alert</span>
+            </span>
             <span className="text-emerald-700 font-semibold">200 OK (82ms)</span>
           </div>
           <div className="bg-white p-2 border border-[#ede8df] rounded-xs flex items-center justify-between text-xs">
-            <span className="text-stone-800">IG Instagram Carousel</span>
+            <span className="flex items-center gap-2 text-stone-800">
+              <PlatformIcon platform="instagram" size={13} />
+              <span>Instagram Carousel</span>
+            </span>
             <span className="text-emerald-700 font-semibold">200 OK (115ms)</span>
           </div>
         </div>
