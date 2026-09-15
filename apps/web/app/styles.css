@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+:root {
+  --paper: #ffffff;
+  --surface: #ffffff;
+  --ink: #1c1917;
+  --muted: #78716c;
+  --line: #ede8df;
+  --line-strong: #dcd5c8;
+  --cream-soft: #faf8f5;
+  --cream-warm: #f5f0e6;
+  --secondary: #f4dcb4;
+  --secondary-soft: #fcf6ec;
+  --secondary-border: #dfc39a;
+  --secondary-dark: #7a541e;
+  --sage: #15803d;
+  --sage-soft: #f0fdf4;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: #ffffff;
+  color-scheme: light;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  color: #1c1917;
+  background: #ffffff;
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+  font-size: 14px;
+}
+
+button,
+textarea,
+input {
+  font: inherit;
+}
+
+::selection {
+  background: #f4dcb4;
+  color: #1c1917;
+}
+
+/* Trapped Grid & Lines Utilities for Light Mode */
+.trapped-grid {
+  background-size: 32px 32px;
+  background-image:
+    linear-gradient(to right, rgba(220, 213, 200, 0.45) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(220, 213, 200, 0.45) 1px, transparent 1px);
+}
+
+.trapped-dots {
+  background-size: 24px 24px;
+  background-image: radial-gradient(circle, rgba(160, 150, 135, 0.3) 1px, transparent 1px);
+}
+
+.trapped-card {
+  position: relative;
+  background-color: #ffffff;
+  border: 1px solid #ede8df;
+  transition: all 0.2s ease;
+}
+
+.trapped-card:hover {
+  border-color: #dfc39a;
+}
