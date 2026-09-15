@@ -10,6 +10,10 @@ interface FAQItem {
 
 const FAQS: FAQItem[] = [
   {
+    q: "Can I schedule a single post to go out at different times on different platforms?",
+    a: "Yes! This is one of SocioConnect's core strengths. Because your LinkedIn audience is active during morning coffee (e.g. 8:30 AM), while your YouTube viewers or Twitch streams peak in the afternoon and evening (e.g. 3:00 PM and 6:30 PM), you can compose your post once and choose between an 'Instant Simultaneous Blast' or 'Staggered Peak Windows' for each connected network.",
+  },
+  {
     q: "How does SocioConnect handle YouTube, Twitch, and Instagram connections?",
     a: "SocioConnect uses 100% official OAuth 2.0 PKCE and Developer APIs (Google Identity, Twitch API, Meta Graph API for Creators). When connecting an account, you authenticate directly on the platform's official authorization page. We only request write permissions to publish community posts, premieres, stream alerts, and captions. We NEVER ask for, receive, or store your actual login passwords.",
   },
@@ -24,10 +28,6 @@ const FAQS: FAQItem[] = [
   {
     q: "What happens if one social platform goes down during a simultaneous broadcast?",
     a: "We practice strict fault isolation. Every connected network (YouTube, Twitch, Instagram, X, LinkedIn, Peerlist, Reddit, Bluesky) is dispatched via separate, atomic asynchronous worker tasks. If one platform has a 503 outage or rate-limit hiccup, your other posts publish successfully on time, and our scheduler automatically retries the failed channel with exponential backoff.",
-  },
-  {
-    q: "Can I schedule video premieres, stream alerts, and long-form threads simultaneously?",
-    a: "Yes! SocioConnect lets you compose a single announcement and automatically formats it across character budgets. YouTube community posts, Twitch stream drop announcements, Instagram captions, and X threads are scheduled in a unified weekly calendar mapped to your audience's local timezones.",
   },
   {
     q: "Can I disconnect an app at any time?",
@@ -56,7 +56,7 @@ export function LandingFAQ() {
           </h2>
           <p className="mt-3 text-base text-stone-600">
             Everything you need to know about our zero-password policy, outbound-only dispatches,
-            and multi-app scheduling.
+            and staggered peak-time scheduling.
           </p>
         </div>
 

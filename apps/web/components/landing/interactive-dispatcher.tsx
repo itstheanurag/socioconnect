@@ -11,6 +11,8 @@ import {
   AlertCircle,
   Radio,
   Lock,
+  Clock,
+  Zap,
 } from "lucide-react";
 
 interface ChannelOption {
@@ -21,6 +23,8 @@ interface ChannelOption {
   avatarBg: string;
   tag: string;
   icon: string;
+  peakTime: string;
+  peakWindow: string;
 }
 
 const CHANNELS: ChannelOption[] = [
@@ -32,6 +36,8 @@ const CHANNELS: ChannelOption[] = [
     avatarBg: "bg-[#FF0000]",
     tag: "VIDEO & COMMUNITY",
     icon: "YT",
+    peakTime: "03:00 PM",
+    peakWindow: "Afternoon Premiere surge",
   },
   {
     id: "twitch",
@@ -41,6 +47,8 @@ const CHANNELS: ChannelOption[] = [
     avatarBg: "bg-[#9146FF]",
     tag: "LIVE STREAM DROP",
     icon: "TW",
+    peakTime: "06:30 PM",
+    peakWindow: "Evening stream hours",
   },
   {
     id: "instagram",
@@ -50,6 +58,8 @@ const CHANNELS: ChannelOption[] = [
     avatarBg: "bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888]",
     tag: "VISUAL & REELS",
     icon: "IG",
+    peakTime: "11:30 AM",
+    peakWindow: "Mid-day visual feed check",
   },
   {
     id: "x",
@@ -59,6 +69,8 @@ const CHANNELS: ChannelOption[] = [
     avatarBg: "bg-stone-900",
     tag: "PUBLIC THREAD",
     icon: "𝕏",
+    peakTime: "12:15 PM",
+    peakWindow: "Tech lunch break discussions",
   },
   {
     id: "linkedin",
@@ -68,6 +80,8 @@ const CHANNELS: ChannelOption[] = [
     avatarBg: "bg-[#0a66c2]",
     tag: "PROFESSIONAL",
     icon: "in",
+    peakTime: "08:30 AM",
+    peakWindow: "Morning executive coffee",
   },
   {
     id: "peerlist",
@@ -77,6 +91,8 @@ const CHANNELS: ChannelOption[] = [
     avatarBg: "bg-[#00AA45]",
     tag: "MAKER NETWORK",
     icon: "P",
+    peakTime: "10:00 AM",
+    peakWindow: "Maker project spotlight",
   },
   {
     id: "reddit",
@@ -86,6 +102,8 @@ const CHANNELS: ChannelOption[] = [
     avatarBg: "bg-[#ff4500]",
     tag: "SUBREDDIT",
     icon: "rd",
+    peakTime: "08:45 PM",
+    peakWindow: "Evening deep conversations",
   },
   {
     id: "bluesky",
@@ -95,6 +113,8 @@ const CHANNELS: ChannelOption[] = [
     avatarBg: "bg-[#0285ff]",
     tag: "OPEN WEB",
     icon: "bs",
+    peakTime: "01:00 PM",
+    peakWindow: "Open protocol feed activity",
   },
 ];
 
@@ -123,6 +143,7 @@ export function InteractiveDispatcher() {
     "linkedin",
     "peerlist",
   ]);
+  const [scheduleMode, setScheduleMode] = useState<"simultaneous" | "staggered">("staggered");
   const [activeInspectTab, setActiveInspectTab] = useState<string>("youtube");
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishedResults, setPublishedResults] = useState<{
@@ -132,6 +153,7 @@ export function InteractiveDispatcher() {
       latency: string;
       status: string;
       timestamp: string;
+      dispatchTime: string;
     };
   } | null>(null);
 
@@ -162,10 +184,12 @@ export function InteractiveDispatcher() {
         latency: string;
         status: string;
         timestamp: string;
+        dispatchTime: string;
       };
     } = {};
 
     for (const ch of selectedChannels) {
+      const channelObj = CHANNELS.find((c) => c.id === ch);
       const latencyMs = Math.floor(Math.random() * 60) + 85;
       const domain =
         ch === "youtube"
@@ -188,8 +212,15 @@ export function InteractiveDispatcher() {
         success: true,
         link: `https://${domain}/${Math.random().toString(36).substring(2, 8)}`,
         latency: `${latencyMs}ms`,
-        status: "200 OK · Dispatched",
+        status:
+          scheduleMode === "staggered"
+            ? `Queued for Peak ${channelObj?.peakTime}`
+            : "200 OK · Dispatched Now",
         timestamp: new Date().toLocaleTimeString(),
+        dispatchTime:
+          scheduleMode === "staggered"
+            ? channelObj?.peakTime || "Immediate"
+            : "Immediate Simultaneous",
       };
     }
 
@@ -210,11 +241,12 @@ export function InteractiveDispatcher() {
               INTERACTIVE MULTI-DESTINATION DISPATCHER
             </div>
             <h2 className="mt-2 text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
-              Compose once. Dispatch to YouTube, Twitch, Instagram &amp; more.
+              Compose once. Schedule at same or different peak times.
             </h2>
             <p className="mt-2 max-w-2xl text-sm text-stone-600">
-              Broadcast stream announcements, community posts, captions, and threads in parallel
-              with automatic character budgets and decoupled retry isolation.
+              Choose an <strong>instant simultaneous drop</strong> or{" "}
+              <strong>staggered peak windows</strong> to hit audiences exactly when they are active
+              on YouTube, Twitch, Instagram, X, LinkedIn, and Reddit.
             </p>
           </div>
 
@@ -243,6 +275,39 @@ export function InteractiveDispatcher() {
             {/* Left: Creator Composer & Channels */}
             <div className="flex flex-col justify-between lg:col-span-6 border-b lg:border-b-0 lg:border-r border-[#ede8df] lg:pr-8 pb-8 lg:pb-0">
               <div>
+                {/* Scheduling Mode Switcher: Simultaneous vs Staggered Peak Times */}
+                <div className="mb-5 flex flex-wrap items-center justify-between gap-2 border border-dashed border-[#dfc39a] bg-[#faf8f5] p-2 rounded-xs font-mono text-xs">
+                  <span className="text-stone-500 text-[11px] font-bold uppercase tracking-wider">
+                    TIMING STRATEGY:
+                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setScheduleMode("staggered")}
+                      className={`flex items-center gap-1.5 px-3 py-1 rounded-xs transition-all ${
+                        scheduleMode === "staggered"
+                          ? "bg-[#F4DCB4] text-stone-900 font-bold border border-[#dfc39a] shadow-xs"
+                          : "text-stone-600 hover:text-stone-900"
+                      }`}
+                    >
+                      <Clock className="h-3 w-3 text-stone-800" />
+                      <span>STAGGERED PEAK TIMES</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setScheduleMode("simultaneous")}
+                      className={`flex items-center gap-1.5 px-3 py-1 rounded-xs transition-all ${
+                        scheduleMode === "simultaneous"
+                          ? "bg-stone-900 text-white font-bold shadow-xs"
+                          : "text-stone-600 hover:text-stone-900"
+                      }`}
+                    >
+                      <Zap className="h-3 w-3 text-stone-300" />
+                      <span>SIMULTANEOUS BLAST</span>
+                    </button>
+                  </div>
+                </div>
+
                 {/* Channel Selectors */}
                 <div className="mb-4">
                   <div className="flex items-center justify-between mb-2">
@@ -286,8 +351,8 @@ export function InteractiveDispatcher() {
                                 : "text-stone-400 font-normal"
                             }`}
                           >
-                            {ch.limit - content.length < 0
-                              ? `+${Math.abs(ch.limit - content.length)}`
+                            {scheduleMode === "staggered"
+                              ? ch.peakTime
                               : `${ch.limit - content.length}`}
                           </span>
                         </button>
@@ -371,12 +436,16 @@ export function InteractiveDispatcher() {
                   {isPublishing ? (
                     <>
                       <RotateCw className="h-3.5 w-3.5 animate-spin text-emerald-700" />
-                      <span>DISPATCHING VIA ENCRYPTED VAULT...</span>
+                      <span>SCHEDULING VIA ENCRYPTED VAULT...</span>
                     </>
                   ) : (
                     <>
                       <Send className="h-3.5 w-3.5" />
-                      <span>DISPATCH TO {selectedChannels.length} APPS SIMULTANEOUSLY</span>
+                      <span>
+                        {scheduleMode === "staggered"
+                          ? `SCHEDULE ${selectedChannels.length} APPS AT PEAK TIMES`
+                          : `DISPATCH ${selectedChannels.length} APPS SIMULTANEOUSLY`}
+                      </span>
                     </>
                   )}
                 </button>
@@ -437,8 +506,14 @@ export function InteractiveDispatcher() {
 
                   <div className="grid grid-cols-2 gap-2 text-[11px] text-stone-600">
                     <div className="bg-white p-2 border border-[#ede8df] rounded-xs">
-                      <span className="text-stone-400 block text-[9px]">TOKEN ENCRYPTION</span>
-                      <span className="font-bold text-stone-800">AES-256-GCM Vault</span>
+                      <span className="text-stone-400 block text-[9px]">
+                        TARGET DISPATCH WINDOW
+                      </span>
+                      <span className="font-bold text-stone-800">
+                        {scheduleMode === "staggered"
+                          ? `${activeInspectChannel.peakTime} (Peak)`
+                          : "Immediate Simultaneous"}
+                      </span>
                     </div>
                     <div className="bg-white p-2 border border-[#ede8df] rounded-xs">
                       <span className="text-stone-400 block text-[9px]">FEED PERMISSION</span>
@@ -453,9 +528,13 @@ export function InteractiveDispatcher() {
                     <div className="flex items-center justify-between text-emerald-900 font-bold mb-3 border-b border-emerald-200 pb-2">
                       <div className="flex items-center gap-2">
                         <Check className="h-4 w-4 text-emerald-600" />
-                        <span>Simultaneous Broadcast Telemetry</span>
+                        <span>
+                          {scheduleMode === "staggered"
+                            ? "Staggered Peak Schedule Confirmed"
+                            : "Simultaneous Broadcast Telemetry"}
+                        </span>
                       </div>
-                      <span className="text-[10px] text-emerald-700">100% Delivery · 0 Failed</span>
+                      <span className="text-[10px] text-emerald-700">100% Queue Coverage</span>
                     </div>
                     <div className="space-y-2 text-[11px]">
                       {Object.entries(publishedResults).map(([chKey, val]) => (
@@ -464,10 +543,10 @@ export function InteractiveDispatcher() {
                           className="flex items-center justify-between bg-white/80 p-2 border border-emerald-100 rounded-xs"
                         >
                           <span className="uppercase font-bold text-stone-800">{chKey}:</span>
-                          <span className="text-stone-500">{val.latency}</span>
+                          <span className="text-stone-500">{val.dispatchTime}</span>
                           <span className="text-emerald-800 font-semibold">{val.status}</span>
                           <span className="text-stone-400 flex items-center gap-1">
-                            {val.link.substring(0, 24)}... <ExternalLink className="h-3 w-3" />
+                            {val.link.substring(0, 20)}... <ExternalLink className="h-3 w-3" />
                           </span>
                         </div>
                       ))}

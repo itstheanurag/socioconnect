@@ -101,40 +101,37 @@ export function ScrollWorkflow() {
     },
     {
       number: "03",
-      badge: "SCHEDULING",
-      title: "Visual Multi-Timezone Calendar",
-      subtitle: "Set your queue and let the engine dispatch.",
+      badge: "STAGGERED QUEUE",
+      title: "Same Post, Staggered Peak Times",
+      subtitle: "Hit your audience when they are actually online.",
       description:
-        "Map your weekly video premieres, live streams, and community releases on an interactive visual calendar. Set queue times that automatically adjust for your global audience across timezones.",
+        "Your LinkedIn audience checks posts at 9 AM, but your Twitch stream or YouTube video performs best in the afternoon or evening. SocioConnect lets you schedule a single post to go out simultaneously or staggered at custom peak hours for each platform.",
       points: [
-        "Universal timezone mapping (UTC, PST, EST, IST, GMT)",
-        "Visual weekly queues with per-platform target indicators",
-        "Automated queue slots: schedule once, fill slots continuously",
+        "Choose between instant simultaneous blast or staggered per-platform peak hours",
+        "Multi-timezone scheduling engine (UTC, PST, EST, IST, GMT)",
+        "Automated queue cadence that spaces out announcements naturally",
       ],
-      metricLabel: "Publishing Cadence",
-      metricValue: "100% Automated",
+      metricLabel: "Peak Reach Multiplier",
+      metricValue: "3.4x Engagement",
       icon: <Calendar className="h-5 w-5 text-stone-800" />,
       visualSnippet: (
         <div className="border border-[#ede8df] bg-[#faf8f5] p-5 rounded-xs space-y-3 font-mono text-xs">
           <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-2 text-stone-500">
-            <span className="font-bold text-stone-800">QUEUE DISPATCH ENGINE</span>
-            <span className="text-blue-700 font-semibold">WEEK 38 ACTIVE</span>
+            <span className="font-bold text-stone-800">STAGGERED CADENCE MAP</span>
+            <span className="text-blue-700 font-semibold">PEAK WINDOWS</span>
           </div>
-          <div className="grid grid-cols-3 gap-2 text-center text-[11px]">
-            <div className="bg-white p-2 border border-[#ede8df] rounded-xs">
-              <span className="text-stone-400 block text-[9px]">MON 09:30 AM</span>
-              <span className="font-bold text-stone-800 block mt-0.5">YT + in + 𝕏</span>
-              <span className="text-emerald-700 text-[10px]">Dispatched</span>
+          <div className="space-y-1.5 text-[11px]">
+            <div className="bg-white p-2 border border-[#ede8df] rounded-xs flex items-center justify-between">
+              <span className="font-bold text-stone-800">in LinkedIn</span>
+              <span className="text-stone-500">08:30 AM (Morning Coffee)</span>
             </div>
-            <div className="bg-white p-2 border border-[#dfc39a] bg-[#F4DCB4]/40 rounded-xs">
-              <span className="text-stone-400 block text-[9px]">WED 11:00 AM</span>
-              <span className="font-bold text-stone-900 block mt-0.5">IG + P + in</span>
-              <span className="text-blue-700 text-[10px]">Queued</span>
+            <div className="bg-white p-2 border border-[#ede8df] rounded-xs flex items-center justify-between">
+              <span className="font-bold text-stone-800">YT YouTube</span>
+              <span className="text-stone-500">03:00 PM (Afternoon Surge)</span>
             </div>
-            <div className="bg-white p-2 border border-[#ede8df] rounded-xs">
-              <span className="text-stone-400 block text-[9px]">FRI 10:30 AM</span>
-              <span className="font-bold text-stone-800 block mt-0.5">TW + IG + bs</span>
-              <span className="text-stone-500 text-[10px]">Upcoming</span>
+            <div className="bg-white p-2 border border-[#ede8df] rounded-xs flex items-center justify-between">
+              <span className="font-bold text-stone-800">TW Twitch</span>
+              <span className="text-stone-500">06:30 PM (Evening Live)</span>
             </div>
           </div>
         </div>
@@ -188,11 +185,12 @@ export function ScrollWorkflow() {
             THE 4-STEP DISTRIBUTION ENGINE
           </div>
           <h2 className="mt-3 text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
-            From draft to cross-app delivery in four seamless steps.
+            From draft to staggered peak delivery in four seamless steps.
           </h2>
           <p className="mt-3 text-sm sm:text-base text-stone-600 leading-relaxed">
-            Eliminate copy-paste fatigue. Manage your video &amp; post schedule, maintain account
-            safety, and broadcast to every community with peace of mind.
+            Eliminate copy-paste fatigue. Manage your video &amp; post schedule, hit each platform
+            during its specific audience peak hour, and broadcast to every community with peace of
+            mind.
           </p>
         </div>
 
