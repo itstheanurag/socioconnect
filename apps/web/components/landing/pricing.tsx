@@ -23,8 +23,8 @@ export function LandingPricing() {
             Simple plans for creators at any stage.
           </h2>
           <p className="mt-3 text-base text-stone-600">
-            Start free, connect your favorite platforms without sharing passwords, and upgrade
-            whenever you need unlimited scheduled queue slots.
+            Start free, connect YouTube, Twitch, Instagram, X, LinkedIn, Peerlist and Reddit without
+            sharing passwords, and upgrade whenever you need unlimited queue slots.
           </p>
 
           {/* Billing Switch */}
@@ -74,7 +74,7 @@ export function LandingPricing() {
               <ul className="mt-8 space-y-3 font-mono text-xs text-stone-700 border-t border-dashed border-[#f0ede6] pt-6">
                 <li className="flex items-center gap-2.5">
                   <Check className="h-3.5 w-3.5 text-stone-400 shrink-0" />
-                  <span>Up to 3 connected apps (X, LinkedIn, Peerlist)</span>
+                  <span>Up to 3 connected apps (YouTube, X, LinkedIn)</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="h-3.5 w-3.5 text-stone-400 shrink-0" />
@@ -113,7 +113,7 @@ export function LandingPricing() {
               </div>
               <h3 className="text-xl font-bold text-stone-900">Creator Pro</h3>
               <p className="mt-2 text-xs text-stone-600">
-                For solo founders, writers, and developers distributing across all platforms.
+                For video makers, streamers, writers, and solo founders broadcasting everywhere.
               </p>
 
               <div className="mt-6 flex items-baseline gap-1 font-mono">
@@ -124,11 +124,11 @@ export function LandingPricing() {
               <ul className="mt-8 space-y-3 font-mono text-xs text-stone-800 border-t border-dashed border-[#f0ede6] pt-6">
                 <li className="flex items-center gap-2.5">
                   <Check className="h-3.5 w-3.5 text-stone-900 shrink-0" />
-                  <span>All apps (X, LinkedIn, Peerlist, Reddit, Bluesky)</span>
+                  <span>All apps (YouTube, Twitch, Instagram, X, LinkedIn, Peerlist, Reddit)</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="h-3.5 w-3.5 text-stone-900 shrink-0" />
-                  <span>Unlimited scheduled posts &amp; queues</span>
+                  <span>Unlimited scheduled posts &amp; video queues</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="h-3.5 w-3.5 text-stone-900 shrink-0" />
@@ -136,7 +136,7 @@ export function LandingPricing() {
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="h-3.5 w-3.5 text-stone-900 shrink-0" />
-                  <span>Auto-thread splitting for long thoughts</span>
+                  <span>Auto-thread splitting &amp; caption optimizer</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="h-3.5 w-3.5 text-stone-900 shrink-0" />
@@ -169,7 +169,7 @@ export function LandingPricing() {
               </div>
               <h3 className="text-xl font-bold text-stone-900">Studio Team</h3>
               <p className="mt-2 text-xs text-stone-600">
-                For dev shops and studios distributing multiple client product updates.
+                For video production agencies and studios distributing multiple client channels.
               </p>
 
               <div className="mt-6 flex items-baseline gap-1 font-mono">

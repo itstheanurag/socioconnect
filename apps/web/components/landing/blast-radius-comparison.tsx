@@ -17,10 +17,10 @@ export function BlastRadiusComparison() {
               THE WORKFLOW TRANSFORMATION
             </div>
             <h2 className="mt-3 text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
-              Why manual cross-posting is burning your time.
+              Why manual cross-posting is burning your creator hours.
             </h2>
             <p className="mt-2 max-w-2xl text-sm sm:text-base text-stone-600">
-              Compare the friction of juggling 5 different social tabs every morning with
+              Compare the friction of juggling 8 different social tabs every morning with
               SocioConnect&apos;s unified distribution queue and fault-isolated drops.
             </p>
           </div>
@@ -47,7 +47,7 @@ export function BlastRadiusComparison() {
               }`}
             >
               <span className="h-2 w-2 rounded-full bg-red-400" />
-              THE 5-TAB JUGGLE
+              THE 8-TAB JUGGLE
             </button>
           </div>
         </div>
@@ -75,7 +75,7 @@ export function BlastRadiusComparison() {
                     Write in One Calm Editor
                   </div>
                   <p className="text-xs text-stone-600 leading-normal font-sans">
-                    Compose your announcement, essay, or launch update in a single distraction-free
+                    Compose your video launch, stream drop, or thread in a single distraction-free
                     window.
                   </p>
                 </div>
@@ -100,7 +100,8 @@ export function BlastRadiusComparison() {
                     Visual Weekly Queue
                   </div>
                   <p className="text-xs text-stone-600 leading-normal font-sans">
-                    Slot your posts into weekly calendar times mapped to global audience timezones.
+                    Slot your video premieres and community drops into weekly calendar times mapped
+                    to global audience timezones.
                   </p>
                 </div>
 
@@ -124,31 +125,31 @@ export function BlastRadiusComparison() {
                   Unified Channel Confirmation:
                 </div>
                 <div className="flex items-center justify-between border-b border-dashed border-[#f0ede6] pb-2">
-                  <span className="text-stone-800 font-semibold">LinkedIn Channel</span>
+                  <span className="text-stone-800 font-semibold">YouTube Premiere &amp; Post</span>
                   <span className="text-emerald-700 flex items-center gap-1">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> Dispatched with
-                    official OAuth 2.0
+                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> Dispatched via Google
+                    OAuth 2.0 PKCE
                   </span>
                 </div>
                 <div className="flex items-center justify-between border-b border-dashed border-[#f0ede6] pb-2">
-                  <span className="text-stone-800 font-semibold">Peerlist Channel</span>
+                  <span className="text-stone-800 font-semibold">Twitch Go-Live Alert</span>
                   <span className="text-emerald-700 flex items-center gap-1">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> Dispatched to maker
-                    community feed
+                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> Stream announcement
+                    broadcasted
                   </span>
                 </div>
                 <div className="flex items-center justify-between border-b border-dashed border-[#f0ede6] pb-2">
-                  <span className="text-stone-800 font-semibold">Reddit Channel</span>
+                  <span className="text-stone-800 font-semibold">Instagram Caption &amp; Reel</span>
                   <span className="text-emerald-700 flex items-center gap-1">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> Published to target
-                    subreddit
+                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> Published via Meta
+                    Graph API
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-stone-800 font-semibold">X (Twitter) Channel</span>
+                  <span className="text-stone-800 font-semibold">X (Twitter) &amp; LinkedIn</span>
                   <span className="text-emerald-700 flex items-center gap-1">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> Published with 280-c
-                    thread split
+                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> Published with
+                    character budget guardrails
                   </span>
                 </div>
               </div>
@@ -159,48 +160,48 @@ export function BlastRadiusComparison() {
               <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-4 font-mono text-xs text-stone-600">
                 <div className="flex items-center gap-2 text-red-700 font-bold">
                   <AlertCircle className="h-4 w-4 text-red-500" />
-                  <span>THE OLD 5-TAB JUGGLE</span>
+                  <span>THE OLD 8-TAB JUGGLE</span>
                 </div>
-                <span className="text-red-600">EFFORT: 45+ MINUTES OF FRICTION</span>
+                <span className="text-red-600">EFFORT: 50+ MINUTES OF DAILY FRICTION</span>
               </div>
 
               {/* Steps */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 font-mono text-xs">
                 <div className="border border-[#ede8df] bg-white p-5 rounded-xs">
                   <div className="text-stone-400 text-[10px] mb-1 uppercase tracking-wider">
-                    STEP 01 / TAB 1
+                    STEP 01 / YOUTUBE
                   </div>
                   <div className="font-bold text-stone-900 mb-2 font-sans text-sm">
-                    Open LinkedIn
+                    Open YouTube Studio
                   </div>
                   <p className="text-xs text-stone-600 leading-normal font-sans">
-                    Paste text, adjust line spacing, re-add hashtags, upload image manually.
+                    Fill community post, copy link, adjust premiere countdown, wait for upload.
                   </p>
                 </div>
 
                 <div className="border border-dashed border-red-300 bg-red-50/30 p-5 rounded-xs">
                   <div className="text-stone-400 text-[10px] mb-1 uppercase tracking-wider">
-                    STEP 02 / TAB 2
+                    STEP 02 / TWITCH &amp; IG
                   </div>
                   <div className="font-bold text-stone-900 mb-2 font-sans text-sm">
-                    Open X / Twitter
+                    Twitch &amp; Instagram
                   </div>
                   <p className="text-xs text-stone-600 leading-normal font-sans">
-                    Red &apos;-42 chars&apos; error! Manually delete words to squeeze under the
-                    limit.
+                    Log into Twitch dashboard, paste title. Switch to mobile for Instagram reel
+                    caption.
                   </p>
                 </div>
 
                 <div className="border border-dashed border-red-300 bg-red-50/50 p-5 rounded-xs">
                   <div className="text-red-700 text-[10px] mb-1 uppercase tracking-wider">
-                    STEP 03 / TAB 3 &amp; 4
+                    STEP 03 / X &amp; LINKEDIN
                   </div>
                   <div className="font-bold text-red-950 mb-2 font-sans text-sm">
-                    Reddit &amp; Peerlist
+                    X Threads &amp; LinkedIn
                   </div>
                   <p className="text-xs text-red-700 leading-normal font-sans">
-                    Re-login because session expired. Copy-paste again, wondering if you already
-                    posted.
+                    Red &apos;-38 chars&apos; error on X! Delete sentences manually while
+                    reformatting paragraphs on LinkedIn.
                   </p>
                 </div>
 
@@ -209,7 +210,7 @@ export function BlastRadiusComparison() {
                     STEP 04 / GLITCH
                   </div>
                   <div className="font-bold text-red-950 mb-2 font-sans text-sm">
-                    Post Outage Disaster
+                    Desynchronized Drop
                   </div>
                   <p className="text-xs text-red-700 leading-normal font-sans">
                     One network has a rate limit error. Your launch is desynchronized and audience
@@ -224,9 +225,9 @@ export function BlastRadiusComparison() {
                   Fragmented Outcome:
                 </div>
                 <div className="flex items-center justify-between border-b border-dashed border-red-200/60 pb-2">
-                  <span className="text-stone-700">LinkedIn Post</span>
+                  <span className="text-stone-700">YouTube &amp; Twitch Post</span>
                   <span className="text-stone-500">
-                    Published, but took 15 minutes of manual reformatting
+                    Published, but took 20 minutes of manual reformatting
                   </span>
                 </div>
                 <div className="flex items-center justify-between border-b border-dashed border-red-200/60 pb-2">
@@ -236,9 +237,9 @@ export function BlastRadiusComparison() {
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-stone-700">Reddit Post</span>
+                  <span className="text-stone-700">Instagram Reel Drop</span>
                   <span className="text-red-600 flex items-center gap-1">
-                    <AlertCircle className="h-3.5 w-3.5" /> Session timed out, forgot to publish
+                    <AlertCircle className="h-3.5 w-3.5" /> Forgot to post in the chaos
                   </span>
                 </div>
               </div>

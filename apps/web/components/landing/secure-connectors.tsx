@@ -18,6 +18,54 @@ interface PlatformConnector {
 
 const CONNECTORS: PlatformConnector[] = [
   {
+    id: "youtube",
+    name: "YouTube",
+    category: "Video & Community Posts",
+    iconText: "YT",
+    iconBg: "bg-[#FF0000]",
+    status: "connected",
+    oauthStandard: "Google Identity OAuth 2.0 + PKCE",
+    permissionsScope: "youtube.upload, youtube.readonly (Community & Premieres)",
+    encryption: "AES-256-GCM Hardware Security Vault",
+    zeroKnowledgeHighlights: [
+      "Authenticates directly on official Google accounts screen",
+      "We never see or store your Google account password",
+      "Only publishes video metadata, premiere schedules & community posts",
+    ],
+  },
+  {
+    id: "twitch",
+    name: "Twitch",
+    category: "Live Streaming & Clips",
+    iconText: "TW",
+    iconBg: "bg-[#9146FF]",
+    status: "connected",
+    oauthStandard: "Twitch Developer OAuth 2.0",
+    permissionsScope: "channel:manage:broadcast, clips:edit",
+    encryption: "AES-256-GCM Vault",
+    zeroKnowledgeHighlights: [
+      "Direct authorization popup on official Twitch.tv domain",
+      "Broadcasts go-live alerts and stream title updates",
+      "Zero read access to your whispers, private chat, or payment info",
+    ],
+  },
+  {
+    id: "instagram",
+    name: "Instagram",
+    category: "Reels & Visual Carousels",
+    iconText: "IG",
+    iconBg: "bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888]",
+    status: "connected",
+    oauthStandard: "Meta Graph API for Creators OAuth",
+    permissionsScope: "instagram_basic, instagram_content_publish",
+    encryption: "AES-256-GCM + Token Rotation",
+    zeroKnowledgeHighlights: [
+      "Official Meta Graph authorization with write-only publishing",
+      "We never ask for your Instagram or Facebook password",
+      "Zero access to Direct Messages or user browsing activity",
+    ],
+  },
+  {
     id: "linkedin",
     name: "LinkedIn",
     category: "Professional Network",
@@ -97,22 +145,6 @@ const CONNECTORS: PlatformConnector[] = [
       "Zero server-side scraping of follower timelines",
     ],
   },
-  {
-    id: "mastodon",
-    name: "Mastodon",
-    category: "Fediverse ActivityPub",
-    iconText: "M",
-    iconBg: "bg-[#6364ff]",
-    status: "ready",
-    oauthStandard: "OAuth 2.0 Instance Protocol",
-    permissionsScope: "write:statuses",
-    encryption: "AES-256-GCM Vault",
-    zeroKnowledgeHighlights: [
-      "Universal support for any custom Mastodon instance",
-      "Decentralized instance authentication",
-      "Strict status-write permission scope only",
-    ],
-  },
 ];
 
 export function SecureConnectors() {
@@ -129,12 +161,12 @@ export function SecureConnectors() {
               ZERO-CREDENTIAL CONNECTOR ARCHITECTURE
             </div>
             <h2 className="mt-3 text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
-              Connect your apps without ever sharing passwords.
+              Connect YouTube, Twitch, Instagram &amp; more safely.
             </h2>
             <p className="mt-3 text-sm sm:text-base text-stone-600 leading-relaxed">
-              We never take, ask for, or store your passwords for any social platform. Connections
-              are made 100% via official OAuth 2.0 PKCE and developer APIs with hardware-grade
-              AES-256 encryption.
+              We never take, ask for, or store your passwords for any platform. Connections are
+              established 100% via official Google, Twitch, Meta, X, and LinkedIn OAuth 2.0 PKCE
+              APIs with hardware-grade AES-256 encryption.
             </p>
           </div>
 
@@ -144,7 +176,7 @@ export function SecureConnectors() {
               <span>Zero Feed Reading / Zero Credential Storage</span>
             </div>
             <span className="text-[11px] text-stone-500">
-              Only write tokens requested. We never fetch or store your feeds.
+              Only write tokens requested. We never fetch or store your private feeds.
             </span>
           </div>
         </div>
@@ -162,7 +194,7 @@ export function SecureConnectors() {
               </div>
               <div className="font-bold text-stone-900 mb-1">Official Redirect</div>
               <p className="text-[11px] text-stone-500 font-sans">
-                You authenticate directly on LinkedIn, X, or Reddit official login pages.
+                You authenticate directly on Google, Twitch, Instagram, or X official login pages.
               </p>
             </div>
 
@@ -172,7 +204,7 @@ export function SecureConnectors() {
               </div>
               <div className="font-bold text-stone-900 mb-1">Write-Only Grant</div>
               <p className="text-[11px] text-stone-500 font-sans">
-                Platform grants a temporary write-only token. Password never touches our servers.
+                Platform grants a temporary write token. Password never touches our servers.
               </p>
             </div>
 
@@ -192,7 +224,7 @@ export function SecureConnectors() {
               </div>
               <div className="font-bold text-stone-900 mb-1">Outbound Broadcast</div>
               <p className="text-[11px] text-stone-500 font-sans">
-                Posts dispatch directly to verified endpoints. No feed data is ever read.
+                Announcements and posts dispatch directly to verified endpoints.
               </p>
             </div>
           </div>
@@ -201,14 +233,14 @@ export function SecureConnectors() {
         {/* Platform Grid & Platform Detail Box */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left: Platform Selectors */}
-          <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
+          <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2.5">
             {CONNECTORS.map((conn) => {
               const isSelected = selectedPlatform.id === conn.id;
               return (
                 <button
                   key={conn.id}
                   onClick={() => setSelectedPlatform(conn)}
-                  className={`text-left p-4 border transition-all rounded-xs flex items-center justify-between ${
+                  className={`text-left p-3.5 border transition-all rounded-xs flex items-center justify-between ${
                     isSelected
                       ? "border-stone-900 bg-[#faf8f5] shadow-xs"
                       : "border-[#ede8df] bg-white hover:border-[#dfc39a]"
@@ -216,17 +248,17 @@ export function SecureConnectors() {
                 >
                   <div className="flex items-center gap-3">
                     <div
-                      className={`h-9 w-9 rounded-full ${conn.iconBg} text-white flex items-center justify-center font-bold text-xs font-mono shrink-0`}
+                      className={`h-8 w-8 rounded-full ${conn.iconBg} text-white flex items-center justify-center font-bold text-xs font-mono shrink-0`}
                     >
                       {conn.iconText}
                     </div>
                     <div>
-                      <div className="font-bold text-sm text-stone-900 font-sans">{conn.name}</div>
-                      <span className="text-[11px] font-mono text-stone-500">{conn.category}</span>
+                      <div className="font-bold text-xs text-stone-900 font-sans">{conn.name}</div>
+                      <span className="text-[10px] font-mono text-stone-500">{conn.category}</span>
                     </div>
                   </div>
 
-                  <span className="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded-xs border border-emerald-200 bg-emerald-50 text-emerald-800 flex items-center gap-1">
+                  <span className="text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded-xs border border-emerald-200 bg-emerald-50 text-emerald-800 flex items-center gap-1">
                     <ShieldCheck className="h-3 w-3 text-emerald-600" />
                     OAuth 2.0
                   </span>
@@ -242,7 +274,7 @@ export function SecureConnectors() {
               <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-4 mb-6">
                 <div className="flex items-center gap-3">
                   <div
-                    className={`h-10 w-10 rounded-full ${selectedPlatform.iconBg} text-white flex items-center justify-center font-bold text-sm font-mono shadow-xs`}
+                    className={`h-10 w-10 rounded-full ${selectedPlatform.iconBg} text-white flex items-center justify-center font-bold text-xs font-mono shadow-xs`}
                   >
                     {selectedPlatform.iconText}
                   </div>

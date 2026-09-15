@@ -28,11 +28,11 @@ export function ScrollWorkflow() {
       title: "Write in One Calm Editor",
       subtitle: "Zero tab-switching, zero distraction.",
       description:
-        "Draft your story, product announcement, or thread in a clean, distraction-free composer. Format with markdown, check platform character budgets in real-time, and let our engine handle thread segmentation automatically.",
+        "Draft your video launch story, stream announcement, or community post in a clean composer. Format with markdown, check platform character budgets in real-time, and let our engine handle thread segmentation automatically.",
       points: [
-        "Live character budget meters for X (280c), Bluesky (300c), and LinkedIn (3000c)",
+        "Live character meters for YouTube (5000c), Instagram (2200c), LinkedIn (3000c), and X (280c)",
         "Automatic numbering and thread breaks for long-form thoughts",
-        "Unified media attachment handler for images and links",
+        "Unified media attachment handler for video thumbnails, reels & images",
       ],
       metricLabel: "Time Saved Writing",
       metricValue: "45 min / day",
@@ -44,18 +44,18 @@ export function ScrollWorkflow() {
             <span className="text-emerald-700 font-semibold">● AUTO-SAVED</span>
           </div>
           <div className="bg-white p-3 border border-[#ede8df] rounded-xs font-sans text-stone-800 text-xs leading-relaxed">
-            &ldquo;Building in public is much easier when you don&apos;t have to copy-paste across 5
+            &ldquo;Building in public is much easier when you don&apos;t have to copy-paste across 8
             tabs every morning. Write once, verify budgets, dispatch everywhere.&rdquo;
           </div>
           <div className="flex flex-wrap gap-2 text-[10px]">
             <span className="bg-white px-2 py-0.5 border border-[#ede8df] text-stone-700">
-              𝕏 X: 142/280 chars
+              YT YouTube: Ready
             </span>
             <span className="bg-white px-2 py-0.5 border border-[#ede8df] text-stone-700">
-              in LinkedIn: 142/3000 chars
+              TW Twitch: Alert Set
             </span>
             <span className="bg-white px-2 py-0.5 border border-[#ede8df] text-stone-700">
-              P Peerlist: Ready
+              IG Instagram: Caption Ready
             </span>
           </div>
         </div>
@@ -67,9 +67,9 @@ export function ScrollWorkflow() {
       title: "Zero-Knowledge App Connectors",
       subtitle: "We never take or store your passwords.",
       description:
-        "Connect X, LinkedIn, Reddit, Peerlist, and Bluesky directly through official OAuth 2.0 PKCE. SocioConnect only requests write permissions and stores tokens in hardware-grade AES-256-GCM encrypted vaults.",
+        "Connect YouTube, Twitch, Instagram, X, LinkedIn, Reddit, and Peerlist directly through official OAuth 2.0 PKCE. SocioConnect only requests write permissions and stores tokens in hardware-grade AES-256-GCM encrypted vaults.",
       points: [
-        "100% official OAuth 2.0 with PKCE authorization flows",
+        "100% official Google, Twitch, Meta & X OAuth 2.0 PKCE authorization",
         "AES-256-GCM encrypted token vaults with secret rotation",
         "Strict outbound write-only scopes — zero feed reading or scraping",
       ],
@@ -84,15 +84,15 @@ export function ScrollWorkflow() {
           </div>
           <div className="space-y-2">
             <div className="bg-white p-2.5 border border-[#ede8df] rounded-xs flex items-center justify-between text-xs">
-              <span className="font-bold text-stone-800">LinkedIn OAuth 2.0 PKCE</span>
+              <span className="font-bold text-stone-800">YouTube Google OAuth 2.0</span>
               <span className="text-emerald-700 font-semibold">✓ Verified Scope</span>
             </div>
             <div className="bg-white p-2.5 border border-[#ede8df] rounded-xs flex items-center justify-between text-xs">
-              <span className="font-bold text-stone-800">Peerlist Official Key</span>
+              <span className="font-bold text-stone-800">Twitch Stream Token</span>
               <span className="text-emerald-700 font-semibold">✓ Verified Scope</span>
             </div>
             <div className="bg-white p-2.5 border border-[#ede8df] rounded-xs flex items-center justify-between text-xs">
-              <span className="font-bold text-stone-800">Reddit Submit Scope</span>
+              <span className="font-bold text-stone-800">Instagram Creator Graph</span>
               <span className="text-emerald-700 font-semibold">✓ Verified Scope</span>
             </div>
           </div>
@@ -105,7 +105,7 @@ export function ScrollWorkflow() {
       title: "Visual Multi-Timezone Calendar",
       subtitle: "Set your queue and let the engine dispatch.",
       description:
-        "Map your weekly releases on an interactive visual calendar. Set queue times that automatically adjust for your audience&apos;s timezones across San Francisco, New York, London, and Tokyo.",
+        "Map your weekly video premieres, live streams, and community releases on an interactive visual calendar. Set queue times that automatically adjust for your global audience across timezones.",
       points: [
         "Universal timezone mapping (UTC, PST, EST, IST, GMT)",
         "Visual weekly queues with per-platform target indicators",
@@ -123,17 +123,17 @@ export function ScrollWorkflow() {
           <div className="grid grid-cols-3 gap-2 text-center text-[11px]">
             <div className="bg-white p-2 border border-[#ede8df] rounded-xs">
               <span className="text-stone-400 block text-[9px]">MON 09:30 AM</span>
-              <span className="font-bold text-stone-800 block mt-0.5">3 Apps</span>
+              <span className="font-bold text-stone-800 block mt-0.5">YT + in + 𝕏</span>
               <span className="text-emerald-700 text-[10px]">Dispatched</span>
             </div>
             <div className="bg-white p-2 border border-[#dfc39a] bg-[#F4DCB4]/40 rounded-xs">
               <span className="text-stone-400 block text-[9px]">WED 11:00 AM</span>
-              <span className="font-bold text-stone-900 block mt-0.5">4 Apps</span>
+              <span className="font-bold text-stone-900 block mt-0.5">IG + P + in</span>
               <span className="text-blue-700 text-[10px]">Queued</span>
             </div>
             <div className="bg-white p-2 border border-[#ede8df] rounded-xs">
               <span className="text-stone-400 block text-[9px]">FRI 10:30 AM</span>
-              <span className="font-bold text-stone-800 block mt-0.5">2 Apps</span>
+              <span className="font-bold text-stone-800 block mt-0.5">TW + IG + bs</span>
               <span className="text-stone-500 text-[10px]">Upcoming</span>
             </div>
           </div>
@@ -146,9 +146,9 @@ export function ScrollWorkflow() {
       title: "Fault-Isolated Multi-Network Drops",
       subtitle: "One platform outage never ruins your launch.",
       description:
-        "Every social channel publishes via independent worker tasks. If X suffers a temporary rate limit or Reddit has a server hiccup, your LinkedIn, Peerlist, and Bluesky posts go live on time with automatic retry backoff.",
+        "Every video and post channel publishes via independent worker tasks. If X or Reddit suffers a temporary rate limit, your YouTube, Twitch, and Instagram announcements go live on time with automatic retry backoff.",
       points: [
-        "Decoupled atomic worker architecture for every connected network",
+        "Decoupled atomic worker architecture for every connected creator network",
         "Automatic retry with exponential backoff on 429 and 503 errors",
         "Instant delivery telemetry and direct post URLs",
       ],
@@ -162,16 +162,16 @@ export function ScrollWorkflow() {
             <span className="text-emerald-700 font-semibold">● 100% OK</span>
           </div>
           <div className="bg-white p-2 border border-[#ede8df] rounded-xs flex items-center justify-between text-xs">
-            <span className="text-stone-800">in LinkedIn Dispatch</span>
-            <span className="text-emerald-700 font-semibold">200 OK (112ms)</span>
-          </div>
-          <div className="bg-white p-2 border border-[#ede8df] rounded-xs flex items-center justify-between text-xs">
-            <span className="text-stone-800">P Peerlist Dispatch</span>
+            <span className="text-stone-800">YT YouTube Premiere</span>
             <span className="text-emerald-700 font-semibold">200 OK (94ms)</span>
           </div>
           <div className="bg-white p-2 border border-[#ede8df] rounded-xs flex items-center justify-between text-xs">
-            <span className="text-stone-800">𝕏 X (Twitter) Dispatch</span>
-            <span className="text-emerald-700 font-semibold">200 OK (142ms)</span>
+            <span className="text-stone-800">TW Twitch Stream Alert</span>
+            <span className="text-emerald-700 font-semibold">200 OK (82ms)</span>
+          </div>
+          <div className="bg-white p-2 border border-[#ede8df] rounded-xs flex items-center justify-between text-xs">
+            <span className="text-stone-800">IG Instagram Carousel</span>
+            <span className="text-emerald-700 font-semibold">200 OK (115ms)</span>
           </div>
         </div>
       ),
@@ -191,7 +191,7 @@ export function ScrollWorkflow() {
             From draft to cross-app delivery in four seamless steps.
           </h2>
           <p className="mt-3 text-sm sm:text-base text-stone-600 leading-relaxed">
-            Eliminate copy-paste fatigue. Manage your cross-posting schedule, maintain account
+            Eliminate copy-paste fatigue. Manage your video &amp; post schedule, maintain account
             safety, and broadcast to every community with peace of mind.
           </p>
         </div>

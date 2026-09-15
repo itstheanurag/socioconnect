@@ -25,9 +25,45 @@ interface ChannelOption {
 
 const CHANNELS: ChannelOption[] = [
   {
+    id: "youtube",
+    name: "YouTube",
+    handle: "@AlexBuilds (Community & Shorts)",
+    limit: 5000,
+    avatarBg: "bg-[#FF0000]",
+    tag: "VIDEO & COMMUNITY",
+    icon: "YT",
+  },
+  {
+    id: "twitch",
+    name: "Twitch",
+    handle: "twitch.tv/alex_codes",
+    limit: 500,
+    avatarBg: "bg-[#9146FF]",
+    tag: "LIVE STREAM DROP",
+    icon: "TW",
+  },
+  {
+    id: "instagram",
+    name: "Instagram",
+    handle: "@alex.creates (Captions & Reels)",
+    limit: 2200,
+    avatarBg: "bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888]",
+    tag: "VISUAL & REELS",
+    icon: "IG",
+  },
+  {
+    id: "x",
+    name: "X (Twitter)",
+    handle: "@alex_builds",
+    limit: 280,
+    avatarBg: "bg-stone-900",
+    tag: "PUBLIC THREAD",
+    icon: "𝕏",
+  },
+  {
     id: "linkedin",
     name: "LinkedIn",
-    handle: "Sarah Jenkins · Founder",
+    handle: "Alex Rivers · Creator",
     limit: 3000,
     avatarBg: "bg-[#0a66c2]",
     tag: "PROFESSIONAL",
@@ -36,25 +72,16 @@ const CHANNELS: ChannelOption[] = [
   {
     id: "peerlist",
     name: "Peerlist",
-    handle: "sarah_builds",
+    handle: "alex_rivers",
     limit: 1000,
     avatarBg: "bg-[#00AA45]",
     tag: "MAKER NETWORK",
     icon: "P",
   },
   {
-    id: "x",
-    name: "X (Twitter)",
-    handle: "@sarah_creates",
-    limit: 280,
-    avatarBg: "bg-stone-900",
-    tag: "PUBLIC THREAD",
-    icon: "𝕏",
-  },
-  {
     id: "reddit",
     name: "Reddit",
-    handle: "u/sarah_dev (r/webdev)",
+    handle: "u/alex_dev (r/videos)",
     limit: 4000,
     avatarBg: "bg-[#ff4500]",
     tag: "SUBREDDIT",
@@ -63,7 +90,7 @@ const CHANNELS: ChannelOption[] = [
   {
     id: "bluesky",
     name: "Bluesky",
-    handle: "sarah.bsky.social",
+    handle: "alex.bsky.social",
     limit: 300,
     avatarBg: "bg-[#0285ff]",
     tag: "OPEN WEB",
@@ -73,29 +100,30 @@ const CHANNELS: ChannelOption[] = [
 
 const PRESETS = [
   {
-    title: "Product Release",
-    text: "Excited to share our new multi-network creator pipeline! Stop spending 45 minutes re-formatting posts across 5 tabs. With SocioConnect, compose once and dispatch to X, LinkedIn, Peerlist, and Reddit instantly. #CreatorEconomy #SaaS #Productivity",
+    title: "New Video Launch",
+    text: "🔥 NEW VIDEO IS LIVE: 'How We Built a Real-Time Streaming Architecture in 48 Hours'. Watch behind-the-scenes breakdown, source code repo walkthrough, and production benchmarks. Link in bio & community tab! 🎥🚀",
   },
   {
-    title: "Architecture Tip",
-    text: "Building multi-channel schedulers tip: Never store raw user passwords. Implement OAuth 2.0 PKCE with AES-256 encrypted token vaults. If one social API rate-limits, execute decoupled background retries with exponential backoff.",
+    title: "Going Live Stream",
+    text: "🔴 GOING LIVE on Twitch & YouTube in 10 mins! Today: Live coding the multi-channel queue worker, answering developer questions, and reviewing community PRs. Come hang out!",
   },
   {
-    title: "Builder Question",
-    text: "Quick question for makers: Where do you get your highest quality community engagement right now? Peerlist, Reddit, LinkedIn, or X? Curious to hear your distribution habits! 🚀",
+    title: "Reel & Short Caption",
+    text: "Stop spending 40 mins copy-pasting your video promos across 7 apps. Here is the exact distribution workflow top creators use to schedule once and cross-post everywhere. 🎬✨ #CreatorEconomy #VideoProduction",
   },
 ];
 
 export function InteractiveDispatcher() {
   const [content, setContent] = useState(PRESETS[0].text);
   const [selectedChannels, setSelectedChannels] = useState<string[]>([
+    "youtube",
+    "twitch",
+    "instagram",
+    "x",
     "linkedin",
     "peerlist",
-    "x",
-    "reddit",
-    "bluesky",
   ]);
-  const [activeInspectTab, setActiveInspectTab] = useState<string>("linkedin");
+  const [activeInspectTab, setActiveInspectTab] = useState<string>("youtube");
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishedResults, setPublishedResults] = useState<{
     [key: string]: {
@@ -140,15 +168,21 @@ export function InteractiveDispatcher() {
     for (const ch of selectedChannels) {
       const latencyMs = Math.floor(Math.random() * 60) + 85;
       const domain =
-        ch === "linkedin"
-          ? "linkedin.com/feed/update"
-          : ch === "peerlist"
-            ? "peerlist.io/post"
-            : ch === "x"
-              ? "x.com/status"
-              : ch === "reddit"
-                ? "reddit.com/r/webdev/comments"
-                : "bsky.app/profile/post";
+        ch === "youtube"
+          ? "youtube.com/post"
+          : ch === "twitch"
+            ? "twitch.tv/alex_codes"
+            : ch === "instagram"
+              ? "instagram.com/p"
+              : ch === "linkedin"
+                ? "linkedin.com/feed/update"
+                : ch === "peerlist"
+                  ? "peerlist.io/post"
+                  : ch === "x"
+                    ? "x.com/status"
+                    : ch === "reddit"
+                      ? "reddit.com/r/videos/comments"
+                      : "bsky.app/profile/post";
 
       results[ch] = {
         success: true,
@@ -176,11 +210,11 @@ export function InteractiveDispatcher() {
               INTERACTIVE MULTI-DESTINATION DISPATCHER
             </div>
             <h2 className="mt-2 text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
-              Compose once. Dispatch simultaneously.
+              Compose once. Dispatch to YouTube, Twitch, Instagram &amp; more.
             </h2>
             <p className="mt-2 max-w-2xl text-sm text-stone-600">
-              Select your target apps, monitor per-channel character constraints, and simulate an
-              instant multi-network drop with atomic failure isolation.
+              Broadcast stream announcements, community posts, captions, and threads in parallel
+              with automatic character budgets and decoupled retry isolation.
             </p>
           </div>
 
@@ -279,12 +313,12 @@ export function InteractiveDispatcher() {
                       setContent(e.target.value);
                       if (publishedResults) setPublishedResults(null);
                     }}
-                    placeholder="Write your announcement, update, or thread..."
+                    placeholder="Write your video announcement, live stream drop, or caption..."
                     className="w-full resize-none bg-transparent font-sans text-sm text-stone-800 placeholder-stone-400 focus:outline-none leading-relaxed"
                   />
 
                   {/* Per-platform character budget indicators */}
-                  <div className="mt-3 pt-3 border-t border-dashed border-[#ede8df] flex flex-wrap items-center gap-2.5 font-mono text-[11px]">
+                  <div className="mt-3 pt-3 border-t border-dashed border-[#ede8df] flex flex-wrap items-center gap-2 font-mono text-[11px]">
                     <span className="text-stone-400 uppercase text-[10px]">Budgets:</span>
                     {CHANNELS.filter((c) => selectedChannels.includes(c.id)).map((c) => {
                       const remaining = c.limit - content.length;
@@ -368,12 +402,12 @@ export function InteractiveDispatcher() {
                     <Radio className="h-3.5 w-3.5 text-emerald-600 animate-pulse" />
                     <span>OUTBOUND PAYLOAD INSPECTOR</span>
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex flex-wrap items-center gap-1">
                     {CHANNELS.map((ch) => (
                       <button
                         key={ch.id}
                         onClick={() => setActiveInspectTab(ch.id)}
-                        className={`px-2 py-1 text-xs font-mono transition-colors rounded-xs ${
+                        className={`px-2 py-0.5 text-[11px] font-mono transition-colors rounded-xs ${
                           activeInspectTab === ch.id
                             ? "bg-stone-900 text-white font-bold"
                             : "text-stone-500 hover:text-stone-800"
@@ -391,7 +425,7 @@ export function InteractiveDispatcher() {
                     <div className="flex items-center gap-2">
                       <span className={`h-2 w-2 rounded-full ${activeInspectChannel.avatarBg}`} />
                       <span className="font-bold text-stone-900">
-                        {activeInspectChannel.name} POST PAYLOAD
+                        {activeInspectChannel.name} PAYLOAD
                       </span>
                     </div>
                     <span className="text-stone-500">{activeInspectChannel.handle}</span>

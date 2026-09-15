@@ -26,12 +26,12 @@ const SCHEDULED_ITEMS: ScheduledSlot[] = [
     day: "Monday",
     dayIndex: 0,
     time: "09:30 AM",
-    title: "Weekly Founder Synthesis",
+    title: "Weekly Founder Synthesis & Short",
     content:
-      "5 things we learned shipping our multi-network distribution pipeline this week. Thread + longform post ready.",
+      "5 things we learned shipping our multi-network distribution pipeline this week. YouTube Short + LinkedIn post + X Thread ready.",
     platforms: [
+      { name: "YouTube", icon: "YT", bg: "bg-[#FF0000]", color: "text-white" },
       { name: "LinkedIn", icon: "in", bg: "bg-[#0a66c2]", color: "text-white" },
-      { name: "Peerlist", icon: "P", bg: "bg-[#00AA45]", color: "text-white" },
       { name: "X", icon: "𝕏", bg: "bg-stone-900", color: "text-white" },
     ],
     status: "dispatched",
@@ -41,12 +41,13 @@ const SCHEDULED_ITEMS: ScheduledSlot[] = [
     day: "Tuesday",
     dayIndex: 1,
     time: "02:15 PM",
-    title: "Deep Dive Architecture",
+    title: "Twitch Live Stream Coding Drop",
     content:
-      "Why we chose zero-credential OAuth token vaults with AES-256 encryption instead of password storage.",
+      "🔴 Going live on Twitch & YouTube: Live coding distributed queuing workers with token encryption. Answering chat questions!",
     platforms: [
-      { name: "Reddit", icon: "rd", bg: "bg-[#ff4500]", color: "text-white" },
-      { name: "Bluesky", icon: "bs", bg: "bg-[#0285ff]", color: "text-white" },
+      { name: "Twitch", icon: "TW", bg: "bg-[#9146FF]", color: "text-white" },
+      { name: "YouTube", icon: "YT", bg: "bg-[#FF0000]", color: "text-white" },
+      { name: "X", icon: "𝕏", bg: "bg-stone-900", color: "text-white" },
     ],
     status: "queued",
   },
@@ -55,14 +56,18 @@ const SCHEDULED_ITEMS: ScheduledSlot[] = [
     day: "Wednesday",
     dayIndex: 2,
     time: "11:00 AM",
-    title: "Creator Habits Q&A",
+    title: "Instagram Carousel & Video Reel",
     content:
-      "What is your biggest bottleneck when cross-posting across 4+ communities? Share your workflow tricks.",
+      "Architecture breakdown: Why zero-credential OAuth token vaults protect creators from compromised account takeovers.",
     platforms: [
-      { name: "LinkedIn", icon: "in", bg: "bg-[#0a66c2]", color: "text-white" },
+      {
+        name: "Instagram",
+        icon: "IG",
+        bg: "bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888]",
+        color: "text-white",
+      },
       { name: "Peerlist", icon: "P", bg: "bg-[#00AA45]", color: "text-white" },
-      { name: "X", icon: "𝕏", bg: "bg-stone-900", color: "text-white" },
-      { name: "Mastodon", icon: "M", bg: "bg-[#6364ff]", color: "text-white" },
+      { name: "LinkedIn", icon: "in", bg: "bg-[#0a66c2]", color: "text-white" },
     ],
     status: "queued",
   },
@@ -71,13 +76,13 @@ const SCHEDULED_ITEMS: ScheduledSlot[] = [
     day: "Thursday",
     dayIndex: 3,
     time: "04:45 PM",
-    title: "Changelog / Release v1.4",
+    title: "YouTube Premiere & Community Drop",
     content:
-      "SocioConnect v1.4 is out: Enhanced Peerlist Projects webhook & high-throughput queue dispatcher.",
+      "SocioConnect v1.4 Launch Premiere: High-throughput video promo dispatcher with automated cross-platform sync.",
     platforms: [
-      { name: "X", icon: "𝕏", bg: "bg-stone-900", color: "text-white" },
-      { name: "Peerlist", icon: "P", bg: "bg-[#00AA45]", color: "text-white" },
+      { name: "YouTube", icon: "YT", bg: "bg-[#FF0000]", color: "text-white" },
       { name: "Reddit", icon: "rd", bg: "bg-[#ff4500]", color: "text-white" },
+      { name: "X", icon: "𝕏", bg: "bg-stone-900", color: "text-white" },
     ],
     status: "queued",
   },
@@ -86,11 +91,17 @@ const SCHEDULED_ITEMS: ScheduledSlot[] = [
     day: "Friday",
     dayIndex: 4,
     time: "10:30 AM",
-    title: "Weekend Reflection & Wins",
+    title: "Weekend Reflection & Highlight Clip",
     content:
-      "Wrapping up the sprint! Celebrate your shipped features with your professional community.",
+      "Wrapping up the creator sprint! Celebrate your shipped features with your audience across Twitch, Instagram, and Bluesky.",
     platforms: [
-      { name: "LinkedIn", icon: "in", bg: "bg-[#0a66c2]", color: "text-white" },
+      { name: "Twitch", icon: "TW", bg: "bg-[#9146FF]", color: "text-white" },
+      {
+        name: "Instagram",
+        icon: "IG",
+        bg: "bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888]",
+        color: "text-white",
+      },
       { name: "Bluesky", icon: "bs", bg: "bg-[#0285ff]", color: "text-white" },
     ],
     status: "queued",
@@ -100,12 +111,13 @@ const SCHEDULED_ITEMS: ScheduledSlot[] = [
     day: "Saturday",
     dayIndex: 5,
     time: "01:00 PM",
-    title: "Side Project Spotlight",
+    title: "Creator Tip & Community Spotlight",
     content:
-      "Weekend coding tip: Use atomic queue workers for decoupled multi-destination publishing.",
+      "Weekend maker advice: Schedule your video releases during peak viewer hours without remaining glued to your screen.",
     platforms: [
+      { name: "YouTube", icon: "YT", bg: "bg-[#FF0000]", color: "text-white" },
+      { name: "Peerlist", icon: "P", bg: "bg-[#00AA45]", color: "text-white" },
       { name: "Reddit", icon: "rd", bg: "bg-[#ff4500]", color: "text-white" },
-      { name: "X", icon: "𝕏", bg: "bg-stone-900", color: "text-white" },
     ],
     status: "optimizing",
   },
@@ -141,7 +153,9 @@ export function InteractiveCalendar() {
     SCHEDULED_ITEMS[0];
 
   function handleAddQuickSlot() {
-    setCustomQueueNotice("New slot queued for Wednesday 06:00 PM across X and LinkedIn!");
+    setCustomQueueNotice(
+      "New slot queued for Wednesday 06:00 PM across YouTube, Twitch & Instagram!",
+    );
     setTimeout(() => setCustomQueueNotice(null), 3500);
   }
 
@@ -159,11 +173,12 @@ export function InteractiveCalendar() {
               VISUAL CONTENT SCHEDULER
             </div>
             <h2 className="mt-3 text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
-              Plan your weekly release schedule across all apps.
+              Plan your weekly releases across YouTube, Twitch, Instagram &amp; more.
             </h2>
             <p className="mt-3 text-sm sm:text-base text-stone-600 leading-relaxed">
-              No more manual alarms or forgotten posts. Set your queue, map timezones, and let
-              SocioConnect dispatch your posts across X, LinkedIn, Reddit, Peerlist, and Bluesky.
+              No more manual alarms or forgotten video promos. Set your queue, map timezones, and
+              let SocioConnect dispatch your announcements and posts across all your creator
+              channels.
             </p>
           </div>
 

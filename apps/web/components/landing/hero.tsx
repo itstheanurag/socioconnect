@@ -20,16 +20,16 @@ export function LandingHero() {
             <div className="flex items-center gap-3">
               <span className="inline-flex items-center gap-1.5 border border-dashed border-[#dfc39a] bg-[#F4DCB4]/35 px-3 py-0.5 text-stone-900 font-semibold rounded-full">
                 <Sparkles className="h-3 w-3 text-stone-700" />
-                OUTBOUND MULTI-NETWORK ENGINE
+                ALL-IN-ONE CREATOR DISTRIBUTION ENGINE
               </span>
               <span className="text-stone-500 hidden sm:inline">
-                MADE FOR WRITERS, FOUNDERS & CREATORS
+                FOR VIDEO MAKERS, STREAMERS, WRITERS &amp; FOUNDERS
               </span>
             </div>
             <div className="flex items-center gap-4 text-stone-500">
               <span className="flex items-center gap-1.5 text-stone-800 font-semibold">
-                <span className="h-2 w-2 rounded-full bg-emerald-500" />X · LINKEDIN · PEERLIST ·
-                REDDIT · BLUESKY
+                <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                YOUTUBE · TWITCH · INSTAGRAM · X · LINKEDIN · PEERLIST
               </span>
               <span className="text-stone-300">/</span>
               <span>ZERO PASSWORDS STORED</span>
@@ -44,9 +44,9 @@ export function LandingHero() {
               transition={{ duration: 0.4 }}
             >
               <h1 className="font-sans text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-stone-900 leading-[1.08]">
-                Write your post once. <br />
+                One unified studio. <br />
                 <span className="font-serif italic font-normal text-stone-600">
-                  Broadcast across every app.
+                  Broadcast to YouTube, Twitch, Instagram &amp; beyond.
                 </span>
               </h1>
             </motion.div>
@@ -57,10 +57,10 @@ export function LandingHero() {
               transition={{ duration: 0.4, delay: 0.1 }}
               className="mt-6 max-w-2xl text-base sm:text-lg text-stone-600 leading-relaxed font-normal"
             >
-              Stop juggling 5 different browser tabs and copy-pasting the same update manually.
-              SocioConnect lets you draft in one calm editor, organize your weekly release calendar,
-              and dispatch to X, LinkedIn, Reddit, Peerlist, and Bluesky through secure official
-              OAuth tokens.
+              Stop juggling 8 different dashboard tabs to promote your latest YouTube video, go live
+              on Twitch, or post an Instagram update. SocioConnect gives creators a calm editor,
+              visual multi-timezone queue, and atomic multi-channel dispatch through official
+              developer OAuth vaults.
             </motion.p>
 
             {/* CTAs */}
@@ -102,7 +102,7 @@ export function LandingHero() {
                 <span className="h-2.5 w-2.5 rounded-full bg-[#F4DCB4]" />
                 <span className="h-2.5 w-2.5 rounded-full bg-[#81c995]" />
                 <span className="ml-2 font-mono text-[11px] text-stone-400">
-                  socioconnect.app/studio · multi-network scheduler
+                  socioconnect.app/studio · video &amp; multi-network cross-post dispatcher
                 </span>
               </div>
               <div className="flex items-center gap-2 font-mono text-[10px] text-stone-600">
@@ -126,12 +126,12 @@ export function LandingHero() {
           {/* Creator Benefits Strip */}
           <div className="mt-10 grid grid-cols-2 md:grid-cols-4 border-t border-dashed border-[#ede8df] pt-8 gap-4">
             <div className="border-r border-dashed border-b md:border-b-0 border-[#ede8df] p-3 first:pl-0">
-              <div className="font-mono text-2xl sm:text-3xl font-bold text-stone-900">5+ hrs</div>
+              <div className="font-mono text-2xl sm:text-3xl font-bold text-stone-900">8+ Apps</div>
               <div className="mt-1 text-[11px] font-mono uppercase tracking-wider text-stone-500">
-                Saved Every Week
+                Video, Stream &amp; Text
               </div>
               <p className="mt-1 text-xs text-stone-500">
-                Draft once instead of manually copy-pasting
+                YouTube, Twitch, Instagram, X, LinkedIn &amp; more
               </p>
             </div>
 
@@ -166,7 +166,7 @@ export function LandingHero() {
                 Universal Calendar
               </div>
               <p className="mt-1 text-xs text-stone-500">
-                Coordinate releases across global timezones
+                Coordinate releases across global audience hours
               </p>
             </div>
           </div>

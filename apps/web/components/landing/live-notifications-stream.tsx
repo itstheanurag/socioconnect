@@ -6,7 +6,15 @@ import { CheckCircle2, ShieldCheck, Pause, Play, Zap } from "lucide-react";
 
 interface LiveNotification {
   id: string;
-  platform: "x" | "linkedin" | "peerlist" | "reddit" | "bluesky";
+  platform:
+    | "youtube"
+    | "twitch"
+    | "instagram"
+    | "x"
+    | "linkedin"
+    | "peerlist"
+    | "reddit"
+    | "bluesky";
   platformName: string;
   iconText: string;
   iconBg: string;
@@ -20,6 +28,45 @@ interface LiveNotification {
 
 const INITIAL_NOTIFICATIONS: LiveNotification[] = [
   {
+    id: "notif-yt-1",
+    platform: "youtube",
+    platformName: "YouTube",
+    iconText: "YT",
+    iconBg: "bg-[#FF0000]",
+    iconColor: "text-white",
+    actionText: "Scheduled YouTube Premiere & Community Drop",
+    postTitle: "New Architecture Deep Dive is premiering this Thursday at 10 AM PST!",
+    timeAgo: "2s ago",
+    latency: "94ms",
+    status: "success",
+  },
+  {
+    id: "notif-tw-1",
+    platform: "twitch",
+    platformName: "Twitch",
+    iconText: "TW",
+    iconBg: "bg-[#9146FF]",
+    iconColor: "text-white",
+    actionText: "Dispatched Go-Live Stream Notification",
+    postTitle: "🔴 Live now: Building a distributed queuing engine in Rust & TypeScript!",
+    timeAgo: "5s ago",
+    latency: "82ms",
+    status: "success",
+  },
+  {
+    id: "notif-ig-1",
+    platform: "instagram",
+    platformName: "Instagram",
+    iconText: "IG",
+    iconBg: "bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888]",
+    iconColor: "text-white",
+    actionText: "Published Carousel Caption to Instagram",
+    postTitle: "5 production architecture lessons we learned while scaling to 1M requests 💡",
+    timeAgo: "9s ago",
+    latency: "115ms",
+    status: "success",
+  },
+  {
     id: "notif-1",
     platform: "peerlist",
     platformName: "Peerlist",
@@ -28,7 +75,7 @@ const INITIAL_NOTIFICATIONS: LiveNotification[] = [
     iconColor: "text-white",
     actionText: "Posted to Peerlist Maker Feed",
     postTitle: "Introducing our atomic multi-network publishing queue for creators 🚀",
-    timeAgo: "2s ago",
+    timeAgo: "14s ago",
     latency: "84ms",
     status: "success",
   },
@@ -40,8 +87,8 @@ const INITIAL_NOTIFICATIONS: LiveNotification[] = [
     iconBg: "bg-stone-900",
     iconColor: "text-white",
     actionText: "Thread (1/4) Dispatched to X",
-    postTitle: "Why we killed manual copy-pasting across 5 tabs: an engineering breakdown...",
-    timeAgo: "6s ago",
+    postTitle: "Why we killed manual copy-pasting across 8 tabs: an engineering breakdown...",
+    timeAgo: "21s ago",
     latency: "112ms",
     status: "success",
   },
@@ -54,8 +101,8 @@ const INITIAL_NOTIFICATIONS: LiveNotification[] = [
     iconColor: "text-white",
     actionText: "Published to LinkedIn Professional",
     postTitle:
-      "How solo founders scale brand reach without burning 10 hours a week on social media.",
-    timeAgo: "14s ago",
+      "How solo creators scale brand reach without burning 10 hours a week on social media.",
+    timeAgo: "28s ago",
     latency: "96ms",
     status: "success",
   },
@@ -68,7 +115,7 @@ const INITIAL_NOTIFICATIONS: LiveNotification[] = [
     iconColor: "text-white",
     actionText: "Submitted to r/SideProject",
     postTitle: "We built an open-source calm multi-channel distribution studio.",
-    timeAgo: "22s ago",
+    timeAgo: "35s ago",
     latency: "148ms",
     status: "success",
   },
@@ -81,13 +128,40 @@ const INITIAL_NOTIFICATIONS: LiveNotification[] = [
     iconColor: "text-white",
     actionText: "Posted to Bluesky AT Protocol",
     postTitle: "Federated cross-posting is now live with zero password storage 🌐",
-    timeAgo: "31s ago",
+    timeAgo: "42s ago",
     latency: "76ms",
     status: "success",
   },
 ];
 
 const POOL_OF_UPDATES = [
+  {
+    platform: "youtube" as const,
+    platformName: "YouTube",
+    iconText: "YT",
+    iconBg: "bg-[#FF0000]",
+    iconColor: "text-white",
+    actionText: "Scheduled YouTube Premiere",
+    postTitle: "Episode 14 is rendering: Behind the scenes building SocioConnect.",
+  },
+  {
+    platform: "twitch" as const,
+    platformName: "Twitch",
+    iconText: "TW",
+    iconBg: "bg-[#9146FF]",
+    iconColor: "text-white",
+    actionText: "Twitch Stream Drop",
+    postTitle: "🔴 We are live! Today: Q&A on video creator distribution workflows.",
+  },
+  {
+    platform: "instagram" as const,
+    platformName: "Instagram",
+    iconText: "IG",
+    iconBg: "bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888]",
+    iconColor: "text-white",
+    actionText: "Instagram Reel Caption Published",
+    postTitle: "Never lose sleep over scheduled posts again. Clean, decoupled drops. 🎬",
+  },
   {
     platform: "peerlist" as const,
     platformName: "Peerlist",
@@ -139,7 +213,7 @@ export function LiveNotificationsStream() {
   const [notifications, setNotifications] = useState<LiveNotification[]>(INITIAL_NOTIFICATIONS);
   const [isLive, setIsLive] = useState(true);
   const [selectedFilter, setSelectedFilter] = useState<string>("all");
-  const [totalDispatchedCount, setTotalDispatchedCount] = useState(14820);
+  const [totalDispatchedCount, setTotalDispatchedCount] = useState(18940);
 
   useEffect(() => {
     if (!isLive) return;
@@ -164,7 +238,7 @@ export function LiveNotificationsStream() {
 
       setNotifications((prev) => [newNotification, ...prev.slice(0, 7)]);
       setTotalDispatchedCount((c) => c + 1);
-    }, 3800);
+    }, 3600);
 
     return () => clearInterval(interval);
   }, [isLive]);
@@ -175,12 +249,13 @@ export function LiveNotificationsStream() {
       : notifications.filter((n) => n.platform === selectedFilter);
 
   function handleTriggerManualBlast() {
-    const platforms: Array<"x" | "linkedin" | "peerlist" | "reddit" | "bluesky"> = [
-      "peerlist",
+    const platforms: Array<"youtube" | "twitch" | "instagram" | "x" | "linkedin" | "peerlist"> = [
+      "youtube",
+      "twitch",
+      "instagram",
       "x",
       "linkedin",
-      "reddit",
-      "bluesky",
+      "peerlist",
     ];
 
     const newItems: LiveNotification[] = platforms.map((p, i) => {
@@ -193,7 +268,8 @@ export function LiveNotificationsStream() {
         iconBg: match.iconBg,
         iconColor: match.iconColor,
         actionText: `Simultaneous Broadcast to ${match.platformName}`,
-        postTitle: "Multi-network launch confirmed across all active channels.",
+        postTitle:
+          "Simultaneous creator promo drop dispatched with verified zero-credential token.",
         timeAgo: "just now",
         latency: `${Math.floor(Math.random() * 40) + 65}ms`,
         status: "success",
@@ -218,11 +294,11 @@ export function LiveNotificationsStream() {
               REAL-TIME OUTBOUND STREAM
             </div>
             <h2 className="mt-3 text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
-              Watch posts dispatch across all apps in real-time.
+              Watch broadcasts dispatch across YouTube, Twitch, Instagram &amp; more.
             </h2>
             <p className="mt-3 text-sm sm:text-base text-stone-600 leading-relaxed">
-              When you hit broadcast or your scheduled queue triggers, SocioConnect pushes out
-              instant, decoupled API requests. Zero feed reading, pure high-speed delivery.
+              When you launch a video, go live on stream, or schedule community drops, SocioConnect
+              pushes instant, decoupled API requests. Zero feed scraping, pure high-speed delivery.
             </p>
           </div>
 
@@ -250,7 +326,7 @@ export function LiveNotificationsStream() {
               className="inline-flex items-center gap-2 border border-[#dfc39a] bg-[#F4DCB4] px-4 py-2 font-mono text-xs font-bold text-stone-900 hover:bg-[#ebd0a3] transition-all rounded-xs shadow-xs"
             >
               <Zap className="h-3.5 w-3.5 text-stone-800" />
-              <span>TEST 5-APP BROADCAST</span>
+              <span>TEST CREATOR BROADCAST</span>
             </button>
           </div>
         </div>
@@ -259,23 +335,32 @@ export function LiveNotificationsStream() {
         <div className="border border-[#ede8df] bg-[#faf8f5] p-5 sm:p-8 rounded-xs shadow-xs">
           {/* Top Bar with Filter Chips & Counters */}
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-dashed border-[#ede8df] pb-4 mb-6 font-mono text-xs">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="text-stone-400 uppercase text-[10px]">FILTER:</span>
-              {(["all", "x", "linkedin", "peerlist", "reddit", "bluesky"] as const).map(
-                (filter) => (
-                  <button
-                    key={filter}
-                    onClick={() => setSelectedFilter(filter)}
-                    className={`px-2.5 py-1 rounded-xs uppercase text-[11px] font-semibold transition-colors ${
-                      selectedFilter === filter
-                        ? "bg-stone-900 text-white"
-                        : "bg-white text-stone-600 border border-[#ede8df] hover:border-stone-400"
-                    }`}
-                  >
-                    {filter}
-                  </button>
-                ),
-              )}
+              {(
+                [
+                  "all",
+                  "youtube",
+                  "twitch",
+                  "instagram",
+                  "x",
+                  "linkedin",
+                  "peerlist",
+                  "reddit",
+                ] as const
+              ).map((filter) => (
+                <button
+                  key={filter}
+                  onClick={() => setSelectedFilter(filter)}
+                  className={`px-2 py-0.5 rounded-xs uppercase text-[10px] font-semibold transition-colors ${
+                    selectedFilter === filter
+                      ? "bg-stone-900 text-white font-bold"
+                      : "bg-white text-stone-600 border border-[#ede8df] hover:border-stone-400"
+                  }`}
+                >
+                  {filter}
+                </button>
+              ))}
             </div>
 
             <div className="flex items-center gap-4 text-stone-500 text-[11px]">
@@ -287,7 +372,7 @@ export function LiveNotificationsStream() {
                 dispatched today
               </span>
               <span className="text-stone-300">/</span>
-              <span>Avg Latency: 92ms</span>
+              <span>Avg Latency: 88ms</span>
             </div>
           </div>
 
@@ -308,7 +393,7 @@ export function LiveNotificationsStream() {
                     {/* Left: Platform Icon Badge + Details */}
                     <div className="flex items-start gap-3.5">
                       <div
-                        className={`h-9 w-9 rounded-full ${item.iconBg} ${item.iconColor} flex items-center justify-center font-bold text-xs font-mono shrink-0 shadow-xs`}
+                        className={`h-9 w-9 rounded-full ${item.iconBg} ${item.iconColor} flex items-center justify-center font-bold text-[10px] font-mono shrink-0 shadow-xs`}
                       >
                         {item.iconText}
                       </div>
@@ -347,7 +432,7 @@ export function LiveNotificationsStream() {
               <span>Outbound Write-Only Dispatch Architecture · Zero Feed Scraping</span>
             </div>
             <div className="text-[11px] text-stone-400">
-              Payloads sent via official developer REST &amp; Webhook APIs
+              Payloads sent via official Google, Twitch &amp; Meta Developer APIs
             </div>
           </div>
         </div>
