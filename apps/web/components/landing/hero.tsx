@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Sparkles, Play } from "lucide-react";
+import { ArrowRight, Sparkles, Zap, ShieldCheck } from "lucide-react";
 import { motion } from "motion/react";
 
 export function LandingHero() {
@@ -20,7 +20,7 @@ export function LandingHero() {
             <div className="flex items-center gap-3">
               <span className="inline-flex items-center gap-1.5 border border-dashed border-[#dfc39a] bg-[#F4DCB4]/35 px-3 py-0.5 text-stone-900 font-semibold rounded-full">
                 <Sparkles className="h-3 w-3 text-stone-700" />
-                THE ALL-IN-ONE CREATOR STUDIO
+                OUTBOUND MULTI-NETWORK ENGINE
               </span>
               <span className="text-stone-500 hidden sm:inline">
                 MADE FOR WRITERS, FOUNDERS & CREATORS
@@ -28,10 +28,11 @@ export function LandingHero() {
             </div>
             <div className="flex items-center gap-4 text-stone-500">
               <span className="flex items-center gap-1.5 text-stone-800 font-semibold">
-                <span className="h-2 w-2 rounded-full bg-emerald-500" />5 FEEDS CONNECTED
+                <span className="h-2 w-2 rounded-full bg-emerald-500" />X · LINKEDIN · PEERLIST ·
+                REDDIT · BLUESKY
               </span>
               <span className="text-stone-300">/</span>
-              <span>ZERO COPY-PASTE FATIGUE</span>
+              <span>ZERO PASSWORDS STORED</span>
             </div>
           </div>
 
@@ -45,7 +46,7 @@ export function LandingHero() {
               <h1 className="font-sans text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-stone-900 leading-[1.08]">
                 Write your post once. <br />
                 <span className="font-serif italic font-normal text-stone-600">
-                  Shine across every feed.
+                  Broadcast across every app.
                 </span>
               </h1>
             </motion.div>
@@ -56,10 +57,10 @@ export function LandingHero() {
               transition={{ duration: 0.4, delay: 0.1 }}
               className="mt-6 max-w-2xl text-base sm:text-lg text-stone-600 leading-relaxed font-normal"
             >
-              Stop juggling 5 different browser tabs and re-formatting your thoughts for every
-              algorithm. SocioConnect lets you compose in one calm editor, preview your post as it
-              will appear in LinkedIn, Threads, X, and Bluesky, and schedule your launch with peace
-              of mind.
+              Stop juggling 5 different browser tabs and copy-pasting the same update manually.
+              SocioConnect lets you draft in one calm editor, organize your weekly release calendar,
+              and dispatch to X, LinkedIn, Reddit, Peerlist, and Bluesky through secure official
+              OAuth tokens.
             </motion.p>
 
             {/* CTAs */}
@@ -78,11 +79,11 @@ export function LandingHero() {
               </Link>
 
               <a
-                href="#editor"
+                href="#live-stream"
                 className="group inline-flex items-center gap-2.5 border border-dashed border-[#dcd5c8] bg-white px-6 py-3.5 text-xs font-mono font-semibold text-stone-700 transition-colors hover:border-stone-500 hover:text-stone-900 rounded-sm"
               >
-                <Play className="h-3.5 w-3.5 text-stone-800 fill-[#F4DCB4]" />
-                <span>TRY INTERACTIVE PREVIEW</span>
+                <Zap className="h-3.5 w-3.5 text-stone-800 fill-[#F4DCB4]" />
+                <span>SEE LIVE STREAMING DISPATCHES</span>
               </a>
             </motion.div>
           </div>
@@ -101,12 +102,12 @@ export function LandingHero() {
                 <span className="h-2.5 w-2.5 rounded-full bg-[#F4DCB4]" />
                 <span className="h-2.5 w-2.5 rounded-full bg-[#81c995]" />
                 <span className="ml-2 font-mono text-[11px] text-stone-400">
-                  socioconnect.app/studio · live-preview
+                  socioconnect.app/studio · multi-network scheduler
                 </span>
               </div>
               <div className="flex items-center gap-2 font-mono text-[10px] text-stone-600">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                <span>AUTO-SAVED DRAFT</span>
+                <span>AES-256 VAULT ACTIVE</span>
               </div>
             </div>
 
@@ -130,19 +131,20 @@ export function LandingHero() {
                 Saved Every Week
               </div>
               <p className="mt-1 text-xs text-stone-500">
-                Write once instead of manually copy-pasting
+                Draft once instead of manually copy-pasting
               </p>
             </div>
 
             <div className="border-b md:border-b-0 md:border-r border-dashed border-[#ede8df] p-3">
-              <div className="font-mono text-2xl sm:text-3xl font-bold text-stone-900">
-                <span className="bg-[#F4DCB4]/60 px-1 py-0.5 rounded-xs">100%</span>
+              <div className="font-mono text-2xl sm:text-3xl font-bold text-emerald-700 flex items-center gap-1.5">
+                <ShieldCheck className="h-6 w-6 text-emerald-600" />
+                <span>0</span>
               </div>
               <div className="mt-1 text-[11px] font-mono uppercase tracking-wider text-stone-500">
-                Visual Accuracy
+                Passwords Stored
               </div>
               <p className="mt-1 text-xs text-stone-500">
-                Pixel-perfect previews for LinkedIn, Threads & X
+                100% official OAuth 2.0 PKCE token vaults
               </p>
             </div>
 
@@ -151,7 +153,7 @@ export function LandingHero() {
                 0 Panics
               </div>
               <div className="mt-1 text-[11px] font-mono uppercase tracking-wider text-stone-500">
-                Fail-Safe Drops
+                Decoupled Drops
               </div>
               <p className="mt-1 text-xs text-stone-500">
                 1 network glitch never halts your other posts
@@ -159,12 +161,12 @@ export function LandingHero() {
             </div>
 
             <div className="p-3 pr-0">
-              <div className="font-mono text-2xl sm:text-3xl font-bold text-stone-900">1 Click</div>
+              <div className="font-mono text-2xl sm:text-3xl font-bold text-stone-900">1 Queue</div>
               <div className="mt-1 text-[11px] font-mono uppercase tracking-wider text-stone-500">
-                Universal Schedule
+                Universal Calendar
               </div>
               <p className="mt-1 text-xs text-stone-500">
-                Publish instantly or schedule across timezones
+                Coordinate releases across global timezones
               </p>
             </div>
           </div>

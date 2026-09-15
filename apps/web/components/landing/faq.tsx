@@ -12,34 +12,40 @@ interface FAQItem {
 
 const FAQS: FAQItem[] = [
   {
-    code: "CREATOR FAQ / 01",
-    question: "Will my posts look automated or lose their personal touch?",
+    code: "PRIVACY FAQ / 01",
+    question: "Do you ever ask for, take, or store my social media passwords?",
     answer:
-      "Not at all. SocioConnect is built to preserve your authentic voice. You see a real-time, pixel-perfect preview of how your words, emojis, line breaks, and hashtags will render on each specific feed before hitting publish. You maintain 100% editorial control over your content.",
+      "Never. SocioConnect connects exclusively via verified, official OAuth 2.0 PKCE and platform developer protocols (LinkedIn, X, Peerlist, Reddit, Bluesky, Mastodon). You authenticate directly on the platform's official authorization page. We only receive a scoped write-token, which is immediately encrypted at rest with hardware-grade AES-256-GCM. We never see or store your raw login credentials.",
   },
   {
-    code: "CREATOR FAQ / 02",
-    question: "What if my post is too long for X (280 chars) but perfect for LinkedIn?",
+    code: "ARCHITECTURE / 02",
+    question: "Do you fetch, read, or scrape my timeline feeds or direct messages?",
     answer:
-      "We built smart platform guardrails specifically for this! You can keep your complete long-form essay for LinkedIn, while our automatic thread splitter packages your thoughts into a numbered, easy-to-read thread for X and Threads without losing context.",
+      "No. SocioConnect is built strictly as a high-performance outbound cross-posting and scheduling engine. We only request write-only permissions (`posts:write`, `w_member_social`, `submit_post`). We do not read, fetch, scrape, or store your private feeds, bookmarks, or direct messages.",
   },
   {
-    code: "CREATOR FAQ / 03",
-    question: "What actually happens if one social platform has a glitch or rate limit?",
+    code: "PLATFORMS / 03",
+    question: "Which platforms and apps are currently supported?",
     answer:
-      "Unlike legacy social schedulers where one error cancels your entire batch, SocioConnect uses an independent delivery model. If X experiences a temporary rate limit or Threads is down for maintenance, your LinkedIn and Bluesky posts go live immediately without delay. The failed feed is safely queued for an automatic quiet retry.",
+      "SocioConnect supports direct simultaneous dispatch and scheduled publishing to X (Twitter), LinkedIn (Personal & Company Pages), Peerlist, Reddit (selected Subreddits), Bluesky (AT Protocol), and Mastodon (ActivityPub instances).",
   },
   {
-    code: "CREATOR FAQ / 04",
-    question: "Do I ever need to enter my social media passwords?",
+    code: "RELIABILITY / 04",
+    question: "What happens if one platform suffers a network glitch or 429 rate limit?",
     answer:
-      "Never. SocioConnect connects solely through official OAuth permissions approved by LinkedIn, Meta (Threads), X, Bluesky, and Mastodon. Your account credentials never touch our servers, and you can revoke access at any time with a single click.",
+      "We use an atomic, fault-isolated queue architecture. If X has a momentary outage or Reddit experiences a rate limit, your LinkedIn, Peerlist, and Bluesky posts dispatch on time with zero delay. The failed channel is automatically queued for safe exponential backoff retries without duplicating posts.",
   },
   {
-    code: "CREATOR FAQ / 05",
-    question: "Can I schedule posts for different timezones?",
+    code: "SCHEDULING / 05",
+    question: "How does the visual calendar handle different timezones?",
     answer:
-      "Yes! You can choose your local timezone or specify the optimal reading hours for your target audience (e.g. 9:00 AM EST for US founders). The visual calendar displays your scheduled drops cleanly so you always know what's going live.",
+      "The visual calendar allows you to plan your content queue globally. You can switch between UTC, PST, EST, IST, and GMT to ensure your announcements drop exactly when your target audience is active and reading.",
+  },
+  {
+    code: "FORMATTING / 06",
+    question: "How does the composer handle character limits between platforms?",
+    answer:
+      "The composer displays real-time character meters for each selected destination (e.g., 280 chars for X, 300 for Bluesky, 3,000 for LinkedIn). When your post exceeds a platform's budget, our thread splitter can automatically segment and number your thoughts into clean, readable threads.",
   },
 ];
 
@@ -60,10 +66,10 @@ export function LandingFAQ() {
             FREQUENTLY ASKED QUESTIONS
           </div>
           <h2 className="mt-3 text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
-            Everything you need to know about the creator desk.
+            Everything you need to know about SocioConnect.
           </h2>
           <p className="mt-2 text-sm sm:text-base text-stone-600">
-            Have questions about formatting, scheduling, or channel safety? We&apos;ve got answers.
+            Clear answers about OAuth security, outbound dispatching, and queue scheduling.
           </p>
         </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import {
   Check,
   RotateCw,
@@ -8,11 +8,9 @@ import {
   Send,
   RefreshCcw,
   Sparkles,
-  Heart,
-  MessageCircle,
-  Share2,
-  Bookmark,
   AlertCircle,
+  Radio,
+  Lock,
 } from "lucide-react";
 
 interface ChannelOption {
@@ -22,32 +20,45 @@ interface ChannelOption {
   limit: number;
   avatarBg: string;
   tag: string;
+  icon: string;
 }
 
 const CHANNELS: ChannelOption[] = [
   {
     id: "linkedin",
     name: "LinkedIn",
-    handle: "Sarah Jenkins · Founder & Creator",
+    handle: "Sarah Jenkins · Founder",
     limit: 3000,
     avatarBg: "bg-[#0a66c2]",
     tag: "PROFESSIONAL",
+    icon: "in",
   },
   {
-    id: "threads",
-    name: "Threads",
-    handle: "@sarah.creates",
-    limit: 500,
-    avatarBg: "bg-stone-900",
-    tag: "DISCUSSION",
+    id: "peerlist",
+    name: "Peerlist",
+    handle: "sarah_builds",
+    limit: 1000,
+    avatarBg: "bg-[#00AA45]",
+    tag: "MAKER NETWORK",
+    icon: "P",
   },
   {
     id: "x",
     name: "X (Twitter)",
     handle: "@sarah_creates",
     limit: 280,
-    avatarBg: "bg-stone-800",
-    tag: "VIRAL THREAD",
+    avatarBg: "bg-stone-900",
+    tag: "PUBLIC THREAD",
+    icon: "𝕏",
+  },
+  {
+    id: "reddit",
+    name: "Reddit",
+    handle: "u/sarah_dev (r/webdev)",
+    limit: 4000,
+    avatarBg: "bg-[#ff4500]",
+    tag: "SUBREDDIT",
+    icon: "rd",
   },
   {
     id: "bluesky",
@@ -56,29 +67,22 @@ const CHANNELS: ChannelOption[] = [
     limit: 300,
     avatarBg: "bg-[#0285ff]",
     tag: "OPEN WEB",
-  },
-  {
-    id: "mastodon",
-    name: "Mastodon",
-    handle: "@sarah@mastodon.art",
-    limit: 500,
-    avatarBg: "bg-[#6364ff]",
-    tag: "COMMUNITY",
+    icon: "bs",
   },
 ];
 
 const PRESETS = [
   {
-    title: "Product Launch",
-    text: "Excited to share our new creator workflow! Stop spending 45 minutes re-formatting posts across 5 different tabs. With SocioConnect, compose once and preview your thoughts natively for every feed. #CreatorEconomy #SaaS #Productivity",
+    title: "Product Release",
+    text: "Excited to share our new multi-network creator pipeline! Stop spending 45 minutes re-formatting posts across 5 tabs. With SocioConnect, compose once and dispatch to X, LinkedIn, Peerlist, and Reddit instantly. #CreatorEconomy #SaaS #Productivity",
   },
   {
-    title: "Creative Habit",
-    text: "The secret to creative longevity isn't 24/7 hustle—it's smart distribution. When you protect your creative energy with unified tools, you post consistently without burnout. What's your daily writing routine?",
+    title: "Architecture Tip",
+    text: "Building multi-channel schedulers tip: Never store raw user passwords. Implement OAuth 2.0 PKCE with AES-256 encrypted token vaults. If one social API rate-limits, execute decoupled background retries with exponential backoff.",
   },
   {
-    title: "Community Question",
-    text: "Quick question for writers & builders: Which social platform has given you the highest quality community conversations this year? LinkedIn, Threads, or X? Drop your thoughts below! ☕️",
+    title: "Builder Question",
+    text: "Quick question for makers: Where do you get your highest quality community engagement right now? Peerlist, Reddit, LinkedIn, or X? Curious to hear your distribution habits! 🚀",
   },
 ];
 
@@ -86,14 +90,21 @@ export function InteractiveDispatcher() {
   const [content, setContent] = useState(PRESETS[0].text);
   const [selectedChannels, setSelectedChannels] = useState<string[]>([
     "linkedin",
-    "threads",
+    "peerlist",
     "x",
+    "reddit",
     "bluesky",
   ]);
-  const [previewTab, setPreviewTab] = useState<string>("linkedin");
+  const [activeInspectTab, setActiveInspectTab] = useState<string>("linkedin");
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishedResults, setPublishedResults] = useState<{
-    [key: string]: { success: boolean; link?: string; message?: string };
+    [key: string]: {
+      success: boolean;
+      link: string;
+      latency: string;
+      status: string;
+      timestamp: string;
+    };
   } | null>(null);
 
   function toggleChannel(id: string) {
@@ -114,14 +125,37 @@ export function InteractiveDispatcher() {
     setIsPublishing(true);
     setPublishedResults(null);
 
-    await new Promise((r) => setTimeout(r, 1200));
+    await new Promise((r) => setTimeout(r, 1100));
 
-    const results: { [key: string]: { success: boolean; link?: string; message?: string } } = {};
+    const results: {
+      [key: string]: {
+        success: boolean;
+        link: string;
+        latency: string;
+        status: string;
+        timestamp: string;
+      };
+    } = {};
+
     for (const ch of selectedChannels) {
+      const latencyMs = Math.floor(Math.random() * 60) + 85;
+      const domain =
+        ch === "linkedin"
+          ? "linkedin.com/feed/update"
+          : ch === "peerlist"
+            ? "peerlist.io/post"
+            : ch === "x"
+              ? "x.com/status"
+              : ch === "reddit"
+                ? "reddit.com/r/webdev/comments"
+                : "bsky.app/profile/post";
+
       results[ch] = {
         success: true,
-        link: `https://${ch === "threads" ? "threads.net" : ch === "linkedin" ? "linkedin.com/in" : ch === "bluesky" ? "bsky.app" : "x.com"}/post/${Math.random().toString(36).substring(2, 8)}`,
-        message: "Live on feed",
+        link: `https://${domain}/${Math.random().toString(36).substring(2, 8)}`,
+        latency: `${latencyMs}ms`,
+        status: "200 OK · Dispatched",
+        timestamp: new Date().toLocaleTimeString(),
       };
     }
 
@@ -129,9 +163,7 @@ export function InteractiveDispatcher() {
     setIsPublishing(false);
   }
 
-  const activeChannelMeta = useMemo(() => {
-    return CHANNELS.find((c) => c.id === previewTab) || CHANNELS[0];
-  }, [previewTab]);
+  const activeInspectChannel = CHANNELS.find((c) => c.id === activeInspectTab) || CHANNELS[0];
 
   return (
     <section id="editor" className="relative py-16 lg:py-24 border-t border-[#ede8df] bg-[#faf8f5]">
@@ -141,20 +173,20 @@ export function InteractiveDispatcher() {
           <div>
             <div className="flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wider text-stone-700">
               <span className="h-2 w-2 rounded-full bg-[#dfc39a]" />
-              INTERACTIVE CREATOR PLAYGROUND
+              INTERACTIVE MULTI-DESTINATION DISPATCHER
             </div>
             <h2 className="mt-2 text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
-              Try the unified creator composer right here.
+              Compose once. Dispatch simultaneously.
             </h2>
             <p className="mt-2 max-w-2xl text-sm text-stone-600">
-              Type your idea, check character budgets, switch between live feed previews, and see
-              how effortless multi-channel publishing feels.
+              Select your target apps, monitor per-channel character constraints, and simulate an
+              instant multi-network drop with atomic failure isolation.
             </p>
           </div>
 
           {/* Preset scenarios */}
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-mono text-stone-500 mr-1">TRY A DRAFT:</span>
+            <span className="text-xs font-mono text-stone-500 mr-1">TRY A SAMPLE:</span>
             {PRESETS.map((p) => (
               <button
                 key={p.title}
@@ -181,7 +213,7 @@ export function InteractiveDispatcher() {
                 <div className="mb-4">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-mono font-semibold uppercase tracking-wider text-stone-700">
-                      Destination Feeds ({selectedChannels.length} active)
+                      Destination Apps ({selectedChannels.length} active)
                     </span>
                     <span className="text-[11px] font-mono text-stone-400">Click to toggle</span>
                   </div>
@@ -204,13 +236,13 @@ export function InteractiveDispatcher() {
                           }`}
                         >
                           <span
-                            className={`flex h-3.5 w-3.5 items-center justify-center rounded-xs text-[9px] ${
+                            className={`flex h-4 w-4 items-center justify-center rounded-xs text-[9px] font-bold ${
                               isSelected
-                                ? "bg-[#F4DCB4] text-stone-900 font-bold border border-[#dfc39a]"
-                                : "border border-stone-300 text-transparent"
+                                ? `${ch.avatarBg} text-white`
+                                : "border border-stone-300 text-stone-400"
                             }`}
                           >
-                            ✓
+                            {ch.icon}
                           </span>
                           <span>{ch.name}</span>
                           <span
@@ -235,9 +267,9 @@ export function InteractiveDispatcher() {
                   <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-2 mb-2 font-mono text-xs text-stone-500">
                     <span className="flex items-center gap-1.5 font-semibold text-stone-800">
                       <Sparkles className="h-3.5 w-3.5 text-stone-700" />
-                      POST COMPOSER
+                      DISTRIBUTION COMPOSER
                     </span>
-                    <span>{content.length} characters written</span>
+                    <span>{content.length} characters</span>
                   </div>
 
                   <textarea
@@ -247,13 +279,13 @@ export function InteractiveDispatcher() {
                       setContent(e.target.value);
                       if (publishedResults) setPublishedResults(null);
                     }}
-                    placeholder="Write your story, announcement, or thread here..."
+                    placeholder="Write your announcement, update, or thread..."
                     className="w-full resize-none bg-transparent font-sans text-sm text-stone-800 placeholder-stone-400 focus:outline-none leading-relaxed"
                   />
 
                   {/* Per-platform character budget indicators */}
-                  <div className="mt-3 pt-3 border-t border-dashed border-[#ede8df] flex flex-wrap items-center gap-3 font-mono text-[11px]">
-                    <span className="text-stone-400">BUDGETS:</span>
+                  <div className="mt-3 pt-3 border-t border-dashed border-[#ede8df] flex flex-wrap items-center gap-2.5 font-mono text-[11px]">
+                    <span className="text-stone-400 uppercase text-[10px]">Budgets:</span>
                     {CHANNELS.filter((c) => selectedChannels.includes(c.id)).map((c) => {
                       const remaining = c.limit - content.length;
                       const isExceeded = remaining < 0;
@@ -281,8 +313,8 @@ export function InteractiveDispatcher() {
                   <div className="mt-3 flex items-center gap-2 border border-dashed border-amber-300 bg-amber-50 p-2.5 text-xs text-amber-900 rounded-xs font-mono">
                     <AlertCircle className="h-4 w-4 text-amber-600 shrink-0" />
                     <span>
-                      Notice: Your draft exceeds character limits on some channels. SocioConnect can
-                      auto-trim or split into threads upon publishing!
+                      Notice: Your message exceeds character limits on some channels. Our thread
+                      splitter automatically chunks long posts for X and Bluesky.
                     </span>
                   </div>
                 )}
@@ -305,12 +337,12 @@ export function InteractiveDispatcher() {
                   {isPublishing ? (
                     <>
                       <RotateCw className="h-3.5 w-3.5 animate-spin text-emerald-700" />
-                      <span>SCHEDULING ACROSS FEEDS...</span>
+                      <span>DISPATCHING VIA ENCRYPTED VAULT...</span>
                     </>
                   ) : (
                     <>
                       <Send className="h-3.5 w-3.5" />
-                      <span>SCHEDULE TO {selectedChannels.length} FEEDS</span>
+                      <span>DISPATCH TO {selectedChannels.length} APPS SIMULTANEOUSLY</span>
                     </>
                   )}
                 </button>
@@ -328,20 +360,21 @@ export function InteractiveDispatcher() {
               </div>
             </div>
 
-            {/* Right: Live Visual Preview Tabs */}
+            {/* Right: Live Outbound Dispatch Inspector & Telemetry */}
             <div className="flex flex-col justify-between lg:col-span-6">
               <div>
                 <div className="flex items-center justify-between border-b border-[#ede8df] pb-3 mb-4">
-                  <span className="font-mono text-xs font-bold text-stone-900 uppercase tracking-wider">
-                    LIVE FEED PREVIEW
-                  </span>
+                  <div className="flex items-center gap-2 font-mono text-xs font-bold text-stone-900 uppercase tracking-wider">
+                    <Radio className="h-3.5 w-3.5 text-emerald-600 animate-pulse" />
+                    <span>OUTBOUND PAYLOAD INSPECTOR</span>
+                  </div>
                   <div className="flex items-center gap-1">
                     {CHANNELS.map((ch) => (
                       <button
                         key={ch.id}
-                        onClick={() => setPreviewTab(ch.id)}
-                        className={`px-2.5 py-1 text-xs font-mono transition-colors rounded-xs ${
-                          previewTab === ch.id
+                        onClick={() => setActiveInspectTab(ch.id)}
+                        className={`px-2 py-1 text-xs font-mono transition-colors rounded-xs ${
+                          activeInspectTab === ch.id
                             ? "bg-stone-900 text-white font-bold"
                             : "text-stone-500 hover:text-stone-800"
                         }`}
@@ -352,67 +385,55 @@ export function InteractiveDispatcher() {
                   </div>
                 </div>
 
-                {/* Rendered Mockup Feed Card */}
-                <div className="border border-[#ede8df] bg-white p-5 rounded-xs shadow-xs">
-                  {/* Mockup Author Bar */}
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-full bg-[#f6eee2] border border-[#dfc39a] flex items-center justify-center font-bold text-stone-800 font-serif text-sm">
-                        SJ
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-sm font-bold text-stone-900">Sarah Jenkins</span>
-                          <span className="h-3.5 w-3.5 rounded-full bg-[#F4DCB4] text-stone-900 border border-[#dfc39a] flex items-center justify-center text-[8px] font-bold">
-                            ✓
-                          </span>
-                        </div>
-                        <span className="text-xs text-stone-400 font-mono block">
-                          {activeChannelMeta.handle} · Just now
-                        </span>
-                      </div>
+                {/* Inspected Payload Console */}
+                <div className="border border-[#ede8df] bg-[#faf8f5] p-4 rounded-xs font-mono text-xs space-y-3">
+                  <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-2 text-[11px]">
+                    <div className="flex items-center gap-2">
+                      <span className={`h-2 w-2 rounded-full ${activeInspectChannel.avatarBg}`} />
+                      <span className="font-bold text-stone-900">
+                        {activeInspectChannel.name} POST PAYLOAD
+                      </span>
                     </div>
-
-                    <span className="border border-dashed border-[#dfc39a] bg-[#faf8f5] px-2 py-0.5 font-mono text-[10px] text-stone-700 rounded-xs uppercase">
-                      {activeChannelMeta.name} Feed
-                    </span>
+                    <span className="text-stone-500">{activeInspectChannel.handle}</span>
                   </div>
 
-                  {/* Post Content with line breaks */}
-                  <div className="font-sans text-sm text-stone-800 leading-relaxed whitespace-pre-line my-4">
+                  <div className="bg-white border border-[#ede8df] p-3 rounded-xs font-sans text-xs text-stone-800 leading-relaxed whitespace-pre-line">
                     {content}
                   </div>
 
-                  {/* Social Action Footer Bar */}
-                  <div className="border-t border-[#f0ede6] pt-3 mt-4 flex items-center justify-between text-stone-400 text-xs font-mono">
-                    <div className="flex items-center gap-4">
-                      <span className="flex items-center gap-1 hover:text-red-500 transition-colors">
-                        <Heart className="h-4 w-4" /> 2.4k
-                      </span>
-                      <span className="flex items-center gap-1 hover:text-stone-700 transition-colors">
-                        <MessageCircle className="h-4 w-4" /> 84 replies
-                      </span>
-                      <span className="flex items-center gap-1 hover:text-stone-700 transition-colors">
-                        <Share2 className="h-4 w-4" /> 192 reposts
-                      </span>
+                  <div className="grid grid-cols-2 gap-2 text-[11px] text-stone-600">
+                    <div className="bg-white p-2 border border-[#ede8df] rounded-xs">
+                      <span className="text-stone-400 block text-[9px]">TOKEN ENCRYPTION</span>
+                      <span className="font-bold text-stone-800">AES-256-GCM Vault</span>
                     </div>
-                    <Bookmark className="h-4 w-4 hover:text-stone-700 cursor-pointer" />
+                    <div className="bg-white p-2 border border-[#ede8df] rounded-xs">
+                      <span className="text-stone-400 block text-[9px]">FEED PERMISSION</span>
+                      <span className="font-bold text-emerald-700">Write-Only (Zero Read)</span>
+                    </div>
                   </div>
                 </div>
 
                 {/* Published Success Telemetry */}
                 {publishedResults && (
                   <div className="mt-4 border border-emerald-200 bg-emerald-50/80 p-4 rounded-xs font-mono text-xs">
-                    <div className="flex items-center gap-2 text-emerald-800 font-bold mb-2">
-                      <Check className="h-4 w-4 text-emerald-600" />
-                      <span>Universal Broadcast Confirmed</span>
+                    <div className="flex items-center justify-between text-emerald-900 font-bold mb-3 border-b border-emerald-200 pb-2">
+                      <div className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-emerald-600" />
+                        <span>Simultaneous Broadcast Telemetry</span>
+                      </div>
+                      <span className="text-[10px] text-emerald-700">100% Delivery · 0 Failed</span>
                     </div>
-                    <div className="space-y-1 text-[11px] text-emerald-700">
+                    <div className="space-y-2 text-[11px]">
                       {Object.entries(publishedResults).map(([chKey, val]) => (
-                        <div key={chKey} className="flex items-center justify-between">
-                          <span className="uppercase font-semibold">{chKey} Feed:</span>
-                          <span className="flex items-center gap-1 text-emerald-900 underline">
-                            {val.link} <ExternalLink className="h-3 w-3" />
+                        <div
+                          key={chKey}
+                          className="flex items-center justify-between bg-white/80 p-2 border border-emerald-100 rounded-xs"
+                        >
+                          <span className="uppercase font-bold text-stone-800">{chKey}:</span>
+                          <span className="text-stone-500">{val.latency}</span>
+                          <span className="text-emerald-800 font-semibold">{val.status}</span>
+                          <span className="text-stone-400 flex items-center gap-1">
+                            {val.link.substring(0, 24)}... <ExternalLink className="h-3 w-3" />
                           </span>
                         </div>
                       ))}
@@ -421,15 +442,15 @@ export function InteractiveDispatcher() {
                 )}
               </div>
 
-              {/* Peace of mind highlight with dashed border */}
-              <div className="mt-6 border border-dashed border-[#dfc39a] bg-[#faf8f5] p-3.5 font-mono text-xs text-stone-600">
+              {/* Zero Password Guarantee Strip */}
+              <div className="mt-6 border border-dashed border-[#dfc39a] bg-[#faf8f5] p-3.5 font-mono text-xs text-stone-600 rounded-xs">
                 <div className="flex items-center gap-2 text-stone-800 font-semibold mb-1">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#dfc39a]" />
-                  <span>The Creator Guarantee: No More Post Loss</span>
+                  <Lock className="h-4 w-4 text-stone-800" />
+                  <span>The SocioConnect Privacy Guarantee</span>
                 </div>
-                <p className="text-[11px] leading-relaxed text-stone-500">
-                  If any single social network suffers an outage or temporary rate limit, your other
-                  scheduled posts publish smoothly on time. Zero panic.
+                <p className="text-[11px] leading-relaxed text-stone-500 font-sans">
+                  We never ask for user login passwords. Connections use official OAuth 2.0 with
+                  write-only permissions. We never read, scrape, or store your personal feed data.
                 </p>
               </div>
             </div>

@@ -1,8 +1,10 @@
 import { LandingHeader } from "../components/landing/header";
 import { LandingHero } from "../components/landing/hero";
 import { InteractiveDispatcher } from "../components/landing/interactive-dispatcher";
-import { PreviewShowcase } from "../components/landing/preview-showcase";
-import { TrappedBento } from "../components/landing/trapped-bento";
+import { LiveNotificationsStream } from "../components/landing/live-notifications-stream";
+import { InteractiveCalendar } from "../components/landing/interactive-calendar";
+import { SecureConnectors } from "../components/landing/secure-connectors";
+import { ScrollWorkflow } from "../components/landing/scroll-workflow";
 import { BlastRadiusComparison } from "../components/landing/blast-radius-comparison";
 import { LandingPricing } from "../components/landing/pricing";
 import { LandingFAQ } from "../components/landing/faq";
@@ -15,8 +17,10 @@ export default function LandingPage() {
       <main>
         <LandingHero />
         <InteractiveDispatcher />
-        <PreviewShowcase />
-        <TrappedBento />
+        <LiveNotificationsStream />
+        <InteractiveCalendar />
+        <SecureConnectors />
+        <ScrollWorkflow />
         <BlastRadiusComparison />
         <LandingPricing />
         <LandingFAQ />

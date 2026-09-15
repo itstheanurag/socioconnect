@@ -14,14 +14,14 @@ export function BlastRadiusComparison() {
           <div>
             <div className="flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wider text-stone-700">
               <span className="h-2 w-2 rounded-full bg-[#dfc39a]" />
-              THE CREATOR WORKFLOW UPGRADE
+              THE WORKFLOW TRANSFORMATION
             </div>
             <h2 className="mt-3 text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
-              Why manual copy-pasting is holding your brand back.
+              Why manual cross-posting is burning your time.
             </h2>
             <p className="mt-2 max-w-2xl text-sm sm:text-base text-stone-600">
-              Compare the friction of juggling multiple social tabs every morning with the ease of
-              SocioConnect&apos;s unified creator desk.
+              Compare the friction of juggling 5 different social tabs every morning with
+              SocioConnect&apos;s unified distribution queue and fault-isolated drops.
             </p>
           </div>
 
@@ -36,7 +36,7 @@ export function BlastRadiusComparison() {
               }`}
             >
               <Sparkles className="h-3.5 w-3.5 text-stone-800" />
-              SOCIOCONNECT STUDIO
+              SOCIOCONNECT DISPATCHER
             </button>
             <button
               onClick={() => setActiveTab("oldway")}
@@ -47,7 +47,7 @@ export function BlastRadiusComparison() {
               }`}
             >
               <span className="h-2 w-2 rounded-full bg-red-400" />
-              THE 5-TAB NIGHTMARE
+              THE 5-TAB JUGGLE
             </button>
           </div>
         </div>
@@ -71,43 +71,49 @@ export function BlastRadiusComparison() {
                   <div className="text-stone-400 text-[10px] mb-1 uppercase tracking-wider">
                     STEP 01 / DRAFT
                   </div>
-                  <div className="font-bold text-stone-900 mb-2">Write In One Calm Editor</div>
+                  <div className="font-bold text-stone-900 mb-2 font-sans text-sm">
+                    Write in One Calm Editor
+                  </div>
                   <p className="text-xs text-stone-600 leading-normal font-sans">
-                    Compose your essay, announcement, or story in a single distraction-free window.
+                    Compose your announcement, essay, or launch update in a single distraction-free
+                    window.
                   </p>
                 </div>
 
                 <div className="border border-[#ede8df] bg-white p-5 rounded-xs">
                   <div className="text-stone-400 text-[10px] mb-1 uppercase tracking-wider">
-                    STEP 02 / PREVIEW
+                    STEP 02 / CONNECT
                   </div>
-                  <div className="font-bold text-stone-900 mb-2">Inspect Live Platform Feeds</div>
+                  <div className="font-bold text-stone-900 mb-2 font-sans text-sm">
+                    Zero-Password OAuth Vault
+                  </div>
                   <p className="text-xs text-stone-600 leading-normal font-sans">
-                    See exactly how your hook and hashtags render on LinkedIn, Threads, X, and
-                    Bluesky side-by-side.
+                    All apps connect via official developer OAuth 2.0 with AES-256 encrypted tokens.
                   </p>
                 </div>
 
                 <div className="border border-dashed border-[#dfc39a] bg-white p-5 rounded-xs">
                   <div className="text-stone-400 text-[10px] mb-1 uppercase tracking-wider">
-                    STEP 03 / ADAPT
+                    STEP 03 / SCHEDULE
                   </div>
-                  <div className="font-bold text-stone-900 mb-2">
-                    Auto-Split &amp; Character Safety
+                  <div className="font-bold text-stone-900 mb-2 font-sans text-sm">
+                    Visual Weekly Queue
                   </div>
                   <p className="text-xs text-stone-600 leading-normal font-sans">
-                    Keep long-form for LinkedIn while auto-breaking into numbered threads for X.
+                    Slot your posts into weekly calendar times mapped to global audience timezones.
                   </p>
                 </div>
 
                 <div className="border border-[#dfc39a] bg-[#F4DCB4]/40 p-5 rounded-xs">
                   <div className="text-stone-800 text-[10px] mb-1 uppercase tracking-wider font-bold">
-                    STEP 04 / PUBLISH
+                    STEP 04 / BROADCAST
                   </div>
-                  <div className="font-bold text-stone-900 mb-2">One-Click Panic-Free Drop</div>
+                  <div className="font-bold text-stone-900 mb-2 font-sans text-sm">
+                    Panic-Free Outbound Drop
+                  </div>
                   <p className="text-xs text-stone-700 leading-normal font-sans">
-                    Feeds publish independently. A network hiccup on one platform never ruins your
-                    whole launch.
+                    Apps publish independently. A network glitch on one platform never halts your
+                    other posts.
                   </p>
                 </div>
               </div>
@@ -118,24 +124,31 @@ export function BlastRadiusComparison() {
                   Unified Channel Confirmation:
                 </div>
                 <div className="flex items-center justify-between border-b border-dashed border-[#f0ede6] pb-2">
-                  <span className="text-stone-800 font-semibold">LinkedIn Feed</span>
+                  <span className="text-stone-800 font-semibold">LinkedIn Channel</span>
                   <span className="text-emerald-700 flex items-center gap-1">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> Published with
-                    formatting &amp; hashtags
+                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> Dispatched with
+                    official OAuth 2.0
                   </span>
                 </div>
                 <div className="flex items-center justify-between border-b border-dashed border-[#f0ede6] pb-2">
-                  <span className="text-stone-800 font-semibold">Threads Feed</span>
+                  <span className="text-stone-800 font-semibold">Peerlist Channel</span>
                   <span className="text-emerald-700 flex items-center gap-1">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> Published with
-                    conversational tone
+                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> Dispatched to maker
+                    community feed
+                  </span>
+                </div>
+                <div className="flex items-center justify-between border-b border-dashed border-[#f0ede6] pb-2">
+                  <span className="text-stone-800 font-semibold">Reddit Channel</span>
+                  <span className="text-emerald-700 flex items-center gap-1">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> Published to target
+                    subreddit
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-stone-800 font-semibold">X (Twitter) Feed</span>
+                  <span className="text-stone-800 font-semibold">X (Twitter) Channel</span>
                   <span className="text-emerald-700 flex items-center gap-1">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> Published with
-                    280-char guardrails
+                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> Published with 280-c
+                    thread split
                   </span>
                 </div>
               </div>
@@ -157,9 +170,11 @@ export function BlastRadiusComparison() {
                   <div className="text-stone-400 text-[10px] mb-1 uppercase tracking-wider">
                     STEP 01 / TAB 1
                   </div>
-                  <div className="font-bold text-stone-900 mb-2">Open LinkedIn</div>
+                  <div className="font-bold text-stone-900 mb-2 font-sans text-sm">
+                    Open LinkedIn
+                  </div>
                   <p className="text-xs text-stone-600 leading-normal font-sans">
-                    Paste text, adjust line spacing, re-add hashtags, upload image file.
+                    Paste text, adjust line spacing, re-add hashtags, upload image manually.
                   </p>
                 </div>
 
@@ -167,9 +182,12 @@ export function BlastRadiusComparison() {
                   <div className="text-stone-400 text-[10px] mb-1 uppercase tracking-wider">
                     STEP 02 / TAB 2
                   </div>
-                  <div className="font-bold text-stone-900 mb-2">Open X / Twitter</div>
+                  <div className="font-bold text-stone-900 mb-2 font-sans text-sm">
+                    Open X / Twitter
+                  </div>
                   <p className="text-xs text-stone-600 leading-normal font-sans">
-                    Red &apos;-42 chars&apos; error! Manually delete adjectives to fit the limit.
+                    Red &apos;-42 chars&apos; error! Manually delete words to squeeze under the
+                    limit.
                   </p>
                 </div>
 
@@ -177,10 +195,12 @@ export function BlastRadiusComparison() {
                   <div className="text-red-700 text-[10px] mb-1 uppercase tracking-wider">
                     STEP 03 / TAB 3 &amp; 4
                   </div>
-                  <div className="font-bold text-red-950 mb-2">Threads &amp; Bluesky</div>
+                  <div className="font-bold text-red-950 mb-2 font-sans text-sm">
+                    Reddit &amp; Peerlist
+                  </div>
                   <p className="text-xs text-red-700 leading-normal font-sans">
-                    Re-login because your session expired. Copy-paste again, wondering if you
-                    already posted.
+                    Re-login because session expired. Copy-paste again, wondering if you already
+                    posted.
                   </p>
                 </div>
 
@@ -188,10 +208,12 @@ export function BlastRadiusComparison() {
                   <div className="text-red-700 text-[10px] mb-1 uppercase tracking-wider">
                     STEP 04 / GLITCH
                   </div>
-                  <div className="font-bold text-red-950 mb-2">Post Outage Disaster</div>
+                  <div className="font-bold text-red-950 mb-2 font-sans text-sm">
+                    Post Outage Disaster
+                  </div>
                   <p className="text-xs text-red-700 leading-normal font-sans">
                     One network has a rate limit error. Your launch is desynchronized and audience
-                    engagement splits.
+                    engagement breaks.
                   </p>
                 </div>
               </div>
@@ -214,7 +236,7 @@ export function BlastRadiusComparison() {
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-stone-700">Threads Post</span>
+                  <span className="text-stone-700">Reddit Post</span>
                   <span className="text-red-600 flex items-center gap-1">
                     <AlertCircle className="h-3.5 w-3.5" /> Session timed out, forgot to publish
                   </span>

@@ -1,0 +1,23 @@
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+
+export default function NotFound() {
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[#faf8f5] p-6 text-center font-mono">
+      <div className="max-w-md border border-[#ede8df] bg-white p-8 shadow-xs rounded-xs">
+        <span className="text-xs uppercase text-stone-400 font-bold block mb-2">404 ERROR</span>
+        <h1 className="text-2xl font-bold font-sans text-stone-900 mb-3">Page Not Found</h1>
+        <p className="text-xs text-stone-600 font-sans leading-relaxed mb-6">
+          The page or queue slot you are looking for does not exist or has been relocated.
+        </p>
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 border border-[#dfc39a] bg-[#F4DCB4] px-4 py-2 text-xs font-bold text-stone-900 hover:bg-[#ebd0a3] transition-colors rounded-xs"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" />
+          <span>RETURN HOME</span>
+        </Link>
+      </div>
+    </div>
+  );
+}

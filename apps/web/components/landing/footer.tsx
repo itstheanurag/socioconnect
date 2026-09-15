@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, ShieldCheck } from "lucide-react";
 
 export function LandingFooter() {
   return (
@@ -10,14 +10,15 @@ export function LandingFooter() {
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
             <div className="max-w-xl">
               <span className="text-[10px] text-stone-700 font-bold tracking-widest uppercase block mb-1">
-                CREATE WITH CONFIDENCE
+                DISTRIBUTE WITH CONFIDENCE
               </span>
               <h3 className="text-2xl sm:text-3xl font-bold font-sans text-stone-900">
-                Ready to take the stress out of social distribution?
+                Ready to take the stress out of multi-app cross-posting?
               </h3>
               <p className="mt-2 text-sm text-stone-600 font-sans leading-relaxed">
                 Join thousands of writers, founders, and creators saving 5+ hours every week. Write
-                once, preview across feeds, and publish without anxiety.
+                once, schedule across timezones, and broadcast without password sharing or feed
+                tracking.
               </p>
             </div>
 
@@ -48,14 +49,14 @@ export function LandingFooter() {
               <span className="font-extrabold tracking-widest text-stone-900">SOCIOCONNECT</span>
             </div>
             <p className="text-xs text-stone-500 font-sans leading-relaxed">
-              The calm, multi-channel distribution studio built for independent content creators,
-              authors, and founders.
+              The calm, outbound multi-network distribution engine built for independent makers,
+              writers, and engineering teams.
             </p>
           </div>
 
           <div>
             <span className="text-[11px] uppercase tracking-wider text-stone-400 font-bold block mb-3">
-              CREATOR TOOLS
+              CREATOR ENGINE
             </span>
             <ul className="space-y-2 text-stone-600">
               <li>
@@ -65,17 +66,17 @@ export function LandingFooter() {
               </li>
               <li>
                 <a href="#editor" className="hover:text-stone-900 transition-colors">
-                  Interactive Playground
+                  Multi-App Dispatcher
                 </a>
               </li>
               <li>
-                <a href="#previews" className="hover:text-stone-900 transition-colors">
-                  Live Feed Previews
+                <a href="#live-stream" className="hover:text-stone-900 transition-colors">
+                  Live Dispatch Stream
                 </a>
               </li>
               <li>
-                <a href="#workflow" className="hover:text-stone-900 transition-colors">
-                  Creator Calendar
+                <a href="#calendar" className="hover:text-stone-900 transition-colors">
+                  Visual Calendar Queue
                 </a>
               </li>
             </ul>
@@ -83,35 +84,36 @@ export function LandingFooter() {
 
           <div>
             <span className="text-[11px] uppercase tracking-wider text-stone-400 font-bold block mb-3">
-              SUPPORTED FEEDS
+              SUPPORTED NETWORKS
             </span>
             <ul className="space-y-2 text-stone-600">
-              <li>LinkedIn Feed &amp; Carousels</li>
-              <li>Threads Discussions</li>
-              <li>X (Twitter) &amp; Thread Splitter</li>
+              <li>X (Twitter) &amp; Thread Breaks</li>
+              <li>LinkedIn (Posts &amp; Articles)</li>
+              <li>Peerlist (Projects &amp; Posts)</li>
+              <li>Reddit (Subreddit Submissions)</li>
               <li>Bluesky &amp; Mastodon</li>
             </ul>
           </div>
 
           <div>
             <span className="text-[11px] uppercase tracking-wider text-stone-400 font-bold block mb-3">
-              LIVE STUDIO STATUS
+              SECURITY VAULT
             </span>
             <div className="border border-dashed border-[#dfc39a] bg-white p-3 space-y-2 rounded-xs">
               <div className="flex items-center justify-between text-[11px]">
-                <span className="text-stone-500">PLATFORM STATUS</span>
+                <span className="text-stone-500">AUTH PROTOCOL</span>
                 <span className="text-emerald-700 font-bold flex items-center gap-1">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  ALL FEEDS NOMINAL
+                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+                  OAuth 2.0 PKCE
                 </span>
               </div>
               <div className="flex items-center justify-between text-[11px]">
-                <span className="text-stone-500">DELIVERY SPEED</span>
-                <span className="text-stone-700">&lt; 1 sec instant</span>
+                <span className="text-stone-500">ENCRYPTION</span>
+                <span className="text-stone-800 font-bold">AES-256-GCM</span>
               </div>
               <div className="flex items-center justify-between text-[11px]">
-                <span className="text-stone-500">FAIL-SAFE ENGINE</span>
-                <span className="text-stone-700">100% Isolated</span>
+                <span className="text-stone-500">PASSWORDS STORED</span>
+                <span className="text-emerald-700 font-bold">0 (Zero)</span>
               </div>
             </div>
           </div>
@@ -120,14 +122,15 @@ export function LandingFooter() {
         {/* Bottom Bar */}
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-500">
           <div>
-            © {new Date().getFullYear()} SocioConnect. Designed for mindful content distribution.
+            © {new Date().getFullYear()} SocioConnect. Outbound cross-posting &amp; scheduling
+            engine.
           </div>
           <div className="flex items-center gap-6">
-            <span>Official Social APIs</span>
+            <span>Official OAuth APIs</span>
             <span>·</span>
-            <span>Zero Password Sharing</span>
+            <span>Zero Password Storage</span>
             <span>·</span>
-            <span>Privacy First</span>
+            <span>Zero Feed Scraping</span>
           </div>
         </div>
       </div>

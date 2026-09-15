@@ -32,7 +32,7 @@ export function LandingHeader() {
         }}
         className={`pointer-events-auto w-full transition-all duration-300 rounded-none ${
           isScrolled
-            ? "mt-3 sm:mt-4 max-w-4xl bg-white/92 backdrop-blur-md shadow-lg shadow-stone-900/6 border border-[#dfc39a] py-2 px-4 sm:px-6"
+            ? "mt-3 sm:mt-4 max-w-5xl bg-white/92 backdrop-blur-md shadow-lg shadow-stone-900/6 border border-[#dfc39a] py-2 px-4 sm:px-6"
             : "mt-0 max-w-6xl bg-white/95 backdrop-blur-xs shadow-none border-b border-[#ede8df] border-t-transparent border-x-transparent border-t-0 border-x-0 py-3 sm:py-3.5 px-4 sm:px-6"
         }`}
       >
@@ -60,7 +60,7 @@ export function LandingHeader() {
           </Link>
 
           {/* Navigation Links */}
-          <nav className="hidden md:flex items-center gap-5 lg:gap-6 text-[11px] font-mono tracking-wide text-stone-600 font-medium">
+          <nav className="hidden md:flex items-center gap-4 lg:gap-5 text-[11px] font-mono tracking-wide text-stone-600 font-medium">
             <a
               href="#editor"
               className="hover:text-stone-900 transition-colors py-1 relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 hover:after:w-full after:bg-[#F4DCB4] after:transition-all"
@@ -68,10 +68,22 @@ export function LandingHeader() {
               STUDIO
             </a>
             <a
-              href="#previews"
+              href="#live-stream"
               className="hover:text-stone-900 transition-colors py-1 relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 hover:after:w-full after:bg-[#F4DCB4] after:transition-all"
             >
-              PREVIEWS
+              LIVE DISPATCH
+            </a>
+            <a
+              href="#calendar"
+              className="hover:text-stone-900 transition-colors py-1 relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 hover:after:w-full after:bg-[#F4DCB4] after:transition-all"
+            >
+              CALENDAR
+            </a>
+            <a
+              href="#connectors"
+              className="hover:text-stone-900 transition-colors py-1 relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 hover:after:w-full after:bg-[#F4DCB4] after:transition-all"
+            >
+              CONNECTORS
             </a>
             <a
               href="#workflow"
@@ -102,7 +114,7 @@ export function LandingHeader() {
               }`}
             >
               <Sparkles className="h-3 w-3 text-stone-800" />
-              <span>WRITE</span>
+              <span>LAUNCH APP</span>
               <ArrowRight className="h-3 w-3 text-stone-700 transition-transform group-hover:translate-x-0.5" />
             </Link>
 
@@ -117,7 +129,7 @@ export function LandingHeader() {
           </div>
         </div>
 
-        {/* Mobile Dropdown Menu (Sharp architectural dropdown) */}
+        {/* Mobile Dropdown Menu */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
@@ -135,18 +147,32 @@ export function LandingHeader() {
                   STUDIO COMPOSER
                 </a>
                 <a
-                  href="#previews"
+                  href="#live-stream"
                   onClick={() => setMobileMenuOpen(false)}
                   className="py-1.5 hover:text-stone-900 transition-colors"
                 >
-                  VISUAL PREVIEWS
+                  LIVE DISPATCH
+                </a>
+                <a
+                  href="#calendar"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="py-1.5 hover:text-stone-900 transition-colors"
+                >
+                  CALENDAR
+                </a>
+                <a
+                  href="#connectors"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="py-1.5 hover:text-stone-900 transition-colors"
+                >
+                  CONNECTORS
                 </a>
                 <a
                   href="#workflow"
                   onClick={() => setMobileMenuOpen(false)}
                   className="py-1.5 hover:text-stone-900 transition-colors"
                 >
-                  CREATOR WORKFLOW
+                  WORKFLOW
                 </a>
                 <a
                   href="#pricing"

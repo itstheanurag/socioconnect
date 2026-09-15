@@ -23,8 +23,8 @@ export function LandingPricing() {
             Simple plans for creators at any stage.
           </h2>
           <p className="mt-3 text-base text-stone-600">
-            Start free, grow your audience across platforms, and upgrade whenever you need unlimited
-            scheduled posts.
+            Start free, connect your favorite platforms without sharing passwords, and upgrade
+            whenever you need unlimited scheduled queue slots.
           </p>
 
           {/* Billing Switch */}
@@ -63,7 +63,7 @@ export function LandingPricing() {
               </div>
               <h3 className="text-xl font-bold text-stone-900">Free Starter</h3>
               <p className="mt-2 text-xs text-stone-600">
-                Perfect for indie writers testing out multi-platform distribution.
+                Perfect for indie makers and writers testing out multi-app cross-posting.
               </p>
 
               <div className="mt-6 flex items-baseline gap-1 font-mono">
@@ -74,19 +74,19 @@ export function LandingPricing() {
               <ul className="mt-8 space-y-3 font-mono text-xs text-stone-700 border-t border-dashed border-[#f0ede6] pt-6">
                 <li className="flex items-center gap-2.5">
                   <Check className="h-3.5 w-3.5 text-stone-400 shrink-0" />
-                  <span>Up to 3 connected feeds</span>
+                  <span>Up to 3 connected apps (X, LinkedIn, Peerlist)</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="h-3.5 w-3.5 text-stone-400 shrink-0" />
-                  <span>Live feed visual previews</span>
+                  <span>Zero passwords stored (Official OAuth)</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="h-3.5 w-3.5 text-stone-400 shrink-0" />
-                  <span>10 scheduled posts per month</span>
+                  <span>15 scheduled queue posts per month</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="h-3.5 w-3.5 text-stone-400 shrink-0" />
-                  <span>Automatic character budget counters</span>
+                  <span>Character budget guardrails</span>
                 </li>
               </ul>
             </div>
@@ -113,7 +113,7 @@ export function LandingPricing() {
               </div>
               <h3 className="text-xl font-bold text-stone-900">Creator Pro</h3>
               <p className="mt-2 text-xs text-stone-600">
-                For solo founders, writers, and podcasters building an audience across platforms.
+                For solo founders, writers, and developers distributing across all platforms.
               </p>
 
               <div className="mt-6 flex items-baseline gap-1 font-mono">
@@ -124,27 +124,27 @@ export function LandingPricing() {
               <ul className="mt-8 space-y-3 font-mono text-xs text-stone-800 border-t border-dashed border-[#f0ede6] pt-6">
                 <li className="flex items-center gap-2.5">
                   <Check className="h-3.5 w-3.5 text-stone-900 shrink-0" />
-                  <span>Unlimited social feeds &amp; accounts</span>
+                  <span>All apps (X, LinkedIn, Peerlist, Reddit, Bluesky)</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="h-3.5 w-3.5 text-stone-900 shrink-0" />
-                  <span>Unlimited scheduled posts &amp; drafts</span>
+                  <span>Unlimited scheduled posts &amp; queues</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="h-3.5 w-3.5 text-stone-900 shrink-0" />
-                  <span>Visual drag-and-drop creator calendar</span>
+                  <span>Interactive multi-timezone calendar</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="h-3.5 w-3.5 text-stone-900 shrink-0" />
-                  <span>Automatic thread splitting for X &amp; Threads</span>
+                  <span>Auto-thread splitting for long thoughts</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="h-3.5 w-3.5 text-stone-900 shrink-0" />
-                  <span>Custom brand voice presets &amp; hashtags</span>
+                  <span>AES-256-GCM zero-credential vault</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="h-3.5 w-3.5 text-stone-900 shrink-0" />
-                  <span>Fail-safe publishing guarantee</span>
+                  <span>Fault-isolated broadcast guarantee</span>
                 </li>
               </ul>
             </div>
@@ -169,7 +169,7 @@ export function LandingPricing() {
               </div>
               <h3 className="text-xl font-bold text-stone-900">Studio Team</h3>
               <p className="mt-2 text-xs text-stone-600">
-                For creative agencies and media studios managing multiple client brands.
+                For dev shops and studios distributing multiple client product updates.
               </p>
 
               <div className="mt-6 flex items-baseline gap-1 font-mono">
@@ -184,7 +184,7 @@ export function LandingPricing() {
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="h-3.5 w-3.5 text-stone-400 shrink-0" />
-                  <span>Multi-brand client workspaces</span>
+                  <span>Multi-account workspaces &amp; client vaults</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="h-3.5 w-3.5 text-stone-400 shrink-0" />
@@ -192,7 +192,7 @@ export function LandingPricing() {
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="h-3.5 w-3.5 text-stone-400 shrink-0" />
-                  <span>Exportable engagement reporting</span>
+                  <span>Webhook API dispatch endpoints</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="h-3.5 w-3.5 text-stone-400 shrink-0" />
