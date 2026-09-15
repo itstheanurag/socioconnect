@@ -3,12 +3,11 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { Calendar as CalendarIcon, Globe, CheckCircle2, Plus, Clock } from "lucide-react";
+import { PlatformIcon } from "./platform-icons";
 
 interface StaggeredDrop {
   platform: string;
-  icon: string;
-  bg: string;
-  color: string;
+  name: string;
   targetTime: string;
   peakReason: string;
   status: "dispatched" | "scheduled" | "queued";
@@ -23,12 +22,7 @@ interface ScheduledSlot {
   content: string;
   scheduleMode: "simultaneous" | "staggered";
   staggeredDrops?: StaggeredDrop[];
-  platforms: Array<{
-    name: string;
-    icon: string;
-    bg: string;
-    color: string;
-  }>;
+  platforms: string[];
   status: "queued" | "dispatched" | "optimizing";
 }
 
@@ -37,65 +31,49 @@ const SCHEDULED_ITEMS: ScheduledSlot[] = [
     id: "slot-wed-1",
     day: "Wednesday",
     dayIndex: 2,
-    time: "Staggered All-Day Release",
+    time: "Staggered Peak Release",
     title: "Launch Day: Real-Time Engine Deep Dive",
     content:
       "A complete walkthrough of our distributed queue engine. Formatted and scheduled individually for each platform's peak engagement window.",
     scheduleMode: "staggered",
     staggeredDrops: [
       {
-        platform: "LinkedIn",
-        icon: "in",
-        bg: "bg-[#0a66c2]",
-        color: "text-white",
+        platform: "linkedin",
+        name: "LinkedIn",
         targetTime: "08:30 AM",
         peakReason: "Morning commute & founder coffee reading",
         status: "dispatched",
       },
       {
-        platform: "X (Twitter)",
-        icon: "𝕏",
-        bg: "bg-stone-900",
-        color: "text-white",
+        platform: "x",
+        name: "X (Twitter)",
         targetTime: "12:15 PM",
         peakReason: "Mid-day tech feed & developer lunch breaks",
         status: "dispatched",
       },
       {
-        platform: "YouTube",
-        icon: "YT",
-        bg: "bg-[#FF0000]",
-        color: "text-white",
+        platform: "youtube",
+        name: "YouTube",
         targetTime: "03:00 PM",
         peakReason: "Afternoon video drop & notification surge",
         status: "scheduled",
       },
       {
-        platform: "Twitch",
-        icon: "TW",
-        bg: "bg-[#9146FF]",
-        color: "text-white",
+        platform: "twitch",
+        name: "Twitch",
         targetTime: "06:30 PM",
         peakReason: "Prime live stream hours & community chat",
         status: "scheduled",
       },
       {
-        platform: "Reddit",
-        icon: "rd",
-        bg: "bg-[#ff4500]",
-        color: "text-white",
+        platform: "reddit",
+        name: "Reddit",
         targetTime: "08:45 PM",
         peakReason: "Evening subreddit discovery & deep discussion",
         status: "queued",
       },
     ],
-    platforms: [
-      { name: "LinkedIn", icon: "in", bg: "bg-[#0a66c2]", color: "text-white" },
-      { name: "X", icon: "𝕏", bg: "bg-stone-900", color: "text-white" },
-      { name: "YouTube", icon: "YT", bg: "bg-[#FF0000]", color: "text-white" },
-      { name: "Twitch", icon: "TW", bg: "bg-[#9146FF]", color: "text-white" },
-      { name: "Reddit", icon: "rd", bg: "bg-[#ff4500]", color: "text-white" },
-    ],
+    platforms: ["linkedin", "x", "youtube", "twitch", "reddit"],
     status: "queued",
   },
   {
@@ -107,11 +85,7 @@ const SCHEDULED_ITEMS: ScheduledSlot[] = [
     content:
       "5 things we learned shipping our multi-network distribution pipeline this week. Dispatched at the exact same moment across all channels.",
     scheduleMode: "simultaneous",
-    platforms: [
-      { name: "YouTube", icon: "YT", bg: "bg-[#FF0000]", color: "text-white" },
-      { name: "LinkedIn", icon: "in", bg: "bg-[#0a66c2]", color: "text-white" },
-      { name: "X", icon: "𝕏", bg: "bg-stone-900", color: "text-white" },
-    ],
+    platforms: ["youtube", "linkedin", "x"],
     status: "dispatched",
   },
   {
@@ -123,11 +97,7 @@ const SCHEDULED_ITEMS: ScheduledSlot[] = [
     content:
       "🔴 Going live on Twitch & YouTube: Live coding distributed queuing workers with token encryption. Answering chat questions!",
     scheduleMode: "simultaneous",
-    platforms: [
-      { name: "Twitch", icon: "TW", bg: "bg-[#9146FF]", color: "text-white" },
-      { name: "YouTube", icon: "YT", bg: "bg-[#FF0000]", color: "text-white" },
-      { name: "X", icon: "𝕏", bg: "bg-stone-900", color: "text-white" },
-    ],
+    platforms: ["twitch", "youtube", "x"],
     status: "queued",
   },
   {
@@ -141,38 +111,28 @@ const SCHEDULED_ITEMS: ScheduledSlot[] = [
     scheduleMode: "staggered",
     staggeredDrops: [
       {
-        platform: "Peerlist",
-        icon: "P",
-        bg: "bg-[#00AA45]",
-        color: "text-white",
+        platform: "peerlist",
+        name: "Peerlist",
         targetTime: "10:00 AM",
         peakReason: "Maker morning project hunt",
         status: "scheduled",
       },
       {
-        platform: "YouTube",
-        icon: "YT",
-        bg: "bg-[#FF0000]",
-        color: "text-white",
+        platform: "youtube",
+        name: "YouTube",
         targetTime: "04:00 PM",
         peakReason: "Premiere video release slot",
         status: "scheduled",
       },
       {
-        platform: "X (Twitter)",
-        icon: "𝕏",
-        bg: "bg-stone-900",
-        color: "text-white",
+        platform: "x",
+        name: "X (Twitter)",
         targetTime: "04:05 PM",
         peakReason: "Immediate premiere link thread",
         status: "queued",
       },
     ],
-    platforms: [
-      { name: "YouTube", icon: "YT", bg: "bg-[#FF0000]", color: "text-white" },
-      { name: "Peerlist", icon: "P", bg: "bg-[#00AA45]", color: "text-white" },
-      { name: "X", icon: "𝕏", bg: "bg-stone-900", color: "text-white" },
-    ],
+    platforms: ["youtube", "peerlist", "x"],
     status: "queued",
   },
   {
@@ -184,16 +144,7 @@ const SCHEDULED_ITEMS: ScheduledSlot[] = [
     content:
       "Wrapping up the creator sprint! Celebrate your shipped features with your audience across Twitch, Instagram, and Bluesky.",
     scheduleMode: "simultaneous",
-    platforms: [
-      { name: "Twitch", icon: "TW", bg: "bg-[#9146FF]", color: "text-white" },
-      {
-        name: "Instagram",
-        icon: "IG",
-        bg: "bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888]",
-        color: "text-white",
-      },
-      { name: "Bluesky", icon: "bs", bg: "bg-[#0285ff]", color: "text-white" },
-    ],
+    platforms: ["twitch", "instagram", "bluesky"],
     status: "queued",
   },
   {
@@ -205,11 +156,7 @@ const SCHEDULED_ITEMS: ScheduledSlot[] = [
     content:
       "Weekend maker advice: Schedule your video releases during peak viewer hours without remaining glued to your screen.",
     scheduleMode: "simultaneous",
-    platforms: [
-      { name: "YouTube", icon: "YT", bg: "bg-[#FF0000]", color: "text-white" },
-      { name: "Peerlist", icon: "P", bg: "bg-[#00AA45]", color: "text-white" },
-      { name: "Reddit", icon: "rd", bg: "bg-[#ff4500]", color: "text-white" },
-    ],
+    platforms: ["youtube", "peerlist", "reddit"],
     status: "optimizing",
   },
 ];
@@ -233,7 +180,7 @@ const TIMEZONES = [
 ];
 
 export function InteractiveCalendar() {
-  const [selectedDayIndex, setSelectedDayIndex] = useState(2); // Wednesday default
+  const [selectedDayIndex, setSelectedDayIndex] = useState(2);
   const [selectedTimezone, setSelectedTimezone] = useState("UTC");
   const [activeSlotId, setActiveSlotId] = useState<string>("slot-wed-1");
   const [customQueueNotice, setCustomQueueNotice] = useState<string | null>(null);
@@ -256,7 +203,7 @@ export function InteractiveCalendar() {
       className="relative py-16 lg:py-24 border-t border-[#ede8df] bg-[#faf8f5]"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Header with Pain Point Emphasis */}
+        {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12">
           <div className="max-w-2xl">
             <div className="flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wider text-stone-700">
@@ -314,7 +261,7 @@ export function InteractiveCalendar() {
             </div>
           </div>
 
-          {/* Quick Notice if Slot Added */}
+          {/* Quick Notice */}
           {customQueueNotice && (
             <motion.div
               initial={{ opacity: 0, y: -6 }}
@@ -386,19 +333,13 @@ export function InteractiveCalendar() {
                               }`}
                             />
                           </div>
-                          <div className="font-sans text-stone-900 truncate font-medium">
+                          <div className="font-sans text-stone-900 truncate font-medium text-xs">
                             {slot.title}
                           </div>
-                          {/* Platform pills */}
-                          <div className="flex items-center gap-1 mt-1.5">
+                          {/* Platform SVG Icon Pills */}
+                          <div className="flex items-center gap-1.5 mt-1.5">
                             {slot.platforms.map((p) => (
-                              <span
-                                key={p.name}
-                                className={`h-4 w-4 rounded-full ${p.bg} ${p.color} text-[8px] flex items-center justify-center font-bold`}
-                                title={p.name}
-                              >
-                                {p.icon}
-                              </span>
+                              <PlatformIcon key={p} platform={p} size={12} title={p} />
                             ))}
                           </div>
                         </div>
@@ -446,12 +387,13 @@ export function InteractiveCalendar() {
                 <span>Target Apps ({activeSlot.platforms.length}):</span>
                 <div className="flex items-center gap-1.5">
                   {activeSlot.platforms.map((p) => (
-                    <span
-                      key={p.name}
-                      className={`px-2 py-0.5 rounded-xs text-[10px] font-mono font-bold ${p.bg} ${p.color}`}
+                    <div
+                      key={p}
+                      className="flex items-center gap-1 bg-white px-2 py-0.5 border border-[#ede8df] rounded-xs text-[10px] font-mono font-bold text-stone-800"
                     >
-                      {p.name}
-                    </span>
+                      <PlatformIcon platform={p} size={12} />
+                      <span className="capitalize">{p}</span>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -465,7 +407,7 @@ export function InteractiveCalendar() {
               </p>
             </div>
 
-            {/* If Staggered Drops are configured: Visual Per-Platform Timeline */}
+            {/* If Staggered Drops: Per-Platform Timeline */}
             {activeSlot.staggeredDrops && (
               <div className="border border-[#ede8df] bg-white p-4 rounded-xs mb-4">
                 <div className="flex items-center justify-between mb-3 text-xs font-mono">
@@ -485,12 +427,10 @@ export function InteractiveCalendar() {
                       className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 bg-[#faf8f5] border border-[#ede8df] rounded-xs font-mono text-xs"
                     >
                       <div className="flex items-center gap-2.5">
-                        <span
-                          className={`h-5 w-5 rounded-full ${drop.bg} ${drop.color} flex items-center justify-center text-[9px] font-bold`}
-                        >
-                          {drop.icon}
-                        </span>
-                        <span className="font-bold text-stone-900">{drop.platform}</span>
+                        <div className="flex h-6 w-6 items-center justify-center rounded-xs border border-[#ede8df] bg-white shadow-2xs">
+                          <PlatformIcon platform={drop.platform} size={14} />
+                        </div>
+                        <span className="font-bold text-stone-900">{drop.name}</span>
                         <span className="text-stone-300">·</span>
                         <span className="text-stone-600 font-semibold">{drop.targetTime}</span>
                       </div>
