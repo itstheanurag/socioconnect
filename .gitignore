@@ -1,0 +1,24 @@
+# deps
+node_modules/
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build & Cache
+.turbo
+dist/
+.next/
+out/
+*.tsbuildinfo
+
+# OS & Temp
+.DS_Store
+Thumbs.db
+*.log
+*.backup
