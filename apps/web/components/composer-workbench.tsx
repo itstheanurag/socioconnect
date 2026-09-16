@@ -11,14 +11,17 @@ import {
   Layers3,
   LayoutDashboard,
   Link as LinkIcon,
+  LogOut,
   MoreHorizontal,
   Send,
   Settings2,
   Sparkles,
   UsersRound,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { PlatformIcon } from "./landing/platform-icons";
+import { useAuth } from "../lib/auth-context";
 
 interface SocialAccount {
   id: string;
@@ -33,15 +36,15 @@ interface SocialAccount {
 const accountSeed: SocialAccount[] = [
   {
     id: "youtube",
-    platform: "YouTube",
-    name: "Alex Builds",
-    detail: "Community & Shorts",
+    platform: "youtube",
+    name: "alex builds",
+    detail: "community & shorts",
     limit: 5000,
     selected: true,
   },
   {
     id: "twitch",
-    platform: "Twitch",
+    platform: "twitch",
     name: "alex_codes",
     detail: "twitch.tv/alex_codes",
     limit: 500,
@@ -49,39 +52,39 @@ const accountSeed: SocialAccount[] = [
   },
   {
     id: "instagram",
-    platform: "Instagram",
-    name: "Alex Creates",
+    platform: "instagram",
+    name: "alex creates",
     detail: "@alex.creates",
     limit: 2200,
     selected: true,
   },
   {
     id: "linkedin",
-    platform: "LinkedIn",
-    name: "Alex Rivers",
-    detail: "Founder Profile",
+    platform: "linkedin",
+    name: "alex rivers",
+    detail: "creator profile",
     limit: 3000,
     selected: true,
   },
   {
     id: "x",
-    platform: "X",
+    platform: "x",
     name: "@alex_builds",
-    detail: "Creator Account",
+    detail: "creator account",
     limit: 280,
     selected: true,
   },
   {
     id: "peerlist",
-    platform: "Peerlist",
+    platform: "peerlist",
     name: "alex_rivers",
-    detail: "Maker Spotlight",
+    detail: "maker spotlight",
     limit: 1000,
     selected: false,
   },
   {
     id: "reddit",
-    platform: "Reddit",
+    platform: "reddit",
     name: "u/alex_dev",
     detail: "r/videos & r/webdev",
     limit: 4000,
@@ -98,12 +101,22 @@ function PlatformMark({ account }: { account: SocialAccount }) {
 }
 
 export function ComposerWorkbench() {
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
+  const router = useRouter();
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const [accounts, setAccounts] = useState(accountSeed);
   const [content, setContent] = useState(
-    "A good publishing workflow should make every destination visible, not hide the hard parts behind one button.",
+    "a calm publishing workflow lets you share with your audience everywhere without getting lost in 8 different tabs.",
   );
   const [schedule, setSchedule] = useState(false);
   const [queued, setQueued] = useState(false);
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.replace("/login?next=/app");
+    }
+  }, [isLoading, isAuthenticated, router]);
+
   const selectedAccounts = useMemo(
     () => accounts.filter((account) => account.selected),
     [accounts],
@@ -122,48 +135,83 @@ export function ComposerWorkbench() {
     );
   }
 
+  const userInitials = user
+    ? `${user.firstName.charAt(0)}${user.lastName ? user.lastName.charAt(0) : ""}`.toLowerCase()
+    : "cr";
+  const userFullName = user
+    ? `${user.firstName}${user.lastName ? ` ${user.lastName}` : ""}`.toLowerCase()
+    : "creator workspace";
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center font-mono text-xs text-stone-500 lowercase">
+        loading creator studio...
+      </div>
+    );
+  }
+
   return (
-    <main className="shell">
+    <main className="shell lowercase">
       <aside className="sidebar">
-        <a className="brand" href="/" aria-label="Socioconnect home">
+        <a className="brand" href="/" aria-label="socioconnect home">
           <span className="brand-mark">
             <i />
             <i />
             <i />
           </span>
-          <span>SOCIOCONNECT</span>
+          <span>socioconnect</span>
         </a>
         <nav className="primary-nav" aria-label="Primary navigation">
           <button className="nav-item nav-item--active" type="button">
             <FileText size={17} />
-            <span>Compose</span>
+            <span>compose</span>
           </button>
           <button className="nav-item" type="button">
             <Layers3 size={17} />
-            <span>Posts</span>
+            <span>posts</span>
             <b>12</b>
           </button>
           <button className="nav-item" type="button">
             <UsersRound size={17} />
-            <span>Accounts</span>
+            <span>accounts</span>
           </button>
           <button className="nav-item" type="button">
             <Settings2 size={17} />
-            <span>Settings</span>
+            <span>settings</span>
           </button>
         </nav>
         <div className="sidebar-footer">
-          <button className="workspace-switcher" type="button">
-            <span className="avatar avatar--small">MR</span>
+          <button
+            className="workspace-switcher"
+            type="button"
+            onClick={() => setShowUserMenu(!showUserMenu)}
+          >
+            <span className="avatar avatar--small">{userInitials}</span>
             <span>
-              <strong>Maya Rao</strong>
-              <small>Personal workspace</small>
+              <strong>{userFullName}</strong>
+              <small>{user?.email?.toLowerCase() || "creator account"}</small>
             </span>
             <ChevronDown size={15} />
           </button>
+
+          {showUserMenu && (
+            <div className="mt-2 border border-[#ede8df] bg-white p-2 rounded-xs shadow-md font-mono text-xs space-y-1">
+              <button
+                type="button"
+                onClick={() => {
+                  void logout();
+                }}
+                className="w-full text-left px-2 py-1.5 hover:bg-[#faf8f5] text-red-600 flex items-center gap-2 rounded-xs cursor-pointer"
+              >
+                <LogOut size={13} />
+                <span>sign out</span>
+              </button>
+            </div>
+          )}
+
           <button className="upgrade-link" type="button">
             <Sparkles size={15} />
-            <span>Upgrade plan</span>
+            <span>upgrade plan</span>
           </button>
         </div>
       </aside>
@@ -172,22 +220,30 @@ export function ComposerWorkbench() {
         <header className="topbar">
           <div className="crumb">
             <LayoutDashboard size={15} />
-            <span>Publishing desk</span>
+            <span>creator studio</span>
             <i>/</i>
-            <strong>New post</strong>
+            <strong>new post</strong>
           </div>
           <div className="topbar-actions">
             <button
               className="icon-button"
               type="button"
               aria-label="Notifications"
-              title="Notifications"
+              title="notifications"
             >
               <Bell size={18} />
               <i />
             </button>
-            <button className="avatar" type="button" aria-label="Open user menu">
-              MR
+            <button
+              className="avatar cursor-pointer"
+              type="button"
+              aria-label="Open user menu"
+              onClick={() => {
+                void logout();
+              }}
+              title={`logged in as ${userFullName} - click to sign out`}
+            >
+              {userInitials}
             </button>
           </div>
         </header>
@@ -196,18 +252,18 @@ export function ComposerWorkbench() {
           <section className="compose-column">
             <div className="section-heading">
               <div>
-                <p className="eyebrow">DISPATCH / 01</p>
-                <h1>New post</h1>
+                <p className="eyebrow">create / 01</p>
+                <h1>new post</h1>
               </div>
               <button className="draft-button" type="button">
-                <MoreHorizontal size={18} /> Save draft
+                <MoreHorizontal size={18} /> save draft
               </button>
             </div>
 
             <div className="target-band">
               <div className="target-band-header">
-                <span className="label">Destinations</span>
-                <span className="hint">Selected channels receive atomic dispatches</span>
+                <span className="label">channels</span>
+                <span className="hint">select where you want to share your post</span>
               </div>
               <div className="target-pill-row">
                 {accounts.map((account) => {
@@ -230,7 +286,7 @@ export function ComposerWorkbench() {
 
             <div className="editor-card">
               <div className="editor-header">
-                <span className="editor-tab">Primary copy</span>
+                <span className="editor-tab">primary copy</span>
                 <div className="editor-counters">
                   <span>{content.length} characters</span>
                 </div>
@@ -242,19 +298,19 @@ export function ComposerWorkbench() {
                   setQueued(false);
                 }}
                 rows={7}
-                placeholder="Write your announcement, launch story, or stream drop..."
+                placeholder="write your announcement, launch story, or stream drop..."
                 className="editor-textarea"
               />
               <div className="editor-toolbar">
                 <div className="editor-tools">
-                  <button type="button" className="tool-button" title="Attach media">
-                    <ImagePlus size={16} /> Attach
+                  <button type="button" className="tool-button" title="attach media">
+                    <ImagePlus size={16} /> attach
                   </button>
-                  <button type="button" className="tool-button" title="Insert hashtag">
-                    <Hash size={16} /> Tag
+                  <button type="button" className="tool-button" title="insert hashtag">
+                    <Hash size={16} /> tag
                   </button>
-                  <button type="button" className="tool-button" title="Insert link">
-                    <LinkIcon size={16} /> Link
+                  <button type="button" className="tool-button" title="insert link">
+                    <LinkIcon size={16} /> link
                   </button>
                 </div>
                 <div className="editor-actions">
@@ -264,7 +320,7 @@ export function ComposerWorkbench() {
                     className={`schedule-button ${schedule ? "schedule-button--active" : ""}`}
                   >
                     <Clock3 size={15} />
-                    <span>{schedule ? "Staggered Peak Hours" : "Simultaneous"}</span>
+                    <span>{schedule ? "staggered peak hours" : "simultaneous"}</span>
                   </button>
                   <button
                     type="button"
@@ -273,7 +329,7 @@ export function ComposerWorkbench() {
                     className="publish-button"
                   >
                     <Send size={15} />
-                    <span>{schedule ? "Schedule Queue" : "Dispatch Now"}</span>
+                    <span>{schedule ? "schedule queue" : "publish now"}</span>
                   </button>
                 </div>
               </div>
@@ -283,8 +339,8 @@ export function ComposerWorkbench() {
               <div className="success-banner">
                 <Check size={16} />
                 <span>
-                  Post scheduled successfully across {selectedAccounts.length} channels with
-                  zero-credential OAuth tokens.
+                  post scheduled successfully across {selectedAccounts.length} channels with 100%
+                  private account safety.
                 </span>
               </div>
             )}
@@ -293,8 +349,8 @@ export function ComposerWorkbench() {
           <aside className="inspect-column">
             <div className="section-heading">
               <div>
-                <p className="eyebrow">PRE-FLIGHT</p>
-                <h2>Channel health</h2>
+                <p className="eyebrow">preview</p>
+                <h2>character limits</h2>
               </div>
             </div>
 

@@ -6,6 +6,7 @@ import { InteractiveCalendar } from "../components/landing/interactive-calendar"
 import { SecureConnectors } from "../components/landing/secure-connectors";
 import { ScrollWorkflow } from "../components/landing/scroll-workflow";
 import { BlastRadiusComparison } from "../components/landing/blast-radius-comparison";
+import { LandingCTA } from "../components/landing/cta";
 import { LandingPricing } from "../components/landing/pricing";
 import { LandingFAQ } from "../components/landing/faq";
 import { LandingFooter } from "../components/landing/footer";
@@ -22,6 +23,7 @@ export default function LandingPage() {
         <SecureConnectors />
         <ScrollWorkflow />
         <BlastRadiusComparison />
+        <LandingCTA />
         <LandingPricing />
         <LandingFAQ />
       </main>

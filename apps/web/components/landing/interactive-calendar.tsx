@@ -1,19 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "motion/react";
-import { Calendar as CalendarIcon, Globe, CheckCircle2, Plus, Clock } from "lucide-react";
+import {
+  CalendarDays,
+  Clock,
+  Sparkles,
+  ChevronLeft,
+  ChevronRight,
+  Shield,
+  Layers,
+} from "lucide-react";
 import { PlatformIcon } from "./platform-icons";
 
-interface StaggeredDrop {
-  platform: string;
-  name: string;
-  targetTime: string;
-  peakReason: string;
-  status: "dispatched" | "scheduled" | "queued";
-}
-
-interface ScheduledSlot {
+interface CalendarSlot {
   id: string;
   day: string;
   dayIndex: number;
@@ -21,114 +20,103 @@ interface ScheduledSlot {
   title: string;
   content: string;
   scheduleMode: "simultaneous" | "staggered";
-  staggeredDrops?: StaggeredDrop[];
+  staggeredDrops?: {
+    platform: string;
+    name: string;
+    targetTime: string;
+    peakReason: string;
+    status: "scheduled" | "queued" | "live";
+  }[];
   platforms: string[];
-  status: "queued" | "dispatched" | "optimizing";
+  status: "scheduled" | "queued" | "optimizing";
 }
 
-const SCHEDULED_ITEMS: ScheduledSlot[] = [
+const WEEK_DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+
+const INITIAL_SCHEDULE: CalendarSlot[] = [
   {
-    id: "slot-wed-1",
-    day: "Wednesday",
-    dayIndex: 2,
-    time: "Staggered Peak Release",
-    title: "Launch Day: Real-Time Engine Deep Dive",
+    id: "slot-mon-1",
+    day: "monday",
+    dayIndex: 0,
+    time: "staggered launch schedule",
+    title: "episode 1 launch & creator breakdown",
     content:
-      "A complete walkthrough of our distributed queue engine. Formatted and scheduled individually for each platform's peak engagement window.",
+      "🎬 our new behind-the-scenes video is live! a deep dive into creative workflows, tool setups, and creator sustainability.",
     scheduleMode: "staggered",
     staggeredDrops: [
       {
         platform: "linkedin",
-        name: "LinkedIn",
-        targetTime: "08:30 AM",
-        peakReason: "Morning commute & founder coffee reading",
-        status: "dispatched",
+        name: "linkedin",
+        targetTime: "08:30 am",
+        peakReason: "morning creator network check-in",
+        status: "scheduled",
       },
       {
-        platform: "x",
-        name: "X (Twitter)",
-        targetTime: "12:15 PM",
-        peakReason: "Mid-day tech feed & developer lunch breaks",
-        status: "dispatched",
+        platform: "instagram",
+        name: "instagram",
+        targetTime: "12:30 pm",
+        peakReason: "lunch break reel and story teaser",
+        status: "scheduled",
       },
       {
         platform: "youtube",
-        name: "YouTube",
-        targetTime: "03:00 PM",
-        peakReason: "Afternoon video drop & notification surge",
+        name: "youtube",
+        targetTime: "04:00 pm",
+        peakReason: "main episode release & community post",
         status: "scheduled",
       },
       {
         platform: "twitch",
-        name: "Twitch",
-        targetTime: "06:30 PM",
-        peakReason: "Prime live stream hours & community chat",
-        status: "scheduled",
-      },
-      {
-        platform: "reddit",
-        name: "Reddit",
-        targetTime: "08:45 PM",
-        peakReason: "Evening subreddit discovery & deep discussion",
+        name: "twitch",
+        targetTime: "06:30 pm",
+        peakReason: "evening live stream watch-party",
         status: "queued",
       },
     ],
-    platforms: ["linkedin", "x", "youtube", "twitch", "reddit"],
-    status: "queued",
-  },
-  {
-    id: "slot-mon-1",
-    day: "Monday",
-    dayIndex: 0,
-    time: "09:30 AM (Simultaneous)",
-    title: "Weekly Founder Synthesis & Short",
-    content:
-      "5 things we learned shipping our multi-network distribution pipeline this week. Dispatched at the exact same moment across all channels.",
-    scheduleMode: "simultaneous",
-    platforms: ["youtube", "linkedin", "x"],
-    status: "dispatched",
+    platforms: ["linkedin", "instagram", "youtube", "twitch"],
+    status: "scheduled",
   },
   {
     id: "slot-tue-1",
-    day: "Tuesday",
+    day: "tuesday",
     dayIndex: 1,
-    time: "02:15 PM (Simultaneous)",
-    title: "Twitch Live Stream Coding Drop",
+    time: "02:15 pm (simultaneous)",
+    title: "live stream hangout & q&a",
     content:
-      "🔴 Going live on Twitch & YouTube: Live coding distributed queuing workers with token encryption. Answering chat questions!",
+      "🔴 going live on twitch & youtube! today we're reviewing community projects and answering audience questions in chat.",
     scheduleMode: "simultaneous",
     platforms: ["twitch", "youtube", "x"],
     status: "queued",
   },
   {
     id: "slot-thu-1",
-    day: "Thursday",
+    day: "thursday",
     dayIndex: 3,
-    time: "Staggered Video Release",
-    title: "Changelog v1.4 & YouTube Premiere",
+    time: "staggered feature drop",
+    title: "new feature showcase & premiere",
     content:
-      "SocioConnect v1.4 Launch Premiere: High-throughput video promo dispatcher with automated cross-platform sync.",
+      "excited to share our newest creator tools! full walkthrough and interactive demo are up now.",
     scheduleMode: "staggered",
     staggeredDrops: [
       {
         platform: "peerlist",
-        name: "Peerlist",
-        targetTime: "10:00 AM",
-        peakReason: "Maker morning project hunt",
+        name: "peerlist",
+        targetTime: "10:00 am",
+        peakReason: "morning maker project showcase",
         status: "scheduled",
       },
       {
         platform: "youtube",
-        name: "YouTube",
-        targetTime: "04:00 PM",
-        peakReason: "Premiere video release slot",
+        name: "youtube",
+        targetTime: "04:00 pm",
+        peakReason: "premiere video release window",
         status: "scheduled",
       },
       {
         platform: "x",
-        name: "X (Twitter)",
-        targetTime: "04:05 PM",
-        peakReason: "Immediate premiere link thread",
+        name: "x (twitter)",
+        targetTime: "04:05 pm",
+        peakReason: "immediate premiere discussion thread",
         status: "queued",
       },
     ],
@@ -137,65 +125,33 @@ const SCHEDULED_ITEMS: ScheduledSlot[] = [
   },
   {
     id: "slot-fri-1",
-    day: "Friday",
+    day: "friday",
     dayIndex: 4,
-    time: "10:30 AM (Simultaneous)",
-    title: "Weekend Reflection & Highlight Clip",
+    time: "10:30 am (simultaneous)",
+    title: "weekly recap & community highlights",
     content:
-      "Wrapping up the creator sprint! Celebrate your shipped features with your audience across Twitch, Instagram, and Bluesky.",
+      "wrapping up the week! celebrating top community submissions and creative breakthroughs across all our channels.",
     scheduleMode: "simultaneous",
     platforms: ["twitch", "instagram", "bluesky"],
     status: "queued",
   },
   {
     id: "slot-sat-1",
-    day: "Saturday",
+    day: "saturday",
     dayIndex: 5,
-    time: "01:00 PM (Simultaneous)",
-    title: "Creator Tip & Community Spotlight",
+    time: "01:00 pm (simultaneous)",
+    title: "weekend tip & creator inspiration",
     content:
-      "Weekend maker advice: Schedule your video releases during peak viewer hours without remaining glued to your screen.",
+      "weekend tip: batch your content creation in one calm afternoon and let your scheduler handle the weekly releases.",
     scheduleMode: "simultaneous",
     platforms: ["youtube", "peerlist", "reddit"],
     status: "optimizing",
   },
 ];
 
-const DAYS = [
-  { name: "Mon", full: "Monday", date: "Sep 18" },
-  { name: "Tue", full: "Tuesday", date: "Sep 19" },
-  { name: "Wed", full: "Wednesday", date: "Sep 20" },
-  { name: "Thu", full: "Thursday", date: "Sep 21" },
-  { name: "Fri", full: "Friday", date: "Sep 22" },
-  { name: "Sat", full: "Saturday", date: "Sep 23" },
-  { name: "Sun", full: "Sunday", date: "Sep 24" },
-];
-
-const TIMEZONES = [
-  { id: "UTC", label: "UTC (Coordinated)" },
-  { id: "PST", label: "PST / PDT (San Francisco)" },
-  { id: "EST", label: "EST / EDT (New York)" },
-  { id: "IST", label: "IST (India / Asia)" },
-  { id: "GMT", label: "GMT / BST (London)" },
-];
-
 export function InteractiveCalendar() {
-  const [selectedDayIndex, setSelectedDayIndex] = useState(2);
-  const [selectedTimezone, setSelectedTimezone] = useState("UTC");
-  const [activeSlotId, setActiveSlotId] = useState<string>("slot-wed-1");
-  const [customQueueNotice, setCustomQueueNotice] = useState<string | null>(null);
-
-  const activeSlot =
-    SCHEDULED_ITEMS.find((s) => s.id === activeSlotId) ||
-    SCHEDULED_ITEMS.find((s) => s.dayIndex === selectedDayIndex) ||
-    SCHEDULED_ITEMS[0];
-
-  function handleAddQuickSlot() {
-    setCustomQueueNotice(
-      "New staggered slot created: Auto-mapped to morning, mid-day, and evening peaks!",
-    );
-    setTimeout(() => setCustomQueueNotice(null), 3500);
-  }
+  const [selectedSlot, setSelectedSlot] = useState<CalendarSlot>(INITIAL_SCHEDULE[0]);
+  const [currentWeek] = useState("sep 15 - sep 21, 2026");
 
   return (
     <section
@@ -203,283 +159,204 @@ export function InteractiveCalendar() {
       className="relative py-16 lg:py-24 border-t border-[#ede8df] bg-[#faf8f5]"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12">
+        {/* Section Header */}
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10 lowercase">
           <div className="max-w-2xl">
-            <div className="flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wider text-stone-700">
+            <div className="flex items-center gap-2 font-mono text-xs font-semibold text-stone-700">
               <span className="h-2 w-2 rounded-full bg-[#dfc39a]" />
-              TIMEZONE &amp; AUDIENCE PEAK SCHEDULER
+              <span>smart audience calendar</span>
             </div>
             <h2 className="mt-3 text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
-              Your audience isn&apos;t active at the same time everywhere.
+              visual scheduling built for creator habits.
             </h2>
             <p className="mt-3 text-sm sm:text-base text-stone-600 leading-relaxed">
-              LinkedIn peaks during morning coffee, YouTube in the afternoon, and Twitch in the
-              evening. With SocioConnect, write your post once and choose between an{" "}
-              <strong>instant simultaneous blast</strong> or{" "}
-              <strong>staggered peak times per platform</strong>.
+              your viewers on youtube, twitch, and linkedin are active at different times of day.
+              plan your week visually and let socioconnect release every post when it gets the most
+              love.
             </p>
           </div>
 
-          {/* Timezone Switcher */}
-          <div className="flex items-center gap-2 font-mono text-xs border border-[#ede8df] bg-white p-2 rounded-xs shadow-xs">
-            <Globe className="h-4 w-4 text-stone-500" />
-            <span className="text-stone-400 uppercase text-[10px]">TIMEZONE:</span>
-            <select
-              value={selectedTimezone}
-              onChange={(e) => setSelectedTimezone(e.target.value)}
-              aria-label="Select display timezone for scheduled posts"
-              className="bg-transparent font-bold text-stone-900 focus:outline-none cursor-pointer pr-2"
+          {/* Week Selector Bar */}
+          <div className="flex items-center gap-3 font-mono text-xs border border-[#ede8df] bg-white px-3.5 py-1.5 rounded-md shadow-2xs">
+            <button
+              className="text-stone-400 hover:text-stone-800 transition-colors cursor-pointer"
+              type="button"
             >
-              {TIMEZONES.map((tz) => (
-                <option key={tz.id} value={tz.id}>
-                  {tz.label}
-                </option>
-              ))}
-            </select>
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <span className="font-bold text-stone-800">{currentWeek}</span>
+            <button
+              className="text-stone-400 hover:text-stone-800 transition-colors cursor-pointer"
+              type="button"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
           </div>
         </div>
 
-        {/* Main Calendar Board Frame */}
-        <div className="border border-[#ede8df] bg-white p-5 sm:p-8 shadow-xs">
-          {/* Calendar Top Navigation */}
-          <div className="flex flex-wrap items-center justify-between border-b border-dashed border-[#ede8df] pb-4 mb-6 font-mono text-xs">
-            <div className="flex items-center gap-3">
-              <CalendarIcon className="h-4 w-4 text-stone-700" />
-              <span className="font-bold text-stone-900 text-sm">WEEK 38 · SEPTEMBER 2026</span>
-              <span className="text-stone-400">({selectedTimezone} Universal Dispatch)</span>
-            </div>
-
-            <div className="flex items-center gap-2 mt-2 sm:mt-0">
-              <button
-                onClick={handleAddQuickSlot}
-                className="inline-flex items-center gap-1.5 border border-[#dfc39a] bg-[#F4DCB4] px-3 py-1 font-bold text-stone-900 hover:bg-[#ebd0a3] transition-colors rounded-xs"
+        {/* 7-Day Calendar Grid */}
+        <div className="border border-[#ede8df] bg-white rounded-md shadow-xs overflow-hidden mb-6 lowercase">
+          <div className="grid grid-cols-7 border-b border-[#ede8df] bg-[#faf8f5] text-center font-mono text-xs">
+            {WEEK_DAYS.map((day, idx) => (
+              <div
+                key={day}
+                className={`py-2.5 border-r last:border-r-0 border-[#ede8df] ${
+                  idx === 0 || idx === 3 ? "font-bold text-stone-900 bg-white" : "text-stone-500"
+                }`}
               >
-                <Plus className="h-3.5 w-3.5" />
-                <span>ADD POST SLOT</span>
-              </button>
-            </div>
+                <span>{day}</span>
+                <span className="block text-[10px] text-stone-400 font-normal">sep {15 + idx}</span>
+              </div>
+            ))}
           </div>
 
-          {/* Quick Notice */}
-          {customQueueNotice && (
-            <motion.div
-              initial={{ opacity: 0, y: -6 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-4 p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-mono flex items-center gap-2 rounded-xs"
-            >
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-              <span>{customQueueNotice}</span>
-            </motion.div>
-          )}
-
-          {/* 7-Day Interactive Columns Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5 mb-8">
-            {DAYS.map((day, idx) => {
-              const slotsForDay = SCHEDULED_ITEMS.filter((s) => s.dayIndex === idx);
-              const isSelectedDay = selectedDayIndex === idx;
+          {/* Day Columns */}
+          <div className="grid grid-cols-1 sm:grid-cols-7 min-h-[220px] divide-y sm:divide-y-0 sm:divide-x divide-[#ede8df]">
+            {WEEK_DAYS.map((day, idx) => {
+              const slotsOnDay = INITIAL_SCHEDULE.filter((s) => s.dayIndex === idx);
 
               return (
-                <button
-                  key={day.name}
-                  onClick={() => {
-                    setSelectedDayIndex(idx);
-                    if (slotsForDay.length > 0) {
-                      setActiveSlotId(slotsForDay[0].id);
-                    }
-                  }}
-                  className={`text-left p-3.5 border transition-all rounded-xs flex flex-col justify-between min-h-[140px] ${
-                    isSelectedDay
-                      ? "border-stone-900 bg-[#faf8f5] shadow-xs"
-                      : "border-[#ede8df] bg-white hover:border-[#dfc39a]"
+                <div
+                  key={day}
+                  className={`p-2 flex flex-col justify-start gap-1.5 ${
+                    slotsOnDay.length > 0 ? "bg-white" : "bg-[#faf8f5]/40"
                   }`}
                 >
-                  {/* Day Header */}
-                  <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-2 font-mono">
-                    <span className="font-bold text-xs text-stone-900">{day.name}</span>
-                    <span className="text-[10px] text-stone-400">{day.date}</span>
-                  </div>
-
-                  {/* Scheduled Mini Slots in Day */}
-                  <div className="my-2 space-y-1.5 flex-1">
-                    {slotsForDay.map((slot) => {
-                      const isActiveSlot = activeSlotId === slot.id;
-                      const isStaggered = slot.scheduleMode === "staggered";
-                      return (
-                        <div
-                          key={slot.id}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedDayIndex(idx);
-                            setActiveSlotId(slot.id);
-                          }}
-                          className={`p-2 rounded-xs border text-[11px] font-mono transition-all ${
-                            isActiveSlot
-                              ? "border-[#dfc39a] bg-[#F4DCB4]/60 font-semibold"
-                              : "border-[#ede8df] bg-white text-stone-700 hover:border-stone-400"
-                          }`}
-                        >
-                          <div className="flex items-center justify-between text-[10px] text-stone-500 mb-1">
-                            <span className="truncate">
-                              {isStaggered ? "⏳ Staggered" : slot.time.split(" ")[0]}
+                  {slotsOnDay.map((slot) => {
+                    const isSelected = selectedSlot.id === slot.id;
+                    return (
+                      <button
+                        key={slot.id}
+                        type="button"
+                        onClick={() => setSelectedSlot(slot)}
+                        className={`text-left p-2.5 border transition-all rounded-md w-full cursor-pointer ${
+                          isSelected
+                            ? "border-stone-900 bg-[#F4DCB4]/30 shadow-2xs"
+                            : "border-[#ede8df] bg-[#faf8f5] hover:border-[#dfc39a]"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between font-mono text-[10px] text-stone-500 mb-1">
+                          <span className="font-semibold text-stone-800 truncate">
+                            {slot.time.split(" ")[0]}
+                          </span>
+                          {slot.scheduleMode === "staggered" && (
+                            <span className="text-[9px] bg-[#dfc39a]/40 px-1 py-0.2 rounded-xs text-stone-800 font-bold">
+                              staggered
                             </span>
-                            <span
-                              className={`h-1.5 w-1.5 rounded-full ${
-                                slot.status === "dispatched"
-                                  ? "bg-emerald-500"
-                                  : slot.status === "optimizing"
-                                    ? "bg-amber-500"
-                                    : "bg-blue-500"
-                              }`}
-                            />
-                          </div>
-                          <div className="font-sans text-stone-900 truncate font-medium text-xs">
-                            {slot.title}
-                          </div>
-                          {/* Platform SVG Icon Pills */}
-                          <div className="flex items-center gap-1.5 mt-1.5">
-                            {slot.platforms.map((p) => (
-                              <PlatformIcon key={p} platform={p} size={12} title={p} />
-                            ))}
-                          </div>
+                          )}
                         </div>
-                      );
-                    })}
 
-                    {slotsForDay.length === 0 && (
-                      <div className="h-full flex items-center justify-center text-[10px] font-mono text-stone-300 py-4">
-                        + Empty slot
-                      </div>
-                    )}
-                  </div>
+                        <div className="font-sans text-xs font-semibold text-stone-900 line-clamp-1 mb-1.5">
+                          {slot.title}
+                        </div>
 
-                  {/* Slot count tag */}
-                  <div className="pt-2 border-t border-dashed border-[#ede8df] text-[10px] font-mono text-stone-400">
-                    {slotsForDay.length} {slotsForDay.length === 1 ? "release" : "releases"}
-                  </div>
-                </button>
+                        {/* Platform Icons Mini Strip */}
+                        <div className="flex items-center gap-1.5 pt-1 border-t border-dashed border-[#ede8df]">
+                          {slot.platforms.map((p) => (
+                            <div
+                              key={p}
+                              className="flex h-5 w-5 items-center justify-center rounded-xs border border-[#ede8df] bg-white shadow-2xs"
+                            >
+                              <PlatformIcon platform={p} size={11} />
+                            </div>
+                          ))}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
               );
             })}
           </div>
+        </div>
 
-          {/* Active Slot Inspection Detail Box with Staggered Visualizer */}
-          <div className="border border-dashed border-[#dfc39a] bg-[#faf8f5] p-5 sm:p-7 rounded-xs">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-dashed border-[#ede8df] pb-4 mb-4 font-mono text-xs">
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-stone-900 uppercase">
-                  ACTIVE QUEUE SLOT: {activeSlot.day} ({selectedTimezone})
-                </span>
-                <span className="text-stone-300">/</span>
-                <span
-                  className={`px-2 py-0.5 rounded-xs uppercase text-[10px] font-bold ${
-                    activeSlot.scheduleMode === "staggered"
-                      ? "bg-[#F4DCB4] text-stone-900 border border-[#dfc39a]"
-                      : "bg-stone-100 text-stone-800 border border-stone-300"
-                  }`}
-                >
-                  {activeSlot.scheduleMode === "staggered"
-                    ? "✨ Staggered Peak Times"
-                    : "⚡ Simultaneous Blast"}
-                </span>
+        {/* Selected Slot Detailed Peak Inspection Card */}
+        {selectedSlot && (
+          <div className="border border-[#ede8df] bg-white p-6 sm:p-7 rounded-md shadow-xs lowercase">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-dashed border-[#ede8df] pb-4 mb-6">
+              <div>
+                <div className="flex items-center gap-2 font-mono text-xs text-stone-500 mb-1">
+                  <CalendarDays className="h-4 w-4 text-stone-700" />
+                  <span className="font-bold text-stone-900">{selectedSlot.day}</span>
+                  <span>·</span>
+                  <span>{selectedSlot.time}</span>
+                </div>
+                <h3 className="text-xl font-bold text-stone-900 font-sans">{selectedSlot.title}</h3>
               </div>
 
-              <div className="flex items-center gap-3 text-stone-500 text-[11px]">
-                <span>Target Apps ({activeSlot.platforms.length}):</span>
-                <div className="flex items-center gap-1.5">
-                  {activeSlot.platforms.map((p) => (
-                    <div
-                      key={p}
-                      className="flex items-center gap-1 bg-white px-2 py-0.5 border border-[#ede8df] rounded-xs text-[10px] font-mono font-bold text-stone-800"
-                    >
-                      <PlatformIcon platform={p} size={12} />
-                      <span className="capitalize">{p}</span>
-                    </div>
-                  ))}
-                </div>
+              <div className="flex items-center gap-2 font-mono text-xs">
+                <span className="border border-[#dfc39a] bg-[#F4DCB4]/40 px-3 py-1 text-stone-900 font-bold rounded-md">
+                  {selectedSlot.scheduleMode === "staggered"
+                    ? "timed audience peak drops"
+                    : "simultaneous release"}
+                </span>
               </div>
             </div>
 
             {/* Post Draft Content */}
-            <div className="bg-white border border-[#ede8df] p-4 rounded-xs mb-4">
-              <h4 className="font-bold text-stone-900 text-sm mb-1">{activeSlot.title}</h4>
-              <p className="font-sans text-stone-700 text-sm leading-relaxed whitespace-pre-line">
-                {activeSlot.content}
-              </p>
+            <div className="mb-6 bg-[#faf8f5] p-3.5 border border-[#ede8df] rounded-md font-sans text-sm text-stone-800 leading-relaxed">
+              <span className="font-mono text-[10px] text-stone-400 block mb-1">post text:</span>
+              &ldquo;{selectedSlot.content}&rdquo;
             </div>
 
-            {/* If Staggered Drops: Per-Platform Timeline */}
-            {activeSlot.staggeredDrops && (
-              <div className="border border-[#ede8df] bg-white p-4 rounded-xs mb-4">
-                <div className="flex items-center justify-between mb-3 text-xs font-mono">
-                  <span className="font-bold text-stone-900 flex items-center gap-1.5">
-                    <Clock className="h-3.5 w-3.5 text-stone-700" />
-                    STAGGERED PLATFORM DISPATCH TIMELINE
-                  </span>
-                  <span className="text-[11px] text-stone-500">
-                    Optimized for peak audience attention windows
-                  </span>
+            {/* If Staggered, show the interactive peak delivery timeline */}
+            {selectedSlot.scheduleMode === "staggered" && selectedSlot.staggeredDrops ? (
+              <div>
+                <div className="font-mono text-xs font-bold text-stone-800 mb-3 flex items-center gap-1.5">
+                  <Sparkles className="h-3.5 w-3.5 text-stone-700" />
+                  <span>staggered platform schedule:</span>
                 </div>
 
-                <div className="space-y-2.5">
-                  {activeSlot.staggeredDrops.map((drop) => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 font-mono text-xs">
+                  {selectedSlot.staggeredDrops.map((drop) => (
                     <div
                       key={drop.platform}
-                      className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 bg-[#faf8f5] border border-[#ede8df] rounded-xs font-mono text-xs"
+                      className="border border-[#ede8df] bg-white p-3.5 rounded-md shadow-2xs space-y-2"
                     >
-                      <div className="flex items-center gap-2.5">
-                        <div className="flex h-6 w-6 items-center justify-center rounded-xs border border-[#ede8df] bg-white shadow-2xs">
-                          <PlatformIcon platform={drop.platform} size={14} />
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="flex h-6 w-6 items-center justify-center rounded-sm border border-[#ede8df] bg-[#faf8f5]">
+                            <PlatformIcon platform={drop.platform} size={14} />
+                          </div>
+                          <span className="font-bold text-stone-900">{drop.name}</span>
                         </div>
-                        <span className="font-bold text-stone-900">{drop.name}</span>
-                        <span className="text-stone-300">·</span>
-                        <span className="text-stone-600 font-semibold">{drop.targetTime}</span>
-                      </div>
-
-                      <div className="flex items-center gap-3 text-[11px]">
-                        <span className="text-stone-500 font-sans italic">{drop.peakReason}</span>
-                        <span
-                          className={`px-2 py-0.5 rounded-xs uppercase text-[9px] font-bold ${
-                            drop.status === "dispatched"
-                              ? "bg-emerald-100 text-emerald-800"
-                              : "bg-blue-100 text-blue-800"
-                          }`}
-                        >
+                        <span className="text-[10px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-xs font-bold">
                           {drop.status}
                         </span>
                       </div>
+
+                      <div className="flex items-center gap-1.5 text-stone-800 font-bold text-sm">
+                        <Clock className="h-3.5 w-3.5 text-[#dfc39a]" />
+                        <span>{drop.targetTime}</span>
+                      </div>
+
+                      <p className="text-[11px] text-stone-500 font-sans leading-snug">
+                        {drop.peakReason}
+                      </p>
                     </div>
                   ))}
                 </div>
               </div>
+            ) : (
+              <div className="flex items-center gap-2 font-mono text-xs text-stone-600">
+                <Layers className="h-4 w-4 text-stone-700" />
+                <span>
+                  simultaneous release across all {selectedSlot.platforms.length} connected channels
+                  at {selectedSlot.time}.
+                </span>
+              </div>
             )}
 
-            {/* Queue Execution Metas */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono text-xs">
-              <div className="bg-white p-3 border border-[#ede8df] rounded-xs">
-                <span className="text-stone-400 block text-[10px] uppercase">Timing Mode</span>
-                <span className="font-bold text-stone-800 text-xs mt-0.5 block">
-                  {activeSlot.scheduleMode === "staggered"
-                    ? "Custom Per-Platform Peak Windows"
-                    : "Exact Instant Broadcast"}
-                </span>
+            {/* Bottom Security Guarantee */}
+            <div className="mt-6 pt-4 border-t border-dashed border-[#ede8df] flex flex-wrap items-center justify-between font-mono text-xs text-stone-500 gap-2">
+              <div className="flex items-center gap-2">
+                <Shield className="h-4 w-4 text-emerald-600" />
+                <span>account safety: 100% private &amp; verified</span>
               </div>
-
-              <div className="bg-white p-3 border border-[#ede8df] rounded-xs">
-                <span className="text-stone-400 block text-[10px] uppercase">Auth Mode</span>
-                <span className="font-bold text-stone-800 text-xs mt-0.5 block">
-                  OAuth 2.0 PKCE Session Vault
-                </span>
-              </div>
-
-              <div className="bg-white p-3 border border-[#ede8df] rounded-xs">
-                <span className="text-stone-400 block text-[10px] uppercase">Retry Engine</span>
-                <span className="font-bold text-emerald-700 text-xs mt-0.5 block">
-                  Independent Platform Workers
-                </span>
-              </div>
+              <div>independent channel publish queues</div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

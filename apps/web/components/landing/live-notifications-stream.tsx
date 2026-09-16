@@ -20,142 +20,141 @@ interface LiveNotification {
   actionText: string;
   postTitle: string;
   timeAgo: string;
-  latency: string;
-  status: "success" | "queued";
+  statusText: string;
 }
 
 const INITIAL_NOTIFICATIONS: LiveNotification[] = [
   {
     id: "notif-yt-1",
     platform: "youtube",
-    platformName: "YouTube",
-    actionText: "Scheduled YouTube Premiere & Community Drop",
-    postTitle: "New Architecture Deep Dive is premiering this Thursday at 10 AM PST!",
+    platformName: "youtube",
+    actionText: "scheduled premiere & community post",
+    postTitle: "new architecture deep dive is premiering this thursday at 10 am pst!",
     timeAgo: "2s ago",
-    latency: "94ms",
-    status: "success",
+    statusText: "scheduled",
   },
   {
     id: "notif-tw-1",
     platform: "twitch",
-    platformName: "Twitch",
-    actionText: "Dispatched Go-Live Stream Notification",
-    postTitle: "🔴 Live now: Building a distributed queuing engine in Rust & TypeScript!",
+    platformName: "twitch",
+    actionText: "sent go-live stream alert",
+    postTitle: "🔴 live now: building a distributed queuing engine in rust & typescript!",
     timeAgo: "5s ago",
-    latency: "82ms",
-    status: "success",
+    statusText: "live now",
   },
   {
     id: "notif-ig-1",
     platform: "instagram",
-    platformName: "Instagram",
-    actionText: "Published Reel & Caption to Instagram",
-    postTitle: "5 production architecture lessons we learned while scaling to 1M requests 💡",
+    platformName: "instagram",
+    actionText: "published reel & caption",
+    postTitle: "5 production architecture lessons we learned while scaling to 1m requests 💡",
     timeAgo: "9s ago",
-    latency: "115ms",
-    status: "success",
+    statusText: "published",
   },
   {
     id: "notif-1",
     platform: "peerlist",
-    platformName: "Peerlist",
-    actionText: "Posted to Peerlist Maker Feed",
-    postTitle: "Introducing our atomic multi-network publishing queue for creators 🚀",
+    platformName: "peerlist",
+    actionText: "shared to maker community",
+    postTitle: "introducing our atomic multi-network publishing queue for creators 🚀",
     timeAgo: "14s ago",
-    latency: "84ms",
-    status: "success",
+    statusText: "published",
   },
   {
     id: "notif-2",
     platform: "x",
-    platformName: "X (Twitter)",
-    actionText: "Thread (1/4) Dispatched to X",
-    postTitle: "Why we killed manual copy-pasting across 8 tabs: an engineering breakdown...",
+    platformName: "x (twitter)",
+    actionText: "published thread (1/4)",
+    postTitle: "why we killed manual copy-pasting across 8 tabs: an engineering breakdown...",
     timeAgo: "21s ago",
-    latency: "112ms",
-    status: "success",
+    statusText: "published",
   },
   {
     id: "notif-3",
     platform: "linkedin",
-    platformName: "LinkedIn",
-    actionText: "Published to LinkedIn Professional",
+    platformName: "linkedin",
+    actionText: "published story post",
     postTitle:
-      "How solo creators scale brand reach without burning 10 hours a week on social media.",
+      "how solo creators scale brand reach without burning 10 hours a week on social media.",
     timeAgo: "28s ago",
-    latency: "96ms",
-    status: "success",
+    statusText: "published",
   },
   {
     id: "notif-4",
     platform: "reddit",
-    platformName: "Reddit",
-    actionText: "Submitted to r/SideProject",
-    postTitle: "We built an open-source calm multi-channel distribution studio.",
+    platformName: "reddit",
+    actionText: "posted in r/sideproject",
+    postTitle: "we built an open-source calm multi-channel distribution studio.",
     timeAgo: "35s ago",
-    latency: "148ms",
-    status: "success",
+    statusText: "published",
   },
   {
     id: "notif-5",
     platform: "bluesky",
-    platformName: "Bluesky",
-    actionText: "Posted to Bluesky AT Protocol",
-    postTitle: "Federated cross-posting is now live with zero password storage 🌐",
+    platformName: "bluesky",
+    actionText: "published open post",
+    postTitle: "federated cross-posting is now live with zero password storage 🌐",
     timeAgo: "42s ago",
-    latency: "76ms",
-    status: "success",
+    statusText: "published",
   },
 ];
 
 const POOL_OF_UPDATES = [
   {
     platform: "youtube" as const,
-    platformName: "YouTube",
-    actionText: "Scheduled YouTube Premiere",
-    postTitle: "Episode 14 is rendering: Behind the scenes building SocioConnect.",
+    platformName: "youtube",
+    actionText: "scheduled video premiere",
+    postTitle: "episode 14 is rendering: behind the scenes building socioconnect.",
+    statusText: "scheduled",
   },
   {
     platform: "twitch" as const,
-    platformName: "Twitch",
-    actionText: "Stream Alert Dispatched",
-    postTitle: "Twitch stream live in 10 mins: Live code review with community!",
+    platformName: "twitch",
+    actionText: "stream alert sent",
+    postTitle: "twitch stream live in 10 mins: live code review with community!",
+    statusText: "live now",
   },
   {
     platform: "instagram" as const,
-    platformName: "Instagram",
-    actionText: "Instagram Reel Caption Live",
-    postTitle: "Check out the new design system dark mode preview on our reel! ✨",
+    platformName: "instagram",
+    actionText: "reel caption published",
+    postTitle: "check out the new design system dark mode preview on our reel! ✨",
+    statusText: "published",
   },
   {
     platform: "peerlist" as const,
-    platformName: "Peerlist",
-    actionText: "Maker Update Dispatched",
-    postTitle: "Shipped v1.2 with automated character meter validations across 8 platforms.",
+    platformName: "peerlist",
+    actionText: "maker update published",
+    postTitle: "shipped v1.2 with automated character meter validations across 8 platforms.",
+    statusText: "published",
   },
   {
     platform: "x" as const,
-    platformName: "X (Twitter)",
-    actionText: "New Post Published",
-    postTitle: "Single-point-of-failure distribution is officially obsolete.",
+    platformName: "x (twitter)",
+    actionText: "new post published",
+    postTitle: "single-point-of-failure distribution is officially obsolete.",
+    statusText: "published",
   },
   {
     platform: "linkedin" as const,
-    platformName: "LinkedIn",
-    actionText: "Founder Article Posted",
-    postTitle: "Why asynchronous worker queues make social distribution uncrashable.",
+    platformName: "linkedin",
+    actionText: "founder article posted",
+    postTitle: "why asynchronous worker queues make social distribution uncrashable.",
+    statusText: "published",
   },
   {
     platform: "reddit" as const,
-    platformName: "Reddit",
-    actionText: "Community Discussion Started",
-    postTitle: "Show r/webdev: How we built decoupled retry backoff into OAuth webhooks.",
+    platformName: "reddit",
+    actionText: "community discussion started",
+    postTitle: "show r/webdev: how we built decoupled retry backoff into oauth webhooks.",
+    statusText: "published",
   },
   {
     platform: "bluesky" as const,
-    platformName: "Bluesky",
-    actionText: "Signed Skeet Emitted",
-    postTitle: "Open protocols are winning the distribution wars. Build open.",
+    platformName: "bluesky",
+    actionText: "open feed post published",
+    postTitle: "open protocols are winning the distribution wars. build open.",
+    statusText: "published",
   },
 ];
 
@@ -170,7 +169,6 @@ export function LiveNotificationsStream() {
 
     const interval = setInterval(() => {
       const randomUpdate = POOL_OF_UPDATES[Math.floor(Math.random() * POOL_OF_UPDATES.length)];
-      const randomLatency = `${Math.floor(Math.random() * 60) + 65}ms`;
 
       const newNotif: LiveNotification = {
         id: `notif-${Date.now()}-${Math.random().toString(36).substring(2, 5)}`,
@@ -179,8 +177,7 @@ export function LiveNotificationsStream() {
         actionText: randomUpdate.actionText,
         postTitle: randomUpdate.postTitle,
         timeAgo: "just now",
-        latency: randomLatency,
-        status: "success",
+        statusText: randomUpdate.statusText,
       };
 
       setNotifications((prev) => [newNotif, ...prev.slice(0, 11)]);
@@ -195,15 +192,15 @@ export function LiveNotificationsStream() {
       : notifications.filter((n) => n.platform === activeFilter);
 
   const PLATFORMS_FILTER = [
-    { id: "all", name: "All Channels" },
-    { id: "youtube", name: "YouTube" },
-    { id: "twitch", name: "Twitch" },
-    { id: "instagram", name: "Instagram" },
-    { id: "x", name: "X" },
-    { id: "linkedin", name: "LinkedIn" },
-    { id: "peerlist", name: "Peerlist" },
-    { id: "reddit", name: "Reddit" },
-    { id: "bluesky", name: "Bluesky" },
+    { id: "all", name: "all channels" },
+    { id: "youtube", name: "youtube" },
+    { id: "twitch", name: "twitch" },
+    { id: "instagram", name: "instagram" },
+    { id: "x", name: "x" },
+    { id: "linkedin", name: "linkedin" },
+    { id: "peerlist", name: "peerlist" },
+    { id: "reddit", name: "reddit" },
+    { id: "bluesky", name: "bluesky" },
   ];
 
   function triggerManualSimulate() {
@@ -215,8 +212,7 @@ export function LiveNotificationsStream() {
       actionText: randomUpdate.actionText,
       postTitle: randomUpdate.postTitle,
       timeAgo: "just now",
-      latency: "72ms",
-      status: "success",
+      statusText: randomUpdate.statusText,
     };
     setNotifications((prev) => [newNotif, ...prev.slice(0, 11)]);
   }
@@ -228,63 +224,66 @@ export function LiveNotificationsStream() {
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10 lowercase">
           <div className="max-w-2xl">
-            <div className="flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wider text-stone-700">
+            <div className="flex items-center gap-2 font-mono text-xs font-semibold text-stone-700">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
-              REAL-TIME OUTBOUND STREAM
+              <span>real-time publishing stream</span>
             </div>
             <h2 className="mt-3 text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
-              Zero feed reading. Instant API delivery.
+              watch your posts go live in real-time.
             </h2>
             <p className="mt-3 text-sm sm:text-base text-stone-600 leading-relaxed">
-              SocioConnect never reads your personal feed or scrapes follower timelines. We only
-              execute outbound developer API dispatches with atomic retry backoff.
+              publish your video drops, live stream alerts, carousel captions, and threads
+              effortlessly across every audience — without ever juggling multiple browser windows.
             </p>
           </div>
 
           {/* Stream Controls */}
           <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
             <button
+              type="button"
               onClick={() => setIsPaused(!isPaused)}
-              className="inline-flex items-center gap-1.5 border border-[#ede8df] bg-[#faf8f5] px-3 py-2 text-stone-700 hover:text-stone-900 hover:border-stone-400 transition-colors rounded-xs shadow-2xs"
+              className="inline-flex items-center gap-1.5 border border-[#ede8df] bg-[#faf8f5] px-3.5 py-1.5 text-stone-700 hover:text-stone-900 hover:border-stone-400 transition-colors rounded-md shadow-2xs cursor-pointer"
             >
               {isPaused ? (
                 <>
                   <Play className="h-3.5 w-3.5 text-emerald-600" />
-                  <span>RESUME STREAM</span>
+                  <span>resume stream</span>
                 </>
               ) : (
                 <>
                   <Pause className="h-3.5 w-3.5 text-stone-500" />
-                  <span>PAUSE STREAM</span>
+                  <span>pause stream</span>
                 </>
               )}
             </button>
 
             <button
+              type="button"
               onClick={triggerManualSimulate}
-              className="inline-flex items-center gap-1.5 border border-[#dfc39a] bg-[#F4DCB4] px-3 py-2 font-bold text-stone-900 hover:bg-[#ebd0a3] transition-colors rounded-xs shadow-2xs"
+              className="inline-flex items-center gap-1.5 border border-[#dfc39a] bg-[#F4DCB4] px-3.5 py-1.5 font-bold text-stone-900 hover:bg-[#ebd0a3] transition-colors rounded-md shadow-2xs cursor-pointer"
             >
               <Zap className="h-3.5 w-3.5" />
-              <span>SIMULATE BROADCAST</span>
+              <span>test simulated post</span>
             </button>
           </div>
         </div>
 
         {/* Channel Filter Strip */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-6 scrollbar-none font-mono text-xs">
-          <span className="text-stone-400 uppercase text-[10px] mr-1 shrink-0">FILTER:</span>
+        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-6 scrollbar-none font-mono text-xs lowercase">
+          <span className="text-stone-400 text-[10px] mr-1 shrink-0">filter:</span>
           {PLATFORMS_FILTER.map((filter) => (
             <button
               key={filter.id}
+              type="button"
               onClick={() => setActiveFilter(filter.id)}
-              className={`px-3 py-1 border transition-all rounded-xs shrink-0 flex items-center gap-1.5 ${
+              className={`px-3 py-1 border transition-all rounded-md shrink-0 flex items-center gap-1.5 cursor-pointer ${
                 activeFilter === filter.id
-                  ? "border-stone-900 bg-stone-900 text-white font-bold"
+                  ? "border-stone-900 bg-stone-900 text-white font-bold shadow-2xs"
                   : "border-[#ede8df] bg-[#faf8f5] text-stone-600 hover:border-stone-400"
               }`}
             >
@@ -295,19 +294,19 @@ export function LiveNotificationsStream() {
         </div>
 
         {/* Live Notification Cards Stream Container */}
-        <div className="relative border border-[#ede8df] bg-[#faf8f5] p-4 sm:p-6 rounded-xs shadow-xs min-h-[460px] overflow-hidden">
+        <div className="relative border border-[#ede8df] bg-[#faf8f5] p-4 sm:p-6 rounded-md shadow-xs min-h-[460px] overflow-hidden lowercase">
           {/* Top Bar inside Stream Terminal */}
           <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-3 mb-4 font-mono text-xs text-stone-500">
             <div className="flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="font-bold text-stone-800 uppercase">ACTIVE BROADCAST TELEMETRY</span>
+              <span className="font-bold text-stone-800">live posting activity</span>
               <span className="text-stone-400 hidden sm:inline">
-                · {filteredNotifications.length} Events Logged
+                · {filteredNotifications.length} posts active
               </span>
             </div>
             <div className="flex items-center gap-1.5 text-[11px] text-stone-600">
               <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
-              <span>Zero Feed Reading · Outbound Write API Only</span>
+              <span>100% private · no reading your private dms</span>
             </div>
           </div>
 
@@ -322,12 +321,12 @@ export function LiveNotificationsStream() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.35, ease: "easeOut" }}
-                  className="group relative border border-[#ede8df] bg-white p-3.5 sm:p-4 rounded-xs shadow-2xs hover:border-[#dfc39a] transition-all"
+                  className="group relative border border-[#ede8df] bg-white p-3.5 sm:p-4 rounded-md shadow-2xs hover:border-[#dfc39a] transition-all"
                 >
                   <div className="flex items-start justify-between gap-4">
                     {/* Left: Platform Logo & Action Title */}
                     <div className="flex items-start gap-3 min-w-0">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-xs border border-[#ede8df] bg-[#faf8f5] shrink-0 shadow-2xs">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-sm border border-[#ede8df] bg-[#faf8f5] shrink-0 shadow-2xs">
                         <PlatformIcon platform={item.platform} size={16} />
                       </div>
 
@@ -348,11 +347,11 @@ export function LiveNotificationsStream() {
                       </div>
                     </div>
 
-                    {/* Right: Latency & Timestamp */}
+                    {/* Right: Status & Timestamp */}
                     <div className="flex flex-col items-end shrink-0 font-mono text-[11px] text-stone-400">
                       <div className="flex items-center gap-1.5 text-emerald-700 font-bold">
                         <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
-                        <span>{item.latency}</span>
+                        <span>{item.statusText}</span>
                       </div>
                       <span className="mt-1 text-[10px] text-stone-400">{item.timeAgo}</span>
                     </div>

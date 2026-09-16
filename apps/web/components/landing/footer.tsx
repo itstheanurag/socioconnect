@@ -3,56 +3,56 @@ import { ShieldCheck, Heart } from "lucide-react";
 
 export function LandingFooter() {
   return (
-    <footer className="border-t border-[#ede8df] bg-[#faf8f5] py-12 lg:py-16 text-stone-600 font-mono text-xs">
+    <footer className="border-t border-[#ede8df] bg-[#faf8f5] py-12 lg:py-16 text-stone-600 font-mono text-xs lowercase">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           {/* Brand Col */}
           <div className="space-y-3">
             <Link href="/" className="inline-flex items-center gap-2">
-              <span className="flex h-6 w-6 items-center justify-center border border-dashed border-[#dfc39a] bg-[#F4DCB4] font-mono text-xs font-bold text-stone-900 rounded-xs shadow-2xs">
-                S
+              <span className="flex h-6 w-6 items-center justify-center border border-dashed border-[#dfc39a] bg-[#F4DCB4] font-mono text-xs font-bold text-stone-900 rounded-sm shadow-2xs">
+                s
               </span>
               <span className="font-mono text-sm font-bold tracking-tight text-stone-900">
-                SOCIOCONNECT
+                socioconnect
               </span>
             </Link>
             <p className="text-xs text-stone-500 font-sans leading-relaxed">
-              Calm multi-network cross-posting studio for YouTube, Twitch, Instagram, X, LinkedIn,
-              Peerlist &amp; Reddit creators.
+              calm multi-network cross-posting studio for youtube, twitch, instagram, x, linkedin,
+              peerlist &amp; reddit creators.
             </p>
             <div className="flex items-center gap-2 text-stone-700 font-semibold text-[11px]">
               <ShieldCheck className="h-4 w-4 text-emerald-600" />
-              <span>Zero Passwords Stored Guarantee</span>
+              <span>zero passwords stored guarantee</span>
             </div>
           </div>
 
           {/* Product Links */}
           <div>
-            <div className="font-bold text-stone-900 uppercase text-[11px] mb-3">Product</div>
+            <div className="font-bold text-stone-900 text-[11px] mb-3">product</div>
             <ul className="space-y-2 text-xs">
               <li>
                 <Link href="/app" className="hover:text-stone-900 transition-colors">
-                  Creator Studio Workbench
+                  creator studio workbench
                 </Link>
               </li>
               <li>
                 <a href="#live-stream" className="hover:text-stone-900 transition-colors">
-                  Live Notifications Stream
+                  live post stream
                 </a>
               </li>
               <li>
                 <a href="#calendar" className="hover:text-stone-900 transition-colors">
-                  Visual Content Calendar
+                  visual content calendar
                 </a>
               </li>
               <li>
                 <a href="#connectors" className="hover:text-stone-900 transition-colors">
-                  Zero-Knowledge Connectors
+                  private connections
                 </a>
               </li>
               <li>
                 <a href="#pricing" className="hover:text-stone-900 transition-colors">
-                  Transparent Pricing
+                  transparent pricing
                 </a>
               </li>
             </ul>
@@ -60,48 +60,44 @@ export function LandingFooter() {
 
           {/* Supported Channels */}
           <div>
-            <div className="font-bold text-stone-900 uppercase text-[11px] mb-3">
-              Supported Channels
-            </div>
+            <div className="font-bold text-stone-900 text-[11px] mb-3">supported channels</div>
             <ul className="space-y-2 text-xs">
               <li>
-                <span className="text-stone-700">YouTube (Video &amp; Community)</span>
+                <span className="text-stone-700">youtube (video &amp; community)</span>
               </li>
               <li>
-                <span className="text-stone-700">Twitch (Live Alerts &amp; Clips)</span>
+                <span className="text-stone-700">twitch (live alerts &amp; clips)</span>
               </li>
               <li>
-                <span className="text-stone-700">Instagram (Reels &amp; Carousels)</span>
+                <span className="text-stone-700">instagram (reels &amp; carousels)</span>
               </li>
               <li>
-                <span className="text-stone-700">LinkedIn &amp; Peerlist</span>
+                <span className="text-stone-700">linkedin &amp; peerlist</span>
               </li>
               <li>
-                <span className="text-stone-700">X (Twitter), Reddit &amp; Bluesky</span>
+                <span className="text-stone-700">x (twitter), reddit &amp; bluesky</span>
               </li>
             </ul>
           </div>
 
-          {/* Security & Architecture */}
+          {/* Privacy & Guarantees */}
           <div>
-            <div className="font-bold text-stone-900 uppercase text-[11px] mb-3">
-              Security &amp; Architecture
-            </div>
+            <div className="font-bold text-stone-900 text-[11px] mb-3">privacy &amp; safety</div>
             <ul className="space-y-2 text-xs">
               <li>
-                <span className="text-stone-700">OAuth 2.0 PKCE Session Handshake</span>
+                <span className="text-stone-700">100% private account logins</span>
               </li>
               <li>
-                <span className="text-stone-700">AES-256-GCM Vault Encryption</span>
+                <span className="text-stone-700">zero passwords requested or stored</span>
               </li>
               <li>
-                <span className="text-stone-700">Zero Private Feed Scraping</span>
+                <span className="text-stone-700">zero access to private dms or feeds</span>
               </li>
               <li>
-                <span className="text-stone-700">Independent Asynchronous Workers</span>
+                <span className="text-stone-700">independent channel publishing</span>
               </li>
               <li>
-                <span className="text-stone-700">Strict Rate-Limit Backoff Retries</span>
+                <span className="text-stone-700">one-click connection revocation</span>
               </li>
             </ul>
           </div>
@@ -110,11 +106,11 @@ export function LandingFooter() {
         {/* Bottom copyright */}
         <div className="border-t border-dashed border-[#ede8df] pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-stone-500">
           <div className="flex items-center gap-1.5">
-            <span>Built for creators with</span>
+            <span>built for creators with</span>
             <Heart className="h-3 w-3 text-red-500 fill-red-500" />
-            <span>by the SocioConnect team</span>
+            <span>by the socioconnect team</span>
           </div>
-          <div>© {new Date().getFullYear()} SocioConnect Inc. All rights reserved.</div>
+          <div>© {new Date().getFullYear()} socioconnect inc. all rights reserved.</div>
         </div>
       </div>
     </footer>

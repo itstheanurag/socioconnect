@@ -1,65 +1,50 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { PenTool, KeyRound, Calendar, Send, CheckCircle2, ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { PenTool, ShieldCheck, Clock, Send, CheckCircle2 } from "lucide-react";
 import { PlatformIcon } from "./platform-icons";
-
-interface WorkflowStep {
-  number: string;
-  badge: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  points: string[];
-  metricLabel: string;
-  metricValue: string;
-  icon: React.ReactNode;
-  visualSnippet: React.ReactNode;
-}
 
 export function ScrollWorkflow() {
   const [activeStep, setActiveStep] = useState(0);
 
-  const STEPS: WorkflowStep[] = [
+  const steps = [
     {
       number: "01",
-      badge: "DRAFT",
-      title: "Write in One Calm Editor",
-      subtitle: "Zero tab-switching, zero distraction.",
+      badge: "compose",
+      title: "one clean creator studio",
+      subtitle: "never rewrite the same post in 8 different tabs.",
       description:
-        "Draft your video launch story, stream alert, or thread in a clean composer. Real-time character meters track platform limits for YouTube, Instagram, LinkedIn, and X.",
+        "draft your video launch, community drop, reel caption, or thread in one quiet, focused workspace. smart character limits for youtube, instagram, and x ensure your text always fits perfectly.",
       points: [
-        "Live character meters for YouTube (5000c), Instagram (2200c), and X (280c)",
-        "Automatic thread breaks and splitters for long-form thoughts",
-        "Unified media attachments for video thumbnails, reels & images",
+        "live character meters for youtube (5000c), instagram (2200c), and x (280c)",
+        "automatic thread breaks and splitters for long-form thoughts",
+        "unified media attachments for video thumbnails, reels & images",
       ],
-      metricLabel: "Time Saved",
-      metricValue: "45 min / day",
+      metricLabel: "time saved",
+      metricValue: "85% less friction",
       icon: <PenTool className="h-5 w-5 text-stone-800" />,
       visualSnippet: (
-        <div className="border border-[#ede8df] bg-[#faf8f5] p-5 rounded-xs space-y-3 font-mono text-xs">
+        <div className="border border-[#ede8df] bg-[#faf8f5] p-5 rounded-md space-y-3 font-mono text-xs lowercase">
           <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-2 text-stone-500">
-            <span className="font-bold text-stone-800">UNIFIED COMPOSER BUFFER</span>
-            <span className="text-emerald-700 font-semibold">● AUTO-SAVED</span>
+            <span>unified post composer</span>
+            <span className="text-emerald-700 font-semibold">● 8 channels ready</span>
           </div>
-          <div className="bg-white p-3 border border-[#ede8df] rounded-xs font-sans text-stone-800 text-xs leading-relaxed">
-            &ldquo;Building in public is much easier when you don&apos;t have to copy-paste across 8
-            tabs every morning. Write once, verify budgets, dispatch everywhere.&rdquo;
+          <div className="bg-white p-3 border border-[#ede8df] rounded-sm font-sans text-xs text-stone-800 leading-relaxed">
+            &ldquo;excited to share our newest video! behind the scenes breakdown of creative
+            workflows and channel scheduling.&rdquo;
           </div>
           <div className="flex flex-wrap gap-2 text-[10px]">
-            <span className="bg-white px-2.5 py-1 border border-[#ede8df] text-stone-700 flex items-center gap-1.5 rounded-xs">
+            <span className="bg-white px-2 py-0.5 border border-[#ede8df] rounded-xs text-stone-600 flex items-center gap-1">
               <PlatformIcon platform="youtube" size={13} />
-              <span>YouTube: Ready</span>
+              <span>youtube: 4,874 left</span>
             </span>
-            <span className="bg-white px-2.5 py-1 border border-[#ede8df] text-stone-700 flex items-center gap-1.5 rounded-xs">
+            <span className="bg-white px-2 py-0.5 border border-[#ede8df] rounded-xs text-stone-600 flex items-center gap-1">
               <PlatformIcon platform="twitch" size={13} />
-              <span>Twitch: Alert Set</span>
+              <span>twitch: 374 left</span>
             </span>
-            <span className="bg-white px-2.5 py-1 border border-[#ede8df] text-stone-700 flex items-center gap-1.5 rounded-xs">
+            <span className="bg-white px-2 py-0.5 border border-[#ede8df] rounded-xs text-stone-600 flex items-center gap-1">
               <PlatformIcon platform="instagram" size={13} />
-              <span>Instagram: Ready</span>
+              <span>instagram: 2,074 left</span>
             </span>
           </div>
         </div>
@@ -67,46 +52,46 @@ export function ScrollWorkflow() {
     },
     {
       number: "02",
-      badge: "SECURITY",
-      title: "Zero-Knowledge Connectors",
-      subtitle: "We never take or store your passwords.",
+      badge: "connect",
+      title: "100% private account logins",
+      subtitle: "we never ask for or store your passwords.",
       description:
-        "Connect YouTube, Twitch, Instagram, X, LinkedIn, Reddit, and Peerlist directly through official OAuth 2.0 PKCE. SocioConnect only requests write permissions and stores tokens in hardware-grade AES-256-GCM encrypted vaults.",
+        "connect directly through official google, twitch, meta, linkedin, and x login dialogs. we only ask for permission to publish your posts — never to read your private dms, scrape your feeds, or browse your followers.",
       points: [
-        "100% official Google, Twitch, Meta & X OAuth 2.0 PKCE authorization",
-        "AES-256-GCM encrypted token vaults with secret rotation",
-        "Strict outbound write-only scopes — zero feed reading or scraping",
+        "connect securely through official google, twitch, meta & x login dialogs",
+        "encrypted connections that you can revoke at any time with one click",
+        "strict posting permissions — zero reading of private dms or personal feeds",
       ],
-      metricLabel: "Passwords Stored",
-      metricValue: "0 (Zero)",
-      icon: <KeyRound className="h-5 w-5 text-stone-800" />,
+      metricLabel: "stored passwords",
+      metricValue: "zero passwords",
+      icon: <ShieldCheck className="h-5 w-5 text-stone-800" />,
       visualSnippet: (
-        <div className="border border-[#ede8df] bg-[#faf8f5] p-5 rounded-xs space-y-3 font-mono text-xs">
+        <div className="border border-[#ede8df] bg-[#faf8f5] p-5 rounded-md space-y-2 font-mono text-xs lowercase">
           <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-2 text-stone-500">
-            <span className="font-bold text-stone-800">VAULT KEY ENCRYPTION</span>
-            <span className="text-emerald-700 font-semibold">AES-256-GCM</span>
+            <span>official creator connections</span>
+            <span className="text-emerald-700 font-semibold">● 100% private</span>
           </div>
-          <div className="space-y-2">
-            <div className="bg-white p-2.5 border border-[#ede8df] rounded-xs flex items-center justify-between text-xs">
-              <span className="flex items-center gap-2 font-bold text-stone-800">
+          <div className="space-y-1.5">
+            <div className="bg-white p-2 border border-[#ede8df] rounded-sm flex items-center justify-between text-xs">
+              <span className="flex items-center gap-2 font-sans font-semibold text-stone-800">
                 <PlatformIcon platform="youtube" size={14} />
-                <span>YouTube Google OAuth 2.0</span>
+                <span>youtube creator channel</span>
               </span>
-              <span className="text-emerald-700 font-semibold text-[11px]">✓ Verified</span>
+              <span className="text-emerald-700 font-mono text-[10px] font-bold">● connected</span>
             </div>
-            <div className="bg-white p-2.5 border border-[#ede8df] rounded-xs flex items-center justify-between text-xs">
-              <span className="flex items-center gap-2 font-bold text-stone-800">
+            <div className="bg-white p-2 border border-[#ede8df] rounded-sm flex items-center justify-between text-xs">
+              <span className="flex items-center gap-2 font-sans font-semibold text-stone-800">
                 <PlatformIcon platform="twitch" size={14} />
-                <span>Twitch Stream Token</span>
+                <span>twitch stream alerts</span>
               </span>
-              <span className="text-emerald-700 font-semibold text-[11px]">✓ Verified</span>
+              <span className="text-emerald-700 font-mono text-[10px] font-bold">● connected</span>
             </div>
-            <div className="bg-white p-2.5 border border-[#ede8df] rounded-xs flex items-center justify-between text-xs">
-              <span className="flex items-center gap-2 font-bold text-stone-800">
+            <div className="bg-white p-2 border border-[#ede8df] rounded-sm flex items-center justify-between text-xs">
+              <span className="flex items-center gap-2 font-sans font-semibold text-stone-800">
                 <PlatformIcon platform="instagram" size={14} />
-                <span>Instagram Creator Graph</span>
+                <span>instagram profile</span>
               </span>
-              <span className="text-emerald-700 font-semibold text-[11px]">✓ Verified</span>
+              <span className="text-emerald-700 font-mono text-[10px] font-bold">● connected</span>
             </div>
           </div>
         </div>
@@ -114,46 +99,46 @@ export function ScrollWorkflow() {
     },
     {
       number: "03",
-      badge: "STAGGER",
-      title: "Same Post, Staggered Peak Times",
-      subtitle: "Hit your audience when they are actually online.",
+      badge: "schedule",
+      title: "same post, staggered peak times",
+      subtitle: "hit your viewers when they are actually online.",
       description:
-        "Your LinkedIn audience checks posts at 9 AM, but your Twitch stream or YouTube video performs best in the afternoon or evening. SocioConnect lets you schedule a single post to go out simultaneously or staggered at custom peak hours.",
+        "your linkedin audience scrolls during morning coffee, while your youtube subscribers and twitch viewers peak in the afternoon and evening. choose between instant posting or staggered peak hours.",
       points: [
-        "Choose between instant simultaneous blast or staggered per-platform peak hours",
-        "Multi-timezone scheduling engine (UTC, PST, EST, IST, GMT)",
-        "Automated queue cadence that spaces out announcements naturally",
+        "choose between instant posting or timed drops for peak engagement",
+        "automatic timezone scheduling so you never have to do mental math",
+        "spread out announcements naturally so your fans never feel spammed",
       ],
-      metricLabel: "Engagement Lift",
-      metricValue: "3.4x Peak",
-      icon: <Calendar className="h-5 w-5 text-stone-800" />,
+      metricLabel: "audience timing",
+      metricValue: "peak attention",
+      icon: <Clock className="h-5 w-5 text-stone-800" />,
       visualSnippet: (
-        <div className="border border-[#ede8df] bg-[#faf8f5] p-5 rounded-xs space-y-3 font-mono text-xs">
+        <div className="border border-[#ede8df] bg-[#faf8f5] p-5 rounded-md space-y-2 font-mono text-xs lowercase">
           <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-2 text-stone-500">
-            <span className="font-bold text-stone-800">STAGGERED CADENCE MAP</span>
-            <span className="text-blue-700 font-semibold">PEAK WINDOWS</span>
+            <span>staggered timing queue</span>
+            <span className="text-stone-700 font-semibold">today&apos;s drops</span>
           </div>
-          <div className="space-y-1.5 text-[11px]">
-            <div className="bg-white p-2 border border-[#ede8df] rounded-xs flex items-center justify-between">
+          <div className="space-y-1.5 font-mono text-xs">
+            <div className="bg-white p-2 border border-[#ede8df] rounded-sm flex items-center justify-between">
               <span className="flex items-center gap-2 font-bold text-stone-800">
                 <PlatformIcon platform="linkedin" size={13} />
-                <span>LinkedIn</span>
+                <span>linkedin</span>
               </span>
-              <span className="text-stone-500">08:30 AM (Morning Coffee)</span>
+              <span className="text-stone-500">08:30 am (morning read)</span>
             </div>
-            <div className="bg-white p-2 border border-[#ede8df] rounded-xs flex items-center justify-between">
+            <div className="bg-white p-2 border border-[#ede8df] rounded-sm flex items-center justify-between">
               <span className="flex items-center gap-2 font-bold text-stone-800">
                 <PlatformIcon platform="youtube" size={13} />
-                <span>YouTube</span>
+                <span>youtube</span>
               </span>
-              <span className="text-stone-500">03:00 PM (Afternoon Surge)</span>
+              <span className="text-stone-500">04:00 pm (premiere drop)</span>
             </div>
-            <div className="bg-white p-2 border border-[#ede8df] rounded-xs flex items-center justify-between">
+            <div className="bg-white p-2 border border-[#ede8df] rounded-sm flex items-center justify-between">
               <span className="flex items-center gap-2 font-bold text-stone-800">
                 <PlatformIcon platform="twitch" size={13} />
-                <span>Twitch</span>
+                <span>twitch</span>
               </span>
-              <span className="text-stone-500">06:30 PM (Evening Live)</span>
+              <span className="text-stone-500">06:30 pm (evening live)</span>
             </div>
           </div>
         </div>
@@ -161,45 +146,51 @@ export function ScrollWorkflow() {
     },
     {
       number: "04",
-      badge: "DISPATCH",
-      title: "Fault-Isolated Multi-Network Drops",
-      subtitle: "One platform outage never ruins your launch.",
+      badge: "publish",
+      title: "worry-free automated publishing",
+      subtitle: "one slow network never ruins your release.",
       description:
-        "Every video and post channel publishes via independent worker tasks. If X or Reddit suffers a temporary rate limit, your YouTube, Twitch, and Instagram announcements go live on time with automatic retry backoff.",
+        "each channel posts independently. if one platform has temporary downtime or a slow server, your other announcements go live smoothly on time with automatic background retries.",
       points: [
-        "Decoupled atomic worker architecture for every connected creator network",
-        "Automatic retry with exponential backoff on 429 and 503 errors",
-        "Instant delivery telemetry and direct post URLs",
+        "independent delivery across all your connected social accounts",
+        "automatic background retry if any platform is temporarily busy",
+        "direct links to view your live posts immediately after publishing",
       ],
-      metricLabel: "Failure Blast Radius",
-      metricValue: "0% Spillover",
+      metricLabel: "publishing reliability",
+      metricValue: "100% peace of mind",
       icon: <Send className="h-5 w-5 text-stone-800" />,
       visualSnippet: (
-        <div className="border border-[#ede8df] bg-[#faf8f5] p-5 rounded-xs space-y-2 font-mono text-xs">
+        <div className="border border-[#ede8df] bg-[#faf8f5] p-5 rounded-md space-y-2 font-mono text-xs lowercase">
           <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-2 text-stone-500">
-            <span className="font-bold text-stone-800">PARALLEL WORKER STATUS</span>
-            <span className="text-emerald-700 font-semibold">● 100% OK</span>
+            <span className="font-bold text-stone-800">post delivery status</span>
+            <span className="text-emerald-700 font-semibold">● live everywhere</span>
           </div>
-          <div className="bg-white p-2 border border-[#ede8df] rounded-xs flex items-center justify-between text-xs">
-            <span className="flex items-center gap-2 text-stone-800">
+          <div className="bg-white p-2 border border-[#ede8df] rounded-sm flex items-center justify-between text-xs">
+            <span className="flex items-center gap-2 text-stone-800 font-sans font-semibold">
               <PlatformIcon platform="youtube" size={13} />
-              <span>YouTube Premiere</span>
+              <span>youtube premiere</span>
             </span>
-            <span className="text-emerald-700 font-semibold">200 OK (94ms)</span>
+            <span className="text-emerald-700 font-semibold flex items-center gap-1">
+              <CheckCircle2 className="h-3 w-3" /> published
+            </span>
           </div>
-          <div className="bg-white p-2 border border-[#ede8df] rounded-xs flex items-center justify-between text-xs">
-            <span className="flex items-center gap-2 text-stone-800">
+          <div className="bg-white p-2 border border-[#ede8df] rounded-sm flex items-center justify-between text-xs">
+            <span className="flex items-center gap-2 text-stone-800 font-sans font-semibold">
               <PlatformIcon platform="twitch" size={13} />
-              <span>Twitch Stream Alert</span>
+              <span>twitch stream alert</span>
             </span>
-            <span className="text-emerald-700 font-semibold">200 OK (82ms)</span>
+            <span className="text-emerald-700 font-semibold flex items-center gap-1">
+              <CheckCircle2 className="h-3 w-3" /> live alert sent
+            </span>
           </div>
-          <div className="bg-white p-2 border border-[#ede8df] rounded-xs flex items-center justify-between text-xs">
-            <span className="flex items-center gap-2 text-stone-800">
+          <div className="bg-white p-2 border border-[#ede8df] rounded-sm flex items-center justify-between text-xs">
+            <span className="flex items-center gap-2 text-stone-800 font-sans font-semibold">
               <PlatformIcon platform="instagram" size={13} />
-              <span>Instagram Carousel</span>
+              <span>instagram carousel</span>
             </span>
-            <span className="text-emerald-700 font-semibold">200 OK (115ms)</span>
+            <span className="text-emerald-700 font-semibold flex items-center gap-1">
+              <CheckCircle2 className="h-3 w-3" /> published
+            </span>
           </div>
         </div>
       ),
@@ -209,133 +200,99 @@ export function ScrollWorkflow() {
   return (
     <section id="workflow" className="relative py-16 lg:py-24 border-t border-[#ede8df] bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-12 max-w-3xl">
-          <div className="flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wider text-stone-700">
+        {/* Section Header */}
+        <div className="text-center max-w-3xl mx-auto mb-16 lowercase">
+          <div className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-stone-700">
             <span className="h-2 w-2 rounded-full bg-[#dfc39a]" />
-            THE 4-STEP DISTRIBUTION ENGINE
+            <span>the creator workflow</span>
           </div>
           <h2 className="mt-3 text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
-            From draft to staggered peak delivery in four seamless steps.
+            from single draft to everywhere in seconds.
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-stone-600 leading-relaxed">
-            Eliminate copy-paste fatigue. Manage your video &amp; post schedule, hit each platform
-            during its specific audience peak hour, and broadcast to every community with peace of
-            mind.
+          <p className="mt-3 text-base text-stone-600">
+            a calm, dependable publishing studio designed to save your creative energy for making
+            content.
           </p>
         </div>
 
-        {/* Step Selector Tabs */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
-          {STEPS.map((step, idx) => {
+        {/* Step Navigation Tabs */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8 lowercase">
+          {steps.map((step, idx) => {
             const isActive = activeStep === idx;
             return (
               <button
                 key={step.number}
+                type="button"
                 onClick={() => setActiveStep(idx)}
-                className={`text-left p-4 border transition-all rounded-xs flex flex-col justify-between ${
+                className={`text-left p-4 border transition-all rounded-md cursor-pointer ${
                   isActive
                     ? "border-stone-900 bg-[#faf8f5] shadow-xs"
                     : "border-[#ede8df] bg-white hover:border-[#dfc39a]"
                 }`}
               >
-                <div className="flex items-center justify-between font-mono text-xs mb-3">
+                <div className="flex items-center justify-between font-mono text-xs mb-2">
                   <span className={`font-bold ${isActive ? "text-stone-900" : "text-stone-400"}`}>
-                    STEP / {step.number}
+                    step {step.number}
                   </span>
-                  <span
-                    className={`text-[10px] font-bold px-1.5 py-0.5 rounded-xs uppercase ${
-                      isActive ? "bg-[#F4DCB4] text-stone-900" : "bg-stone-100 text-stone-500"
-                    }`}
-                  >
-                    {step.badge}
-                  </span>
+                  <span className="text-[10px] text-stone-500 font-semibold">{step.badge}</span>
                 </div>
-                <div className="font-bold text-sm text-stone-900 font-sans">{step.title}</div>
+                <div className="font-sans font-bold text-sm text-stone-900">{step.title}</div>
               </button>
             );
           })}
         </div>
 
-        {/* Active Step Presentation Box */}
-        <div className="border border-[#ede8df] bg-[#faf8f5] p-6 sm:p-10 rounded-xs shadow-xs">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeStep}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-              className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
-            >
-              {/* Left Column: Details & Key Points */}
-              <div className="lg:col-span-7 space-y-6">
-                <div>
-                  <div className="flex items-center gap-2 font-mono text-xs text-stone-500 mb-2">
-                    <span className="font-bold text-stone-900">
-                      STEP {STEPS[activeStep].number}
-                    </span>
-                    <span>/</span>
-                    <span className="uppercase text-stone-600 font-semibold">
-                      {STEPS[activeStep].badge}
-                    </span>
-                  </div>
-                  <h3 className="text-2xl sm:text-3xl font-bold text-stone-900">
-                    {STEPS[activeStep].title}
-                  </h3>
-                  <p className="text-sm font-serif italic text-stone-600 mt-1">
-                    {STEPS[activeStep].subtitle}
-                  </p>
-                  <p className="mt-4 text-xs sm:text-sm text-stone-600 leading-relaxed font-sans">
-                    {STEPS[activeStep].description}
-                  </p>
+        {/* Active Step Content Card */}
+        <div className="border border-[#ede8df] bg-[#faf8f5] p-6 sm:p-8 rounded-md shadow-xs lowercase">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            {/* Left: Text & Points */}
+            <div className="lg:col-span-6 space-y-6">
+              <div>
+                <div className="flex items-center gap-2 font-mono text-xs font-bold text-stone-500 mb-2">
+                  {steps[activeStep].icon}
+                  <span>
+                    step {steps[activeStep].number} · {steps[activeStep].badge}
+                  </span>
                 </div>
+                <h3 className="text-2xl sm:text-3xl font-bold text-stone-900 font-sans">
+                  {steps[activeStep].title}
+                </h3>
+                <p className="text-base text-stone-600 font-serif italic mt-1">
+                  {steps[activeStep].subtitle}
+                </p>
+              </div>
 
-                {/* Key Bullet Highlights */}
-                <div className="space-y-2.5 pt-2">
-                  {STEPS[activeStep].points.map((pt, i) => (
-                    <div
-                      key={i}
-                      className="flex items-start gap-2.5 bg-white p-3 border border-[#ede8df] rounded-xs font-sans text-xs text-stone-800"
-                    >
-                      <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
-                      <span>{pt}</span>
-                    </div>
-                  ))}
-                </div>
+              <p className="text-sm sm:text-base text-stone-700 leading-relaxed font-sans">
+                {steps[activeStep].description}
+              </p>
 
-                {/* Bottom Metric & Action */}
-                <div className="pt-4 border-t border-dashed border-[#ede8df] flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
-                  <div>
-                    <span className="text-[10px] text-stone-400 uppercase tracking-wider block">
-                      {STEPS[activeStep].metricLabel}
-                    </span>
-                    <span className="text-lg font-bold text-stone-900">
-                      {STEPS[activeStep].metricValue}
-                    </span>
-                  </div>
-
-                  <Link
-                    href="/app"
-                    className="inline-flex items-center gap-2 font-bold text-stone-900 hover:text-stone-700 underline decoration-[#dfc39a] decoration-2 underline-offset-4"
+              <div className="space-y-2.5 pt-2">
+                {steps[activeStep].points.map((point, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-start gap-2.5 text-xs sm:text-sm text-stone-700 font-sans"
                   >
-                    <span>TEST IN CREATOR STUDIO</span>
-                    <ArrowRight className="h-4 w-4 text-stone-800" />
-                  </Link>
-                </div>
+                    <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span>{point}</span>
+                  </div>
+                ))}
               </div>
 
-              {/* Right Column: Visual Interactive Snippet */}
-              <div className="lg:col-span-5 space-y-4">
-                <div className="border border-dashed border-[#dfc39a] bg-white p-2 rounded-xs shadow-xs">
-                  {STEPS[activeStep].visualSnippet}
-                </div>
-                <div className="text-center font-mono text-[11px] text-stone-400">
-                  Step {activeStep + 1} of {STEPS.length} · Click any step tab to explore workflow
+              <div className="pt-4 border-t border-dashed border-[#ede8df] flex items-center gap-6 font-mono text-xs">
+                <div>
+                  <span className="text-stone-400 block text-[10px]">
+                    {steps[activeStep].metricLabel}
+                  </span>
+                  <span className="font-bold text-stone-900 text-sm">
+                    {steps[activeStep].metricValue}
+                  </span>
                 </div>
               </div>
-            </motion.div>
-          </AnimatePresence>
+            </div>
+
+            {/* Right: Visual Interactive Snippet */}
+            <div className="lg:col-span-6">{steps[activeStep].visualSnippet}</div>
+          </div>
         </div>
       </div>
     </section>

@@ -10,28 +10,28 @@ interface FAQItem {
 
 const FAQS: FAQItem[] = [
   {
-    q: "Can I schedule a single post to go out at different times on different platforms?",
-    a: "Yes! This is one of SocioConnect's core strengths. Because your LinkedIn audience is active during morning coffee (e.g. 8:30 AM), while your YouTube viewers or Twitch streams peak in the afternoon and evening (e.g. 3:00 PM and 6:30 PM), you can compose your post once and choose between an 'Instant Simultaneous Blast' or 'Staggered Peak Windows' for each connected network.",
+    q: "can i schedule a single post to go out at different times on different platforms?",
+    a: "yes! that's one of socioconnect's best features. because your linkedin network reads during morning coffee (e.g. 8:30 am), while your youtube viewers or twitch streams peak in the afternoon and evening (e.g. 4:00 pm and 6:30 pm), you can write your post once and choose 'staggered peak hours' to automatically hit each platform at the ideal time.",
   },
   {
-    q: "How does SocioConnect handle YouTube, Twitch, and Instagram connections?",
-    a: "SocioConnect uses 100% official OAuth 2.0 PKCE and Developer APIs (Google Identity, Twitch API, Meta Graph API for Creators). When connecting an account, you authenticate directly on the platform's official authorization page. We only request write permissions to publish community posts, premieres, stream alerts, and captions. We NEVER ask for, receive, or store your actual login passwords.",
+    q: "how does socioconnect connect to youtube, twitch, and instagram?",
+    a: "socioconnect uses official, verified creator logins directly with google, twitch, meta, and x. when connecting an account, you authenticate on that platform's official security screen. we only ask for permission to publish your posts. we never ask for, see, or store your passwords.",
   },
   {
-    q: "Do you read, scrape, or store my private social media feeds?",
-    a: "No, never. SocioConnect is strictly an outbound cross-posting and scheduling engine. We do not fetch, read, parse, or scrape your private feed, timeline data, DMs, or browsing history. Our platform only pushes outbound dispatches when you compose or schedule posts.",
+    q: "do you read, scrape, or look at my private social media feeds?",
+    a: "no, never. socioconnect is strictly a publishing and scheduling studio. we do not read your private feeds, timelines, dms, or follower browsing history. we only send out the posts and announcements you approve.",
   },
   {
-    q: "How are my OAuth access tokens protected?",
-    a: "All authorization tokens are encrypted at rest using AES-256-GCM hardware vaults with automatic encryption key rotation and memory-sharded isolation. Even in the improbable event of a database compromise, encrypted ciphertexts cannot be deciphered without dedicated enclave keys.",
+    q: "how are my account connections protected?",
+    a: "all connections are hardware-encrypted and kept 100% private. even if someone tried to access our systems, they could never log into your accounts or see your passwords. you remain in complete control at all times.",
   },
   {
-    q: "What happens if one social platform goes down during a simultaneous broadcast?",
-    a: "We practice strict fault isolation. Every connected network (YouTube, Twitch, Instagram, X, LinkedIn, Peerlist, Reddit, Bluesky) is dispatched via separate, atomic asynchronous worker tasks. If one platform has a 503 outage or rate-limit hiccup, your other posts publish successfully on time, and our scheduler automatically retries the failed channel with exponential backoff.",
+    q: "what happens if one social platform has a glitch or temporary downtime?",
+    a: "your other posts go live without any delay! socioconnect handles each social network independently. if one platform is experiencing high traffic or a brief error, our system automatically tries again until your post is published safely.",
   },
   {
-    q: "Can I disconnect an app at any time?",
-    a: "Yes, instantly. You can revoke any connected platform with a single click in your Creator Studio settings. Doing so immediately purges the encrypted token from our vault, and you can also revoke access directly from your Google, Twitch, Meta, or X account security dashboards.",
+    q: "can i disconnect an account at any time?",
+    a: "yes, instantly. you can disconnect any platform with one click in your studio settings. you can also revoke access anytime directly from your google, twitch, instagram, or x account security settings.",
   },
 ];
 
@@ -46,28 +46,28 @@ export function LandingFAQ() {
     <section id="faq" className="relative py-16 lg:py-24 border-t border-[#ede8df] bg-white">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         {/* Heading */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wider text-stone-700">
+        <div className="text-center mb-12 lowercase">
+          <div className="inline-flex items-center gap-2 border border-dashed border-[#dfc39a] bg-[#F4DCB4]/30 px-3.5 py-1 text-xs font-mono font-semibold text-stone-900 rounded-md mb-4">
             <Sparkles className="h-3.5 w-3.5 text-stone-700" />
-            <span>COMMONLY ASKED QUESTIONS</span>
+            <span>commonly asked questions</span>
           </div>
           <h2 className="mt-3 text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
-            Security, Privacy &amp; Distribution Architecture
+            everything you need to know
           </h2>
           <p className="mt-3 text-base text-stone-600">
-            Everything you need to know about our zero-password policy, outbound-only dispatches,
-            and staggered peak-time scheduling.
+            clear answers about account safety, privacy, timed drops, and keeping your channels in
+            sync.
           </p>
         </div>
 
         {/* FAQ Accordion List */}
-        <div className="space-y-3">
+        <div className="space-y-3 lowercase">
           {FAQS.map((faq, idx) => {
             const isOpen = openIndex === idx;
             return (
               <div
                 key={idx}
-                className={`border transition-colors rounded-xs ${
+                className={`border transition-colors rounded-md overflow-hidden ${
                   isOpen
                     ? "border-stone-900 bg-[#faf8f5]"
                     : "border-[#ede8df] bg-white hover:border-[#dfc39a]"
@@ -76,7 +76,7 @@ export function LandingFAQ() {
                 <button
                   type="button"
                   onClick={() => toggle(idx)}
-                  className="flex w-full items-center justify-between p-5 text-left font-mono text-sm font-bold text-stone-900"
+                  className="flex w-full items-center justify-between p-5 text-left font-mono text-sm font-bold text-stone-900 cursor-pointer"
                 >
                   <span className="font-sans text-base font-semibold">{faq.q}</span>
                   <ChevronDown
