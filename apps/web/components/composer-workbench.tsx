@@ -1,27 +1,19 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import {
-  Bell,
   Check,
-  ChevronDown,
   Clock3,
-  FileText,
   Hash,
   ImagePlus,
-  Layers3,
-  LayoutDashboard,
   Link as LinkIcon,
-  LogOut,
-  MoreHorizontal,
   Send,
-  Settings2,
   Sparkles,
-  UsersRound,
+  Zap,
+  Film,
+  X,
 } from "lucide-react";
-import { useMemo, useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { PlatformIcon } from "./landing/platform-icons";
-import { useAuth } from "../lib/auth-context";
 
 interface SocialAccount {
   id: string;
@@ -30,30 +22,21 @@ interface SocialAccount {
   detail: string;
   limit: number;
   selected: boolean;
-  reconnect?: boolean;
 }
 
-const accountSeed: SocialAccount[] = [
+const ACCOUNT_SEED: SocialAccount[] = [
   {
     id: "youtube",
     platform: "youtube",
-    name: "alex builds",
+    name: "Alex Builds",
     detail: "community & shorts",
     limit: 5000,
     selected: true,
   },
   {
-    id: "twitch",
-    platform: "twitch",
-    name: "alex_codes",
-    detail: "twitch.tv/alex_codes",
-    limit: 500,
-    selected: true,
-  },
-  {
     id: "instagram",
     platform: "instagram",
-    name: "alex creates",
+    name: "Alex Creates",
     detail: "@alex.creates",
     limit: 2200,
     selected: true,
@@ -61,7 +44,7 @@ const accountSeed: SocialAccount[] = [
   {
     id: "linkedin",
     platform: "linkedin",
-    name: "alex rivers",
+    name: "Alex Rivers",
     detail: "creator profile",
     limit: 3000,
     selected: true,
@@ -72,6 +55,22 @@ const accountSeed: SocialAccount[] = [
     name: "@alex_builds",
     detail: "creator account",
     limit: 280,
+    selected: true,
+  },
+  {
+    id: "tiktok",
+    platform: "tiktok",
+    name: "@alex_creates",
+    detail: "short-form feed",
+    limit: 2200,
+    selected: true,
+  },
+  {
+    id: "threads",
+    platform: "threads",
+    name: "@alex.creates",
+    detail: "micro-discussions",
+    limit: 500,
     selected: true,
   },
   {
@@ -92,294 +91,343 @@ const accountSeed: SocialAccount[] = [
   },
 ];
 
-function PlatformMark({ account }: { account: SocialAccount }) {
-  return (
-    <div className="flex h-6 w-6 items-center justify-center rounded-xs border border-[#ede8df] bg-white shrink-0 shadow-2xs">
-      <PlatformIcon platform={account.id} size={14} />
-    </div>
-  );
-}
+const PRESETS = [
+  {
+    label: "🎬 video premiere",
+    text: "Our complete deep dive into creative workflows and queue workers is live! Watch the full 4K breakdown on YouTube.",
+  },
+  {
+    label: "✨ reel caption",
+    text: "3 lighting setups that will instantly elevate your talking head videos without spending thousands 💡✨ #creatorgrowth #cinematography",
+  },
+  {
+    label: "🧵 founder thread",
+    text: "Why manual social cross-posting is burning your creative energy—and how automated worker queues give you 10 hours back every week 🧵👇",
+  },
+];
 
 export function ComposerWorkbench() {
-  const { user, isAuthenticated, isLoading, logout } = useAuth();
-  const router = useRouter();
-  const [showUserMenu, setShowUserMenu] = useState(false);
-  const [accounts, setAccounts] = useState(accountSeed);
+  const [accounts, setAccounts] = useState<SocialAccount[]>(ACCOUNT_SEED);
   const [content, setContent] = useState(
-    "a calm publishing workflow lets you share with your audience everywhere without getting lost in 8 different tabs.",
+    "A calm publishing workflow lets you share with your audience everywhere without getting lost in 8 different browser tabs.",
   );
-  const [schedule, setSchedule] = useState(false);
+  const [scheduleMode, setScheduleMode] = useState<"peak" | "simultaneous">("peak");
+  const [attachedMedia, setAttachedMedia] = useState<string | null>(null);
+  const [isAdapting, setIsAdapting] = useState(false);
   const [queued, setQueued] = useState(false);
-
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.replace("/login?next=/app");
-    }
-  }, [isLoading, isAuthenticated, router]);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const selectedAccounts = useMemo(
     () => accounts.filter((account) => account.selected),
     [accounts],
   );
+
   const canPublish =
     selectedAccounts.length > 0 &&
+    content.trim().length > 0 &&
     selectedAccounts.every((account) => content.length <= account.limit);
 
-  function toggleAccount(id: string) {
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3500);
+  };
+
+  const toggleAccount = (id: string) => {
     setAccounts((current) =>
       current.map((account) =>
-        account.id === id && !account.reconnect
-          ? { ...account, selected: !account.selected }
-          : account,
+        account.id === id ? { ...account, selected: !account.selected } : account,
       ),
     );
-  }
+  };
 
-  const userInitials = user
-    ? `${user.firstName.charAt(0)}${user.lastName ? user.lastName.charAt(0) : ""}`.toLowerCase()
-    : "cr";
-  const userFullName = user
-    ? `${user.firstName}${user.lastName ? ` ${user.lastName}` : ""}`.toLowerCase()
-    : "creator workspace";
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center font-mono text-xs text-stone-500 lowercase">
-        loading creator studio...
-      </div>
+  const handleAiAdapt = async () => {
+    setIsAdapting(true);
+    await new Promise((r) => setTimeout(r, 600));
+    setContent(
+      "A calm publishing workflow lets you share with your audience everywhere without getting lost in 8 tabs ✨ Optimized with platform-specific hashtags & timestamps.",
     );
-  }
+    setIsAdapting(false);
+    showToast("AI adapted post tone & formatting for all active channels!");
+  };
+
+  const handleAttachMockMedia = () => {
+    if (attachedMedia) {
+      setAttachedMedia(null);
+      showToast("Removed attached media.");
+    } else {
+      setAttachedMedia("creator_studio_demo.mp4");
+      showToast("Attached 4K video reel (creator_studio_demo.mp4)");
+    }
+  };
+
+  const handleDispatch = () => {
+    setQueued(true);
+    showToast(
+      scheduleMode === "peak"
+        ? `Scheduled staggered peak drop across ${selectedAccounts.length} channels!`
+        : `Dispatched simultaneous post to ${selectedAccounts.length} channels!`,
+    );
+  };
 
   return (
-    <main className="shell lowercase">
-      <aside className="sidebar">
-        <a className="brand" href="/" aria-label="socioconnect home">
-          <span className="brand-mark">
-            <i />
-            <i />
-            <i />
-          </span>
-          <span>socioconnect</span>
-        </a>
-        <nav className="primary-nav" aria-label="Primary navigation">
-          <button className="nav-item nav-item--active" type="button">
-            <FileText size={17} />
-            <span>compose</span>
-          </button>
-          <button className="nav-item" type="button">
-            <Layers3 size={17} />
-            <span>posts</span>
-            <b>12</b>
-          </button>
-          <button className="nav-item" type="button">
-            <UsersRound size={17} />
-            <span>accounts</span>
-          </button>
-          <button className="nav-item" type="button">
-            <Settings2 size={17} />
-            <span>settings</span>
-          </button>
-        </nav>
-        <div className="sidebar-footer">
-          <button
-            className="workspace-switcher"
-            type="button"
-            onClick={() => setShowUserMenu(!showUserMenu)}
-          >
-            <span className="avatar avatar--small">{userInitials}</span>
-            <span>
-              <strong>{userFullName}</strong>
-              <small>{user?.email?.toLowerCase() || "creator account"}</small>
-            </span>
-            <ChevronDown size={15} />
-          </button>
-
-          {showUserMenu && (
-            <div className="mt-2 border border-[#ede8df] bg-white p-2 rounded-xs shadow-md font-mono text-xs space-y-1">
-              <button
-                type="button"
-                onClick={() => {
-                  void logout();
-                }}
-                className="w-full text-left px-2 py-1.5 hover:bg-[#faf8f5] text-red-600 flex items-center gap-2 rounded-xs cursor-pointer"
-              >
-                <LogOut size={13} />
-                <span>sign out</span>
-              </button>
-            </div>
-          )}
-
-          <button className="upgrade-link" type="button">
-            <Sparkles size={15} />
-            <span>upgrade plan</span>
-          </button>
+    <div className="space-y-6 lowercase font-sans">
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-stone-900 text-white font-mono text-xs px-4 py-2.5 rounded-md shadow-xl border border-stone-700 flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">
+          <Sparkles className="h-3.5 w-3.5 text-[#F4DCB4]" />
+          <span>{toastMessage}</span>
         </div>
-      </aside>
+      )}
 
-      <section className="app-frame">
-        <header className="topbar">
-          <div className="crumb">
-            <LayoutDashboard size={15} />
-            <span>creator studio</span>
-            <i>/</i>
-            <strong>new post</strong>
+      {/* Top Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#ede8df] pb-5">
+        <div>
+          <div className="inline-flex items-center gap-2 border border-dashed border-[#dfc39a] bg-[#F4DCB4]/30 px-3 py-0.5 text-xs font-mono font-semibold text-stone-900 rounded-md mb-2">
+            <Zap className="h-3 w-3 text-stone-800" />
+            <span>multi-channel composer</span>
+            <span className="text-stone-400">&middot;</span>
+            <span className="text-emerald-700 font-bold">
+              {selectedAccounts.length} channels selected
+            </span>
           </div>
-          <div className="topbar-actions">
+
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-stone-900 tracking-tight">
+            compose &amp; dispatch post
+          </h1>
+          <p className="mt-1 text-xs sm:text-sm text-stone-600 leading-relaxed max-w-2xl">
+            craft your core message once. tailor formatting with ai, attach media, and schedule
+            across all your channels at their peak engagement windows.
+          </p>
+        </div>
+
+        {/* Preset Chips */}
+        <div className="flex flex-wrap items-center gap-1.5 font-mono text-xs">
+          <span className="text-stone-400 text-[10px]">presets:</span>
+          {PRESETS.map((preset) => (
             <button
-              className="icon-button"
+              key={preset.label}
               type="button"
-              aria-label="Notifications"
-              title="notifications"
-            >
-              <Bell size={18} />
-              <i />
-            </button>
-            <button
-              className="avatar cursor-pointer"
-              type="button"
-              aria-label="Open user menu"
               onClick={() => {
-                void logout();
+                setContent(preset.text);
+                setQueued(false);
               }}
-              title={`logged in as ${userFullName} - click to sign out`}
+              className="bg-white border border-[#ede8df] hover:border-[#dfc39a] hover:bg-[#faf8f5] px-2.5 py-1 rounded-md text-[11px] text-stone-800 transition-colors cursor-pointer shadow-2xs"
             >
-              {userInitials}
+              {preset.label}
             </button>
-          </div>
-        </header>
+          ))}
+        </div>
+      </div>
 
-        <div className="workspace">
-          <section className="compose-column">
-            <div className="section-heading">
-              <div>
-                <p className="eyebrow">create / 01</p>
-                <h1>new post</h1>
-              </div>
-              <button className="draft-button" type="button">
-                <MoreHorizontal size={18} /> save draft
-              </button>
+      {/* Main Workspace Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Column: Post Editor & Channel Selector */}
+        <div className="lg:col-span-8 space-y-5">
+          {/* Target Channel Selector Strip */}
+          <div className="border border-[#ede8df] bg-white p-4 rounded-md shadow-xs space-y-2.5">
+            <div className="flex items-center justify-between font-mono text-xs text-stone-500">
+              <span className="font-bold text-stone-900">target channels:</span>
+              <span className="text-[11px]">click to toggle active destination</span>
             </div>
 
-            <div className="target-band">
-              <div className="target-band-header">
-                <span className="label">channels</span>
-                <span className="hint">select where you want to share your post</span>
-              </div>
-              <div className="target-pill-row">
-                {accounts.map((account) => {
-                  const isSelected = account.selected;
-                  return (
-                    <button
-                      key={account.id}
-                      type="button"
-                      onClick={() => toggleAccount(account.id)}
-                      className={`target-pill ${isSelected ? "target-pill--selected" : ""}`}
-                    >
-                      <PlatformMark account={account} />
-                      <span className="target-pill-name">{account.platform}</span>
-                      {isSelected && <Check size={13} className="target-pill-check" />}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="editor-card">
-              <div className="editor-header">
-                <span className="editor-tab">primary copy</span>
-                <div className="editor-counters">
-                  <span>{content.length} characters</span>
-                </div>
-              </div>
-              <textarea
-                value={content}
-                onChange={(e) => {
-                  setContent(e.target.value);
-                  setQueued(false);
-                }}
-                rows={7}
-                placeholder="write your announcement, launch story, or stream drop..."
-                className="editor-textarea"
-              />
-              <div className="editor-toolbar">
-                <div className="editor-tools">
-                  <button type="button" className="tool-button" title="attach media">
-                    <ImagePlus size={16} /> attach
-                  </button>
-                  <button type="button" className="tool-button" title="insert hashtag">
-                    <Hash size={16} /> tag
-                  </button>
-                  <button type="button" className="tool-button" title="insert link">
-                    <LinkIcon size={16} /> link
-                  </button>
-                </div>
-                <div className="editor-actions">
-                  <button
-                    type="button"
-                    onClick={() => setSchedule(!schedule)}
-                    className={`schedule-button ${schedule ? "schedule-button--active" : ""}`}
-                  >
-                    <Clock3 size={15} />
-                    <span>{schedule ? "staggered peak hours" : "simultaneous"}</span>
-                  </button>
-                  <button
-                    type="button"
-                    disabled={!canPublish}
-                    onClick={() => setQueued(true)}
-                    className="publish-button"
-                  >
-                    <Send size={15} />
-                    <span>{schedule ? "schedule queue" : "publish now"}</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {queued && (
-              <div className="success-banner">
-                <Check size={16} />
-                <span>
-                  post scheduled successfully across {selectedAccounts.length} channels with 100%
-                  private account safety.
-                </span>
-              </div>
-            )}
-          </section>
-
-          <aside className="inspect-column">
-            <div className="section-heading">
-              <div>
-                <p className="eyebrow">preview</p>
-                <h2>character limits</h2>
-              </div>
-            </div>
-
-            <div className="channel-list">
+            <div className="flex flex-wrap gap-2">
               {accounts.map((account) => {
-                const remaining = account.limit - content.length;
-                const isOver = remaining < 0;
+                const isSelected = account.selected;
                 return (
-                  <div
+                  <button
                     key={account.id}
-                    className={`channel-card ${account.selected ? "channel-card--active" : ""}`}
+                    type="button"
+                    onClick={() => toggleAccount(account.id)}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md border font-mono text-xs transition-all cursor-pointer ${
+                      isSelected
+                        ? "border-stone-900 bg-white font-bold text-stone-900 shadow-2xs ring-1 ring-stone-900/10"
+                        : "border-[#ede8df] bg-[#faf8f5]/60 text-stone-500 hover:border-[#dfc39a]"
+                    }`}
                   >
-                    <div className="channel-card-header">
-                      <PlatformMark account={account} />
-                      <div className="channel-info">
-                        <strong>{account.platform}</strong>
-                        <small>{account.detail}</small>
-                      </div>
-                      <span className={`channel-budget ${isOver ? "channel-budget--danger" : ""}`}>
-                        {remaining} left
-                      </span>
+                    <div className="flex h-5 w-5 items-center justify-center rounded-xs bg-[#faf8f5] border border-[#ede8df]">
+                      <PlatformIcon platform={account.id} size={13} />
                     </div>
-                  </div>
+                    <span>{account.platform}</span>
+                    {isSelected && <Check className="h-3.5 w-3.5 text-stone-900 ml-0.5" />}
+                  </button>
                 );
               })}
             </div>
-          </aside>
+          </div>
+
+          {/* Primary Editor Box */}
+          <div className="border border-[#ede8df] bg-white rounded-md shadow-xs overflow-hidden">
+            <div className="border-b border-[#ede8df] bg-[#faf8f5] px-4 py-2.5 flex items-center justify-between font-mono text-xs">
+              <span className="font-bold text-stone-900">primary copy</span>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={handleAiAdapt}
+                  disabled={isAdapting}
+                  className="flex items-center gap-1.5 border border-[#dfc39a] bg-[#F4DCB4] hover:bg-[#ebd0a3] px-2.5 py-1 rounded-sm text-stone-900 font-bold transition-colors cursor-pointer disabled:opacity-50 text-[11px]"
+                >
+                  <Sparkles className={`h-3 w-3 ${isAdapting ? "animate-spin" : ""}`} />
+                  <span>{isAdapting ? "adapting..." : "ai enhance copy"}</span>
+                </button>
+                <span className="text-stone-500 text-[11px]">{content.length} chars</span>
+              </div>
+            </div>
+
+            <textarea
+              value={content}
+              onChange={(e) => {
+                setContent(e.target.value);
+                setQueued(false);
+              }}
+              rows={6}
+              placeholder="write your announcement, launch story, or stream drop..."
+              className="w-full p-4 font-sans text-sm text-stone-900 leading-relaxed border-0 focus:outline-hidden resize-none"
+            />
+
+            {/* Attached Media Preview */}
+            {attachedMedia && (
+              <div className="mx-4 mb-3 p-2.5 bg-[#faf8f5] border border-[#ede8df] rounded-md flex items-center justify-between font-mono text-xs">
+                <div className="flex items-center gap-2 text-stone-800">
+                  <Film className="h-4 w-4 text-[#dfc39a]" />
+                  <span className="font-bold">{attachedMedia}</span>
+                  <span className="text-[10px] text-stone-400">(4K H.264 &middot; 24.5 MB)</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setAttachedMedia(null)}
+                  className="p-1 text-stone-400 hover:text-stone-800 cursor-pointer"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            )}
+
+            {/* Editor Toolbar & Dispatch Bar */}
+            <div className="border-t border-[#ede8df] bg-[#faf8f5]/60 px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-mono text-xs">
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleAttachMockMedia}
+                  className={`flex items-center gap-1.5 border px-2.5 py-1.5 rounded-md transition-colors cursor-pointer ${
+                    attachedMedia
+                      ? "border-[#dfc39a] bg-[#F4DCB4] font-bold text-stone-900"
+                      : "border-[#ede8df] bg-white text-stone-700 hover:border-stone-400"
+                  }`}
+                >
+                  <ImagePlus className="h-3.5 w-3.5" />
+                  <span>{attachedMedia ? "media attached" : "attach media"}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setContent((prev) => `${prev} #creators #buildinpublic`);
+                  }}
+                  className="flex items-center gap-1.5 border border-[#ede8df] bg-white px-2.5 py-1.5 rounded-md text-stone-700 hover:border-stone-400 transition-colors cursor-pointer"
+                >
+                  <Hash className="h-3.5 w-3.5" />
+                  <span>hashtags</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setContent((prev) => `${prev} https://socioconnect.app`);
+                  }}
+                  className="flex items-center gap-1.5 border border-[#ede8df] bg-white px-2.5 py-1.5 rounded-md text-stone-700 hover:border-stone-400 transition-colors cursor-pointer"
+                >
+                  <LinkIcon className="h-3.5 w-3.5" />
+                  <span>link</span>
+                </button>
+              </div>
+
+              {/* Schedule Mode & Dispatch Button */}
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setScheduleMode(scheduleMode === "peak" ? "simultaneous" : "peak")}
+                  className="flex items-center gap-1.5 border border-[#ede8df] bg-white px-3 py-1.5 rounded-md text-stone-800 hover:border-[#dfc39a] transition-colors cursor-pointer"
+                >
+                  <Clock3 className="h-3.5 w-3.5 text-[#dfc39a]" />
+                  <span>{scheduleMode === "peak" ? "⚡ AI Peak Hours" : "🚀 Simultaneous"}</span>
+                </button>
+
+                <button
+                  type="button"
+                  disabled={!canPublish}
+                  onClick={handleDispatch}
+                  className="flex items-center gap-2 border border-[#dfc39a] bg-[#F4DCB4] hover:bg-[#ebd0a3] px-4 py-1.5 rounded-md font-bold text-stone-900 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-2xs"
+                >
+                  <Send className="h-3.5 w-3.5" />
+                  <span>{scheduleMode === "peak" ? "schedule peak drop" : "dispatch now"}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Success Banner if Dispatched */}
+          {queued && (
+            <div className="border border-emerald-200 bg-emerald-50 p-4 rounded-md flex items-center justify-between font-mono text-xs text-emerald-900">
+              <div className="flex items-center gap-2">
+                <Check className="h-4 w-4 text-emerald-600" />
+                <span>
+                  post queued across {selectedAccounts.length} channels with 100% private account
+                  safety.
+                </span>
+              </div>
+              <span className="font-bold text-[11px]">● scheduled</span>
+            </div>
+          )}
         </div>
-      </section>
-    </main>
+
+        {/* Right Column: Character Limits & Live Channel Previews */}
+        <div className="lg:col-span-4 space-y-4">
+          <div className="border border-[#ede8df] bg-white p-5 rounded-md shadow-xs space-y-3 font-mono text-xs">
+            <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-2.5">
+              <span className="font-bold text-stone-900">channel character meters</span>
+              <span className="text-[11px] text-stone-400">live constraints</span>
+            </div>
+
+            <div className="space-y-2">
+              {accounts
+                .filter((a) => a.selected)
+                .map((account) => {
+                  const remaining = account.limit - content.length;
+                  const isOver = remaining < 0;
+
+                  return (
+                    <div
+                      key={account.id}
+                      className={`p-2.5 border rounded-md transition-all flex items-center justify-between ${
+                        isOver
+                          ? "border-red-300 bg-red-50 text-red-900"
+                          : "border-[#ede8df] bg-[#faf8f5]"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-xs bg-white border border-[#ede8df]">
+                          <PlatformIcon platform={account.id} size={13} />
+                        </div>
+                        <div>
+                          <div className="font-bold text-stone-900">{account.name}</div>
+                          <div className="text-[10px] text-stone-400">{account.detail}</div>
+                        </div>
+                      </div>
+
+                      <span
+                        className={`font-bold text-[11px] ${
+                          isOver ? "text-red-700" : "text-stone-700"
+                        }`}
+                      >
+                        {remaining} left
+                      </span>
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
