@@ -6,7 +6,10 @@ import {
   getAllUserDestinationsRoute,
   getAllUserDestinationsHandler,
 } from "./handlers/get-destinations.handler";
-import { syncDestinationsRoute, syncDestinationsHandler } from "./handlers/sync-destinations.handler";
+import {
+  syncDestinationsRoute,
+  syncDestinationsHandler,
+} from "./handlers/sync-destinations.handler";
 
 export const destinationRoutes = createRouter<AppBindings>();
 

@@ -23,7 +23,10 @@ export const getOAuthUrlRoute = createRoute({
       content: {
         "application/json": {
           schema: z.object({
-            redirectUri: z.string().url().openapi({ example: "https://socioconnect.app/auth/callback" }),
+            redirectUri: z
+              .string()
+              .url()
+              .openapi({ example: "https://socioconnect.app/auth/callback" }),
             scopes: z.array(z.string()).optional(),
           }),
         },
@@ -38,7 +41,9 @@ export const getOAuthUrlRoute = createRoute({
           schema: z.object({
             message: z.string().openapi({ example: "OAuth URL generated" }),
             payload: z.object({
-              authUrl: z.string().openapi({ example: "https://accounts.google.com/o/oauth2/v2/auth?..." }),
+              authUrl: z
+                .string()
+                .openapi({ example: "https://accounts.google.com/o/oauth2/v2/auth?..." }),
               state: z.string().openapi({ example: "state_token_xyz" }),
               codeVerifier: z.string().optional(),
             }),
@@ -80,7 +85,10 @@ export const getOAuthUrlHandler: AppRouteHandler<GetOAuthUrlRoute> = async (c) =
       error: err,
     });
     throw new HTTPException(StatusCodes.HTTP_500_INTERNAL_SERVER_ERROR, {
-      res: c.json({ message: "Failed to generate authorization URL" }, StatusCodes.HTTP_500_INTERNAL_SERVER_ERROR),
+      res: c.json(
+        { message: "Failed to generate authorization URL" },
+        StatusCodes.HTTP_500_INTERNAL_SERVER_ERROR,
+      ),
     });
   }
 };
@@ -92,7 +100,8 @@ export const postOAuthCallbackRoute = createRoute({
   path: "/v1/accounts/oauth/:platform/callback",
   tags: ["Accounts"],
   summary: "Exchange OAuth code and connect account",
-  description: "Exchanges authorization code for credentials and securely stores encrypted tokens in the token vault",
+  description:
+    "Exchanges authorization code for credentials and securely stores encrypted tokens in the token vault",
   request: {
     params: z.object({
       platform: z.nativeEnum(SocialPlatformEnum).openapi({ example: SocialPlatformEnum.YOUTUBE }),
@@ -150,7 +159,8 @@ export const postOAuthCallbackHandler: AppRouteHandler<PostOAuthCallbackRoute> =
     const encryptedAccess = encrypt(rawAccessToken, env.ENCRYPTION_KEY);
     const encryptedRefresh = encrypt(rawRefreshToken, env.ENCRYPTION_KEY);
 
-    const platformAccountId = body.platformAccountId || `acc_${platform}_${Date.now().toString(36)}`;
+    const platformAccountId =
+      body.platformAccountId || `acc_${platform}_${Date.now().toString(36)}`;
     const username = body.username || `@${user.firstName.toLowerCase()}_${platform}`;
 
     const account = await AccountsRepository.upsert({
@@ -193,7 +203,10 @@ export const postOAuthCallbackHandler: AppRouteHandler<PostOAuthCallbackRoute> =
       error: err,
     });
     throw new HTTPException(StatusCodes.HTTP_500_INTERNAL_SERVER_ERROR, {
-      res: c.json({ message: "Failed to connect account" }, StatusCodes.HTTP_500_INTERNAL_SERVER_ERROR),
+      res: c.json(
+        { message: "Failed to connect account" },
+        StatusCodes.HTTP_500_INTERNAL_SERVER_ERROR,
+      ),
     });
   }
 };

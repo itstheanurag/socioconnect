@@ -44,7 +44,10 @@ export const deleteAccountHandler: AppRouteHandler<DeleteAccountRoute> = async (
 
     if (!success) {
       throw new HTTPException(StatusCodes.HTTP_404_NOT_FOUND, {
-        res: c.json({ message: "Account not found or already disconnected" }, StatusCodes.HTTP_404_NOT_FOUND),
+        res: c.json(
+          { message: "Account not found or already disconnected" },
+          StatusCodes.HTTP_404_NOT_FOUND,
+        ),
       });
     }
 

@@ -5,42 +5,28 @@ import { type AppRouteHandler } from "@/types";
 import { processOauthCallback } from "./oauth-callback.logic";
 
 const appleCallbackBodySchema = z.object({
-  code: z
-    .string()
-    .optional()
-    .openapi({
-      description: "Authorization code returned by Apple",
-      example: "c4d6c2e8f0a1b2c3d4e5f6a7b8c9d0e1",
-    }),
-  state: z
-    .string()
-    .optional()
-    .openapi({
-      description: "CSRF state token returned by Apple",
-      example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    }),
-  error: z
-    .string()
-    .optional()
-    .openapi({
-      description: "Error code returned by Apple, if authorization failed",
-      example: "user_cancelled_authorize",
-    }),
-  user: z
-    .string()
-    .optional()
-    .openapi({
-      description:
-        "JSON string with name and email — only sent by Apple on first authorization (form_post)",
-      example: '{"name":{"firstName":"Jane","lastName":"Doe"},"email":"jane@privaterelay.appleid.com"}',
-    }),
-  id_token: z
-    .string()
-    .optional()
-    .openapi({
-      description: "OpenID Connect id_token — may be included in Apple form_post callback",
-      example: "eyJraWQiOiJ...",
-    }),
+  code: z.string().optional().openapi({
+    description: "Authorization code returned by Apple",
+    example: "c4d6c2e8f0a1b2c3d4e5f6a7b8c9d0e1",
+  }),
+  state: z.string().optional().openapi({
+    description: "CSRF state token returned by Apple",
+    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  }),
+  error: z.string().optional().openapi({
+    description: "Error code returned by Apple, if authorization failed",
+    example: "user_cancelled_authorize",
+  }),
+  user: z.string().optional().openapi({
+    description:
+      "JSON string with name and email — only sent by Apple on first authorization (form_post)",
+    example:
+      '{"name":{"firstName":"Jane","lastName":"Doe"},"email":"jane@privaterelay.appleid.com"}',
+  }),
+  id_token: z.string().optional().openapi({
+    description: "OpenID Connect id_token — may be included in Apple form_post callback",
+    example: "eyJraWQiOiJ...",
+  }),
 });
 
 export const postOauthAppleCallbackRoute = createRoute({
@@ -82,7 +68,8 @@ export const postOauthAppleCallbackRoute = createRoute({
       },
     },
     302: {
-      description: "Redirect to frontend after successful authentication (when redirect=true in state)",
+      description:
+        "Redirect to frontend after successful authentication (when redirect=true in state)",
     },
     ...errorResponseSchemas,
   },

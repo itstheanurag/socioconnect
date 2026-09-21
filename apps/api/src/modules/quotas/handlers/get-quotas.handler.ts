@@ -12,7 +12,8 @@ export const getQuotasSummaryRoute = createRoute({
   path: "/v1/quotas/summary",
   tags: ["Quotas"],
   summary: "Get creator usage and plan quotas",
-  description: "Retrieves active channels, monthly drops used, AI adaptations balance, and billing cycle status",
+  description:
+    "Retrieves active channels, monthly drops used, AI adaptations balance, and billing cycle status",
   responses: {
     200: {
       description: "Quotas retrieved successfully",

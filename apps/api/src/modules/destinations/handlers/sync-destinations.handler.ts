@@ -1,6 +1,11 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { enforceUserMiddleware } from "@/middlewares/enforce-user.middleware";
-import { DestinationsRepository, AccountsRepository, DestinationTypeEnum, SocialPlatformEnum } from "@repo/db";
+import {
+  DestinationsRepository,
+  AccountsRepository,
+  DestinationTypeEnum,
+  SocialPlatformEnum,
+} from "@repo/db";
 import { errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
@@ -12,7 +17,8 @@ export const syncDestinationsRoute = createRoute({
   path: "/v1/accounts/:accountId/destinations/sync",
   tags: ["Destinations"],
   summary: "Sync destinations from provider API",
-  description: "Queries external social media API to discover newly joined subreddits, Discord channels, or Facebook groups",
+  description:
+    "Queries external social media API to discover newly joined subreddits, Discord channels, or Facebook groups",
   request: {
     params: z.object({
       accountId: z.string().uuid().openapi({ example: "123e4567-e89b-12d3-a456-426614174000" }),
@@ -129,7 +135,8 @@ export const syncDestinationsHandler: AppRouteHandler<SyncDestinationsRoute> = a
           platform: SocialPlatformEnum.LINKEDIN,
           type: DestinationTypeEnum.PAGE,
           name: "SocioConnect Media Inc.",
-          avatarUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=80&auto=format&fit=crop&q=80",
+          avatarUrl:
+            "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=80&auto=format&fit=crop&q=80",
           memberCount: 15400,
           canPost: true,
           isDefault: false,
