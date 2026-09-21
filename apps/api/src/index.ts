@@ -13,11 +13,16 @@ import {
 import { getMetrics, getMetricsContentType } from "@repo/shared/metrics";
 import { initializeDB, connectDB, closeDB } from "@repo/db";
 import authRoutes from "@/modules/auth/auth.routes";
+import { userRoutes } from "./modules/users/user.routes";
+import { accountRoutes } from "./modules/accounts/accounts.routes";
+import { destinationRoutes } from "./modules/destinations/destinations.routes";
+import { postRoutes } from "./modules/posts/posts.routes";
+import { quotaRoutes } from "./modules/quotas/quotas.routes";
+import { botRoutes } from "./modules/bots/bots.routes";
 import { getUserMiddleware } from "@/middlewares/get-user.middleware";
 import { type AppBindings, type AppRouteHandler } from "./types";
 import { createRoute, z } from "@hono/zod-openapi";
 import { secureHeaders } from "hono/secure-headers";
-import { userRoutes } from "./modules/users/user.routes";
 
 // Initialize database with config
 initializeDB({
@@ -95,14 +100,22 @@ app.get("/metrics", async (c) => {
   });
 });
 
-const routes = [authRoutes, userRoutes] as const;
+const routes = [
+  authRoutes,
+  userRoutes,
+  accountRoutes,
+  destinationRoutes,
+  postRoutes,
+  quotaRoutes,
+  botRoutes,
+] as const;
 
 routes.forEach((route) => {
   app.route("/", route);
 });
 
 configureOpenAPI(app, {
-  title: "API",
+  title: "SocioConnect API",
   version: packageJson.version,
 });
 
@@ -144,7 +157,6 @@ async function stop() {
   try {
     // Clear resources
     await closeDB();
-    // await closeRedis()
   } catch (error) {
     logger.error("Failed to close DB", {
       module: "db",
