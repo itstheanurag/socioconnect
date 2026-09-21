@@ -1,0 +1,28 @@
+{
+  "name": "@repo/bots",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./channels": "./src/channels/index.ts",
+    "./ai": "./src/ai/index.ts",
+    "./workflows": "./src/workflows/index.ts",
+    "./types": "./src/types/index.ts"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@repo/config": "*",
+    "@repo/libraries": "*",
+    "@repo/shared": "*",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "typescript": "^5.7.3"
+  }
+}
