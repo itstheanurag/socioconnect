@@ -1,107 +1,120 @@
 "use client";
 
+import { useRef } from "react";
+import { motion, useInView } from "motion/react";
+import { Sparkles, ArrowRight, ShieldCheck, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { motion } from "motion/react";
-import { useInView } from "../../lib/useInView";
-import { ArrowRight, Sparkles } from "lucide-react";
 import { PlatformIcon } from "./platform-icons";
 import { useAuth } from "../../lib/auth-context";
 
 export function LandingCTA() {
-  const { ref, inView } = useInView<HTMLDivElement>();
-  const { isAuthenticated, openAuthModal } = useAuth();
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true });
+  const { isAuthenticated, mockLogin } = useAuth();
   const router = useRouter();
 
   const handleOpenStudio = () => {
-    if (isAuthenticated) {
-      router.push("/app");
-    } else {
-      openAuthModal("/app");
+    if (!isAuthenticated) {
+      mockLogin();
     }
+    router.push("/app");
   };
 
   const floatingPlatforms = [
     { id: "youtube", pos: { top: "12%", left: "8%" }, delay: 0.3 },
     { id: "twitch", pos: { top: "18%", right: "8%" }, delay: 0.4 },
-    { id: "instagram", pos: { bottom: "16%", left: "10%" }, delay: 0.5 },
-    { id: "x", pos: { bottom: "22%", right: "10%" }, delay: 0.6 },
-    { id: "linkedin", pos: { top: "48%", left: "5%" }, delay: 0.7 },
-    { id: "peerlist", pos: { top: "54%", right: "6%" }, delay: 0.8 },
+    { id: "instagram", pos: { top: "45%", left: "4%" }, delay: 0.5 },
+    { id: "x", pos: { top: "50%", right: "5%" }, delay: 0.6 },
+    { id: "linkedin", pos: { bottom: "18%", left: "10%" }, delay: 0.7 },
+    { id: "tiktok", pos: { bottom: "15%", right: "10%" }, delay: 0.8 },
   ];
 
   return (
-    <section className="relative py-16 lg:py-24 overflow-hidden bg-white border-t border-[#ede8df]">
-      {/* Background Dotted Grid */}
+    <section className="relative py-20 lg:py-28 overflow-hidden bg-white border-t border-[#ede8df]">
+      {/* Background Soft Dotted Texture & Warm Amber Glow */}
       <div className="absolute inset-0 trapped-dots opacity-40 pointer-events-none" />
+      <div className="absolute bottom-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[280px] bg-gradient-to-t from-[#F4DCB4]/30 to-transparent blur-3xl pointer-events-none -z-10 rounded-full" />
 
-      <div ref={ref} className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Floating Animated Platform Badges */}
+      {floatingPlatforms.map(({ id, pos, delay }) => (
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="relative rounded-md bg-[#faf8f5] border border-[#ede8df] overflow-hidden p-8 sm:p-12 lg:p-16 shadow-xs"
+          key={id}
+          initial={{ opacity: 0, scale: 0.6 }}
+          animate={inView ? { opacity: 1, scale: 1 } : {}}
+          transition={{ duration: 0.6, delay }}
+          style={pos}
+          className="absolute hidden md:flex items-center justify-center p-2.5 bg-white border border-[#ede8df] rounded-md shadow-xs pointer-events-none z-0 hover:border-[#dfc39a] transition-all"
         >
-          {/* Subtle Ambient Amber Glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-tr from-[#F4DCB4]/50 via-[#fcf7ee]/40 to-transparent rounded-full blur-3xl pointer-events-none" />
+          <PlatformIcon platform={id} size={20} />
+        </motion.div>
+      ))}
 
-          {/* Floating platform icons (Visible on tablet & desktop) */}
-          {floatingPlatforms.map((item, idx) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, scale: 0 }}
-              animate={inView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ delay: item.delay, duration: 0.5 }}
-              className="absolute hidden md:block"
-              style={item.pos}
-            >
-              <motion.div
-                animate={{ y: [0, -6, 0] }}
-                transition={{ duration: 4, repeat: Infinity, delay: idx * 0.5, ease: "easeInOut" }}
-                className="w-11 h-11 rounded-md border border-[#ede8df] bg-white flex items-center justify-center shadow-2xs"
-              >
-                <PlatformIcon platform={item.id} size={20} />
-              </motion.div>
-            </motion.div>
-          ))}
-
-          {/* Content */}
-          <div className="relative text-center max-w-2xl mx-auto lowercase">
-            <div className="inline-flex items-center gap-2 border border-dashed border-[#dfc39a] bg-[#F4DCB4]/30 px-3.5 py-1 text-xs font-mono font-semibold text-stone-900 rounded-md mb-6">
-              <Sparkles className="h-3.5 w-3.5 text-stone-800" />
-              <span>start publishing calmly</span>
-            </div>
-
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-stone-900 leading-[1.15]">
-              your next post shouldn&apos;t take{" "}
-              <span className="font-serif italic font-normal text-stone-600">
-                five apps to publish.
-              </span>
-            </h2>
-
-            <p className="mt-5 text-base sm:text-lg text-stone-600 leading-relaxed font-sans">
-              connect your channels in seconds, schedule at peak viewer hours, and let your calm
-              studio take care of the rest.
-            </p>
-
-            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-              <button
-                type="button"
-                onClick={handleOpenStudio}
-                className="group inline-flex items-center gap-2.5 border border-[#dfc39a] bg-[#F4DCB4] px-7 py-3 text-xs font-mono font-bold text-stone-900 hover:bg-[#ebd0a3] transition-all rounded-md shadow-xs cursor-pointer"
-              >
-                <span>open creator studio</span>
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1 text-stone-800" />
-              </button>
-            </div>
-
-            <p className="mt-4 text-xs font-mono text-stone-400">
-              100% free to start · zero passwords stored · no credit card required
-            </p>
+      <div
+        ref={ref}
+        className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center lowercase space-y-6 z-10"
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5 }}
+          className="space-y-4"
+        >
+          <div className="inline-flex items-center gap-2 border border-dashed border-[#dfc39a] bg-[#F4DCB4]/30 px-3 py-1 text-xs font-mono font-semibold text-stone-900 rounded-md">
+            <Sparkles className="h-3.5 w-3.5 text-stone-800" />
+            <span>claim back 10 hours every week</span>
           </div>
+
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-stone-900 leading-tight">
+            ready to publish calmly?{" "}
+            <span className="font-serif italic font-normal text-stone-800 block sm:inline">
+              all your channels in one studio.
+            </span>
+          </h2>
+
+          <p className="mx-auto max-w-2xl text-base sm:text-lg text-stone-600 leading-relaxed font-sans">
+            stop juggling 8 separate tabs, reformatting thumbnails, and missing peak timezone drops.
+            write your content once and let socioconnect studio take care of the rest.
+          </p>
+        </motion.div>
+
+        {/* Action Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3"
+        >
+          <button
+            type="button"
+            onClick={handleOpenStudio}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 border border-[#dfc39a] bg-[#F4DCB4] px-8 py-3.5 font-mono text-xs font-bold text-stone-900 hover:bg-[#ebd0a3] transition-colors rounded-md shadow-xs cursor-pointer text-base"
+          >
+            <Sparkles className="h-4 w-4" />
+            <span>open creator studio</span>
+            <ArrowRight className="h-4 w-4" />
+          </button>
+        </motion.div>
+
+        {/* Security & Feature Guarantees */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="pt-6 border-t border-dashed border-[#ede8df] flex flex-wrap items-center justify-center gap-5 text-xs font-mono text-stone-500"
+        >
+          <div className="flex items-center gap-1.5">
+            <ShieldCheck className="h-4 w-4 text-emerald-600" />
+            <span>100% private &amp; official oauth 2.0</span>
+          </div>
+          <span className="text-stone-300">&bull;</span>
+          <div className="flex items-center gap-1.5">
+            <Zap className="h-4 w-4 text-[#dfc39a]" />
+            <span>zero password storage</span>
+          </div>
+          <span className="text-stone-300">&bull;</span>
+          <span>cancel or disconnect anytime</span>
         </motion.div>
       </div>
     </section>
   );
 }
-
-export default LandingCTA;

@@ -1,16 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Send,
-  CheckCircle2,
-  ExternalLink,
-  Clock,
-  Zap,
-  Check,
-  CalendarDays,
-  Shield,
-} from "lucide-react";
+import { Send, Clock, Zap, CalendarDays, Shield, Sparkles } from "lucide-react";
 import { PlatformIcon } from "./platform-icons";
 
 interface ChannelConfig {
@@ -118,7 +109,7 @@ const CHANNELS: ChannelConfig[] = [
 
 const PRESETS = [
   {
-    label: "🎥 new video drop",
+    label: "🎬 new video drop",
     text: "just dropped a full deep-dive on building fullstack web apps in 2026! check out the architecture walkthrough and code examples. link in bio/comments! 🔥",
   },
   {
@@ -131,7 +122,7 @@ const PRESETS = [
   },
 ];
 
-export function LandingInteractiveDispatcher() {
+export function InteractiveDispatcher() {
   const [selectedChannels, setSelectedChannels] = useState<string[]>([
     "youtube",
     "x",
@@ -222,7 +213,7 @@ export function LandingInteractiveDispatcher() {
         <div className="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end lowercase">
           <div>
             <div className="flex items-center gap-2 font-mono text-xs font-semibold text-stone-700">
-              <span className="h-2 w-2 rounded-full bg-[#dfc39a]" />
+              <span className="h-2 w-2 rounded-full bg-[#dfc39a]\" />
               <span>creator posting studio</span>
             </div>
             <h2 className="mt-2 text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
@@ -232,21 +223,6 @@ export function LandingInteractiveDispatcher() {
               switch between <strong>staggered peak hours</strong> or an{" "}
               <strong>instant simultaneous drop</strong> across all your accounts.
             </p>
-          </div>
-
-          {/* Preset quick buttons */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="font-mono text-[11px] text-stone-600 mr-1">sample templates:</span>
-            {PRESETS.map((p, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => handlePreset(p.text)}
-                className="border border-[#ede8df] bg-white px-3 py-1 text-xs text-stone-700 hover:border-stone-400 hover:text-stone-900 transition-colors rounded-md shadow-2xs font-mono cursor-pointer"
-              >
-                {p.label}
-              </button>
-            ))}
           </div>
         </div>
 
@@ -271,17 +247,15 @@ export function LandingInteractiveDispatcher() {
                         key={ch.id}
                         type="button"
                         onClick={() => toggleChannel(ch.id)}
-                        className={`flex items-center gap-2 px-3 py-1.5 border text-xs transition-all rounded-md cursor-pointer ${
+                        className={`flex items-center gap-2 p-1.5 border text-xs transition-all rounded-md cursor-pointer ${
                           isSelected
                             ? "border-stone-900 bg-white font-bold text-stone-900 shadow-2xs"
-                            : "border-[#ede8df] bg-white/60 text-stone-400 hover:border-stone-300 hover:text-stone-600"
+                            : "border-line bg-white/60 text-stone-400 hover:border-stone-300 hover:text-stone-600"
                         }`}
                       >
                         <div className="flex h-5 w-5 items-center justify-center rounded-sm shrink-0">
                           <PlatformIcon platform={ch.id} size={15} />
                         </div>
-                        <span className="font-sans">{ch.name}</span>
-                        {isSelected && <Check className="h-3 w-3 text-emerald-600 ml-0.5" />}
                       </button>
                     );
                   })}
@@ -304,7 +278,7 @@ export function LandingInteractiveDispatcher() {
                     }`}
                   >
                     <Clock className="h-3 w-3" />
-                    <span>staggered peak hours</span>
+                    <span>staggered</span>
                   </button>
                   <button
                     type="button"
@@ -316,7 +290,7 @@ export function LandingInteractiveDispatcher() {
                     }`}
                   >
                     <Zap className="h-3 w-3" />
-                    <span>instant simultaneous</span>
+                    <span>instant</span>
                   </button>
                 </div>
               </div>
@@ -333,6 +307,21 @@ export function LandingInteractiveDispatcher() {
                   <span className="font-mono text-xs text-stone-500">
                     {content.length} characters
                   </span>
+                </div>
+
+                {/* Preset Switcher Pills */}
+                <div className="flex items-center gap-1.5 mb-2.5 overflow-x-auto pb-1 scrollbar-none font-mono text-[11px]">
+                  <span className="text-stone-400 text-[10px] shrink-0">presets:</span>
+                  {PRESETS.map((preset) => (
+                    <button
+                      key={preset.label}
+                      type="button"
+                      onClick={() => handlePreset(preset.text)}
+                      className="px-2 py-0.5 border border-[#ede8df] bg-[#faf8f5] hover:border-stone-400 rounded-sm text-stone-700 hover:text-stone-900 shrink-0 cursor-pointer"
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
                 </div>
 
                 <textarea
@@ -378,7 +367,7 @@ export function LandingInteractiveDispatcher() {
               <div className="mt-6 pt-4 border-t border-dashed border-[#ede8df] flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-1.5 font-mono text-xs text-stone-500">
                   <Shield className="h-3.5 w-3.5 text-emerald-600" />
-                  <span>100% private · zero passwords stored</span>
+                  <span>100% private &middot; zero passwords stored</span>
                 </div>
 
                 <button
@@ -435,7 +424,6 @@ export function LandingInteractiveDispatcher() {
                         }`}
                       >
                         <PlatformIcon platform={ch.id} size={13} />
-                        <span>{ch.name}</span>
                       </button>
                     );
                   })}
@@ -475,65 +463,32 @@ export function LandingInteractiveDispatcher() {
                       </span>
                     </div>
                   </div>
-
-                  {/* Character check */}
-                  <div className="flex items-center justify-between pt-2 border-t border-dashed border-[#ede8df] text-[11px]">
-                    <span className="text-stone-500">post length fit:</span>
-                    <span
-                      className={
-                        content.length <= activeInspectChannel.charLimit
-                          ? "text-emerald-700 font-bold"
-                          : "text-red-600 font-bold"
-                      }
-                    >
-                      {content.length <= activeInspectChannel.charLimit
-                        ? `✓ perfect (${content.length}/${activeInspectChannel.charLimit})`
-                        : `✕ over limit by ${content.length - activeInspectChannel.charLimit}`}
-                    </span>
-                  </div>
                 </div>
-              </div>
 
-              {/* Published Results Box */}
-              {publishedResults && (
-                <div className="mt-4 border border-emerald-300 bg-emerald-50/70 p-3.5 rounded-md font-mono text-xs">
-                  <div className="flex items-center gap-1.5 font-bold text-emerald-900 mb-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                    <span>
-                      {scheduleMode === "staggered"
-                        ? "successfully scheduled for peak hours!"
-                        : "published across all channels!"}
-                    </span>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    {Object.entries(publishedResults).map(([chId, res]) => {
-                      const c = CHANNELS.find((ch) => ch.id === chId);
-                      return (
+                {/* Published Results Display */}
+                {publishedResults && (
+                  <div className="mt-4 border border-emerald-200 bg-emerald-50/70 p-3.5 rounded-md space-y-2">
+                    <div className="flex items-center gap-1.5 font-mono text-xs font-bold text-emerald-900">
+                      <Sparkles className="h-3.5 w-3.5 text-emerald-700" />
+                      <span>all channels dispatched successfully!</span>
+                    </div>
+                    <div className="space-y-1 font-mono text-[11px]">
+                      {Object.entries(publishedResults).map(([plat, res]) => (
                         <div
-                          key={chId}
-                          className="flex items-center justify-between bg-white/80 p-2 rounded-sm border border-emerald-200/60"
+                          key={plat}
+                          className="flex items-center justify-between text-emerald-800"
                         >
-                          <div className="flex items-center gap-1.5">
-                            <PlatformIcon platform={chId} size={14} />
-                            <span className="font-bold text-stone-800">{c?.name}:</span>
-                            <span className="text-[11px] text-stone-600">{res.status}</span>
-                          </div>
-                          <a
-                            href={res.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-[10px] text-stone-500 hover:text-stone-900 underline"
-                          >
-                            <span>preview</span>
-                            <ExternalLink className="h-2.5 w-2.5" />
-                          </a>
+                          <span className="flex items-center gap-1.5">
+                            <PlatformIcon platform={plat} size={11} />
+                            <span>{plat}</span>
+                          </span>
+                          <span className="text-emerald-700 font-semibold">{res.status}</span>
                         </div>
-                      );
-                    })}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -542,4 +497,4 @@ export function LandingInteractiveDispatcher() {
   );
 }
 
-export { LandingInteractiveDispatcher as InteractiveDispatcher };
+export const LandingInteractiveDispatcher = InteractiveDispatcher;

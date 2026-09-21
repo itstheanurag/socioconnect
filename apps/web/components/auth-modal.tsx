@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { X, ShieldCheck, Sparkles, CheckCircle2, Lock } from "lucide-react";
+import { X, ShieldCheck, Sparkles } from "lucide-react";
 import { useAuth } from "../lib/auth-context";
 import { PlatformIcon } from "./landing/platform-icons";
 
@@ -21,10 +21,10 @@ export function AuthModal() {
     }
   };
 
-  const handleDemoLogin = async () => {
+  const handleDemoLogin = () => {
     setIsDemoLoading(true);
     try {
-      await loginWithDemo();
+      loginWithDemo();
     } catch (err) {
       console.error(err);
       setIsDemoLoading(false);
@@ -142,7 +142,7 @@ export function AuthModal() {
           <div className="mt-6 pt-4 border-t border-dashed border-[#ede8df] space-y-2 font-mono text-[11px] text-stone-500">
             <div className="flex items-center gap-2 text-stone-800 font-semibold">
               <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0" />
-              <span>100% private · zero password storage</span>
+              <span>100% private &middot; zero password storage</span>
             </div>
             <p className="text-[11px] text-stone-500 font-sans leading-relaxed">
               we authenticate strictly through official platform screens. we never ask for, view, or

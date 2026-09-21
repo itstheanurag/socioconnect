@@ -7,17 +7,65 @@ import { ArrowRight, Menu, X, Sparkles } from "lucide-react";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "motion/react";
 import { useAuth } from "../../lib/auth-context";
 
+const NAV_ITEMS = [
+  { label: "studio", href: "/app" },
+  { label: "schedule", href: "#calendar" },
+  { label: "platforms", href: "#platforms" },
+  { label: "pricing", href: "#pricing" },
+  { label: "faq", href: "#faq" },
+];
+
+function NavLink({
+  label,
+  href,
+  mobile = false,
+  onClick,
+}: {
+  label: string;
+  href: string;
+  mobile?: boolean;
+  onClick?: () => void;
+}) {
+  if (href.startsWith("/")) {
+    return (
+      <Link
+        href={href}
+        onClick={onClick}
+        className={
+          mobile
+            ? "block py-2 text-xs font-mono font-bold text-stone-900 hover:text-stone-900 transition-colors"
+            : "relative py-1 text-xs font-mono font-bold text-stone-900 hover:text-stone-900 transition-colors after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#dfc39a] after:transition-all hover:after:w-full"
+        }
+      >
+        {label}
+      </Link>
+    );
+  }
+
+  return (
+    <a
+      href={href}
+      onClick={onClick}
+      className={
+        mobile
+          ? "block py-2 text-xs font-mono text-stone-700 hover:text-stone-900 transition-colors"
+          : "relative py-1 text-xs font-mono font-medium text-stone-600 hover:text-stone-900 transition-colors after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#F4DCB4] after:transition-all hover:after:w-full"
+      }
+    >
+      {label}
+    </a>
+  );
+}
+
 export function LandingHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { isAuthenticated, openAuthModal } = useAuth();
+  const { isAuthenticated, mockLogin } = useAuth();
   const router = useRouter();
   const { scrollY } = useScroll();
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setIsScrolled(window.scrollY > 20);
-    }
+    setIsScrolled(window.scrollY > 20);
   }, []);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
@@ -25,15 +73,18 @@ export function LandingHeader() {
   });
 
   const handleOpenStudio = () => {
-    if (isAuthenticated) {
-      router.push("/app");
-    } else {
-      openAuthModal("/app");
+    if (!isAuthenticated) {
+      mockLogin();
     }
+    router.push("/app");
+  };
+
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
   };
 
   return (
-    <div className="fixed top-0 inset-x-0 z-50 flex justify-center pointer-events-none px-4 sm:px-6">
+    <div className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 sm:px-6 pointer-events-none">
       <motion.header
         layout
         transition={{
@@ -44,95 +95,58 @@ export function LandingHeader() {
         }}
         className={`pointer-events-auto w-full transition-all duration-300 ${
           isScrolled
-            ? "mt-3 sm:mt-4 max-w-5xl bg-white/92 backdrop-blur-md shadow-lg shadow-stone-900/6 border border-[#dfc39a] py-2 px-4 sm:px-6 rounded-md"
-            : "mt-0 max-w-6xl bg-white/95 backdrop-blur-xs shadow-none border-b border-[#ede8df] border-t-transparent border-x-transparent border-t-0 border-x-0 py-3 sm:py-3.5 px-4 sm:px-6 rounded-none"
+            ? "mt-3 sm:mt-4 max-w-5xl rounded-md border border-[#dfc39a] bg-white/92 px-4 py-2 shadow-lg shadow-stone-900/6 backdrop-blur-md sm:px-6"
+            : "mt-0 max-w-6xl rounded-none border-b border-[#ede8df] bg-white/95 px-4 py-3 sm:px-6 sm:py-3.5"
         }`}
       >
         <div className="flex items-center justify-between">
-          {/* Brand */}
-          <Link href="/" className="group flex items-center gap-2 shrink-0 lowercase">
+          {/* Logo */}
+          <Link href="/" className="group flex shrink-0 items-center gap-2 lowercase">
             <span
-              className={`flex items-center justify-center border bg-white rounded-md transition-all ${
+              className={`flex items-center justify-center rounded-md border bg-white transition-all ${
                 isScrolled ? "h-7 w-7 border-[#dfc39a]" : "h-7.5 w-7.5 border-[#dcd5c8]"
               }`}
             >
-              <span className="flex items-end gap-[1.5px] h-3.5 w-3.5">
-                <span className="w-0.5 bg-stone-700 h-[45%] rounded-xs" />
-                <span className="w-0.5 bg-[#F4DCB4] h-[95%] rounded-xs" />
-                <span className="w-0.5 bg-stone-700 h-[65%] rounded-xs" />
+              <span className="flex h-3.5 w-3.5 items-end gap-[1.5px]">
+                <span className="w-0.5 h-[45%] rounded-xs bg-stone-700" />
+                <span className="w-0.5 h-[95%] rounded-xs bg-[#F4DCB4]" />
+                <span className="w-0.5 h-[65%] rounded-xs bg-stone-700" />
               </span>
             </span>
-            <span
-              className={`font-mono font-bold tracking-tight text-stone-900 transition-all text-md`}
-            >
+
+            <span className="font-mono text-md font-bold tracking-tight text-stone-900">
               socioconnect
             </span>
           </Link>
 
-          {/* Navigation Links */}
-          <nav className="hidden md:flex items-center gap-4 lg:gap-5 text-xs font-mono text-stone-600 font-medium lowercase">
-            <a
-              href="#editor"
-              className="hover:text-stone-900 transition-colors py-1 relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 hover:after:w-full after:bg-[#F4DCB4] after:transition-all"
-            >
-              studio
-            </a>
-            <a
-              href="#live-stream"
-              className="hover:text-stone-900 transition-colors py-1 relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 hover:after:w-full after:bg-[#F4DCB4] after:transition-all"
-            >
-              live dispatch
-            </a>
-            <a
-              href="#calendar"
-              className="hover:text-stone-900 transition-colors py-1 relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 hover:after:w-full after:bg-[#F4DCB4] after:transition-all"
-            >
-              calendar
-            </a>
-            <a
-              href="#connectors"
-              className="hover:text-stone-900 transition-colors py-1 relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 hover:after:w-full after:bg-[#F4DCB4] after:transition-all"
-            >
-              connectors
-            </a>
-            <a
-              href="#workflow"
-              className="hover:text-stone-900 transition-colors py-1 relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 hover:after:w-full after:bg-[#F4DCB4] after:transition-all"
-            >
-              workflow
-            </a>
-            <a
-              href="#pricing"
-              className="hover:text-stone-900 transition-colors py-1 relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 hover:after:w-full after:bg-[#F4DCB4] after:transition-all"
-            >
-              pricing
-            </a>
-            <a
-              href="#faq"
-              className="hover:text-stone-900 transition-colors py-1 relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 hover:after:w-full after:bg-[#F4DCB4] after:transition-all"
-            >
-              faq
-            </a>
+          {/* Desktop Navigation */}
+          <nav className="hidden items-center gap-4 lg:gap-5 md:flex">
+            {NAV_ITEMS.map((item) => (
+              <NavLink key={item.label} {...item} />
+            ))}
           </nav>
 
-          {/* Action CTA & Mobile Toggle */}
+          {/* Actions */}
           <div className="flex items-center gap-2 lowercase">
             <button
               type="button"
               onClick={handleOpenStudio}
-              className={`group inline-flex items-center gap-1.5 border border-[#dfc39a] bg-[#F4DCB4] font-mono font-bold text-stone-900 hover:bg-[#ebd0a3] transition-all rounded-md shadow-2xs cursor-pointer ${
+              className={`group inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-[#dfc39a] bg-[#F4DCB4] font-mono font-bold text-stone-900 transition-all hover:bg-[#ebd0a3] ${
                 isScrolled ? "px-3 py-1.5 text-xs" : "px-3.5 py-1.5 text-xs"
               }`}
             >
-              <Sparkles className="h-3 w-3 text-stone-800" />
+              <Sparkles className="h-3 w-3" />
+
               <span>open studio</span>
-              <ArrowRight className="h-3 w-3 text-stone-700 transition-transform group-hover:translate-x-0.5" />
+
+              <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
             </button>
 
-            {/* Mobile menu toggle button */}
+            {/* Mobile Toggle */}
             <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden border border-[#ede8df] p-2 text-stone-700 hover:text-stone-900 bg-white rounded-md cursor-pointer"
+              type="button"
+              onClick={() => setMobileMenuOpen((open) => !open)}
+              className="cursor-pointer rounded-md border border-[#ede8df] bg-white p-2 text-stone-700 transition-colors hover:text-stone-900 md:hidden"
               aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
@@ -140,79 +154,35 @@ export function LandingHeader() {
           </div>
         </div>
 
-        {/* Mobile Dropdown Menu */}
+        {/* Mobile Dropdown */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
-              initial={{ opacity: 0, height: 0, marginTop: 0 }}
-              animate={{ opacity: 1, height: "auto", marginTop: 10 }}
-              exit={{ opacity: 0, height: 0, marginTop: 0 }}
-              className="border-t border-dashed border-[#ede8df] pt-3 pb-1 md:hidden rounded-md lowercase"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+              className="mt-3 overflow-hidden border-t border-[#ede8df] pt-3 md:hidden"
             >
-              <nav className="flex flex-col gap-2 font-mono text-xs text-stone-700 px-1">
-                <a
-                  href="#editor"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="py-1.5 hover:text-stone-900 transition-colors"
+              <div className="space-y-1">
+                {NAV_ITEMS.map((item) => (
+                  <NavLink key={item.label} {...item} mobile onClick={closeMobileMenu} />
+                ))}
+              </div>
+
+              <div className="mt-3 border-t border-[#ede8df] pt-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    closeMobileMenu();
+                    handleOpenStudio();
+                  }}
+                  className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-[#dfc39a] bg-[#F4DCB4] py-2 font-mono text-xs font-bold text-stone-900 transition-colors hover:bg-[#ebd0a3]"
                 >
-                  studio composer
-                </a>
-                <a
-                  href="#live-stream"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="py-1.5 hover:text-stone-900 transition-colors"
-                >
-                  live dispatch
-                </a>
-                <a
-                  href="#calendar"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="py-1.5 hover:text-stone-900 transition-colors"
-                >
-                  calendar
-                </a>
-                <a
-                  href="#connectors"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="py-1.5 hover:text-stone-900 transition-colors"
-                >
-                  connectors
-                </a>
-                <a
-                  href="#workflow"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="py-1.5 hover:text-stone-900 transition-colors"
-                >
-                  workflow
-                </a>
-                <a
-                  href="#pricing"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="py-1.5 hover:text-stone-900 transition-colors"
-                >
-                  pricing
-                </a>
-                <a
-                  href="#faq"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="py-1.5 hover:text-stone-900 transition-colors"
-                >
-                  faq
-                </a>
-                <div className="pt-2 border-t border-dashed border-[#ede8df]">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      handleOpenStudio();
-                    }}
-                    className="w-full inline-flex items-center justify-center gap-1.5 border border-[#dfc39a] bg-[#F4DCB4] font-mono font-bold text-stone-900 py-2.5 text-xs rounded-md cursor-pointer"
-                  >
-                    <Sparkles className="h-3.5 w-3.5" />
-                    <span>open studio</span>
-                  </button>
-                </div>
-              </nav>
+                  <Sparkles className="h-3.5 w-3.5" />
+                  <span>open studio</span>
+                </button>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

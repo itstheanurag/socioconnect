@@ -2,363 +2,380 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { CheckCircle2, ShieldCheck, Pause, Play, Zap } from "lucide-react";
+import {
+  Sparkles,
+  CheckCircle2,
+  Heart,
+  MessageCircle,
+  Play,
+  Film,
+  Zap,
+  TrendingUp,
+  Clock,
+  Eye,
+} from "lucide-react";
 import { PlatformIcon } from "./platform-icons";
 
-interface LiveNotification {
+interface CreatorDrop {
   id: string;
-  platform:
-    | "youtube"
-    | "twitch"
-    | "instagram"
-    | "x"
-    | "linkedin"
-    | "peerlist"
-    | "reddit"
-    | "bluesky";
+  creatorName: string;
+  creatorHandle: string;
+  avatar: string;
+  platform: "youtube" | "instagram" | "tiktok" | "linkedin" | "x" | "threads";
   platformName: string;
-  actionText: string;
-  postTitle: string;
-  timeAgo: string;
-  statusText: string;
+  formatType: string;
+  contentType: "video" | "reel" | "thread" | "story" | "short";
+  title: string;
+  timeSlot: string;
+  status: "live" | "scheduled" | "delivering";
+  stats: {
+    views?: string;
+    likes?: string;
+    comments?: string;
+    shares?: string;
+  };
+  accentBg: string;
 }
 
-const INITIAL_NOTIFICATIONS: LiveNotification[] = [
+const CREATOR_DROPS: CreatorDrop[] = [
   {
-    id: "notif-yt-1",
+    id: "drop-yt-1",
+    creatorName: "Maya Rao",
+    creatorHandle: "@maya.builds",
+    avatar:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
     platform: "youtube",
-    platformName: "youtube",
-    actionText: "scheduled premiere & community post",
-    postTitle: "new architecture deep dive is premiering this thursday at 10 am pst!",
-    timeAgo: "2s ago",
-    statusText: "scheduled",
+    platformName: "YouTube",
+    formatType: "4K Episode Premiere",
+    contentType: "video",
+    title: "Behind the Studio: How I write once & reach 500k subscribers",
+    timeSlot: "04:00 PM (peak audience)",
+    status: "live",
+    stats: { views: "4.8k", likes: "612", comments: "94" },
+    accentBg: "from-red-50 to-white",
   },
   {
-    id: "notif-tw-1",
-    platform: "twitch",
-    platformName: "twitch",
-    actionText: "sent go-live stream alert",
-    postTitle: "🔴 live now: building a distributed queuing engine in rust & typescript!",
-    timeAgo: "5s ago",
-    statusText: "live now",
-  },
-  {
-    id: "notif-ig-1",
+    id: "drop-ig-1",
+    creatorName: "Leo Vance",
+    creatorHandle: "@leovance_art",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
     platform: "instagram",
-    platformName: "instagram",
-    actionText: "published reel & caption",
-    postTitle: "5 production architecture lessons we learned while scaling to 1m requests 💡",
-    timeAgo: "9s ago",
-    statusText: "published",
+    platformName: "Instagram",
+    formatType: "Reel + Sound Tag",
+    contentType: "reel",
+    title: "3 lighting setups every solo video creator needs to try ✨",
+    timeSlot: "12:30 PM (lunch peak)",
+    status: "live",
+    stats: { views: "12.4k", likes: "1.8k", comments: "142" },
+    accentBg: "from-pink-50 to-white",
   },
   {
-    id: "notif-1",
-    platform: "peerlist",
-    platformName: "peerlist",
-    actionText: "shared to maker community",
-    postTitle: "introducing our atomic multi-network publishing queue for creators 🚀",
-    timeAgo: "14s ago",
-    statusText: "published",
-  },
-  {
-    id: "notif-2",
+    id: "drop-x-1",
+    creatorName: "Sarah Chen",
+    creatorHandle: "@sarahchen",
+    avatar:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80",
     platform: "x",
-    platformName: "x (twitter)",
-    actionText: "published thread (1/4)",
-    postTitle: "why we killed manual copy-pasting across 8 tabs: an engineering breakdown...",
-    timeAgo: "21s ago",
-    statusText: "published",
+    platformName: "X (Twitter)",
+    formatType: "4-Part Insight Thread",
+    contentType: "thread",
+    title: "The creator operating system: how to post daily without burning out 🧵👇",
+    timeSlot: "01:30 PM (midday thread)",
+    status: "live",
+    stats: { views: "28.5k", likes: "840", shares: "210" },
+    accentBg: "from-stone-100 to-white",
   },
   {
-    id: "notif-3",
+    id: "drop-li-1",
+    creatorName: "Alex Rivers",
+    creatorHandle: "Alex Rivers",
+    avatar:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80",
     platform: "linkedin",
-    platformName: "linkedin",
-    actionText: "published story post",
-    postTitle:
-      "how solo creators scale brand reach without burning 10 hours a week on social media.",
-    timeAgo: "28s ago",
-    statusText: "published",
+    platformName: "LinkedIn",
+    formatType: "Creator Takeaway Story",
+    contentType: "story",
+    title: "Why we stopped cross-posting manually and freed up 12 hours every week.",
+    timeSlot: "08:30 AM (commute read)",
+    status: "live",
+    stats: { views: "9.2k", likes: "482", comments: "67" },
+    accentBg: "from-blue-50 to-white",
   },
   {
-    id: "notif-4",
-    platform: "reddit",
-    platformName: "reddit",
-    actionText: "posted in r/sideproject",
-    postTitle: "we built an open-source calm multi-channel distribution studio.",
-    timeAgo: "35s ago",
-    statusText: "published",
+    id: "drop-tt-1",
+    creatorName: "Jordan Blake",
+    creatorHandle: "@jordan_creates",
+    avatar:
+      "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=100&auto=format&fit=crop&q=80",
+    platform: "tiktok",
+    platformName: "TikTok",
+    formatType: "High-Paced Short",
+    contentType: "short",
+    title: "Stop copy-pasting your content across 6 apps in 2026 🤯",
+    timeSlot: "06:30 PM (evening peak)",
+    status: "live",
+    stats: { views: "34.1k", likes: "4.2k", comments: "318" },
+    accentBg: "from-emerald-50 to-white",
   },
   {
-    id: "notif-5",
-    platform: "bluesky",
-    platformName: "bluesky",
-    actionText: "published open post",
-    postTitle: "federated cross-posting is now live with zero password storage 🌐",
-    timeAgo: "42s ago",
-    statusText: "published",
-  },
-];
-
-const POOL_OF_UPDATES = [
-  {
-    platform: "youtube" as const,
-    platformName: "youtube",
-    actionText: "scheduled video premiere",
-    postTitle: "episode 14 is rendering: behind the scenes building socioconnect.",
-    statusText: "scheduled",
-  },
-  {
-    platform: "twitch" as const,
-    platformName: "twitch",
-    actionText: "stream alert sent",
-    postTitle: "twitch stream live in 10 mins: live code review with community!",
-    statusText: "live now",
-  },
-  {
-    platform: "instagram" as const,
-    platformName: "instagram",
-    actionText: "reel caption published",
-    postTitle: "check out the new design system dark mode preview on our reel! ✨",
-    statusText: "published",
-  },
-  {
-    platform: "peerlist" as const,
-    platformName: "peerlist",
-    actionText: "maker update published",
-    postTitle: "shipped v1.2 with automated character meter validations across 8 platforms.",
-    statusText: "published",
-  },
-  {
-    platform: "x" as const,
-    platformName: "x (twitter)",
-    actionText: "new post published",
-    postTitle: "single-point-of-failure distribution is officially obsolete.",
-    statusText: "published",
-  },
-  {
-    platform: "linkedin" as const,
-    platformName: "linkedin",
-    actionText: "founder article posted",
-    postTitle: "why asynchronous worker queues make social distribution uncrashable.",
-    statusText: "published",
-  },
-  {
-    platform: "reddit" as const,
-    platformName: "reddit",
-    actionText: "community discussion started",
-    postTitle: "show r/webdev: how we built decoupled retry backoff into oauth webhooks.",
-    statusText: "published",
-  },
-  {
-    platform: "bluesky" as const,
-    platformName: "bluesky",
-    actionText: "open feed post published",
-    postTitle: "open protocols are winning the distribution wars. build open.",
-    statusText: "published",
+    id: "drop-th-1",
+    creatorName: "Elena Scott",
+    creatorHandle: "@elena.scott",
+    avatar:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
+    platform: "threads",
+    platformName: "Threads",
+    formatType: "Micro Discussion",
+    contentType: "story",
+    title: "Quick question for creators: what is your biggest time sink in publishing?",
+    timeSlot: "03:00 PM (afternoon chat)",
+    status: "live",
+    stats: { views: "3.1k", likes: "194", comments: "58" },
+    accentBg: "from-stone-100 to-white",
   },
 ];
 
 export function LiveNotificationsStream() {
-  const [notifications, setNotifications] = useState<LiveNotification[]>(INITIAL_NOTIFICATIONS);
-  const [isPaused, setIsPaused] = useState(false);
-  const [activeFilter, setActiveFilter] = useState<string>("all");
+  const [activePlatform, setActivePlatform] = useState<string>("all");
+  const [activeDropIndex, setActiveDropIndex] = useState(0);
 
-  // Automatically inject a simulated new notification every few seconds
+  const filteredDrops =
+    activePlatform === "all"
+      ? CREATOR_DROPS
+      : CREATOR_DROPS.filter((d) => d.platform === activePlatform);
+
+  // Gentle auto-cycling of the featured drop
   useEffect(() => {
-    if (isPaused) return;
+    const timer = setInterval(() => {
+      setActiveDropIndex((prev) => (prev + 1) % filteredDrops.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, [filteredDrops.length]);
 
-    const interval = setInterval(() => {
-      const randomUpdate = POOL_OF_UPDATES[Math.floor(Math.random() * POOL_OF_UPDATES.length)];
-
-      const newNotif: LiveNotification = {
-        id: `notif-${Date.now()}-${Math.random().toString(36).substring(2, 5)}`,
-        platform: randomUpdate.platform,
-        platformName: randomUpdate.platformName,
-        actionText: randomUpdate.actionText,
-        postTitle: randomUpdate.postTitle,
-        timeAgo: "just now",
-        statusText: randomUpdate.statusText,
-      };
-
-      setNotifications((prev) => [newNotif, ...prev.slice(0, 11)]);
-    }, 3800);
-
-    return () => clearInterval(interval);
-  }, [isPaused]);
-
-  const filteredNotifications =
-    activeFilter === "all"
-      ? notifications
-      : notifications.filter((n) => n.platform === activeFilter);
-
-  const PLATFORMS_FILTER = [
-    { id: "all", name: "all channels" },
-    { id: "youtube", name: "youtube" },
-    { id: "twitch", name: "twitch" },
-    { id: "instagram", name: "instagram" },
-    { id: "x", name: "x" },
-    { id: "linkedin", name: "linkedin" },
-    { id: "peerlist", name: "peerlist" },
-    { id: "reddit", name: "reddit" },
-    { id: "bluesky", name: "bluesky" },
-  ];
-
-  function triggerManualSimulate() {
-    const randomUpdate = POOL_OF_UPDATES[Math.floor(Math.random() * POOL_OF_UPDATES.length)];
-    const newNotif: LiveNotification = {
-      id: `notif-manual-${Date.now()}`,
-      platform: randomUpdate.platform,
-      platformName: randomUpdate.platformName,
-      actionText: randomUpdate.actionText,
-      postTitle: randomUpdate.postTitle,
-      timeAgo: "just now",
-      statusText: randomUpdate.statusText,
-    };
-    setNotifications((prev) => [newNotif, ...prev.slice(0, 11)]);
-  }
+  const currentFeatured = filteredDrops[activeDropIndex] || filteredDrops[0];
 
   return (
     <section
       id="live-stream"
-      className="relative py-16 lg:py-24 border-t border-[#ede8df] bg-white"
+      className="relative py-14 lg:py-20 border-t border-line bg-cream-soft overflow-hidden"
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10 lowercase">
-          <div className="max-w-2xl">
-            <div className="flex items-center gap-2 font-mono text-xs font-semibold text-stone-700">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Compact, Creator-Focused Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 lowercase">
+          <div>
+            <div className="inline-flex items-center gap-2 border border-dashed border-[#dfc39a] bg-[#F4DCB4]/30 px-3 py-0.5 text-xs font-mono font-semibold text-stone-900 rounded-md mb-2.5">
+              <Sparkles className="h-3 w-3 text-stone-800" />
+              <span>live creator dispatch radar</span>
+              <span className="text-stone-400">&middot;</span>
+              <span className="text-emerald-700 font-bold flex items-center gap-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />
+                publishing now
               </span>
-              <span>real-time publishing stream</span>
             </div>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
-              watch your posts go live in real-time.
+
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-stone-900 leading-tight">
+              your content going live,{" "}
+              <span className="font-serif italic font-normal text-stone-800">
+                effortlessly everywhere.
+              </span>
             </h2>
-            <p className="mt-3 text-sm sm:text-base text-stone-600 leading-relaxed">
-              publish your video drops, live stream alerts, carousel captions, and threads
-              effortlessly across every audience — without ever juggling multiple browser windows.
-            </p>
           </div>
 
-          {/* Stream Controls */}
-          <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
-            <button
-              type="button"
-              onClick={() => setIsPaused(!isPaused)}
-              className="inline-flex items-center gap-1.5 border border-[#ede8df] bg-[#faf8f5] px-3.5 py-1.5 text-stone-700 hover:text-stone-900 hover:border-stone-400 transition-colors rounded-md shadow-2xs cursor-pointer"
-            >
-              {isPaused ? (
-                <>
-                  <Play className="h-3.5 w-3.5 text-emerald-600" />
-                  <span>resume stream</span>
-                </>
-              ) : (
-                <>
-                  <Pause className="h-3.5 w-3.5 text-stone-500" />
-                  <span>pause stream</span>
-                </>
-              )}
-            </button>
-
-            <button
-              type="button"
-              onClick={triggerManualSimulate}
-              className="inline-flex items-center gap-1.5 border border-[#dfc39a] bg-[#F4DCB4] px-3.5 py-1.5 font-bold text-stone-900 hover:bg-[#ebd0a3] transition-colors rounded-md shadow-2xs cursor-pointer"
-            >
-              <Zap className="h-3.5 w-3.5" />
-              <span>test simulated post</span>
-            </button>
+          {/* Quick Platform Filter Pills */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 font-mono text-xs scrollbar-none">
+            {[
+              { id: "all", label: "all drops" },
+              { id: "youtube", label: "youtube" },
+              { id: "instagram", label: "instagram" },
+              { id: "tiktok", label: "tiktok" },
+              { id: "linkedin", label: "linkedin" },
+              { id: "x", label: "x" },
+              { id: "threads", label: "threads" },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => {
+                  setActivePlatform(tab.id);
+                  setActiveDropIndex(0);
+                }}
+                className={`px-3 py-1 rounded-md border transition-all cursor-pointer text-[11px] shrink-0 ${
+                  activePlatform === tab.id
+                    ? "border-stone-900 bg-white font-bold text-stone-900 shadow-2xs"
+                    : "border-[#ede8df] bg-white/60 text-stone-500 hover:border-stone-400 hover:text-stone-800"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Channel Filter Strip */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-6 scrollbar-none font-mono text-xs lowercase">
-          <span className="text-stone-400 text-[10px] mr-1 shrink-0">filter:</span>
-          {PLATFORMS_FILTER.map((filter) => (
-            <button
-              key={filter.id}
-              type="button"
-              onClick={() => setActiveFilter(filter.id)}
-              className={`px-3 py-1 border transition-all rounded-md shrink-0 flex items-center gap-1.5 cursor-pointer ${
-                activeFilter === filter.id
-                  ? "border-stone-900 bg-stone-900 text-white font-bold shadow-2xs"
-                  : "border-[#ede8df] bg-[#faf8f5] text-stone-600 hover:border-stone-400"
-              }`}
-            >
-              {filter.id !== "all" && <PlatformIcon platform={filter.id} size={12} />}
-              <span>{filter.name}</span>
-            </button>
-          ))}
-        </div>
+        {/* Compact Two-Pane Creator Stage */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch lowercase">
+          {/* Left: Featured Active Drop Spotlight */}
+          <div className="lg:col-span-6 border border-[#ede8df] bg-white p-5 sm:p-6 rounded-md shadow-xs flex flex-col justify-between relative overflow-hidden">
+            {/* Soft Warm Glow */}
+            <div className="absolute top-0 right-0 w-48 h-48 bg-[#F4DCB4]/20 rounded-full blur-2xl pointer-events-none" />
 
-        {/* Live Notification Cards Stream Container */}
-        <div className="relative border border-[#ede8df] bg-[#faf8f5] p-4 sm:p-6 rounded-md shadow-xs min-h-[460px] overflow-hidden lowercase">
-          {/* Top Bar inside Stream Terminal */}
-          <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-3 mb-4 font-mono text-xs text-stone-500">
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="font-bold text-stone-800">live posting activity</span>
-              <span className="text-stone-400 hidden sm:inline">
-                · {filteredNotifications.length} posts active
-              </span>
-            </div>
-            <div className="flex items-center gap-1.5 text-[11px] text-stone-600">
-              <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
-              <span>100% private · no reading your private dms</span>
-            </div>
-          </div>
-
-          {/* The Animated Notification Stream */}
-          <div className="space-y-2.5">
-            <AnimatePresence initial={false}>
-              {filteredNotifications.map((item) => (
-                <motion.div
-                  key={item.id}
-                  layout
-                  initial={{ opacity: 0, y: -16, scale: 0.98 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.35, ease: "easeOut" }}
-                  className="group relative border border-[#ede8df] bg-white p-3.5 sm:p-4 rounded-md shadow-2xs hover:border-[#dfc39a] transition-all"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    {/* Left: Platform Logo & Action Title */}
-                    <div className="flex items-start gap-3 min-w-0">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-sm border border-[#ede8df] bg-[#faf8f5] shrink-0 shadow-2xs">
-                        <PlatformIcon platform={item.platform} size={16} />
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentFeatured.id}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.25 }}
+                className="space-y-4"
+              >
+                {/* Creator Profile & Platform Strip */}
+                <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-3.5">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={currentFeatured.avatar}
+                      alt={currentFeatured.creatorName}
+                      className="h-10 w-10 rounded-full object-cover border border-[#ede8df] shadow-2xs"
+                    />
+                    <div>
+                      <div className="font-bold text-sm text-stone-900 font-sans">
+                        {currentFeatured.creatorName}
                       </div>
-
-                      <div className="min-w-0">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-mono text-xs font-bold text-stone-900">
-                            {item.platformName}
-                          </span>
-                          <span className="text-stone-300">·</span>
-                          <span className="font-mono text-[11px] text-stone-500">
-                            {item.actionText}
-                          </span>
-                        </div>
-
-                        <p className="mt-1 text-xs sm:text-sm text-stone-800 font-sans leading-snug line-clamp-1">
-                          {item.postTitle}
-                        </p>
+                      <div className="font-mono text-xs text-stone-400">
+                        {currentFeatured.creatorHandle}
                       </div>
-                    </div>
-
-                    {/* Right: Status & Timestamp */}
-                    <div className="flex flex-col items-end shrink-0 font-mono text-[11px] text-stone-400">
-                      <div className="flex items-center gap-1.5 text-emerald-700 font-bold">
-                        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
-                        <span>{item.statusText}</span>
-                      </div>
-                      <span className="mt-1 text-[10px] text-stone-400">{item.timeAgo}</span>
                     </div>
                   </div>
-                </motion.div>
-              ))}
+
+                  {/* Platform & Status Badge */}
+                  <div className="flex items-center gap-2">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-xs bg-[#faf8f5] border border-[#ede8df]">
+                      <PlatformIcon platform={currentFeatured.platform} size={15} />
+                    </div>
+                    <span className="font-mono text-[10px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-xs flex items-center gap-1">
+                      <CheckCircle2 className="h-3 w-3 text-emerald-600" />
+                      <span>published</span>
+                    </span>
+                  </div>
+                </div>
+
+                {/* Post Preview Headline */}
+                <div className="space-y-2 bg-[#faf8f5] p-4 rounded-md border border-[#ede8df]">
+                  <div className="flex items-center justify-between font-mono text-[11px] text-stone-500">
+                    <span className="font-semibold text-stone-700 flex items-center gap-1">
+                      {currentFeatured.contentType === "video" && <Film className="h-3.5 w-3.5" />}
+                      {currentFeatured.contentType === "reel" && <Play className="h-3.5 w-3.5" />}
+                      {currentFeatured.formatType}
+                    </span>
+                    <span className="flex items-center gap-1 text-[#b58b4c] font-semibold">
+                      <Clock className="h-3 w-3" />
+                      {currentFeatured.timeSlot}
+                    </span>
+                  </div>
+
+                  <p className="font-serif italic text-base sm:text-lg text-stone-900 leading-snug">
+                    &ldquo;{currentFeatured.title}&rdquo;
+                  </p>
+                </div>
+
+                {/* Real-time Engagement Telemetry Strip */}
+                <div className="grid grid-cols-3 gap-2 font-mono text-xs pt-1">
+                  <div className="bg-white border border-[#ede8df] p-2.5 rounded-md flex items-center gap-2">
+                    <Eye className="h-3.5 w-3.5 text-stone-400" />
+                    <div>
+                      <span className="text-[10px] text-stone-400 block">impressions</span>
+                      <span className="font-bold text-stone-800">
+                        {currentFeatured.stats.views || "1.2k"}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="bg-white border border-[#ede8df] p-2.5 rounded-md flex items-center gap-2">
+                    <Heart className="h-3.5 w-3.5 text-rose-500" />
+                    <div>
+                      <span className="text-[10px] text-stone-400 block">applauds</span>
+                      <span className="font-bold text-stone-800">
+                        {currentFeatured.stats.likes || "240"}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="bg-white border border-[#ede8df] p-2.5 rounded-md flex items-center gap-2">
+                    <MessageCircle className="h-3.5 w-3.5 text-sky-500" />
+                    <div>
+                      <span className="text-[10px] text-stone-400 block">replies</span>
+                      <span className="font-bold text-stone-800">
+                        {currentFeatured.stats.comments || "32"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
             </AnimatePresence>
+
+            {/* Bottom Insight */}
+            <div className="mt-5 pt-3 border-t border-dashed border-[#ede8df] flex items-center justify-between font-mono text-[11px] text-stone-500">
+              <span className="flex items-center gap-1.5">
+                <Zap className="h-3.5 w-3.5 text-stone-700" />
+                <span>zero manual copying &middot; 100% on-time peak delivery</span>
+              </span>
+              <span className="text-emerald-700 font-semibold">&bull; active</span>
+            </div>
+          </div>
+
+          {/* Right: Quick Multi-Platform Drop Stream List */}
+          <div className="lg:col-span-6 space-y-2 flex flex-col justify-between">
+            {filteredDrops.slice(0, 4).map((drop, idx) => {
+              const isSelected = currentFeatured.id === drop.id;
+              return (
+                <button
+                  key={drop.id}
+                  type="button"
+                  onClick={() => setActiveDropIndex(idx)}
+                  className={`w-full text-left p-3 sm:p-3.5 border rounded-md transition-all flex items-center justify-between gap-3 cursor-pointer ${
+                    isSelected
+                      ? "border-stone-900 bg-white shadow-xs"
+                      : "border-[#ede8df] bg-white/70 hover:bg-white hover:border-[#dfc39a]"
+                  }`}
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-[#faf8f5] border border-[#ede8df] shrink-0">
+                      <PlatformIcon platform={drop.platform} size={15} />
+                    </div>
+
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-xs font-bold text-stone-900">
+                          {drop.platformName}
+                        </span>
+                        <span className="text-stone-300">&middot;</span>
+                        <span className="font-mono text-[11px] text-stone-500 truncate">
+                          {drop.formatType}
+                        </span>
+                      </div>
+                      <p className="font-sans text-xs text-stone-700 truncate font-medium mt-0.5">
+                        {drop.title}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="shrink-0 text-right font-mono">
+                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-xs block">
+                      live
+                    </span>
+                    <span className="text-[9px] text-stone-400 block mt-1">
+                      {drop.timeSlot.split(" ")[0]}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+
+            {/* Quick Guarantees Pill Bar */}
+            <div className="p-2.5 rounded-md border border-dashed border-[#dfc39a] bg-[#F4DCB4]/20 flex items-center justify-between font-mono text-[11px] text-stone-700">
+              <span className="flex items-center gap-1.5">
+                <TrendingUp className="h-3.5 w-3.5 text-stone-900" />
+                <span>each channel executes independently</span>
+              </span>
+              <span className="text-stone-500">6 connected destinations</span>
+            </div>
           </div>
         </div>
       </div>
