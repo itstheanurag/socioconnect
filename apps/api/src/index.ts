@@ -20,6 +20,10 @@ import { postRoutes } from "./modules/posts/posts.routes";
 import { quotaRoutes } from "./modules/quotas/quotas.routes";
 import { botRoutes } from "./modules/bots/bots.routes";
 import { subscriptionRoutes } from "./modules/subscriptions/subscriptions.routes";
+import { mediaRoutes } from "./modules/media/media.routes";
+import { dispatchRoutes } from "./modules/dispatches/dispatches.routes";
+import { analyticsRoutes } from "./modules/analytics/analytics.routes";
+import { notificationRoutes } from "./modules/notifications/notifications.routes";
 import { getUserMiddleware } from "@/middlewares/get-user.middleware";
 import { type AppBindings, type AppRouteHandler } from "./types";
 import { createRoute, z } from "@hono/zod-openapi";
@@ -110,6 +114,10 @@ const routes = [
   quotaRoutes,
   botRoutes,
   subscriptionRoutes,
+  mediaRoutes,
+  dispatchRoutes,
+  analyticsRoutes,
+  notificationRoutes,
 ] as const;
 
 routes.forEach((route) => {
