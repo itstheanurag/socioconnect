@@ -4,9 +4,21 @@ export { db, connectDB, closeDB, initializeDB, type DBTransaction } from "./conn
 // Export schemas
 export * from "./schema";
 
-// Export services
-export { UsersService } from "./services/users.service";
-export { SessionService } from "./services/session.service";
+// Export repositories
+export { UsersRepository, UsersService } from "./repositories/users.repository";
+export { SessionRepository, SessionService } from "./repositories/session.repository";
+export { AccountsRepository, AccountsService } from "./repositories/accounts.repository";
+export {
+  DestinationsRepository,
+  DestinationsService,
+} from "./repositories/destinations.repository";
+export {
+  PostsRepository,
+  PostsService,
+  type CreatePostInput,
+} from "./repositories/posts.repository";
+export { MediaRepository, MediaService } from "./repositories/media.repository";
+export { QuotasRepository, QuotasService } from "./repositories/quotas.repository";
 
 // Export metrics utilities
 export { withMetrics } from "./utils/metrics-wrapper";

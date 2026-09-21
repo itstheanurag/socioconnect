@@ -4,7 +4,7 @@ import { type DBTransaction, db } from "../connection";
 import { withMetrics } from "../utils/metrics-wrapper";
 import { logger } from "@repo/shared";
 
-export namespace UsersService {
+export namespace UsersRepository {
   /**
    * Creates a new user in the database
    * @param payload - The new user's data
@@ -29,14 +29,14 @@ export namespace UsersService {
 
       logger.audit("new user created", {
         module: "users",
-        action: "service:create",
+        action: "repository:create",
       });
 
       return createdUser;
     } catch (err) {
       logger.error("error creating user", {
         module: "users",
-        action: "service:create",
+        action: "repository:create",
         error: err,
       });
 
@@ -69,7 +69,7 @@ export namespace UsersService {
     } catch (err) {
       logger.error("Error finding user by id", {
         module: "users",
-        action: "service:findById",
+        action: "repository:findById",
         error: err,
       });
       throw err;
@@ -107,7 +107,7 @@ export namespace UsersService {
     } catch (err) {
       logger.error("error finding user by email", {
         module: "users",
-        action: "service:findByEmail",
+        action: "repository:findByEmail",
         error: err,
       });
       throw err;
@@ -145,7 +145,7 @@ export namespace UsersService {
     } catch (err) {
       logger.error("error finding user by provider account id", {
         module: "users",
-        action: "service:findByProviderAccountId",
+        action: "repository:findByProviderAccountId",
         error: err,
       });
       throw err;
@@ -222,7 +222,7 @@ export namespace UsersService {
     } catch (err) {
       logger.error("error upserting user by provider account id", {
         module: "users",
-        action: "service:upsertByProviderAccountId",
+        action: "repository:upsertByProviderAccountId",
         error: err,
       });
       throw err;
@@ -270,7 +270,7 @@ export namespace UsersService {
     } catch (err) {
       logger.error("error finding all users", {
         module: "users",
-        action: "service:findAll",
+        action: "repository:findAll",
         error: err,
       });
 
@@ -310,14 +310,14 @@ export namespace UsersService {
 
       logger.audit("user updated by id", {
         module: "users",
-        action: "service:updateById",
+        action: "repository:updateById",
       });
 
       return updatedUser;
     } catch (err) {
       logger.error("error updating user by id", {
         module: "users",
-        action: "service:updateById",
+        action: "repository:updateById",
         error: err,
       });
 
@@ -325,3 +325,6 @@ export namespace UsersService {
     }
   }
 }
+
+// Backward-compatibility alias
+export const UsersService = UsersRepository;

@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { withMetrics } from "../utils/metrics-wrapper";
 import { logger } from "@repo/shared";
 
-export namespace SessionService {
+export namespace SessionRepository {
   /**
    * Creates a new session in the database
    * @param payload new session
@@ -29,7 +29,7 @@ export namespace SessionService {
 
       logger.audit("Created new session", {
         module: "session",
-        action: "service:create",
+        action: "repository:create",
         session: session,
       });
 
@@ -37,19 +37,59 @@ export namespace SessionService {
     } catch (err) {
       logger.error("Error creating session", {
         module: "session",
-        action: "service:create",
+        action: "repository:create",
         error: err,
       });
+      throw err;
+    }
+  }
 
+  /**
+   * Updates a session in the database
+   * @param id id of the session
+   * @param payload new session details
+   * @param options extra options for query
+   * @returns the updated session
+   */
+  export async function updateById(
+    id: string,
+    payload: UpdateSession,
+    options?: {
+      /**
+       * Transaction to use for the query
+       */
+      tx?: DBTransaction;
+    },
+  ) {
+    const queryClient = options?.tx ?? db;
+    try {
+      const result = await withMetrics("update", "sessions", async () =>
+        queryClient.update(sessionsTable).set(payload).where(eq(sessionsTable.id, id)).returning(),
+      );
+      const [updatedSession] = result;
+
+      logger.audit("Updated session", {
+        module: "session",
+        action: "repository:updateById",
+        session: updatedSession,
+      });
+
+      return updatedSession;
+    } catch (err) {
+      logger.error("Error updating session", {
+        module: "session",
+        action: "repository:updateById",
+        error: err,
+      });
       throw err;
     }
   }
 
   /**
    * Finds a session by id
-   * @param id session id to find by
+   * @param id id of the session
    * @param options extra options for query
-   * @returns the found session
+   * @returns the session or undefined if not found
    */
   export async function findById(
     id: string,
@@ -70,24 +110,21 @@ export namespace SessionService {
     } catch (err) {
       logger.error("Error finding session by id", {
         module: "session",
-        action: "service:findById",
+        action: "repository:findById",
         error: err,
       });
-
       throw err;
     }
   }
 
   /**
-   * Update a session by id
-   * @param id session id to update
-   * @param payload new details to update
+   * Finds a session by user id
+   * @param userId id of the user
    * @param options extra options for query
-   * @returns the updated session
+   * @returns the session or undefined if not found
    */
-  export async function updateById(
-    id: string,
-    payload: UpdateSession,
+  export async function findByUserId(
+    userId: string,
     options?: {
       /**
        * Transaction to use for the query
@@ -97,33 +134,21 @@ export namespace SessionService {
   ) {
     const queryClient = options?.tx ?? db;
     try {
-      const result = await withMetrics("update", "sessions", async () =>
-        queryClient
-          .update(sessionsTable)
-          .set({
-            ...payload,
-            updatedAt: new Date(),
-          })
-          .where(eq(sessionsTable.id, id))
-          .returning(),
+      return await withMetrics("select", "sessions", async () =>
+        queryClient.query.sessionsTable.findFirst({
+          where: eq(sessionsTable.userId, userId),
+        }),
       );
-      const [updatedSession] = result;
-
-      logger.audit("Updated session by id", {
-        module: "session",
-        action: "service:updateById",
-        sessionId: id,
-      });
-
-      return updatedSession;
     } catch (err) {
-      logger.error("Error updating session by id", {
+      logger.error("Error finding session by user id", {
         module: "session",
-        action: "service:updateById",
+        action: "repository:findByUserId",
         error: err,
       });
-
       throw err;
     }
   }
 }
+
+// Backward-compatibility alias
+export const SessionService = SessionRepository;

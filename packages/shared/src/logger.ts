@@ -2,9 +2,22 @@ import pino from "pino";
 import type { TransportTargetOptions } from "pino";
 import { baseEnv } from "@repo/config";
 
-type LoggerModules = "db" | "auth" | "users" | "system" | "session" | "security" | "http";
+export type LoggerModules =
+  | "db"
+  | "auth"
+  | "users"
+  | "system"
+  | "session"
+  | "security"
+  | "http"
+  | "accounts"
+  | "destinations"
+  | "posts"
+  | "media"
+  | "quotas"
+  | "bots";
 
-interface LoggerMeta {
+export interface LoggerMeta {
   module: LoggerModules;
   action: string;
   [key: string]: any;
@@ -85,8 +98,7 @@ const pinoInstance = pino({
 
 export namespace logger {
   /**
-   * Creates a child logger with bound context (useful for request tracking)
-   */
+   * Creates a child logger with bound context (useful for request tracking)\n   */
   export function child(bindings: Record<string, any>) {
     return pinoInstance.child(bindings);
   }
