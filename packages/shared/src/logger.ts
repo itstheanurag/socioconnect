@@ -15,7 +15,9 @@ export type LoggerModules =
   | "posts"
   | "media"
   | "quotas"
-  | "bots";
+  | "bots"
+  | "subscriptions"
+  | "billing";
 
 export interface LoggerMeta {
   module: LoggerModules;
@@ -98,7 +100,8 @@ const pinoInstance = pino({
 
 export namespace logger {
   /**
-   * Creates a child logger with bound context (useful for request tracking)\n   */
+   * Creates a child logger with bound context (useful for request tracking)
+   */
   export function child(bindings: Record<string, any>) {
     return pinoInstance.child(bindings);
   }

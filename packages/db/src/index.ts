@@ -19,6 +19,11 @@ export {
 } from "./repositories/posts.repository";
 export { MediaRepository, MediaService } from "./repositories/media.repository";
 export { QuotasRepository, QuotasService } from "./repositories/quotas.repository";
+export {
+  SubscriptionsRepository,
+  SubscriptionsService,
+  DEFAULT_PLAN_LIMITS,
+} from "./repositories/subscriptions.repository";
 
 // Export metrics utilities
 export { withMetrics } from "./utils/metrics-wrapper";
