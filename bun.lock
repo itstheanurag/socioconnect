@@ -24,8 +24,10 @@
         "@hono/node-server": "^1.19.6",
         "@hono/zod-openapi": "^1.2.0",
         "@hono/zod-validator": "^0.7.4",
+        "@repo/bots": "*",
         "@repo/config": "*",
         "@repo/db": "*",
+        "@repo/libraries": "*",
         "@repo/shared": "*",
         "dotenv": "^17.2.3",
         "hono": "^4.10.3",
@@ -62,6 +64,20 @@
         "typescript": "^5.0.0",
       },
     },
+    "packages/bots": {
+      "name": "@repo/bots",
+      "version": "1.0.0",
+      "dependencies": {
+        "@repo/config": "*",
+        "@repo/libraries": "*",
+        "@repo/shared": "*",
+        "zod": "^4.1.12",
+      },
+      "devDependencies": {
+        "@types/node": "^20.11.24",
+        "typescript": "^5.7.3",
+      },
+    },
     "packages/config": {
       "name": "@repo/config",
       "version": "1.0.0",
@@ -85,6 +101,18 @@
       "devDependencies": {
         "@types/node": "^20.11.24",
         "@types/pg": "^8.15.5",
+        "typescript": "^5.7.3",
+      },
+    },
+    "packages/libraries": {
+      "name": "@repo/libraries",
+      "version": "1.0.0",
+      "dependencies": {
+        "@repo/config": "*",
+        "zod": "^4.1.12",
+      },
+      "devDependencies": {
+        "@types/node": "^20.11.24",
         "typescript": "^5.7.3",
       },
     },
@@ -307,9 +335,13 @@
 
     "@repo/api": ["@repo/api@workspace:apps/api"],
 
+    "@repo/bots": ["@repo/bots@workspace:packages/bots"],
+
     "@repo/config": ["@repo/config@workspace:packages/config"],
 
     "@repo/db": ["@repo/db@workspace:packages/db"],
+
+    "@repo/libraries": ["@repo/libraries@workspace:packages/libraries"],
 
     "@repo/shared": ["@repo/shared@workspace:packages/shared"],
 
