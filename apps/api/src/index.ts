@@ -19,6 +19,7 @@ import { destinationRoutes } from "./modules/destinations/destinations.routes";
 import { postRoutes } from "./modules/posts/posts.routes";
 import { quotaRoutes } from "./modules/quotas/quotas.routes";
 import { botRoutes } from "./modules/bots/bots.routes";
+import { subscriptionRoutes } from "./modules/subscriptions/subscriptions.routes";
 import { getUserMiddleware } from "@/middlewares/get-user.middleware";
 import { type AppBindings, type AppRouteHandler } from "./types";
 import { createRoute, z } from "@hono/zod-openapi";
@@ -108,6 +109,7 @@ const routes = [
   postRoutes,
   quotaRoutes,
   botRoutes,
+  subscriptionRoutes,
 ] as const;
 
 routes.forEach((route) => {
