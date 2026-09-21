@@ -24,6 +24,11 @@ export {
   SubscriptionsService,
   DEFAULT_PLAN_LIMITS,
 } from "./repositories/subscriptions.repository";
+export { AnalyticsRepository, AnalyticsService } from "./repositories/analytics.repository";
+export {
+  NotificationsRepository,
+  NotificationsService,
+} from "./repositories/notifications.repository";
 
 // Export metrics utilities
 export { withMetrics } from "./utils/metrics-wrapper";

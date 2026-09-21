@@ -1,6 +1,6 @@
-import { and, eq, isNull } from "drizzle-orm";
+import { and, desc, eq, isNull } from "drizzle-orm";
 import { type DBTransaction, db } from "../connection";
-import { mediaAssetsTable, type MediaAsset, type NewMediaAsset } from "../schema";
+import { mediaAssetsTable, type MediaAsset, type NewMediaAsset, MediaTypeEnum } from "../schema";
 import { withMetrics } from "../utils/metrics-wrapper";
 import { logger } from "@repo/shared";
 
@@ -53,18 +53,59 @@ export namespace MediaRepository {
   }
 
   /**
-   * Finds all media assets for a user
+   * Finds all media assets for a user with pagination and optional type filter
    */
   export async function findAllByUserId(
     userId: string,
-    options?: { tx?: DBTransaction },
+    options?: {
+      type?: MediaTypeEnum;
+      limit?: number;
+      offset?: number;
+      tx?: DBTransaction;
+    },
   ): Promise<MediaAsset[]> {
     const queryClient = options?.tx || db;
-    return await withMetrics("select", "media_assets", async () =>
-      queryClient.query.mediaAssetsTable.findMany({
-        where: and(eq(mediaAssetsTable.userId, userId), isNull(mediaAssetsTable.deletedAt)),
-      }),
-    );
+    return await withMetrics("select", "media_assets", async () => {
+      const conditions = [eq(mediaAssetsTable.userId, userId), isNull(mediaAssetsTable.deletedAt)];
+
+      if (options?.type) {
+        conditions.push(eq(mediaAssetsTable.type, options.type));
+      }
+
+      return queryClient.query.mediaAssetsTable.findMany({
+        where: and(...conditions),
+        orderBy: [desc(mediaAssetsTable.createdAt)],
+        limit: options?.limit || 24,
+        offset: options?.offset || 0,
+      });
+    });
+  }
+
+  /**
+   * Soft-deletes a media asset
+   */
+  export async function deleteAsset(
+    id: string,
+    userId: string,
+    options?: { tx?: DBTransaction },
+  ): Promise<boolean> {
+    const queryClient = options?.tx || db;
+    const [deleted] = await queryClient
+      .update(mediaAssetsTable)
+      .set({
+        deletedAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .where(
+        and(
+          eq(mediaAssetsTable.id, id),
+          eq(mediaAssetsTable.userId, userId),
+          isNull(mediaAssetsTable.deletedAt),
+        ),
+      )
+      .returning();
+
+    return !!deleted;
   }
 }
 

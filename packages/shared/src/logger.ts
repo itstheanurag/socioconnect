@@ -17,7 +17,10 @@ export type LoggerModules =
   | "quotas"
   | "bots"
   | "subscriptions"
-  | "billing";
+  | "billing"
+  | "dispatches"
+  | "analytics"
+  | "notifications";
 
 export interface LoggerMeta {
   module: LoggerModules;

@@ -111,3 +111,30 @@ export {
   type NewInvoice,
   type UpdateInvoice,
 } from "./subscriptions/invoices.db";
+
+// Analytics Schema
+export { analyticsSchema } from "./analytics";
+export {
+  postAnalyticsTable,
+  postAnalyticsRelations,
+  accountAnalyticsDailyTable,
+  accountAnalyticsDailyRelations,
+  type PostAnalytics,
+  type NewPostAnalytics,
+  type AccountAnalyticsDaily,
+  type NewAccountAnalyticsDaily,
+} from "./analytics/analytics.db";
+
+// Notifications Schema
+export { notificationsSchema } from "./notifications";
+export {
+  notificationsTable,
+  notificationsRelations,
+  NotificationTypeEnum,
+  NotificationPriorityEnum,
+  notificationTypePgEnum,
+  notificationPriorityPgEnum,
+  type Notification,
+  type NewNotification,
+  type UpdateNotification,
+} from "./notifications/notifications.db";
