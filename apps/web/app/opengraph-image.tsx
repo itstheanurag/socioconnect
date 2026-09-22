@@ -8,7 +8,7 @@ export const size = {
 };
 export const contentType = "image/png";
 
-export default async function Image() {
+export default function Image() {
   return new ImageResponse(
     (
       <div
@@ -74,7 +74,8 @@ export default async function Image() {
               lineHeight: 1.4,
             }}
           >
-            Autonomous scheduling, tone adaptation, and fault-tolerant multi-platform publishing for modern creators and teams.
+            Autonomous scheduling, tone adaptation, and fault-tolerant multi-platform publishing for
+            modern creators and teams.
           </div>
         </div>
 
