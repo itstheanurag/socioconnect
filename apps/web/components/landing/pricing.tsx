@@ -21,7 +21,7 @@ export function LandingPricing() {
   return (
     <section
       id="pricing"
-      className="relative py-16 lg:py-24 border-t border-[#ede8df] bg-[#faf8f5]"
+      className="relative py-16 lg:py-24 border-t border-line bg-[#faf8f5]"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
@@ -38,7 +38,7 @@ export function LandingPricing() {
           </p>
 
           {/* Billing Switcher */}
-          <div className="mt-8 inline-flex items-center border border-[#ede8df] bg-white p-1 rounded-md shadow-2xs font-mono text-xs">
+          <div className="mt-8 inline-flex items-center border border-line bg-white p-1 rounded-md shadow-2xs font-mono text-xs">
             <button
               type="button"
               onClick={() => setBillingCycle("monthly")}
@@ -70,7 +70,7 @@ export function LandingPricing() {
         {/* Pricing Cards Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto items-stretch lowercase">
           {/* Free Starter Tier */}
-          <div className="border border-[#ede8df] bg-white p-6 sm:p-8 rounded-md shadow-xs flex flex-col justify-between">
+          <div className="border border-line bg-white p-6 sm:p-8 rounded-md shadow-xs flex flex-col justify-between">
             <div>
               <div className="font-mono text-xs text-stone-500 mb-2">for casual creators</div>
               <h3 className="text-xl font-bold text-stone-900 font-sans">starter</h3>
@@ -83,7 +83,7 @@ export function LandingPricing() {
                 <span className="text-xs text-stone-500 ml-1">/ forever</span>
               </div>
 
-              <div className="space-y-3 font-sans text-xs text-stone-700 border-t border-dashed border-[#ede8df] pt-6">
+              <div className="space-y-3 font-sans text-xs text-stone-700 border-t border-dashed border-line pt-6">
                 <div className="flex items-center gap-2.5">
                   <Check className="h-4 w-4 text-emerald-600 shrink-0" />
                   <span>3 connected channels (youtube, x, instagram)</span>
@@ -110,7 +110,7 @@ export function LandingPricing() {
             <button
               type="button"
               onClick={handleAction}
-              className="mt-8 w-full border border-[#ede8df] bg-[#faf8f5] py-2.5 font-mono text-xs font-bold text-stone-800 hover:border-stone-400 hover:bg-white transition-colors rounded-md cursor-pointer"
+              className="mt-8 w-full border border-line bg-[#faf8f5] py-2.5 font-mono text-xs font-bold text-stone-800 hover:border-stone-400 hover:bg-white transition-colors rounded-md cursor-pointer"
             >
               get started free
             </button>
@@ -141,7 +141,7 @@ export function LandingPricing() {
                 )}
               </div>
 
-              <div className="space-y-3 font-sans text-xs text-stone-700 border-t border-dashed border-[#ede8df] pt-6">
+              <div className="space-y-3 font-sans text-xs text-stone-700 border-t border-dashed border-line pt-6">
                 <div className="flex items-center gap-2.5 font-semibold text-stone-900">
                   <Check className="h-4 w-4 text-emerald-600 shrink-0" />
                   <span>unlimited connected creator channels</span>
@@ -180,7 +180,7 @@ export function LandingPricing() {
           </div>
 
           {/* Studio / Agency Tier */}
-          <div className="border border-[#ede8df] bg-white p-6 sm:p-8 rounded-md shadow-xs flex flex-col justify-between">
+          <div className="border border-line bg-white p-6 sm:p-8 rounded-md shadow-xs flex flex-col justify-between">
             <div>
               <div className="font-mono text-xs text-stone-500 mb-2">for teams &amp; studios</div>
               <h3 className="text-xl font-bold text-stone-900 font-sans">studio team</h3>
@@ -200,7 +200,7 @@ export function LandingPricing() {
                 )}
               </div>
 
-              <div className="space-y-3 font-sans text-xs text-stone-700 border-t border-dashed border-[#ede8df] pt-6">
+              <div className="space-y-3 font-sans text-xs text-stone-700 border-t border-dashed border-line pt-6">
                 <div className="flex items-center gap-2.5">
                   <Check className="h-4 w-4 text-emerald-600 shrink-0" />
                   <span>everything in pro creator</span>
@@ -227,7 +227,7 @@ export function LandingPricing() {
             <button
               type="button"
               onClick={handleAction}
-              className="mt-8 w-full border border-[#ede8df] bg-[#faf8f5] py-2.5 font-mono text-xs font-bold text-stone-800 hover:border-stone-400 hover:bg-white transition-colors rounded-md cursor-pointer"
+              className="mt-8 w-full border border-line bg-[#faf8f5] py-2.5 font-mono text-xs font-bold text-stone-800 hover:border-stone-400 hover:bg-white transition-colors rounded-md cursor-pointer"
             >
               contact studio sales
             </button>

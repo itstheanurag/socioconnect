@@ -30,7 +30,7 @@ export function LandingCTA() {
   ];
 
   return (
-    <section className="relative py-20 lg:py-28 overflow-hidden bg-white border-t border-[#ede8df]">
+    <section className="relative py-20 lg:py-28 overflow-hidden bg-white border-t border-line">
       {/* Background Soft Dotted Texture & Warm Amber Glow */}
       <div className="absolute inset-0 trapped-dots opacity-40 pointer-events-none" />
       <div className="absolute bottom-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[280px] bg-gradient-to-t from-[#F4DCB4]/30 to-transparent blur-3xl pointer-events-none -z-10 rounded-full" />
@@ -43,7 +43,7 @@ export function LandingCTA() {
           animate={inView ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 0.6, delay }}
           style={pos}
-          className="absolute hidden md:flex items-center justify-center p-2.5 bg-white border border-[#ede8df] rounded-md shadow-xs pointer-events-none z-0 hover:border-secondary-border transition-all"
+          className="absolute hidden md:flex items-center justify-center p-2.5 bg-white border border-line rounded-md shadow-xs pointer-events-none z-0 hover:border-secondary-border transition-all"
         >
           <PlatformIcon platform={id} size={20} />
         </motion.div>
@@ -100,7 +100,7 @@ export function LandingCTA() {
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="pt-6 border-t border-dashed border-[#ede8df] flex flex-wrap items-center justify-center gap-5 text-xs font-mono text-stone-500"
+          className="pt-6 border-t border-dashed border-line flex flex-wrap items-center justify-center gap-5 text-xs font-mono text-stone-500"
         >
           <div className="flex items-center gap-1.5">
             <ShieldCheck className="h-4 w-4 text-emerald-600" />

@@ -24,6 +24,7 @@ import { mediaRoutes } from "./modules/media/media.routes";
 import { dispatchRoutes } from "./modules/dispatches/dispatches.routes";
 import { analyticsRoutes } from "./modules/analytics/analytics.routes";
 import { notificationRoutes } from "./modules/notifications/notifications.routes";
+import { communityRoutes } from "./modules/communities/communities.routes";
 import { getUserMiddleware } from "@/middlewares/get-user.middleware";
 import { type AppBindings, type AppRouteHandler } from "./types";
 import { createRoute, z } from "@hono/zod-openapi";
@@ -118,6 +119,7 @@ const routes = [
   dispatchRoutes,
   analyticsRoutes,
   notificationRoutes,
+  communityRoutes,
 ] as const;
 
 routes.forEach((route) => {

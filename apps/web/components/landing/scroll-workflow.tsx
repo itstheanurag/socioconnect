@@ -24,25 +24,25 @@ export function ScrollWorkflow() {
       metricValue: "85% less friction",
       icon: <PenTool className="h-5 w-5 text-stone-800" />,
       visualSnippet: (
-        <div className="border border-[#ede8df] bg-[#faf8f5] p-5 rounded-md space-y-3 font-mono text-xs lowercase">
-          <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-2 text-stone-500">
+        <div className="border border-line bg-[#faf8f5] p-5 rounded-md space-y-3 font-mono text-xs lowercase">
+          <div className="flex items-center justify-between border-b border-dashed border-line pb-2 text-stone-500">
             <span>unified post composer</span>
             <span className="text-emerald-700 font-semibold">● 8 channels ready</span>
           </div>
-          <div className="bg-white p-3 border border-[#ede8df] rounded-sm font-sans text-xs text-stone-800 leading-relaxed">
+          <div className="bg-white p-3 border border-line rounded-sm font-sans text-xs text-stone-800 leading-relaxed">
             &ldquo;excited to share our newest video! behind the scenes breakdown of creative
             workflows and channel scheduling.&rdquo;
           </div>
           <div className="flex flex-wrap gap-2 text-[10px]">
-            <span className="bg-white px-2 py-0.5 border border-[#ede8df] rounded-xs text-stone-600 flex items-center gap-1">
+            <span className="bg-white px-2 py-0.5 border border-line rounded-xs text-stone-600 flex items-center gap-1">
               <PlatformIcon platform="youtube" size={13} />
               <span>youtube: 4,874 left</span>
             </span>
-            <span className="bg-white px-2 py-0.5 border border-[#ede8df] rounded-xs text-stone-600 flex items-center gap-1">
+            <span className="bg-white px-2 py-0.5 border border-line rounded-xs text-stone-600 flex items-center gap-1">
               <PlatformIcon platform="twitch" size={13} />
               <span>twitch: 374 left</span>
             </span>
-            <span className="bg-white px-2 py-0.5 border border-[#ede8df] rounded-xs text-stone-600 flex items-center gap-1">
+            <span className="bg-white px-2 py-0.5 border border-line rounded-xs text-stone-600 flex items-center gap-1">
               <PlatformIcon platform="instagram" size={13} />
               <span>instagram: 2,074 left</span>
             </span>
@@ -66,27 +66,27 @@ export function ScrollWorkflow() {
       metricValue: "zero passwords",
       icon: <ShieldCheck className="h-5 w-5 text-stone-800" />,
       visualSnippet: (
-        <div className="border border-[#ede8df] bg-[#faf8f5] p-5 rounded-md space-y-2 font-mono text-xs lowercase">
-          <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-2 text-stone-500">
+        <div className="border border-line bg-[#faf8f5] p-5 rounded-md space-y-2 font-mono text-xs lowercase">
+          <div className="flex items-center justify-between border-b border-dashed border-line pb-2 text-stone-500">
             <span>official creator connections</span>
             <span className="text-emerald-700 font-semibold">● 100% private</span>
           </div>
           <div className="space-y-1.5">
-            <div className="bg-white p-2 border border-[#ede8df] rounded-sm flex items-center justify-between text-xs">
+            <div className="bg-white p-2 border border-line rounded-sm flex items-center justify-between text-xs">
               <span className="flex items-center gap-2 font-sans font-semibold text-stone-800">
                 <PlatformIcon platform="youtube" size={14} />
                 <span>youtube creator channel</span>
               </span>
               <span className="text-emerald-700 font-mono text-[10px] font-bold">● connected</span>
             </div>
-            <div className="bg-white p-2 border border-[#ede8df] rounded-sm flex items-center justify-between text-xs">
+            <div className="bg-white p-2 border border-line rounded-sm flex items-center justify-between text-xs">
               <span className="flex items-center gap-2 font-sans font-semibold text-stone-800">
                 <PlatformIcon platform="twitch" size={14} />
                 <span>twitch stream alerts</span>
               </span>
               <span className="text-emerald-700 font-mono text-[10px] font-bold">● connected</span>
             </div>
-            <div className="bg-white p-2 border border-[#ede8df] rounded-sm flex items-center justify-between text-xs">
+            <div className="bg-white p-2 border border-line rounded-sm flex items-center justify-between text-xs">
               <span className="flex items-center gap-2 font-sans font-semibold text-stone-800">
                 <PlatformIcon platform="instagram" size={14} />
                 <span>instagram profile</span>
@@ -113,27 +113,27 @@ export function ScrollWorkflow() {
       metricValue: "peak attention",
       icon: <Clock className="h-5 w-5 text-stone-800" />,
       visualSnippet: (
-        <div className="border border-[#ede8df] bg-[#faf8f5] p-5 rounded-md space-y-2 font-mono text-xs lowercase">
-          <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-2 text-stone-500">
+        <div className="border border-line bg-[#faf8f5] p-5 rounded-md space-y-2 font-mono text-xs lowercase">
+          <div className="flex items-center justify-between border-b border-dashed border-line pb-2 text-stone-500">
             <span>staggered timing queue</span>
             <span className="text-stone-700 font-semibold">today&apos;s drops</span>
           </div>
           <div className="space-y-1.5 font-mono text-xs">
-            <div className="bg-white p-2 border border-[#ede8df] rounded-sm flex items-center justify-between">
+            <div className="bg-white p-2 border border-line rounded-sm flex items-center justify-between">
               <span className="flex items-center gap-2 font-bold text-stone-800">
                 <PlatformIcon platform="linkedin" size={13} />
                 <span>linkedin</span>
               </span>
               <span className="text-stone-500">08:30 am (morning read)</span>
             </div>
-            <div className="bg-white p-2 border border-[#ede8df] rounded-sm flex items-center justify-between">
+            <div className="bg-white p-2 border border-line rounded-sm flex items-center justify-between">
               <span className="flex items-center gap-2 font-bold text-stone-800">
                 <PlatformIcon platform="youtube" size={13} />
                 <span>youtube</span>
               </span>
               <span className="text-stone-500">04:00 pm (premiere drop)</span>
             </div>
-            <div className="bg-white p-2 border border-[#ede8df] rounded-sm flex items-center justify-between">
+            <div className="bg-white p-2 border border-line rounded-sm flex items-center justify-between">
               <span className="flex items-center gap-2 font-bold text-stone-800">
                 <PlatformIcon platform="twitch" size={13} />
                 <span>twitch</span>
@@ -160,12 +160,12 @@ export function ScrollWorkflow() {
       metricValue: "100% peace of mind",
       icon: <Send className="h-5 w-5 text-stone-800" />,
       visualSnippet: (
-        <div className="border border-[#ede8df] bg-[#faf8f5] p-5 rounded-md space-y-2 font-mono text-xs lowercase">
-          <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-2 text-stone-500">
+        <div className="border border-line bg-[#faf8f5] p-5 rounded-md space-y-2 font-mono text-xs lowercase">
+          <div className="flex items-center justify-between border-b border-dashed border-line pb-2 text-stone-500">
             <span className="font-bold text-stone-800">post delivery status</span>
             <span className="text-emerald-700 font-semibold">● live everywhere</span>
           </div>
-          <div className="bg-white p-2 border border-[#ede8df] rounded-sm flex items-center justify-between text-xs">
+          <div className="bg-white p-2 border border-line rounded-sm flex items-center justify-between text-xs">
             <span className="flex items-center gap-2 text-stone-800 font-sans font-semibold">
               <PlatformIcon platform="youtube" size={13} />
               <span>youtube premiere</span>
@@ -174,7 +174,7 @@ export function ScrollWorkflow() {
               <CheckCircle2 className="h-3 w-3" /> published
             </span>
           </div>
-          <div className="bg-white p-2 border border-[#ede8df] rounded-sm flex items-center justify-between text-xs">
+          <div className="bg-white p-2 border border-line rounded-sm flex items-center justify-between text-xs">
             <span className="flex items-center gap-2 text-stone-800 font-sans font-semibold">
               <PlatformIcon platform="twitch" size={13} />
               <span>twitch stream alert</span>
@@ -183,7 +183,7 @@ export function ScrollWorkflow() {
               <CheckCircle2 className="h-3 w-3" /> live alert sent
             </span>
           </div>
-          <div className="bg-white p-2 border border-[#ede8df] rounded-sm flex items-center justify-between text-xs">
+          <div className="bg-white p-2 border border-line rounded-sm flex items-center justify-between text-xs">
             <span className="flex items-center gap-2 text-stone-800 font-sans font-semibold">
               <PlatformIcon platform="instagram" size={13} />
               <span>instagram carousel</span>
@@ -198,7 +198,7 @@ export function ScrollWorkflow() {
   ];
 
   return (
-    <section id="workflow" className="relative py-16 lg:py-24 border-t border-[#ede8df] bg-white">
+    <section id="workflow" className="relative py-16 lg:py-24 border-t border-line bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 lowercase">
@@ -227,7 +227,7 @@ export function ScrollWorkflow() {
                 className={`text-left p-4 border transition-all rounded-md cursor-pointer ${
                   isActive
                     ? "border-stone-900 bg-[#faf8f5] shadow-xs"
-                    : "border-[#ede8df] bg-white hover:border-secondary-border"
+                    : "border-line bg-white hover:border-secondary-border"
                 }`}
               >
                 <div className="flex items-center justify-between font-mono text-xs mb-2">
@@ -243,7 +243,7 @@ export function ScrollWorkflow() {
         </div>
 
         {/* Active Step Content Card */}
-        <div className="border border-[#ede8df] bg-[#faf8f5] p-6 sm:p-8 rounded-md shadow-xs lowercase">
+        <div className="border border-line bg-[#faf8f5] p-6 sm:p-8 rounded-md shadow-xs lowercase">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             {/* Left: Text & Points */}
             <div className="lg:col-span-6 space-y-6">
@@ -278,7 +278,7 @@ export function ScrollWorkflow() {
                 ))}
               </div>
 
-              <div className="pt-4 border-t border-dashed border-[#ede8df] flex items-center gap-6 font-mono text-xs">
+              <div className="pt-4 border-t border-dashed border-line flex items-center gap-6 font-mono text-xs">
                 <div>
                   <span className="text-stone-400 block text-[10px]">
                     {steps[activeStep].metricLabel}

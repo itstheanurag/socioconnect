@@ -203,7 +203,7 @@ export function LiveNotificationsStream() {
                 className={`px-3 py-1 rounded-md border transition-all cursor-pointer text-[11px] shrink-0 ${
                   activePlatform === tab.id
                     ? "border-stone-900 bg-white font-bold text-stone-900 shadow-2xs"
-                    : "border-[#ede8df] bg-white/60 text-stone-500 hover:border-stone-400 hover:text-stone-800"
+                    : "border-line bg-white/60 text-stone-500 hover:border-stone-400 hover:text-stone-800"
                 }`}
               >
                 {tab.label}
@@ -215,7 +215,7 @@ export function LiveNotificationsStream() {
         {/* Compact Two-Pane Creator Stage */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch lowercase">
           {/* Left: Featured Active Drop Spotlight */}
-          <div className="lg:col-span-6 border border-[#ede8df] bg-white p-5 sm:p-6 rounded-md shadow-xs flex flex-col justify-between relative overflow-hidden">
+          <div className="lg:col-span-6 border border-line bg-white p-5 sm:p-6 rounded-md shadow-xs flex flex-col justify-between relative overflow-hidden">
             {/* Soft Warm Glow */}
             <div className="absolute top-0 right-0 w-48 h-48 bg-secondary/20 rounded-full blur-2xl pointer-events-none" />
 
@@ -229,12 +229,12 @@ export function LiveNotificationsStream() {
                 className="space-y-4"
               >
                 {/* Creator Profile & Platform Strip */}
-                <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-3.5">
+                <div className="flex items-center justify-between border-b border-dashed border-line pb-3.5">
                   <div className="flex items-center gap-3">
                     <img
                       src={currentFeatured.avatar}
                       alt={currentFeatured.creatorName}
-                      className="h-10 w-10 rounded-full object-cover border border-[#ede8df] shadow-2xs"
+                      className="h-10 w-10 rounded-full object-cover border border-line shadow-2xs"
                     />
                     <div>
                       <div className="font-bold text-sm text-stone-900 font-sans">
@@ -248,7 +248,7 @@ export function LiveNotificationsStream() {
 
                   {/* Platform & Status Badge */}
                   <div className="flex items-center gap-2">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-xs bg-[#faf8f5] border border-[#ede8df]">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-xs bg-[#faf8f5] border border-line">
                       <PlatformIcon platform={currentFeatured.platform} size={15} />
                     </div>
                     <span className="font-mono text-[10px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-xs flex items-center gap-1">
@@ -259,7 +259,7 @@ export function LiveNotificationsStream() {
                 </div>
 
                 {/* Post Preview Headline */}
-                <div className="space-y-2 bg-[#faf8f5] p-4 rounded-md border border-[#ede8df]">
+                <div className="space-y-2 bg-[#faf8f5] p-4 rounded-md border border-line">
                   <div className="flex items-center justify-between font-mono text-[11px] text-stone-500">
                     <span className="font-semibold text-stone-700 flex items-center gap-1">
                       {currentFeatured.contentType === "video" && <Film className="h-3.5 w-3.5" />}
@@ -279,7 +279,7 @@ export function LiveNotificationsStream() {
 
                 {/* Real-time Engagement Telemetry Strip */}
                 <div className="grid grid-cols-3 gap-2 font-mono text-xs pt-1">
-                  <div className="bg-white border border-[#ede8df] p-2.5 rounded-md flex items-center gap-2">
+                  <div className="bg-white border border-line p-2.5 rounded-md flex items-center gap-2">
                     <Eye className="h-3.5 w-3.5 text-stone-400" />
                     <div>
                       <span className="text-[10px] text-stone-400 block">impressions</span>
@@ -288,7 +288,7 @@ export function LiveNotificationsStream() {
                       </span>
                     </div>
                   </div>
-                  <div className="bg-white border border-[#ede8df] p-2.5 rounded-md flex items-center gap-2">
+                  <div className="bg-white border border-line p-2.5 rounded-md flex items-center gap-2">
                     <Heart className="h-3.5 w-3.5 text-rose-500" />
                     <div>
                       <span className="text-[10px] text-stone-400 block">applauds</span>
@@ -297,7 +297,7 @@ export function LiveNotificationsStream() {
                       </span>
                     </div>
                   </div>
-                  <div className="bg-white border border-[#ede8df] p-2.5 rounded-md flex items-center gap-2">
+                  <div className="bg-white border border-line p-2.5 rounded-md flex items-center gap-2">
                     <MessageCircle className="h-3.5 w-3.5 text-sky-500" />
                     <div>
                       <span className="text-[10px] text-stone-400 block">replies</span>
@@ -311,7 +311,7 @@ export function LiveNotificationsStream() {
             </AnimatePresence>
 
             {/* Bottom Insight */}
-            <div className="mt-5 pt-3 border-t border-dashed border-[#ede8df] flex items-center justify-between font-mono text-[11px] text-stone-500">
+            <div className="mt-5 pt-3 border-t border-dashed border-line flex items-center justify-between font-mono text-[11px] text-stone-500">
               <span className="flex items-center gap-1.5">
                 <Zap className="h-3.5 w-3.5 text-stone-700" />
                 <span>zero manual copying &middot; 100% on-time peak delivery</span>
@@ -332,11 +332,11 @@ export function LiveNotificationsStream() {
                   className={`w-full text-left p-3 sm:p-3.5 border rounded-md transition-all flex items-center justify-between gap-3 cursor-pointer ${
                     isSelected
                       ? "border-stone-900 bg-white shadow-xs"
-                      : "border-[#ede8df] bg-white/70 hover:bg-white hover:border-secondary-border"
+                      : "border-line bg-white/70 hover:bg-white hover:border-secondary-border"
                   }`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-[#faf8f5] border border-[#ede8df] shrink-0">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-[#faf8f5] border border-line shrink-0">
                       <PlatformIcon platform={drop.platform} size={15} />
                     </div>
 

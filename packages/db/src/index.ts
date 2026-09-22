@@ -29,6 +29,7 @@ export {
   NotificationsRepository,
   NotificationsService,
 } from "./repositories/notifications.repository";
+export { CommunitiesRepository, CommunitiesService } from "./repositories/communities.repository";
 
 // Export metrics utilities
 export { withMetrics } from "./utils/metrics-wrapper";

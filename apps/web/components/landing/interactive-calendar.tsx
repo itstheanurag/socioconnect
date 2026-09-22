@@ -281,7 +281,7 @@ export function InteractiveCalendar() {
   return (
     <section
       id="calendar"
-      className="relative py-14 lg:py-20 border-t border-[#ede8df] bg-[#faf8f5] overflow-hidden"
+      className="relative py-14 lg:py-20 border-t border-line bg-[#faf8f5] overflow-hidden"
     >
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Compact, Creator-Centric Header */}
@@ -343,7 +343,7 @@ export function InteractiveCalendar() {
                 className={`p-2.5 sm:p-3 rounded-md border text-center transition-all cursor-pointer flex flex-col items-center justify-between gap-1.5 ${
                   isSelected
                     ? "border-stone-900 bg-white font-bold text-stone-900 shadow-xs ring-1 ring-stone-900/10"
-                    : "border-[#ede8df] bg-white/70 text-stone-600 hover:bg-white hover:border-secondary-border"
+                    : "border-line bg-white/70 text-stone-600 hover:bg-white hover:border-secondary-border"
                 }`}
               >
                 <div className="flex items-center gap-1">
@@ -364,7 +364,7 @@ export function InteractiveCalendar() {
         </div>
 
         {/* Selected Day Content & Peak Timing Card */}
-        <div className="border border-[#ede8df] bg-white p-5 sm:p-7 rounded-md shadow-xs lowercase">
+        <div className="border border-line bg-white p-5 sm:p-7 rounded-md shadow-xs lowercase">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentDay.dayId}
@@ -375,9 +375,9 @@ export function InteractiveCalendar() {
               className="space-y-6"
             >
               {/* Day Card Header */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-dashed border-[#ede8df] pb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-dashed border-line pb-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-md bg-[#faf8f5] border border-[#ede8df] text-stone-800">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-md bg-[#faf8f5] border border-line text-stone-800">
                     <Calendar className="h-4 w-4 text-[#dfc39a]" />
                   </div>
                   <div>
@@ -391,7 +391,7 @@ export function InteractiveCalendar() {
                 </div>
 
                 <div className="flex items-center gap-2 font-mono text-xs">
-                  <span className="bg-[#faf8f5] border border-[#ede8df] px-2.5 py-1 rounded-sm text-stone-700 font-semibold">
+                  <span className="bg-[#faf8f5] border border-line px-2.5 py-1 rounded-sm text-stone-700 font-semibold">
                     {timingMode === "peak" ? "⚡ AI Peak Staggered" : "🚀 Instant Batch"}
                   </span>
                   <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-sm font-bold flex items-center gap-1">
@@ -402,7 +402,7 @@ export function InteractiveCalendar() {
               </div>
 
               {/* Creator Post Preview Box */}
-              <div className="bg-[#faf8f5] border border-[#ede8df] p-4 sm:p-5 rounded-md space-y-2">
+              <div className="bg-[#faf8f5] border border-line p-4 sm:p-5 rounded-md space-y-2">
                 <div className="flex items-center justify-between font-mono text-[11px] text-stone-500">
                   <span className="font-bold text-stone-900 flex items-center gap-1.5">
                     {currentDay.featuredDrop.mediaCategory === "video" && (
@@ -440,11 +440,11 @@ export function InteractiveCalendar() {
                     {currentDay.featuredDrop.peakSchedule.map((slot) => (
                       <div
                         key={slot.platform}
-                        className="border border-[#ede8df] bg-white p-3.5 rounded-md shadow-2xs space-y-2 hover:border-secondary-border transition-all"
+                        className="border border-line bg-white p-3.5 rounded-md shadow-2xs space-y-2 hover:border-secondary-border transition-all"
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <div className="flex h-6 w-6 items-center justify-center rounded-xs bg-[#faf8f5] border border-[#ede8df]">
+                            <div className="flex h-6 w-6 items-center justify-center rounded-xs bg-[#faf8f5] border border-line">
                               <PlatformIcon platform={slot.platform} size={13} />
                             </div>
                             <span className="font-bold text-stone-900">{slot.platformName}</span>
@@ -467,7 +467,7 @@ export function InteractiveCalendar() {
                   </div>
                 </div>
               ) : (
-                <div className="bg-[#faf8f5] border border-[#ede8df] p-4 rounded-md font-mono text-xs text-stone-700 flex items-center justify-between">
+                <div className="bg-[#faf8f5] border border-line p-4 rounded-md font-mono text-xs text-stone-700 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Zap className="h-4 w-4 text-[#dfc39a]" />
                     <span>
@@ -480,7 +480,7 @@ export function InteractiveCalendar() {
               )}
 
               {/* Bottom Card Summary */}
-              <div className="pt-3 border-t border-dashed border-[#ede8df] flex flex-wrap items-center justify-between font-mono text-[11px] text-stone-500 gap-2">
+              <div className="pt-3 border-t border-dashed border-line flex flex-wrap items-center justify-between font-mono text-[11px] text-stone-500 gap-2">
                 <span className="flex items-center gap-1.5">
                   <Share2 className="h-3.5 w-3.5 text-stone-700" />
                   <span>automatically scheduled based on audience engagement data</span>

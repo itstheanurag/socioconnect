@@ -207,7 +207,7 @@ export function InteractiveDispatcher() {
   const activeInspectChannel = CHANNELS.find((c) => c.id === activeInspectTab) || CHANNELS[0];
 
   return (
-    <section id="editor" className="relative py-16 lg:py-24 border-t border-[#ede8df] bg-[#faf8f5]">
+    <section id="editor" className="relative py-16 lg:py-24 border-t border-line bg-[#faf8f5]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Heading */}
         <div className="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end lowercase">
@@ -230,9 +230,9 @@ export function InteractiveDispatcher() {
         </div>
 
         {/* Main Composer Box */}
-        <div className="border border-[#ede8df] bg-white shadow-xs rounded-md overflow-hidden lowercase">
+        <div className="border border-line bg-white shadow-xs rounded-md overflow-hidden lowercase">
           {/* Top Bar: Channel Toggle Pills & Mode Switcher */}
-          <div className="border-b border-[#ede8df] bg-[#faf8f5] p-4 sm:p-5">
+          <div className="border-b border-line bg-[#faf8f5] p-4 sm:p-5">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2 mb-2 font-mono text-xs font-bold text-stone-800">
@@ -266,7 +266,7 @@ export function InteractiveDispatcher() {
               </div>
 
               {/* Timing mode selector */}
-              <div className="border-t lg:border-t-0 lg:border-l border-dashed border-[#ede8df] pt-3 lg:pt-0 lg:pl-5">
+              <div className="border-t lg:border-t-0 lg:border-l border-dashed border-line pt-3 lg:pt-0 lg:pl-5">
                 <div className="flex items-center gap-2 mb-2 font-mono text-xs font-bold text-stone-800">
                   <span>2. timing strategy</span>
                 </div>
@@ -303,7 +303,7 @@ export function InteractiveDispatcher() {
           {/* Composer Body */}
           <div className="grid grid-cols-1 lg:grid-cols-12">
             {/* Left: Text Editor */}
-            <div className="lg:col-span-7 p-5 sm:p-6 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-[#ede8df]">
+            <div className="lg:col-span-7 p-5 sm:p-6 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-line">
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <span className="font-mono text-xs font-bold text-stone-800">compose post</span>
@@ -320,7 +320,7 @@ export function InteractiveDispatcher() {
                       key={preset.label}
                       type="button"
                       onClick={() => handlePreset(preset.text)}
-                      className="px-2 py-0.5 border border-[#ede8df] bg-[#faf8f5] hover:border-stone-400 rounded-sm text-stone-700 hover:text-stone-900 shrink-0 cursor-pointer"
+                      className="px-2 py-0.5 border border-line bg-[#faf8f5] hover:border-stone-400 rounded-sm text-stone-700 hover:text-stone-900 shrink-0 cursor-pointer"
                     >
                       {preset.label}
                     </button>
@@ -335,7 +335,7 @@ export function InteractiveDispatcher() {
                   }}
                   rows={6}
                   placeholder="what are you sharing with your audience today?"
-                  className="w-full resize-none border border-[#ede8df] bg-[#faf8f5] p-3.5 font-sans text-sm text-stone-900 focus:border-stone-900 focus:bg-white focus:outline-hidden transition-all rounded-md"
+                  className="w-full resize-none border border-line bg-[#faf8f5] p-3.5 font-sans text-sm text-stone-900 focus:border-stone-900 focus:bg-white focus:outline-hidden transition-all rounded-md"
                 />
 
                 {/* Platform Character Budget Pills */}
@@ -352,7 +352,7 @@ export function InteractiveDispatcher() {
                         className={`inline-flex items-center gap-1.5 px-2.5 py-1 border font-mono text-[10px] rounded-md ${
                           isOver
                             ? "border-red-300 bg-red-50 text-red-700"
-                            : "border-[#ede8df] bg-white text-stone-600"
+                            : "border-line bg-white text-stone-600"
                         }`}
                       >
                         <PlatformIcon platform={c.id} size={12} />
@@ -367,7 +367,7 @@ export function InteractiveDispatcher() {
               </div>
 
               {/* Action Bar */}
-              <div className="mt-6 pt-4 border-t border-dashed border-[#ede8df] flex flex-wrap items-center justify-between gap-3">
+              <div className="mt-6 pt-4 border-t border-dashed border-line flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-1.5 font-mono text-xs text-stone-500">
                   <Shield className="h-3.5 w-3.5 text-emerald-600" />
                   <span>100% private &middot; zero passwords stored</span>
@@ -423,7 +423,7 @@ export function InteractiveDispatcher() {
                         className={`px-3 py-1.5 border transition-colors rounded-md flex items-center gap-1.5 shrink-0 cursor-pointer ${
                           isActive
                             ? "border-stone-900 bg-white text-stone-900 font-bold shadow-2xs"
-                            : "border-[#ede8df] bg-white/50 text-stone-500 hover:border-stone-400"
+                            : "border-line bg-white/50 text-stone-500 hover:border-stone-400"
                         }`}
                       >
                         <PlatformIcon platform={ch.id} size={13} />
@@ -433,8 +433,8 @@ export function InteractiveDispatcher() {
                 </div>
 
                 {/* Channel Details Card */}
-                <div className="border border-[#ede8df] bg-white p-4 rounded-md shadow-2xs font-mono text-xs space-y-3">
-                  <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-2">
+                <div className="border border-line bg-white p-4 rounded-md shadow-2xs font-mono text-xs space-y-3">
+                  <div className="flex items-center justify-between border-b border-dashed border-line pb-2">
                     <div className="flex items-center gap-2">
                       <PlatformIcon platform={activeInspectChannel.id} size={15} />
                       <span className="font-bold text-stone-900">{activeInspectChannel.name}</span>
@@ -451,15 +451,15 @@ export function InteractiveDispatcher() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-dashed border-[#ede8df] text-[11px]">
-                    <div className="bg-[#faf8f5] p-2.5 rounded-md border border-[#ede8df]">
+                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-dashed border-line text-[11px]">
+                    <div className="bg-[#faf8f5] p-2.5 rounded-md border border-line">
                       <span className="text-stone-400 text-[9px] block">recommended peak</span>
                       <span className="font-bold text-stone-800 flex items-center gap-1">
                         <Clock className="h-3 w-3 text-[#dfc39a]" />
                         {activeInspectChannel.peakTime}
                       </span>
                     </div>
-                    <div className="bg-[#faf8f5] p-2.5 rounded-md border border-[#ede8df]">
+                    <div className="bg-[#faf8f5] p-2.5 rounded-md border border-line">
                       <span className="text-stone-400 text-[9px] block">audience focus</span>
                       <span className="font-bold text-stone-800 truncate block">
                         {activeInspectChannel.audienceContext}

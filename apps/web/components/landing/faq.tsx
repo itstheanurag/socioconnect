@@ -43,7 +43,7 @@ export function LandingFAQ() {
   }
 
   return (
-    <section id="faq" className="relative py-16 lg:py-24 border-t border-[#ede8df] bg-white">
+    <section id="faq" className="relative py-16 lg:py-24 border-t border-line bg-white">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         {/* Heading */}
         <div className="text-center mb-12 lowercase">
@@ -70,7 +70,7 @@ export function LandingFAQ() {
                 className={`border transition-colors rounded-md overflow-hidden ${
                   isOpen
                     ? "border-stone-900 bg-[#faf8f5]"
-                    : "border-[#ede8df] bg-white hover:border-secondary-border"
+                    : "border-line bg-white hover:border-secondary-border"
                 }`}
               >
                 <button
@@ -87,7 +87,7 @@ export function LandingFAQ() {
                 </button>
 
                 {isOpen && (
-                  <div className="border-t border-dashed border-[#ede8df] px-5 pb-5 pt-3">
+                  <div className="border-t border-dashed border-line px-5 pb-5 pt-3">
                     <p className="font-sans text-sm text-stone-600 leading-relaxed font-normal">
                       {faq.a}
                     </p>

@@ -61,7 +61,7 @@ export default function ProfilePage() {
       )}
 
       {/* Page Header */}
-      <div className="border-b border-[#ede8df] pb-6">
+      <div className="border-b border-line pb-6">
         <div className="inline-flex items-center gap-2 border border-dashed border-secondary-border bg-secondary/30 px-3 py-0.5 text-xs font-mono font-semibold text-stone-900 rounded-md mb-2">
           <User className="h-3 w-3 text-stone-800" />
           <span>creator settings &amp; authentication</span>
@@ -81,9 +81,9 @@ export default function ProfilePage() {
         <div className="lg:col-span-8 space-y-6">
           <form
             onSubmit={handleSaveProfile}
-            className="border border-[#ede8df] bg-white p-6 sm:p-7 rounded-md shadow-xs space-y-6"
+            className="border border-line bg-white p-6 sm:p-7 rounded-md shadow-xs space-y-6"
           >
-            <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-3">
+            <div className="flex items-center justify-between border-b border-dashed border-line pb-3">
               <span className="font-mono text-xs font-bold text-stone-900">
                 creator information
               </span>
@@ -100,7 +100,7 @@ export default function ProfilePage() {
                   "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
                 }
                 alt="Creator Avatar"
-                className="h-16 w-16 rounded-full object-cover border border-[#ede8df] shadow-xs"
+                className="h-16 w-16 rounded-full object-cover border border-line shadow-xs"
               />
               <div>
                 <button
@@ -124,7 +124,7 @@ export default function ProfilePage() {
                   type="text"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  className="w-full border border-[#ede8df] bg-[#faf8f5] p-2.5 rounded-md text-stone-900 focus:bg-white focus:border-stone-900 focus:outline-hidden"
+                  className="w-full border border-line bg-[#faf8f5] p-2.5 rounded-md text-stone-900 focus:bg-white focus:border-stone-900 focus:outline-hidden"
                 />
               </div>
 
@@ -134,7 +134,7 @@ export default function ProfilePage() {
                   type="text"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  className="w-full border border-[#ede8df] bg-[#faf8f5] p-2.5 rounded-md text-stone-900 focus:bg-white focus:border-stone-900 focus:outline-hidden"
+                  className="w-full border border-line bg-[#faf8f5] p-2.5 rounded-md text-stone-900 focus:bg-white focus:border-stone-900 focus:outline-hidden"
                 />
               </div>
             </div>
@@ -148,7 +148,7 @@ export default function ProfilePage() {
                 type="email"
                 value={email}
                 disabled
-                className="w-full border border-[#ede8df] bg-stone-100 p-2.5 rounded-md text-stone-500 cursor-not-allowed"
+                className="w-full border border-line bg-stone-100 p-2.5 rounded-md text-stone-500 cursor-not-allowed"
               />
               <span className="text-[10px] text-stone-400">
                 linked via official google workspace oauth
@@ -162,7 +162,7 @@ export default function ProfilePage() {
                 value={creatorBio}
                 onChange={(e) => setCreatorBio(e.target.value)}
                 rows={3}
-                className="w-full resize-none border border-[#ede8df] bg-[#faf8f5] p-2.5 rounded-md text-stone-900 font-sans text-xs focus:bg-white focus:border-stone-900 focus:outline-hidden"
+                className="w-full resize-none border border-line bg-[#faf8f5] p-2.5 rounded-md text-stone-900 font-sans text-xs focus:bg-white focus:border-stone-900 focus:outline-hidden"
               />
             </div>
 
@@ -173,7 +173,7 @@ export default function ProfilePage() {
                 <select
                   value={primaryNiche}
                   onChange={(e) => setPrimaryNiche(e.target.value)}
-                  className="w-full border border-[#ede8df] bg-[#faf8f5] p-2.5 rounded-md text-stone-900 focus:bg-white focus:border-stone-900 focus:outline-hidden cursor-pointer"
+                  className="w-full border border-line bg-[#faf8f5] p-2.5 rounded-md text-stone-900 focus:bg-white focus:border-stone-900 focus:outline-hidden cursor-pointer"
                 >
                   <option value="Tech & Software Development">tech &amp; coding</option>
                   <option value="Design & Creative Direction">design &amp; animation</option>
@@ -192,7 +192,7 @@ export default function ProfilePage() {
                 <select
                   value={timezone}
                   onChange={(e) => setTimezone(e.target.value)}
-                  className="w-full border border-[#ede8df] bg-[#faf8f5] p-2.5 rounded-md text-stone-900 focus:bg-white focus:border-stone-900 focus:outline-hidden cursor-pointer"
+                  className="w-full border border-line bg-[#faf8f5] p-2.5 rounded-md text-stone-900 focus:bg-white focus:border-stone-900 focus:outline-hidden cursor-pointer"
                 >
                   <option value="America/New_York (EST)">america/new_york (est)</option>
                   <option value="America/Los_Angeles (PST)">america/los_angeles (pst)</option>
@@ -204,7 +204,7 @@ export default function ProfilePage() {
             </div>
 
             {/* Submit */}
-            <div className="pt-2 border-t border-dashed border-[#ede8df] flex justify-end">
+            <div className="pt-2 border-t border-dashed border-line flex justify-end">
               <button
                 type="submit"
                 className="inline-flex items-center gap-2 border border-secondary-border bg-secondary px-5 py-2.5 rounded-md font-mono text-xs font-bold text-stone-900 hover:bg-[#ebd0a3] transition-colors cursor-pointer shadow-2xs"
@@ -216,8 +216,8 @@ export default function ProfilePage() {
           </form>
 
           {/* Developer API & Webhook Access Card */}
-          <div className="border border-[#ede8df] bg-white p-6 sm:p-7 rounded-md shadow-xs space-y-4 font-mono text-xs">
-            <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-3">
+          <div className="border border-line bg-white p-6 sm:p-7 rounded-md shadow-xs space-y-4 font-mono text-xs">
+            <div className="flex items-center justify-between border-b border-dashed border-line pb-3">
               <div className="flex items-center gap-2 font-bold text-stone-900">
                 <Key className="h-4 w-4 text-[#dfc39a]" />
                 <span>developer api &amp; automation keys</span>
@@ -230,7 +230,7 @@ export default function ProfilePage() {
               actions, or custom scripts.
             </p>
 
-            <div className="flex items-center gap-2 bg-[#faf8f5] border border-[#ede8df] p-2.5 rounded-md">
+            <div className="flex items-center gap-2 bg-[#faf8f5] border border-line p-2.5 rounded-md">
               <input
                 type={apiKeyVisible ? "text" : "password"}
                 value={mockApiKey}
@@ -248,7 +248,7 @@ export default function ProfilePage() {
               <button
                 type="button"
                 onClick={handleCopyKey}
-                className="flex items-center gap-1 bg-white border border-[#ede8df] px-2.5 py-1 rounded-sm text-stone-800 hover:border-stone-400 cursor-pointer font-bold text-[11px]"
+                className="flex items-center gap-1 bg-white border border-line px-2.5 py-1 rounded-sm text-stone-800 hover:border-stone-400 cursor-pointer font-bold text-[11px]"
               >
                 {copiedKey ? (
                   <Check className="h-3 w-3 text-emerald-600" />
@@ -264,8 +264,8 @@ export default function ProfilePage() {
         {/* Right Column: Security, Sessions & Notification Toggles */}
         <div className="lg:col-span-4 space-y-6 font-mono text-xs">
           {/* Security & Sessions Box */}
-          <div className="border border-[#ede8df] bg-white p-5 rounded-md shadow-xs space-y-4">
-            <div className="flex items-center gap-2 font-bold text-stone-900 border-b border-dashed border-[#ede8df] pb-3">
+          <div className="border border-line bg-white p-5 rounded-md shadow-xs space-y-4">
+            <div className="flex items-center gap-2 font-bold text-stone-900 border-b border-dashed border-line pb-3">
               <ShieldCheck className="h-4 w-4 text-emerald-600" />
               <span>security status</span>
             </div>
@@ -297,8 +297,8 @@ export default function ProfilePage() {
           </div>
 
           {/* Notification Preferences Box */}
-          <div className="border border-[#ede8df] bg-white p-5 rounded-md shadow-xs space-y-4">
-            <div className="flex items-center gap-2 font-bold text-stone-900 border-b border-dashed border-[#ede8df] pb-3">
+          <div className="border border-line bg-white p-5 rounded-md shadow-xs space-y-4">
+            <div className="flex items-center gap-2 font-bold text-stone-900 border-b border-dashed border-line pb-3">
               <Bell className="h-4 w-4 text-[#dfc39a]" />
               <span>creator notifications</span>
             </div>

@@ -180,7 +180,7 @@ export function ComposerWorkbench() {
       )}
 
       {/* Top Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#ede8df] pb-5">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-line pb-5">
         <div>
           <div className="inline-flex items-center gap-2 border border-dashed border-secondary-border bg-secondary/30 px-3 py-0.5 text-xs font-mono font-semibold text-stone-900 rounded-md mb-2">
             <Zap className="h-3 w-3 text-stone-800" />
@@ -211,7 +211,7 @@ export function ComposerWorkbench() {
                 setContent(preset.text);
                 setQueued(false);
               }}
-              className="bg-white border border-[#ede8df] hover:border-secondary-border hover:bg-[#faf8f5] px-2.5 py-1 rounded-md text-[11px] text-stone-800 transition-colors cursor-pointer shadow-2xs"
+              className="bg-white border border-line hover:border-secondary-border hover:bg-[#faf8f5] px-2.5 py-1 rounded-md text-[11px] text-stone-800 transition-colors cursor-pointer shadow-2xs"
             >
               {preset.label}
             </button>
@@ -224,7 +224,7 @@ export function ComposerWorkbench() {
         {/* Left Column: Post Editor & Channel Selector */}
         <div className="lg:col-span-8 space-y-5">
           {/* Target Channel Selector Strip */}
-          <div className="border border-[#ede8df] bg-white p-4 rounded-md shadow-xs space-y-2.5">
+          <div className="border border-line bg-white p-4 rounded-md shadow-xs space-y-2.5">
             <div className="flex items-center justify-between font-mono text-xs text-stone-500">
               <span className="font-bold text-stone-900">target channels:</span>
               <span className="text-[11px]">click to toggle active destination</span>
@@ -241,10 +241,10 @@ export function ComposerWorkbench() {
                     className={`flex items-center gap-2 px-3 py-1.5 rounded-md border font-mono text-xs transition-all cursor-pointer ${
                       isSelected
                         ? "border-stone-900 bg-white font-bold text-stone-900 shadow-2xs ring-1 ring-stone-900/10"
-                        : "border-[#ede8df] bg-[#faf8f5]/60 text-stone-500 hover:border-secondary-border"
+                        : "border-line bg-[#faf8f5]/60 text-stone-500 hover:border-secondary-border"
                     }`}
                   >
-                    <div className="flex h-5 w-5 items-center justify-center rounded-xs bg-[#faf8f5] border border-[#ede8df]">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-xs bg-[#faf8f5] border border-line">
                       <PlatformIcon platform={account.id} size={13} />
                     </div>
                     <span>{account.platform}</span>
@@ -256,8 +256,8 @@ export function ComposerWorkbench() {
           </div>
 
           {/* Primary Editor Box */}
-          <div className="border border-[#ede8df] bg-white rounded-md shadow-xs overflow-hidden">
-            <div className="border-b border-[#ede8df] bg-[#faf8f5] px-4 py-2.5 flex items-center justify-between font-mono text-xs">
+          <div className="border border-line bg-white rounded-md shadow-xs overflow-hidden">
+            <div className="border-b border-line bg-[#faf8f5] px-4 py-2.5 flex items-center justify-between font-mono text-xs">
               <span className="font-bold text-stone-900">primary copy</span>
               <div className="flex items-center gap-3">
                 <button
@@ -286,7 +286,7 @@ export function ComposerWorkbench() {
 
             {/* Attached Media Preview */}
             {attachedMedia && (
-              <div className="mx-4 mb-3 p-2.5 bg-[#faf8f5] border border-[#ede8df] rounded-md flex items-center justify-between font-mono text-xs">
+              <div className="mx-4 mb-3 p-2.5 bg-[#faf8f5] border border-line rounded-md flex items-center justify-between font-mono text-xs">
                 <div className="flex items-center gap-2 text-stone-800">
                   <Film className="h-4 w-4 text-[#dfc39a]" />
                   <span className="font-bold">{attachedMedia}</span>
@@ -303,7 +303,7 @@ export function ComposerWorkbench() {
             )}
 
             {/* Editor Toolbar & Dispatch Bar */}
-            <div className="border-t border-[#ede8df] bg-[#faf8f5]/60 px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-mono text-xs">
+            <div className="border-t border-line bg-[#faf8f5]/60 px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-mono text-xs">
               <div className="flex items-center gap-2">
                 <button
                   type="button"
@@ -311,7 +311,7 @@ export function ComposerWorkbench() {
                   className={`flex items-center gap-1.5 border px-2.5 py-1.5 rounded-md transition-colors cursor-pointer ${
                     attachedMedia
                       ? "border-secondary-border bg-secondary font-bold text-stone-900"
-                      : "border-[#ede8df] bg-white text-stone-700 hover:border-stone-400"
+                      : "border-line bg-white text-stone-700 hover:border-stone-400"
                   }`}
                 >
                   <ImagePlus className="h-3.5 w-3.5" />
@@ -323,7 +323,7 @@ export function ComposerWorkbench() {
                   onClick={() => {
                     setContent((prev) => `${prev} #creators #buildinpublic`);
                   }}
-                  className="flex items-center gap-1.5 border border-[#ede8df] bg-white px-2.5 py-1.5 rounded-md text-stone-700 hover:border-stone-400 transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 border border-line bg-white px-2.5 py-1.5 rounded-md text-stone-700 hover:border-stone-400 transition-colors cursor-pointer"
                 >
                   <Hash className="h-3.5 w-3.5" />
                   <span>hashtags</span>
@@ -334,7 +334,7 @@ export function ComposerWorkbench() {
                   onClick={() => {
                     setContent((prev) => `${prev} https://socioconnect.app`);
                   }}
-                  className="flex items-center gap-1.5 border border-[#ede8df] bg-white px-2.5 py-1.5 rounded-md text-stone-700 hover:border-stone-400 transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 border border-line bg-white px-2.5 py-1.5 rounded-md text-stone-700 hover:border-stone-400 transition-colors cursor-pointer"
                 >
                   <LinkIcon className="h-3.5 w-3.5" />
                   <span>link</span>
@@ -346,7 +346,7 @@ export function ComposerWorkbench() {
                 <button
                   type="button"
                   onClick={() => setScheduleMode(scheduleMode === "peak" ? "simultaneous" : "peak")}
-                  className="flex items-center gap-1.5 border border-[#ede8df] bg-white px-3 py-1.5 rounded-md text-stone-800 hover:border-secondary-border transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 border border-line bg-white px-3 py-1.5 rounded-md text-stone-800 hover:border-secondary-border transition-colors cursor-pointer"
                 >
                   <Clock3 className="h-3.5 w-3.5 text-[#dfc39a]" />
                   <span>{scheduleMode === "peak" ? "⚡ AI Peak Hours" : "🚀 Simultaneous"}</span>
@@ -382,8 +382,8 @@ export function ComposerWorkbench() {
 
         {/* Right Column: Character Limits & Live Channel Previews */}
         <div className="lg:col-span-4 space-y-4">
-          <div className="border border-[#ede8df] bg-white p-5 rounded-md shadow-xs space-y-3 font-mono text-xs">
-            <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-2.5">
+          <div className="border border-line bg-white p-5 rounded-md shadow-xs space-y-3 font-mono text-xs">
+            <div className="flex items-center justify-between border-b border-dashed border-line pb-2.5">
               <span className="font-bold text-stone-900">channel character meters</span>
               <span className="text-[11px] text-stone-400">live constraints</span>
             </div>
@@ -401,11 +401,11 @@ export function ComposerWorkbench() {
                       className={`p-2.5 border rounded-md transition-all flex items-center justify-between ${
                         isOver
                           ? "border-red-300 bg-red-50 text-red-900"
-                          : "border-[#ede8df] bg-[#faf8f5]"
+                          : "border-line bg-[#faf8f5]"
                       }`}
                     >
                       <div className="flex items-center gap-2">
-                        <div className="flex h-6 w-6 items-center justify-center rounded-xs bg-white border border-[#ede8df]">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-xs bg-white border border-line">
                           <PlatformIcon platform={account.id} size={13} />
                         </div>
                         <div>

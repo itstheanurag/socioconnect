@@ -89,7 +89,7 @@ export default function UsagePlanPage() {
       )}
 
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#ede8df] pb-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-line pb-6">
         <div>
           <div className="inline-flex items-center gap-2 border border-dashed border-secondary-border bg-secondary/30 px-3 py-0.5 text-xs font-mono font-semibold text-stone-900 rounded-md mb-2">
             <BarChart3 className="h-3 w-3 text-stone-800" />
@@ -117,7 +117,7 @@ export default function UsagePlanPage() {
               className={`px-3 py-1.5 rounded-md border transition-all cursor-pointer ${
                 activeTab === tab
                   ? "border-stone-900 bg-white font-bold text-stone-900 shadow-2xs"
-                  : "border-[#ede8df] bg-white/60 text-stone-600 hover:border-stone-400"
+                  : "border-line bg-white/60 text-stone-600 hover:border-stone-400"
               }`}
             >
               {tab === "usage"
@@ -135,12 +135,12 @@ export default function UsagePlanPage() {
           {/* Top Key Metrics Banner */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono text-xs">
             {/* Metric 1: Connected Accounts */}
-            <div className="border border-[#ede8df] bg-white p-5 rounded-md shadow-xs space-y-3">
+            <div className="border border-line bg-white p-5 rounded-md shadow-xs space-y-3">
               <div className="flex items-center justify-between text-stone-500 text-[11px]">
                 <span>connected accounts</span>
                 <span className="font-bold text-stone-800">6 / 12</span>
               </div>
-              <div className="w-full bg-[#faf8f5] border border-[#ede8df] h-2 rounded-full overflow-hidden">
+              <div className="w-full bg-[#faf8f5] border border-line h-2 rounded-full overflow-hidden">
                 <div
                   className="bg-stone-900 h-full rounded-full transition-all"
                   style={{ width: "50%" }}
@@ -152,12 +152,12 @@ export default function UsagePlanPage() {
             </div>
 
             {/* Metric 2: Monthly Posts */}
-            <div className="border border-[#ede8df] bg-white p-5 rounded-md shadow-xs space-y-3">
+            <div className="border border-line bg-white p-5 rounded-md shadow-xs space-y-3">
               <div className="flex items-center justify-between text-stone-500 text-[11px]">
                 <span>monthly drops</span>
                 <span className="font-bold text-stone-800">78 / 250</span>
               </div>
-              <div className="w-full bg-[#faf8f5] border border-[#ede8df] h-2 rounded-full overflow-hidden">
+              <div className="w-full bg-[#faf8f5] border border-line h-2 rounded-full overflow-hidden">
                 <div
                   className="bg-[#dfc39a] h-full rounded-full transition-all"
                   style={{ width: "31%" }}
@@ -169,12 +169,12 @@ export default function UsagePlanPage() {
             </div>
 
             {/* Metric 3: AI Adaptations */}
-            <div className="border border-[#ede8df] bg-white p-5 rounded-md shadow-xs space-y-3">
+            <div className="border border-line bg-white p-5 rounded-md shadow-xs space-y-3">
               <div className="flex items-center justify-between text-stone-500 text-[11px]">
                 <span>ai adaptations</span>
                 <span className="font-bold text-stone-800">34 / 150</span>
               </div>
-              <div className="w-full bg-[#faf8f5] border border-[#ede8df] h-2 rounded-full overflow-hidden">
+              <div className="w-full bg-[#faf8f5] border border-line h-2 rounded-full overflow-hidden">
                 <div
                   className="bg-emerald-600 h-full rounded-full transition-all"
                   style={{ width: "23%" }}
@@ -186,12 +186,12 @@ export default function UsagePlanPage() {
             </div>
 
             {/* Metric 4: CDN Storage */}
-            <div className="border border-[#ede8df] bg-white p-5 rounded-md shadow-xs space-y-3">
+            <div className="border border-line bg-white p-5 rounded-md shadow-xs space-y-3">
               <div className="flex items-center justify-between text-stone-500 text-[11px]">
                 <span>video cdn storage</span>
                 <span className="font-bold text-stone-800">14.8 / 50 GB</span>
               </div>
-              <div className="w-full bg-[#faf8f5] border border-[#ede8df] h-2 rounded-full overflow-hidden">
+              <div className="w-full bg-[#faf8f5] border border-line h-2 rounded-full overflow-hidden">
                 <div
                   className="bg-stone-800 h-full rounded-full transition-all"
                   style={{ width: "29%" }}
@@ -204,8 +204,8 @@ export default function UsagePlanPage() {
           </div>
 
           {/* Detailed Resource Breakdown Card */}
-          <div className="border border-[#ede8df] bg-white p-6 rounded-md shadow-xs space-y-5">
-            <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-3 font-mono text-xs">
+          <div className="border border-line bg-white p-6 rounded-md shadow-xs space-y-5">
+            <div className="flex items-center justify-between border-b border-dashed border-line pb-3 font-mono text-xs">
               <div className="flex items-center gap-2 font-bold text-stone-900">
                 <TrendingUp className="h-4 w-4 text-[#dfc39a]" />
                 <span>active features &amp; capabilities overview</span>
@@ -214,7 +214,7 @@ export default function UsagePlanPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-xs">
-              <div className="bg-[#faf8f5] p-4 border border-[#ede8df] rounded-md space-y-1.5">
+              <div className="bg-[#faf8f5] p-4 border border-line rounded-md space-y-1.5">
                 <div className="flex items-center gap-2 font-bold text-stone-900">
                   <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
                   <span>autonomous peak timing</span>
@@ -224,7 +224,7 @@ export default function UsagePlanPage() {
                 </p>
               </div>
 
-              <div className="bg-[#faf8f5] p-4 border border-[#ede8df] rounded-md space-y-1.5">
+              <div className="bg-[#faf8f5] p-4 border border-line rounded-md space-y-1.5">
                 <div className="flex items-center gap-2 font-bold text-stone-900">
                   <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
                   <span>hardware-token encryption</span>
@@ -234,7 +234,7 @@ export default function UsagePlanPage() {
                 </p>
               </div>
 
-              <div className="bg-[#faf8f5] p-4 border border-[#ede8df] rounded-md space-y-1.5">
+              <div className="bg-[#faf8f5] p-4 border border-line rounded-md space-y-1.5">
                 <div className="flex items-center gap-2 font-bold text-stone-900">
                   <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
                   <span>unlimited queue workers</span>
@@ -256,7 +256,7 @@ export default function UsagePlanPage() {
               className={`border p-6 rounded-md transition-all flex flex-col justify-between space-y-6 ${
                 tier.isCurrent
                   ? "border-stone-900 bg-white shadow-md ring-1 ring-stone-900/10"
-                  : "border-[#ede8df] bg-white/70 hover:bg-white"
+                  : "border-line bg-white/70 hover:bg-white"
               }`}
             >
               <div>
@@ -284,7 +284,7 @@ export default function UsagePlanPage() {
                 </p>
 
                 {/* Features list */}
-                <div className="mt-6 pt-4 border-t border-dashed border-[#ede8df] space-y-2.5 font-mono text-xs">
+                <div className="mt-6 pt-4 border-t border-dashed border-line space-y-2.5 font-mono text-xs">
                   {tier.features.map((feat) => (
                     <div key={feat} className="flex items-start gap-2 text-stone-700">
                       <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5" />
@@ -320,8 +320,8 @@ export default function UsagePlanPage() {
       {activeTab === "billing" && (
         <div className="space-y-6">
           {/* Card & Payment Method Details */}
-          <div className="border border-[#ede8df] bg-white p-6 rounded-md shadow-xs space-y-4">
-            <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-3">
+          <div className="border border-line bg-white p-6 rounded-md shadow-xs space-y-4">
+            <div className="flex items-center justify-between border-b border-dashed border-line pb-3">
               <div className="flex items-center gap-2 font-mono text-xs font-bold text-stone-800">
                 <CreditCard className="h-4 w-4 text-[#dfc39a]" />
                 <span>active payment method</span>
@@ -335,9 +335,9 @@ export default function UsagePlanPage() {
               </button>
             </div>
 
-            <div className="flex items-center justify-between font-mono text-xs bg-[#faf8f5] p-3.5 border border-[#ede8df] rounded-md">
+            <div className="flex items-center justify-between font-mono text-xs bg-[#faf8f5] p-3.5 border border-line rounded-md">
               <div className="flex items-center gap-3">
-                <div className="px-2 py-1 bg-white border border-[#ede8df] rounded-sm font-bold text-[10px]">
+                <div className="px-2 py-1 bg-white border border-line rounded-sm font-bold text-[10px]">
                   VISA
                 </div>
                 <div>
@@ -350,8 +350,8 @@ export default function UsagePlanPage() {
           </div>
 
           {/* Invoice History Table */}
-          <div className="border border-[#ede8df] bg-white p-6 rounded-md shadow-xs space-y-4 font-mono text-xs">
-            <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-3">
+          <div className="border border-line bg-white p-6 rounded-md shadow-xs space-y-4 font-mono text-xs">
+            <div className="flex items-center justify-between border-b border-dashed border-line pb-3">
               <div className="font-bold text-stone-800">billing &amp; invoice history</div>
               <span className="text-stone-400 text-[10px]">3 invoices total</span>
             </div>
@@ -360,7 +360,7 @@ export default function UsagePlanPage() {
               {INVOICES.map((inv) => (
                 <div
                   key={inv.id}
-                  className="flex items-center justify-between p-3 border border-[#ede8df] bg-[#faf8f5] rounded-md"
+                  className="flex items-center justify-between p-3 border border-line bg-[#faf8f5] rounded-md"
                 >
                   <div className="flex items-center gap-4">
                     <span className="font-bold text-stone-900">{inv.id}</span>

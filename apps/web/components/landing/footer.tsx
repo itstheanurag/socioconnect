@@ -3,7 +3,7 @@ import { ShieldCheck, Heart } from "lucide-react";
 
 export function LandingFooter() {
   return (
-    <footer className="border-t border-[#ede8df] bg-[#faf8f5] py-12 lg:py-16 text-stone-600 font-mono text-xs lowercase">
+    <footer className="border-t border-line bg-[#faf8f5] py-12 lg:py-16 text-stone-600 font-mono text-xs lowercase">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           {/* Brand Col */}
@@ -104,7 +104,7 @@ export function LandingFooter() {
         </div>
 
         {/* Bottom copyright */}
-        <div className="border-t border-dashed border-[#ede8df] pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-stone-500">
+        <div className="border-t border-dashed border-line pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-stone-500">
           <div className="flex items-center gap-1.5">
             <span>built for creators with</span>
             <Heart className="h-3 w-3 text-red-500 fill-red-500" />

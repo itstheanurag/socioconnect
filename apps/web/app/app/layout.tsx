@@ -17,6 +17,7 @@ import {
   ShieldCheck,
   ChevronRight,
   Sparkles,
+  Users,
 } from "lucide-react";
 import { useAuth } from "../../lib/auth-context";
 
@@ -30,6 +31,7 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { name: "compose post", href: "/app", icon: PenTool },
   { name: "connectors", href: "/app/connectors", icon: Link2, badge: "6 active" },
+  { name: "community hubs", href: "/app/communities", icon: Users, badge: "new" },
   { name: "bots & ai", href: "/app/bots", icon: Bot, badge: "auto" },
   { name: "calendar", href: "/app/calendar", icon: Calendar },
   { name: "usage & plan", href: "/app/usage", icon: BarChart3 },
@@ -83,7 +85,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               href="/"
               className="flex items-center gap-2.5 text-stone-900 hover:opacity-85 transition-opacity"
             >
-              <div className="flex h-7 w-7 items-center justify-center rounded-sm bg-secondary border border-secondary-border font-mono text-xs font-black text-stone-900 shadow-2xs">
+              <div className="flex h-7 w-7 items-center justify-center rounded-sm bg-[#F4DCB4] border border-[#dfc39a] font-mono text-xs font-black text-stone-900 shadow-2xs">
                 s
               </div>
               <span className="font-mono text-sm font-bold tracking-tight">socioconnect</span>
@@ -103,7 +105,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <Link
               href="/app"
               onClick={() => setMobileSidebarOpen(false)}
-              className="w-full flex items-center justify-center gap-2 border border-secondary-border bg-secondary hover:bg-[#ebd0a3] p-2.5 rounded-md font-mono text-xs font-bold text-stone-900 transition-colors shadow-2xs"
+              className="w-full flex items-center justify-center gap-2 border border-[#dfc39a] bg-[#F4DCB4] hover:bg-[#ebd0a3] p-2.5 rounded-md font-mono text-xs font-bold text-stone-900 transition-colors shadow-2xs"
             >
               <PenTool className="h-3.5 w-3.5" />
               <span>+ compose post</span>
@@ -141,7 +143,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     <span
                       className={`text-[9px] px-1.5 py-0.2 rounded-xs ${
                         isActive
-                          ? "bg-secondary text-stone-900 font-bold"
+                          ? "bg-[#F4DCB4] text-stone-900 font-bold"
                           : "bg-stone-200/70 text-stone-600"
                       }`}
                     >
@@ -238,7 +240,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {pathname !== "/app" && (
                 <Link
                   href="/app"
-                  className="inline-flex items-center gap-1 border border-secondary-border bg-secondary px-2.5 py-1 text-[11px] font-bold text-stone-900 hover:bg-[#ebd0a3] transition-colors rounded-sm shadow-2xs"
+                  className="inline-flex items-center gap-1 border border-[#dfc39a] bg-[#F4DCB4] px-2.5 py-1 text-[11px] font-bold text-stone-900 hover:bg-[#ebd0a3] transition-colors rounded-sm shadow-2xs"
                 >
                   <Sparkles className="h-3 w-3" />
                   <span>compose</span>

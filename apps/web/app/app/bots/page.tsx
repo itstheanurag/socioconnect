@@ -203,7 +203,7 @@ export default function BotsPage() {
       )}
 
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#ede8df] pb-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-line pb-6">
         <div>
           <div className="inline-flex items-center gap-2 border border-dashed border-secondary-border bg-secondary/30 px-3 py-0.5 text-xs font-mono font-semibold text-stone-900 rounded-md mb-2">
             <Bot className="h-3 w-3 text-stone-800" />
@@ -222,7 +222,7 @@ export default function BotsPage() {
         </div>
 
         {/* Global AI Tone Selector */}
-        <div className="flex items-center gap-2 font-mono text-xs bg-white border border-[#ede8df] p-1.5 rounded-md shadow-2xs">
+        <div className="flex items-center gap-2 font-mono text-xs bg-white border border-line p-1.5 rounded-md shadow-2xs">
           <Sliders className="h-3.5 w-3.5 text-stone-500 shrink-0" />
           <span className="text-stone-400 text-[10px]">voice tone:</span>
           <select
@@ -253,15 +253,15 @@ export default function BotsPage() {
               key={bot.id}
               className={`border p-6 rounded-md transition-all flex flex-col justify-between space-y-5 ${
                 isActive
-                  ? "border-[#ede8df] bg-white shadow-2xs hover:border-secondary-border"
-                  : "border-[#ede8df] bg-white/60 opacity-80"
+                  ? "border-line bg-white shadow-2xs hover:border-secondary-border"
+                  : "border-line bg-white/60 opacity-80"
               }`}
             >
               {/* Header & Toggle */}
               <div>
-                <div className="flex items-start justify-between gap-3 border-b border-dashed border-[#ede8df] pb-4">
+                <div className="flex items-start justify-between gap-3 border-b border-dashed border-line pb-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-md border border-[#ede8df] bg-[#faf8f5] shadow-2xs text-stone-800">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-md border border-line bg-[#faf8f5] shadow-2xs text-stone-800">
                       <Icon className="h-5 w-5 text-[#dfc39a]" />
                     </div>
                     <div>
@@ -302,13 +302,13 @@ export default function BotsPage() {
                 </p>
 
                 {/* Supported Channels Strip */}
-                <div className="mt-4 pt-3 border-t border-[#ede8df] flex items-center justify-between font-mono text-xs">
+                <div className="mt-4 pt-3 border-t border-line flex items-center justify-between font-mono text-xs">
                   <span className="text-[10px] text-stone-400">supported channels:</span>
                   <div className="flex items-center gap-1.5">
                     {bot.platforms.map((p) => (
                       <div
                         key={p}
-                        className="flex h-5 w-5 items-center justify-center rounded-xs border border-[#ede8df] bg-[#faf8f5]"
+                        className="flex h-5 w-5 items-center justify-center rounded-xs border border-line bg-[#faf8f5]"
                       >
                         <PlatformIcon platform={p} size={11} />
                       </div>
@@ -318,16 +318,16 @@ export default function BotsPage() {
               </div>
 
               {/* Bot Metrics & Telemetry */}
-              <div className="pt-3 border-t border-dashed border-[#ede8df] grid grid-cols-3 gap-2 font-mono text-xs">
-                <div className="bg-[#faf8f5] p-2.5 rounded-md border border-[#ede8df]">
+              <div className="pt-3 border-t border-dashed border-line grid grid-cols-3 gap-2 font-mono text-xs">
+                <div className="bg-[#faf8f5] p-2.5 rounded-md border border-line">
                   <span className="text-[10px] text-stone-400 block">accuracy rate</span>
                   <span className="font-bold text-stone-800">{bot.confidenceScore}%</span>
                 </div>
-                <div className="bg-[#faf8f5] p-2.5 rounded-md border border-[#ede8df]">
+                <div className="bg-[#faf8f5] p-2.5 rounded-md border border-line">
                   <span className="text-[10px] text-stone-400 block">actions taken</span>
                   <span className="font-bold text-stone-800">{bot.totalAutomations}</span>
                 </div>
-                <div className="bg-[#faf8f5] p-2.5 rounded-md border border-[#ede8df]">
+                <div className="bg-[#faf8f5] p-2.5 rounded-md border border-line">
                   <span className="text-[10px] text-stone-400 block">last executed</span>
                   <span className="font-bold text-stone-800 truncate block">{bot.lastRun}</span>
                 </div>
@@ -338,8 +338,8 @@ export default function BotsPage() {
       </div>
 
       {/* Recent Bot Execution Logs Feed */}
-      <div className="border border-[#ede8df] bg-white p-6 rounded-md shadow-xs space-y-4">
-        <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-3">
+      <div className="border border-line bg-white p-6 rounded-md shadow-xs space-y-4">
+        <div className="flex items-center justify-between border-b border-dashed border-line pb-3">
           <div className="flex items-center gap-2 font-mono text-xs font-bold text-stone-800">
             <Zap className="h-4 w-4 text-[#dfc39a]" />
             <span>recent autonomous bot activity log</span>
@@ -351,10 +351,10 @@ export default function BotsPage() {
           {RECENT_LOGS.map((log) => (
             <div
               key={log.id}
-              className="p-3 border border-[#ede8df] bg-[#faf8f5] rounded-md flex flex-col sm:flex-row sm:items-center justify-between gap-2"
+              className="p-3 border border-line bg-[#faf8f5] rounded-md flex flex-col sm:flex-row sm:items-center justify-between gap-2"
             >
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="flex h-6 w-6 items-center justify-center rounded-xs bg-white border border-[#ede8df] shrink-0">
+                <div className="flex h-6 w-6 items-center justify-center rounded-xs bg-white border border-line shrink-0">
                   <PlatformIcon platform={log.platform} size={12} />
                 </div>
                 <div className="min-w-0">

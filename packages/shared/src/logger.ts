@@ -20,7 +20,8 @@ export type LoggerModules =
   | "billing"
   | "dispatches"
   | "analytics"
-  | "notifications";
+  | "notifications"
+  | "communities";
 
 export interface LoggerMeta {
   module: LoggerModules;

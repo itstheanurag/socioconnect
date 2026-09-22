@@ -82,6 +82,22 @@ export namespace DestinationsRepository {
   }
 
   /**
+   * Finds multiple destinations by their IDs
+   */
+  export async function findByIds(
+    ids: string[],
+    options?: { tx?: DBTransaction },
+  ): Promise<ConnectedDestination[]> {
+    if (!ids || ids.length === 0) return [];
+    const queryClient = options?.tx || db;
+    return await withMetrics("select", "connected_destinations", async () =>
+      queryClient.query.connectedDestinationsTable.findMany({
+        where: inArray(connectedDestinationsTable.id, ids),
+      }),
+    );
+  }
+
+  /**
    * Finds all destinations for a connected account
    */
   export async function findAllByAccountId(

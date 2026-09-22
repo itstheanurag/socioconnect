@@ -6,6 +6,8 @@ import {
   Youtube,
   MessageCircle,
   Music2,
+  Share2,
+  MessageSquare,
 } from "lucide-react";
 
 export type PlatformId =
@@ -15,7 +17,9 @@ export type PlatformId =
   | "facebook"
   | "threads"
   | "tiktok"
-  | "youtube";
+  | "youtube"
+  | "reddit"
+  | "discord";
 
 export interface PlatformMeta {
   id: PlatformId;
@@ -75,6 +79,20 @@ export const platforms: Record<PlatformId, PlatformMeta> = {
     color: "#FF0000",
     bg: "#F4DCB4",
   },
+  reddit: {
+    id: "reddit",
+    name: "Reddit",
+    icon: Share2,
+    color: "#FF4500",
+    bg: "#F4DCB4",
+  },
+  discord: {
+    id: "discord",
+    name: "Discord",
+    icon: MessageSquare,
+    color: "#5865F2",
+    bg: "#E8E1D4",
+  },
 };
 
 export const platformOrder: PlatformId[] = [
@@ -85,4 +103,6 @@ export const platformOrder: PlatformId[] = [
   "facebook",
   "tiktok",
   "youtube",
+  "reddit",
+  "discord",
 ];

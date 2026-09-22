@@ -8,7 +8,7 @@ export function BlastRadiusComparison() {
   const [activeTab, setActiveTab] = useState<"socioconnect" | "oldway">("socioconnect");
 
   return (
-    <section className="relative py-16 lg:py-24 border-t border-[#ede8df] bg-white">
+    <section className="relative py-16 lg:py-24 border-t border-line bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end mb-12 lowercase">
@@ -45,7 +45,7 @@ export function BlastRadiusComparison() {
               onClick={() => setActiveTab("oldway")}
               className={`flex items-center gap-2 px-3.5 py-1.5 transition-colors rounded-sm cursor-pointer ${
                 activeTab === "oldway"
-                  ? "bg-white text-stone-900 font-bold shadow-xs border border-[#ede8df]"
+                  ? "bg-white text-stone-900 font-bold shadow-xs border border-line"
                   : "text-stone-500 hover:text-stone-800"
               }`}
             >
@@ -56,11 +56,11 @@ export function BlastRadiusComparison() {
         </div>
 
         {/* Comparison Box */}
-        <div className="relative border border-[#ede8df] bg-[#faf8f5] p-6 sm:p-10 shadow-xs rounded-md lowercase">
+        <div className="relative border border-line bg-[#faf8f5] p-6 sm:p-10 shadow-xs rounded-md lowercase">
           {activeTab === "socioconnect" ? (
             /* SocioConnect Flow */
             <div className="space-y-8">
-              <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-4 font-mono text-xs text-stone-600">
+              <div className="flex items-center justify-between border-b border-dashed border-line pb-4 font-mono text-xs text-stone-600">
                 <div className="flex items-center gap-2 text-emerald-700 font-bold">
                   <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                   <span>the unified creator flow</span>
@@ -70,7 +70,7 @@ export function BlastRadiusComparison() {
 
               {/* Steps */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 font-mono text-xs">
-                <div className="border border-[#ede8df] bg-white p-5 rounded-md">
+                <div className="border border-line bg-white p-5 rounded-md">
                   <div className="text-stone-400 text-[10px] mb-1">step 01 / draft</div>
                   <div className="font-bold text-stone-900 mb-2 font-sans text-sm">
                     write in one calm editor
@@ -81,7 +81,7 @@ export function BlastRadiusComparison() {
                   </p>
                 </div>
 
-                <div className="border border-[#ede8df] bg-white p-5 rounded-md">
+                <div className="border border-line bg-white p-5 rounded-md">
                   <div className="text-stone-400 text-[10px] mb-1">step 02 / connect</div>
                   <div className="font-bold text-stone-900 mb-2 font-sans text-sm">
                     safe one-click logins
@@ -116,7 +116,7 @@ export function BlastRadiusComparison() {
               </div>
 
               {/* Status matrix with Real SVG Icons */}
-              <div className="border border-[#ede8df] bg-white p-4 font-mono text-xs space-y-2 rounded-md">
+              <div className="border border-line bg-white p-4 font-mono text-xs space-y-2 rounded-md">
                 <div className="text-[11px] text-stone-500 font-bold mb-2">
                   unified channel confirmation:
                 </div>
@@ -166,7 +166,7 @@ export function BlastRadiusComparison() {
           ) : (
             /* The Old Way */
             <div className="space-y-8">
-              <div className="flex items-center justify-between border-b border-dashed border-[#ede8df] pb-4 font-mono text-xs text-stone-600">
+              <div className="flex items-center justify-between border-b border-dashed border-line pb-4 font-mono text-xs text-stone-600">
                 <div className="flex items-center gap-2 text-red-700 font-bold">
                   <AlertCircle className="h-4 w-4 text-red-500" />
                   <span>the old 8-tab juggle</span>
@@ -176,7 +176,7 @@ export function BlastRadiusComparison() {
 
               {/* Steps */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 font-mono text-xs">
-                <div className="border border-[#ede8df] bg-white p-5 rounded-md">
+                <div className="border border-line bg-white p-5 rounded-md">
                   <div className="text-stone-400 text-[10px] mb-1 flex items-center gap-1.5">
                     <PlatformIcon platform="youtube" size={12} />
                     <span>step 01 / youtube</span>

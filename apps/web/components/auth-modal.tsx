@@ -51,7 +51,7 @@ export function AuthModal() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
           transition={{ type: "spring", stiffness: 350, damping: 30 }}
-          className="relative w-full max-w-md border border-[#ede8df] bg-white p-6 sm:p-8 rounded-md shadow-2xl z-10 overflow-hidden lowercase"
+          className="relative w-full max-w-md border border-line bg-white p-6 sm:p-8 rounded-md shadow-2xl z-10 overflow-hidden lowercase"
         >
           {/* Subtle Warm Amber Glow Behind Header */}
           <div
@@ -92,7 +92,7 @@ export function AuthModal() {
               type="button"
               disabled={isLoading || isDemoLoading}
               onClick={handleGoogleLogin}
-              className="w-full flex items-center justify-center gap-3 border border-[#ede8df] bg-white p-3 font-sans text-xs font-bold text-stone-800 hover:bg-[#faf8f5] hover:border-stone-400 transition-all rounded-md shadow-xs disabled:opacity-60 cursor-pointer"
+              className="w-full flex items-center justify-center gap-3 border border-line bg-white p-3 font-sans text-xs font-bold text-stone-800 hover:bg-[#faf8f5] hover:border-stone-400 transition-all rounded-md shadow-xs disabled:opacity-60 cursor-pointer"
             >
               {/* Google G Logo SVG */}
               <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
@@ -139,7 +139,7 @@ export function AuthModal() {
           </div>
 
           {/* Privacy & Safety Guarantee */}
-          <div className="mt-6 pt-4 border-t border-dashed border-[#ede8df] space-y-2 font-mono text-[11px] text-stone-500">
+          <div className="mt-6 pt-4 border-t border-dashed border-line space-y-2 font-mono text-[11px] text-stone-500">
             <div className="flex items-center gap-2 text-stone-800 font-semibold">
               <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0" />
               <span>100% private &middot; zero password storage</span>
@@ -151,13 +151,13 @@ export function AuthModal() {
           </div>
 
           {/* Mini Supported Platforms strip */}
-          <div className="mt-4 pt-3 border-t border-[#ede8df] flex items-center justify-between text-stone-400">
+          <div className="mt-4 pt-3 border-t border-line flex items-center justify-between text-stone-400">
             <span className="font-mono text-[10px]">publish seamlessly across</span>
             <div className="flex items-center gap-1.5">
               {["youtube", "twitch", "instagram", "linkedin", "x"].map((p) => (
                 <div
                   key={p}
-                  className="flex h-5 w-5 items-center justify-center rounded-xs border border-[#ede8df] bg-[#faf8f5]"
+                  className="flex h-5 w-5 items-center justify-center rounded-xs border border-line bg-[#faf8f5]"
                 >
                   <PlatformIcon platform={p} size={11} />
                 </div>

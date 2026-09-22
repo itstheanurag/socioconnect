@@ -146,3 +146,22 @@ export {
   type NewNotification,
   type UpdateNotification,
 } from "./notifications/notifications.db";
+
+// Communities & Group Automations Schema
+export { communitiesSchema } from "./communities";
+export {
+  communityGroupsTable,
+  communityAutomationsTable,
+  communityGroupsRelations,
+  communityAutomationsRelations,
+  AutomationScheduleTypeEnum,
+  AutomationStatusEnum,
+  automationScheduleTypePgEnum,
+  automationStatusPgEnum,
+  type CommunityGroup,
+  type NewCommunityGroup,
+  type UpdateCommunityGroup,
+  type CommunityAutomation,
+  type NewCommunityAutomation,
+  type UpdateCommunityAutomation,
+} from "./communities/community-groups.db";

@@ -35,7 +35,7 @@ function CallbackHandler() {
 
   return (
     <div className="min-h-screen bg-[#faf8f5] flex flex-col items-center justify-center p-4 lowercase font-mono">
-      <div className="border border-[#ede8df] bg-white p-8 rounded-md shadow-xs text-center max-w-sm w-full space-y-4">
+      <div className="border border-line bg-white p-8 rounded-md shadow-xs text-center max-w-sm w-full space-y-4">
         <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-stone-800 border-t-transparent" />
         <h2 className="text-sm font-bold text-stone-900">socioconnect</h2>
         <p className="text-xs text-stone-600">{status}</p>

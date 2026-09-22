@@ -259,7 +259,7 @@ export default function ConnectorsPage() {
       )}
 
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#ede8df] pb-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-line pb-6">
         <div>
           <div className="inline-flex items-center gap-2 border border-dashed border-secondary-border bg-secondary/30 px-3 py-0.5 text-xs font-mono font-semibold text-stone-900 rounded-md mb-2">
             <Link2 className="h-3 w-3 text-stone-800" />
@@ -287,7 +287,7 @@ export default function ConnectorsPage() {
               className={`px-3 py-1.5 rounded-md border transition-all cursor-pointer ${
                 filter === tab
                   ? "border-stone-900 bg-white font-bold text-stone-900 shadow-2xs"
-                  : "border-[#ede8df] bg-white/60 text-stone-600 hover:border-stone-400"
+                  : "border-line bg-white/60 text-stone-600 hover:border-stone-400"
               }`}
             >
               {tab === "all"
@@ -323,15 +323,15 @@ export default function ConnectorsPage() {
               key={connector.id}
               className={`border p-5 rounded-md transition-all flex flex-col justify-between space-y-4 ${
                 isConnected
-                  ? "border-[#ede8df] bg-white shadow-2xs hover:border-secondary-border"
-                  : "border-[#ede8df] bg-white/60 opacity-85 hover:opacity-100"
+                  ? "border-line bg-white shadow-2xs hover:border-secondary-border"
+                  : "border-line bg-white/60 opacity-85 hover:opacity-100"
               }`}
             >
               {/* Top Row: Icon, Name & Status */}
               <div>
-                <div className="flex items-start justify-between gap-3 border-b border-dashed border-[#ede8df] pb-3">
+                <div className="flex items-start justify-between gap-3 border-b border-dashed border-line pb-3">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-sm border border-[#ede8df] bg-[#faf8f5] shadow-2xs shrink-0">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-sm border border-line bg-[#faf8f5] shadow-2xs shrink-0">
                       <PlatformIcon platform={connector.id} size={18} />
                     </div>
                     <div>
@@ -382,7 +382,7 @@ export default function ConnectorsPage() {
                       {connector.scopes.map((scope) => (
                         <span
                           key={scope}
-                          className="text-[10px] bg-[#faf8f5] border border-[#ede8df] px-1.5 py-0.2 rounded-xs text-stone-600"
+                          className="text-[10px] bg-[#faf8f5] border border-line px-1.5 py-0.2 rounded-xs text-stone-600"
                         >
                           {scope}
                         </span>
@@ -393,7 +393,7 @@ export default function ConnectorsPage() {
               </div>
 
               {/* Action Buttons */}
-              <div className="pt-3 border-t border-dashed border-[#ede8df] flex items-center justify-between gap-2 font-mono text-xs">
+              <div className="pt-3 border-t border-dashed border-line flex items-center justify-between gap-2 font-mono text-xs">
                 {isConnected ? (
                   <>
                     <button

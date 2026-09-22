@@ -96,7 +96,7 @@ export function LandingHeader() {
         className={`pointer-events-auto w-full transition-all duration-300 ${
           isScrolled
             ? "mt-3 sm:mt-4 max-w-5xl rounded-md border border-secondary-border bg-white/92 px-4 py-2 shadow-lg shadow-stone-900/6 backdrop-blur-md sm:px-6"
-            : "mt-0 max-w-6xl rounded-none border-b border-[#ede8df] bg-white/95 px-4 py-3 sm:px-6 sm:py-3.5"
+            : "mt-0 max-w-6xl rounded-none border-b border-line bg-white/95 px-4 py-3 sm:px-6 sm:py-3.5"
         }`}
       >
         <div className="flex items-center justify-between">
@@ -146,7 +146,7 @@ export function LandingHeader() {
             <button
               type="button"
               onClick={() => setMobileMenuOpen((open) => !open)}
-              className="cursor-pointer rounded-md border border-[#ede8df] bg-white p-2 text-stone-700 transition-colors hover:text-stone-900 md:hidden"
+              className="cursor-pointer rounded-md border border-line bg-white p-2 text-stone-700 transition-colors hover:text-stone-900 md:hidden"
               aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
@@ -162,7 +162,7 @@ export function LandingHeader() {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.2 }}
-              className="mt-3 overflow-hidden border-t border-[#ede8df] pt-3 md:hidden"
+              className="mt-3 overflow-hidden border-t border-line pt-3 md:hidden"
             >
               <div className="space-y-1">
                 {NAV_ITEMS.map((item) => (
@@ -170,7 +170,7 @@ export function LandingHeader() {
                 ))}
               </div>
 
-              <div className="mt-3 border-t border-[#ede8df] pt-3">
+              <div className="mt-3 border-t border-line pt-3">
                 <button
                   type="button"
                   onClick={() => {

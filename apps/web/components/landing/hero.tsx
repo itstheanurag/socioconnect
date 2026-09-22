@@ -17,7 +17,7 @@ export function LandingHero() {
   };
 
   return (
-    <section className="relative pt-28 pb-16 lg:pt-36 lg:pb-24 overflow-hidden bg-white border-b border-[#ede8df]">
+    <section className="relative pt-28 pb-16 lg:pt-36 lg:pb-24 overflow-hidden bg-white border-b border-line">
       {/* Background Soft Dotted Texture & Warm Amber Gradient */}
       <div className="absolute inset-0 trapped-dots opacity-50 pointer-events-none" />
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[680px] h-[320px] bg-gradient-to-b from-[#F4DCB4]/25 to-transparent blur-3xl pointer-events-none -z-10 rounded-full" />
@@ -59,7 +59,7 @@ export function LandingHero() {
 
             <a
               href="#calendar"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 border border-[#ede8df] bg-white px-5 py-3 font-mono text-xs text-stone-700 hover:border-stone-400 transition-colors rounded-md shadow-2xs"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 border border-line bg-white px-5 py-3 font-mono text-xs text-stone-700 hover:border-stone-400 transition-colors rounded-md shadow-2xs"
             >
               <span>explore smart scheduler</span>
             </a>
@@ -80,10 +80,10 @@ export function LandingHero() {
         </div>
 
         {/* Embedded Image Mockup: Creator Studio Interface */}
-        <div className="mt-12 relative mx-auto max-w-5xl rounded-md border border-[#ede8df] bg-white p-2 shadow-xl shadow-stone-900/5">
-          <div className="relative rounded-sm overflow-hidden border border-[#ede8df] bg-[#faf8f5]">
+        <div className="mt-12 relative mx-auto max-w-5xl rounded-md border border-line bg-white p-2 shadow-xl shadow-stone-900/5">
+          <div className="relative rounded-sm overflow-hidden border border-line bg-[#faf8f5]">
             {/* Top Mock Window Bar */}
-            <div className="flex items-center justify-between border-b border-[#ede8df] bg-white px-4 py-2 text-xs font-mono text-stone-500">
+            <div className="flex items-center justify-between border-b border-line bg-white px-4 py-2 text-xs font-mono text-stone-500">
               <div className="flex items-center gap-2">
                 <span className="h-2.5 w-2.5 rounded-full bg-stone-300" />
                 <span className="h-2.5 w-2.5 rounded-full bg-stone-300" />
@@ -112,7 +112,7 @@ export function LandingHero() {
         </div>
 
         {/* Platform Strip Under Hero */}
-        <div className="mt-10 pt-8 border-t border-dashed border-[#ede8df] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-stone-500 lowercase">
+        <div className="mt-10 pt-8 border-t border-dashed border-line flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-stone-500 lowercase">
           <span className="font-semibold text-stone-800">publishing pipelines ready for:</span>
           <div className="flex flex-wrap items-center justify-center gap-2.5">
             {[
@@ -129,7 +129,7 @@ export function LandingHero() {
             ].map((p) => (
               <div
                 key={p.id}
-                className="flex items-center gap-1.5 border border-[#ede8df] bg-white px-2.5 py-1 rounded-sm shadow-2xs text-stone-800 font-medium"
+                className="flex items-center gap-1.5 border border-line bg-white px-2.5 py-1 rounded-sm shadow-2xs text-stone-800 font-medium"
               >
                 <PlatformIcon platform={p.id} size={13} />
                 <span className="text-[11px]">{p.name}</span>
