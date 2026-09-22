@@ -25,7 +25,7 @@ export function LandingHero() {
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Top Badges and Meta Bar */}
         <div className="flex flex-col items-center text-center space-y-4">
-          <div className="inline-flex items-center gap-2 border border-dashed border-[#dfc39a] bg-[#F4DCB4]/30 px-3.5 py-1 text-xs font-mono font-semibold text-stone-900 rounded-md">
+          <div className="inline-flex items-center gap-2 border border-dashed border-secondary-border bg-secondary/30 px-3.5 py-1 text-xs font-mono font-semibold text-stone-900 rounded-md">
             <Sparkles className="h-3.5 w-3.5 text-stone-800" />
             <span className="font-bold">for creators &amp; independent builders</span>
             <span className="text-stone-400">&middot;</span>
@@ -33,7 +33,7 @@ export function LandingHero() {
           </div>
 
           {/* Primary Editorial Headline */}
-          <h1 className="max-w-4xl text-4xl font-extrabold tracking-tight text-stone-900 sm:text-5xl lg:text-6xl font-sans lowercase leading-tight">
+          <h1 className="max-w-4xl text-4xl font-semibold tracking-tight text-stone-900 sm:text-5xl lg:text-6xl font-sans lowercase leading-tight">
             create once.{" "}
             <span className="font-serif italic font-normal text-stone-800">
               publish at peak hours everywhere.
@@ -50,7 +50,7 @@ export function LandingHero() {
             <button
               type="button"
               onClick={handleOpenStudio}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 border border-[#dfc39a] bg-[#F4DCB4] px-6 py-3 font-mono text-xs font-bold text-stone-900 hover:bg-[#ebd0a3] transition-colors rounded-md shadow-xs cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 border border-secondary-border bg-secondary px-6 py-3 font-mono text-xs font-bold text-stone-900 hover:bg-[#ebd0a3] transition-colors rounded-md shadow-xs cursor-pointer"
             >
               <Sparkles className="h-4 w-4" />
               <span>open creator studio</span>

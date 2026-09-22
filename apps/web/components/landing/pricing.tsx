@@ -26,7 +26,7 @@ export function LandingPricing() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12 lowercase">
-          <div className="inline-flex items-center gap-2 border border-dashed border-[#dfc39a] bg-[#F4DCB4]/30 px-3.5 py-1 text-xs font-mono font-semibold text-stone-900 rounded-md mb-4">
+          <div className="inline-flex items-center gap-2 border border-dashed border-secondary-border bg-secondary/30 px-3.5 py-1 text-xs font-mono font-semibold text-stone-900 rounded-md mb-4">
             <Sparkles className="h-3.5 w-3.5 text-stone-800" />
             <span>transparent creator pricing</span>
           </div>
@@ -44,7 +44,7 @@ export function LandingPricing() {
               onClick={() => setBillingCycle("monthly")}
               className={`px-3.5 py-1.5 transition-colors rounded-sm cursor-pointer ${
                 billingCycle === "monthly"
-                  ? "bg-[#F4DCB4] text-stone-900 font-bold shadow-2xs"
+                  ? "bg-secondary text-stone-900 font-bold shadow-2xs"
                   : "text-stone-500 hover:text-stone-900"
               }`}
             >
@@ -55,7 +55,7 @@ export function LandingPricing() {
               onClick={() => setBillingCycle("annual")}
               className={`flex items-center gap-1.5 px-3.5 py-1.5 transition-colors rounded-sm cursor-pointer ${
                 billingCycle === "annual"
-                  ? "bg-[#F4DCB4] text-stone-900 font-bold shadow-2xs"
+                  ? "bg-secondary text-stone-900 font-bold shadow-2xs"
                   : "text-stone-500 hover:text-stone-900"
               }`}
             >
@@ -117,8 +117,8 @@ export function LandingPricing() {
           </div>
 
           {/* Pro Creator Tier (Highlighted) */}
-          <div className="relative border-2 border-[#dfc39a] bg-white p-6 sm:p-8 rounded-md shadow-md flex flex-col justify-between">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 border border-[#dfc39a] bg-[#F4DCB4] px-3 py-0.5 text-[10px] font-mono font-bold text-stone-900 rounded-md shadow-2xs">
+          <div className="relative border-2 border-secondary-border bg-white p-6 sm:p-8 rounded-md shadow-md flex flex-col justify-between">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 border border-secondary-border bg-secondary px-3 py-0.5 text-[10px] font-mono font-bold text-stone-900 rounded-md shadow-2xs">
               popular
             </div>
 
@@ -172,7 +172,7 @@ export function LandingPricing() {
             <button
               type="button"
               onClick={handleAction}
-              className="mt-8 w-full border border-[#dfc39a] bg-[#F4DCB4] py-2.5 font-mono text-xs font-bold text-stone-900 hover:bg-[#ebd0a3] transition-colors rounded-md shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer"
+              className="mt-8 w-full border border-secondary-border bg-secondary py-2.5 font-mono text-xs font-bold text-stone-900 hover:bg-[#ebd0a3] transition-colors rounded-md shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <span>start 14-day pro trial</span>
               <ArrowRight className="h-3.5 w-3.5" />

@@ -216,8 +216,11 @@ export function InteractiveDispatcher() {
               <span className="h-2 w-2 rounded-full bg-[#dfc39a]\" />
               <span>creator posting studio</span>
             </div>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
-              write once. reach every audience at their best time.
+            <h2 className="mt-2 text-3xl font-semibold tracking-tight text-stone-900 sm:text-4xl">
+              write once.{" "}
+              <span className="font-serif italic font-normal text-stone-800">
+                reach every audience at their best time.
+              </span>
             </h2>
             <p className="mt-1 max-w-2xl text-sm text-stone-600">
               switch between <strong>staggered peak hours</strong> or an{" "}
@@ -267,13 +270,13 @@ export function InteractiveDispatcher() {
                 <div className="flex items-center gap-2 mb-2 font-mono text-xs font-bold text-stone-800">
                   <span>2. timing strategy</span>
                 </div>
-                <div className="inline-flex border border-[#dfc39a] bg-white p-0.5 rounded-md font-mono text-xs">
+                <div className="inline-flex border border-secondary-border bg-white p-0.5 rounded-md font-mono text-xs">
                   <button
                     type="button"
                     onClick={() => setScheduleMode("staggered")}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-colors cursor-pointer ${
                       scheduleMode === "staggered"
-                        ? "bg-[#F4DCB4] font-bold text-stone-900"
+                        ? "bg-secondary font-bold text-stone-900"
                         : "text-stone-600 hover:text-stone-900"
                     }`}
                   >
@@ -285,7 +288,7 @@ export function InteractiveDispatcher() {
                     onClick={() => setScheduleMode("simultaneous")}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-colors cursor-pointer ${
                       scheduleMode === "simultaneous"
-                        ? "bg-[#F4DCB4] font-bold text-stone-900"
+                        ? "bg-secondary font-bold text-stone-900"
                         : "text-stone-600 hover:text-stone-900"
                     }`}
                   >
@@ -374,7 +377,7 @@ export function InteractiveDispatcher() {
                   type="button"
                   onClick={handlePublish}
                   disabled={isPublishing || selectedChannels.length === 0}
-                  className="group inline-flex items-center gap-2 border border-[#dfc39a] bg-[#F4DCB4] px-5 py-2.5 font-mono text-xs font-bold text-stone-900 transition-all hover:bg-[#ebd0a3] disabled:opacity-50 rounded-md shadow-xs cursor-pointer"
+                  className="group inline-flex items-center gap-2 border border-secondary-border bg-secondary px-5 py-2.5 font-mono text-xs font-bold text-stone-900 transition-all hover:bg-[#ebd0a3] disabled:opacity-50 rounded-md shadow-xs cursor-pointer"
                 >
                   {isPublishing ? (
                     <>

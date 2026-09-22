@@ -27,13 +27,13 @@ export function BlastRadiusComparison() {
           </div>
 
           {/* Interactive Switch */}
-          <div className="flex items-center border border-dashed border-[#dfc39a] bg-[#faf8f5] p-1 font-mono text-xs rounded-md">
+          <div className="flex items-center border border-dashed border-secondary-border bg-[#faf8f5] p-1 font-mono text-xs rounded-md">
             <button
               type="button"
               onClick={() => setActiveTab("socioconnect")}
               className={`flex items-center gap-2 px-3.5 py-1.5 transition-colors rounded-sm cursor-pointer ${
                 activeTab === "socioconnect"
-                  ? "bg-[#F4DCB4] text-stone-900 font-bold shadow-xs border border-[#dfc39a]"
+                  ? "bg-secondary text-stone-900 font-bold shadow-xs border border-secondary-border"
                   : "text-stone-600 hover:text-stone-900"
               }`}
             >
@@ -92,7 +92,7 @@ export function BlastRadiusComparison() {
                   </p>
                 </div>
 
-                <div className="border border-dashed border-[#dfc39a] bg-white p-5 rounded-md">
+                <div className="border border-dashed border-secondary-border bg-white p-5 rounded-md">
                   <div className="text-stone-400 text-[10px] mb-1">step 03 / schedule</div>
                   <div className="font-bold text-stone-900 mb-2 font-sans text-sm">
                     visual weekly queue
@@ -103,7 +103,7 @@ export function BlastRadiusComparison() {
                   </p>
                 </div>
 
-                <div className="border border-[#dfc39a] bg-[#F4DCB4]/40 p-5 rounded-md">
+                <div className="border border-secondary-border bg-secondary/40 p-5 rounded-md">
                   <div className="text-stone-800 text-[10px] mb-1 font-bold">step 04 / publish</div>
                   <div className="font-bold text-stone-900 mb-2 font-sans text-sm">
                     panic-free automatic drop

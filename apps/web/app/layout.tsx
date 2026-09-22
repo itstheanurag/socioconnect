@@ -86,7 +86,7 @@ export default function RootLayout({
       <head>
         <StructuredData />
       </head>
-      <body className="bg-white text-stone-900 antialiased selection:bg-[#F4DCB4] selection:text-stone-900">
+      <body className="bg-white text-stone-900 antialiased selection:bg-secondary selection:text-stone-900">
         <AuthProvider>
           {children}
           <AuthModal />

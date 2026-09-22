@@ -261,7 +261,7 @@ export default function ConnectorsPage() {
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#ede8df] pb-6">
         <div>
-          <div className="inline-flex items-center gap-2 border border-dashed border-[#dfc39a] bg-[#F4DCB4]/30 px-3 py-0.5 text-xs font-mono font-semibold text-stone-900 rounded-md mb-2">
+          <div className="inline-flex items-center gap-2 border border-dashed border-secondary-border bg-secondary/30 px-3 py-0.5 text-xs font-mono font-semibold text-stone-900 rounded-md mb-2">
             <Link2 className="h-3 w-3 text-stone-800" />
             <span>oauth 2.0 delegated connectors</span>
             <span className="text-stone-400">&middot;</span>
@@ -301,7 +301,7 @@ export default function ConnectorsPage() {
       </div>
 
       {/* Security Callout Box */}
-      <div className="border border-dashed border-[#dfc39a] bg-[#F4DCB4]/20 p-4 rounded-md flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-mono text-xs text-stone-700">
+      <div className="border border-dashed border-secondary-border bg-secondary/20 p-4 rounded-md flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-mono text-xs text-stone-700">
         <div className="flex items-center gap-2.5">
           <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0" />
           <span>
@@ -323,7 +323,7 @@ export default function ConnectorsPage() {
               key={connector.id}
               className={`border p-5 rounded-md transition-all flex flex-col justify-between space-y-4 ${
                 isConnected
-                  ? "border-[#ede8df] bg-white shadow-2xs hover:border-[#dfc39a]"
+                  ? "border-[#ede8df] bg-white shadow-2xs hover:border-secondary-border"
                   : "border-[#ede8df] bg-white/60 opacity-85 hover:opacity-100"
               }`}
             >
@@ -421,7 +421,7 @@ export default function ConnectorsPage() {
                   <button
                     type="button"
                     onClick={() => handleToggleConnect(connector.id)}
-                    className="w-full flex items-center justify-center gap-2 border border-[#dfc39a] bg-[#F4DCB4] p-2 font-bold text-stone-900 hover:bg-[#ebd0a3] transition-colors rounded-sm shadow-2xs cursor-pointer text-xs"
+                    className="w-full flex items-center justify-center gap-2 border border-secondary-border bg-secondary p-2 font-bold text-stone-900 hover:bg-[#ebd0a3] transition-colors rounded-sm shadow-2xs cursor-pointer text-xs"
                   >
                     <Plus className="h-3.5 w-3.5" />
                     <span>connect {connector.name}</span>

@@ -182,7 +182,7 @@ export function ComposerWorkbench() {
       {/* Top Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#ede8df] pb-5">
         <div>
-          <div className="inline-flex items-center gap-2 border border-dashed border-[#dfc39a] bg-[#F4DCB4]/30 px-3 py-0.5 text-xs font-mono font-semibold text-stone-900 rounded-md mb-2">
+          <div className="inline-flex items-center gap-2 border border-dashed border-secondary-border bg-secondary/30 px-3 py-0.5 text-xs font-mono font-semibold text-stone-900 rounded-md mb-2">
             <Zap className="h-3 w-3 text-stone-800" />
             <span>multi-channel composer</span>
             <span className="text-stone-400">&middot;</span>
@@ -211,7 +211,7 @@ export function ComposerWorkbench() {
                 setContent(preset.text);
                 setQueued(false);
               }}
-              className="bg-white border border-[#ede8df] hover:border-[#dfc39a] hover:bg-[#faf8f5] px-2.5 py-1 rounded-md text-[11px] text-stone-800 transition-colors cursor-pointer shadow-2xs"
+              className="bg-white border border-[#ede8df] hover:border-secondary-border hover:bg-[#faf8f5] px-2.5 py-1 rounded-md text-[11px] text-stone-800 transition-colors cursor-pointer shadow-2xs"
             >
               {preset.label}
             </button>
@@ -241,7 +241,7 @@ export function ComposerWorkbench() {
                     className={`flex items-center gap-2 px-3 py-1.5 rounded-md border font-mono text-xs transition-all cursor-pointer ${
                       isSelected
                         ? "border-stone-900 bg-white font-bold text-stone-900 shadow-2xs ring-1 ring-stone-900/10"
-                        : "border-[#ede8df] bg-[#faf8f5]/60 text-stone-500 hover:border-[#dfc39a]"
+                        : "border-[#ede8df] bg-[#faf8f5]/60 text-stone-500 hover:border-secondary-border"
                     }`}
                   >
                     <div className="flex h-5 w-5 items-center justify-center rounded-xs bg-[#faf8f5] border border-[#ede8df]">
@@ -264,7 +264,7 @@ export function ComposerWorkbench() {
                   type="button"
                   onClick={handleAiAdapt}
                   disabled={isAdapting}
-                  className="flex items-center gap-1.5 border border-[#dfc39a] bg-[#F4DCB4] hover:bg-[#ebd0a3] px-2.5 py-1 rounded-sm text-stone-900 font-bold transition-colors cursor-pointer disabled:opacity-50 text-[11px]"
+                  className="flex items-center gap-1.5 border border-secondary-border bg-secondary hover:bg-[#ebd0a3] px-2.5 py-1 rounded-sm text-stone-900 font-bold transition-colors cursor-pointer disabled:opacity-50 text-[11px]"
                 >
                   <Sparkles className={`h-3 w-3 ${isAdapting ? "animate-spin" : ""}`} />
                   <span>{isAdapting ? "adapting..." : "ai enhance copy"}</span>
@@ -310,7 +310,7 @@ export function ComposerWorkbench() {
                   onClick={handleAttachMockMedia}
                   className={`flex items-center gap-1.5 border px-2.5 py-1.5 rounded-md transition-colors cursor-pointer ${
                     attachedMedia
-                      ? "border-[#dfc39a] bg-[#F4DCB4] font-bold text-stone-900"
+                      ? "border-secondary-border bg-secondary font-bold text-stone-900"
                       : "border-[#ede8df] bg-white text-stone-700 hover:border-stone-400"
                   }`}
                 >
@@ -346,7 +346,7 @@ export function ComposerWorkbench() {
                 <button
                   type="button"
                   onClick={() => setScheduleMode(scheduleMode === "peak" ? "simultaneous" : "peak")}
-                  className="flex items-center gap-1.5 border border-[#ede8df] bg-white px-3 py-1.5 rounded-md text-stone-800 hover:border-[#dfc39a] transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 border border-[#ede8df] bg-white px-3 py-1.5 rounded-md text-stone-800 hover:border-secondary-border transition-colors cursor-pointer"
                 >
                   <Clock3 className="h-3.5 w-3.5 text-[#dfc39a]" />
                   <span>{scheduleMode === "peak" ? "⚡ AI Peak Hours" : "🚀 Simultaneous"}</span>
@@ -356,7 +356,7 @@ export function ComposerWorkbench() {
                   type="button"
                   disabled={!canPublish}
                   onClick={handleDispatch}
-                  className="flex items-center gap-2 border border-[#dfc39a] bg-[#F4DCB4] hover:bg-[#ebd0a3] px-4 py-1.5 rounded-md font-bold text-stone-900 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-2xs"
+                  className="flex items-center gap-2 border border-secondary-border bg-secondary hover:bg-[#ebd0a3] px-4 py-1.5 rounded-md font-bold text-stone-900 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-2xs"
                 >
                   <Send className="h-3.5 w-3.5" />
                   <span>{scheduleMode === "peak" ? "schedule peak drop" : "dispatch now"}</span>

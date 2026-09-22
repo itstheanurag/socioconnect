@@ -62,7 +62,7 @@ export default function ProfilePage() {
 
       {/* Page Header */}
       <div className="border-b border-[#ede8df] pb-6">
-        <div className="inline-flex items-center gap-2 border border-dashed border-[#dfc39a] bg-[#F4DCB4]/30 px-3 py-0.5 text-xs font-mono font-semibold text-stone-900 rounded-md mb-2">
+        <div className="inline-flex items-center gap-2 border border-dashed border-secondary-border bg-secondary/30 px-3 py-0.5 text-xs font-mono font-semibold text-stone-900 rounded-md mb-2">
           <User className="h-3 w-3 text-stone-800" />
           <span>creator settings &amp; authentication</span>
         </div>
@@ -106,7 +106,7 @@ export default function ProfilePage() {
                 <button
                   type="button"
                   onClick={() => showToast("Uploaded new avatar mockup.")}
-                  className="px-3 py-1.5 border border-[#dfc39a] bg-[#faf8f5] hover:bg-[#F4DCB4]/40 font-mono text-xs font-bold text-stone-800 rounded-md transition-colors cursor-pointer"
+                  className="px-3 py-1.5 border border-secondary-border bg-[#faf8f5] hover:bg-secondary/40 font-mono text-xs font-bold text-stone-800 rounded-md transition-colors cursor-pointer"
                 >
                   change avatar
                 </button>
@@ -207,7 +207,7 @@ export default function ProfilePage() {
             <div className="pt-2 border-t border-dashed border-[#ede8df] flex justify-end">
               <button
                 type="submit"
-                className="inline-flex items-center gap-2 border border-[#dfc39a] bg-[#F4DCB4] px-5 py-2.5 rounded-md font-mono text-xs font-bold text-stone-900 hover:bg-[#ebd0a3] transition-colors cursor-pointer shadow-2xs"
+                className="inline-flex items-center gap-2 border border-secondary-border bg-secondary px-5 py-2.5 rounded-md font-mono text-xs font-bold text-stone-900 hover:bg-[#ebd0a3] transition-colors cursor-pointer shadow-2xs"
               >
                 <Save className="h-3.5 w-3.5" />
                 <span>save profile changes</span>

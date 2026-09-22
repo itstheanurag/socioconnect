@@ -91,7 +91,7 @@ export default function UsagePlanPage() {
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#ede8df] pb-6">
         <div>
-          <div className="inline-flex items-center gap-2 border border-dashed border-[#dfc39a] bg-[#F4DCB4]/30 px-3 py-0.5 text-xs font-mono font-semibold text-stone-900 rounded-md mb-2">
+          <div className="inline-flex items-center gap-2 border border-dashed border-secondary-border bg-secondary/30 px-3 py-0.5 text-xs font-mono font-semibold text-stone-900 rounded-md mb-2">
             <BarChart3 className="h-3 w-3 text-stone-800" />
             <span>subscription &middot; creator pro tier</span>
             <span className="text-stone-400">&middot;</span>
@@ -268,7 +268,7 @@ export default function UsagePlanPage() {
                       current plan
                     </span>
                   ) : tier.isPopular ? (
-                    <span className="font-mono text-[10px] font-bold text-stone-900 bg-[#F4DCB4] border border-[#dfc39a] px-2 py-0.5 rounded-xs">
+                    <span className="font-mono text-[10px] font-bold text-stone-900 bg-secondary border border-secondary-border px-2 py-0.5 rounded-xs">
                       most popular
                     </span>
                   ) : null}
@@ -307,7 +307,7 @@ export default function UsagePlanPage() {
                 className={`w-full py-2.5 px-4 rounded-md font-mono text-xs font-bold transition-all cursor-pointer ${
                   tier.isCurrent
                     ? "bg-stone-100 text-stone-600 border border-stone-300"
-                    : "bg-[#F4DCB4] text-stone-900 border border-[#dfc39a] hover:bg-[#ebd0a3]"
+                    : "bg-secondary text-stone-900 border border-secondary-border hover:bg-[#ebd0a3]"
                 }`}
               >
                 {tier.isCurrent ? "current plan active" : `upgrade to ${tier.name} →`}

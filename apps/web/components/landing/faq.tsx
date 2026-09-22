@@ -47,11 +47,11 @@ export function LandingFAQ() {
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         {/* Heading */}
         <div className="text-center mb-12 lowercase">
-          <div className="inline-flex items-center gap-2 border border-dashed border-[#dfc39a] bg-[#F4DCB4]/30 px-3.5 py-1 text-xs font-mono font-semibold text-stone-900 rounded-md mb-4">
+          <div className="inline-flex items-center gap-2 border border-dashed border-secondary-border bg-secondary/30 px-3.5 py-1 text-xs font-mono font-semibold text-stone-900 rounded-md mb-4">
             <Sparkles className="h-3.5 w-3.5 text-stone-700" />
             <span>commonly asked questions</span>
           </div>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-stone-900 sm:text-4xl">
             everything you need to know
           </h2>
           <p className="mt-3 text-base text-stone-600">
@@ -70,7 +70,7 @@ export function LandingFAQ() {
                 className={`border transition-colors rounded-md overflow-hidden ${
                   isOpen
                     ? "border-stone-900 bg-[#faf8f5]"
-                    : "border-[#ede8df] bg-white hover:border-[#dfc39a]"
+                    : "border-[#ede8df] bg-white hover:border-secondary-border"
                 }`}
               >
                 <button

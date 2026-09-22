@@ -205,7 +205,7 @@ export default function BotsPage() {
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#ede8df] pb-6">
         <div>
-          <div className="inline-flex items-center gap-2 border border-dashed border-[#dfc39a] bg-[#F4DCB4]/30 px-3 py-0.5 text-xs font-mono font-semibold text-stone-900 rounded-md mb-2">
+          <div className="inline-flex items-center gap-2 border border-dashed border-secondary-border bg-secondary/30 px-3 py-0.5 text-xs font-mono font-semibold text-stone-900 rounded-md mb-2">
             <Bot className="h-3 w-3 text-stone-800" />
             <span>autonomous creator assistants</span>
             <span className="text-stone-400">&middot;</span>
@@ -253,7 +253,7 @@ export default function BotsPage() {
               key={bot.id}
               className={`border p-6 rounded-md transition-all flex flex-col justify-between space-y-5 ${
                 isActive
-                  ? "border-[#ede8df] bg-white shadow-2xs hover:border-[#dfc39a]"
+                  ? "border-[#ede8df] bg-white shadow-2xs hover:border-secondary-border"
                   : "border-[#ede8df] bg-white/60 opacity-80"
               }`}
             >

@@ -49,7 +49,7 @@ function NavLink({
       className={
         mobile
           ? "block py-2 text-xs font-mono text-stone-700 hover:text-stone-900 transition-colors"
-          : "relative py-1 text-xs font-mono font-medium text-stone-600 hover:text-stone-900 transition-colors after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-[#F4DCB4] after:transition-all hover:after:w-full"
+          : "relative py-1 text-xs font-mono font-medium text-stone-600 hover:text-stone-900 transition-colors after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-secondary after:transition-all hover:after:w-full"
       }
     >
       {label}
@@ -95,7 +95,7 @@ export function LandingHeader() {
         }}
         className={`pointer-events-auto w-full transition-all duration-300 ${
           isScrolled
-            ? "mt-3 sm:mt-4 max-w-5xl rounded-md border border-[#dfc39a] bg-white/92 px-4 py-2 shadow-lg shadow-stone-900/6 backdrop-blur-md sm:px-6"
+            ? "mt-3 sm:mt-4 max-w-5xl rounded-md border border-secondary-border bg-white/92 px-4 py-2 shadow-lg shadow-stone-900/6 backdrop-blur-md sm:px-6"
             : "mt-0 max-w-6xl rounded-none border-b border-[#ede8df] bg-white/95 px-4 py-3 sm:px-6 sm:py-3.5"
         }`}
       >
@@ -104,12 +104,12 @@ export function LandingHeader() {
           <Link href="/" className="group flex shrink-0 items-center gap-2 lowercase">
             <span
               className={`flex items-center justify-center rounded-md border bg-white transition-all ${
-                isScrolled ? "h-7 w-7 border-[#dfc39a]" : "h-7.5 w-7.5 border-[#dcd5c8]"
+                isScrolled ? "h-7 w-7 border-secondary-border" : "h-7.5 w-7.5 border-[#dcd5c8]"
               }`}
             >
               <span className="flex h-3.5 w-3.5 items-end gap-[1.5px]">
                 <span className="w-0.5 h-[45%] rounded-xs bg-stone-700" />
-                <span className="w-0.5 h-[95%] rounded-xs bg-[#F4DCB4]" />
+                <span className="w-0.5 h-[95%] rounded-xs bg-secondary" />
                 <span className="w-0.5 h-[65%] rounded-xs bg-stone-700" />
               </span>
             </span>
@@ -131,7 +131,7 @@ export function LandingHeader() {
             <button
               type="button"
               onClick={handleOpenStudio}
-              className={`group inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-[#dfc39a] bg-[#F4DCB4] font-mono font-bold text-stone-900 transition-all hover:bg-[#ebd0a3] ${
+              className={`group inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-secondary-border bg-secondary font-mono font-bold text-stone-900 transition-all hover:bg-[#ebd0a3] ${
                 isScrolled ? "px-3 py-1.5 text-xs" : "px-3.5 py-1.5 text-xs"
               }`}
             >
@@ -177,7 +177,7 @@ export function LandingHeader() {
                     closeMobileMenu();
                     handleOpenStudio();
                   }}
-                  className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-[#dfc39a] bg-[#F4DCB4] py-2 font-mono text-xs font-bold text-stone-900 transition-colors hover:bg-[#ebd0a3]"
+                  className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-secondary-border bg-secondary py-2 font-mono text-xs font-bold text-stone-900 transition-colors hover:bg-[#ebd0a3]"
                 >
                   <Sparkles className="h-3.5 w-3.5" />
                   <span>open studio</span>

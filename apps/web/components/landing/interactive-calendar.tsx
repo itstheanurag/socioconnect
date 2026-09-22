@@ -287,7 +287,7 @@ export function InteractiveCalendar() {
         {/* Compact, Creator-Centric Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 lowercase">
           <div>
-            <div className="inline-flex items-center gap-2 border border-dashed border-[#dfc39a] bg-[#F4DCB4]/30 px-3 py-0.5 text-xs font-mono font-semibold text-stone-900 rounded-md mb-2.5">
+            <div className="inline-flex items-center gap-2 border border-dashed border-secondary-border bg-secondary/30 px-3 py-0.5 text-xs font-mono font-semibold text-stone-900 rounded-md mb-2.5">
               <Sparkles className="h-3 w-3 text-stone-800" />
               <span>smart audience calendar</span>
               <span className="text-stone-400">&middot;</span>
@@ -303,13 +303,13 @@ export function InteractiveCalendar() {
           </div>
 
           {/* Strategy Switcher Toggle */}
-          <div className="inline-flex border border-[#dfc39a] bg-white p-1 rounded-md shadow-2xs font-mono text-xs">
+          <div className="inline-flex border border-secondary-border bg-white p-1 rounded-md shadow-2xs font-mono text-xs">
             <button
               type="button"
               onClick={() => setTimingMode("peak")}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-colors cursor-pointer ${
                 timingMode === "peak"
-                  ? "bg-[#F4DCB4] font-bold text-stone-900"
+                  ? "bg-secondary font-bold text-stone-900"
                   : "text-stone-600 hover:text-stone-900"
               }`}
             >
@@ -321,7 +321,7 @@ export function InteractiveCalendar() {
               onClick={() => setTimingMode("simultaneous")}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-colors cursor-pointer ${
                 timingMode === "simultaneous"
-                  ? "bg-[#F4DCB4] font-bold text-stone-900"
+                  ? "bg-secondary font-bold text-stone-900"
                   : "text-stone-600 hover:text-stone-900"
               }`}
             >
@@ -343,7 +343,7 @@ export function InteractiveCalendar() {
                 className={`p-2.5 sm:p-3 rounded-md border text-center transition-all cursor-pointer flex flex-col items-center justify-between gap-1.5 ${
                   isSelected
                     ? "border-stone-900 bg-white font-bold text-stone-900 shadow-xs ring-1 ring-stone-900/10"
-                    : "border-[#ede8df] bg-white/70 text-stone-600 hover:bg-white hover:border-[#dfc39a]"
+                    : "border-[#ede8df] bg-white/70 text-stone-600 hover:bg-white hover:border-secondary-border"
                 }`}
               >
                 <div className="flex items-center gap-1">
@@ -440,7 +440,7 @@ export function InteractiveCalendar() {
                     {currentDay.featuredDrop.peakSchedule.map((slot) => (
                       <div
                         key={slot.platform}
-                        className="border border-[#ede8df] bg-white p-3.5 rounded-md shadow-2xs space-y-2 hover:border-[#dfc39a] transition-all"
+                        className="border border-[#ede8df] bg-white p-3.5 rounded-md shadow-2xs space-y-2 hover:border-secondary-border transition-all"
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">

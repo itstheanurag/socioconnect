@@ -9,7 +9,7 @@ export function LandingFooter() {
           {/* Brand Col */}
           <div className="space-y-3">
             <Link href="/" className="inline-flex items-center gap-2">
-              <span className="flex h-6 w-6 items-center justify-center border border-dashed border-[#dfc39a] bg-[#F4DCB4] font-mono text-xs font-bold text-stone-900 rounded-sm shadow-2xs">
+              <span className="flex h-6 w-6 items-center justify-center border border-dashed border-secondary-border bg-secondary font-mono text-xs font-bold text-stone-900 rounded-sm shadow-2xs">
                 s
               </span>
               <span className="font-mono text-sm font-bold tracking-tight text-stone-900">

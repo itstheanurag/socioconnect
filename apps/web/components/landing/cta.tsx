@@ -43,7 +43,7 @@ export function LandingCTA() {
           animate={inView ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 0.6, delay }}
           style={pos}
-          className="absolute hidden md:flex items-center justify-center p-2.5 bg-white border border-[#ede8df] rounded-md shadow-xs pointer-events-none z-0 hover:border-[#dfc39a] transition-all"
+          className="absolute hidden md:flex items-center justify-center p-2.5 bg-white border border-[#ede8df] rounded-md shadow-xs pointer-events-none z-0 hover:border-secondary-border transition-all"
         >
           <PlatformIcon platform={id} size={20} />
         </motion.div>
@@ -59,12 +59,12 @@ export function LandingCTA() {
           transition={{ duration: 0.5 }}
           className="space-y-4"
         >
-          <div className="inline-flex items-center gap-2 border border-dashed border-[#dfc39a] bg-[#F4DCB4]/30 px-3 py-1 text-xs font-mono font-semibold text-stone-900 rounded-md">
+          <div className="inline-flex items-center gap-2 border border-dashed border-secondary-border bg-secondary/30 px-3 py-1 text-xs font-mono font-semibold text-stone-900 rounded-md">
             <Sparkles className="h-3.5 w-3.5 text-stone-800" />
             <span>claim back 10 hours every week</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-stone-900 leading-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-stone-900 leading-tight">
             ready to publish calmly?{" "}
             <span className="font-serif italic font-normal text-stone-800 block sm:inline">
               all your channels in one studio.
@@ -87,7 +87,7 @@ export function LandingCTA() {
           <button
             type="button"
             onClick={handleOpenStudio}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 border border-[#dfc39a] bg-[#F4DCB4] px-8 py-3.5 font-mono text-xs font-bold text-stone-900 hover:bg-[#ebd0a3] transition-colors rounded-md shadow-xs cursor-pointer text-base"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 border border-secondary-border bg-secondary px-8 py-3.5 font-mono text-xs font-bold text-stone-900 hover:bg-[#ebd0a3] transition-colors rounded-md shadow-xs cursor-pointer text-base"
           >
             <Sparkles className="h-4 w-4" />
             <span>open creator studio</span>

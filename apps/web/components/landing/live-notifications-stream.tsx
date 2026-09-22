@@ -164,7 +164,7 @@ export function LiveNotificationsStream() {
         {/* Compact, Creator-Focused Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 lowercase">
           <div>
-            <div className="inline-flex items-center gap-2 border border-dashed border-[#dfc39a] bg-[#F4DCB4]/30 px-3 py-0.5 text-xs font-mono font-semibold text-stone-900 rounded-md mb-2.5">
+            <div className="inline-flex items-center gap-2 border border-dashed border-secondary-border bg-secondary/30 px-3 py-0.5 text-xs font-mono font-semibold text-stone-900 rounded-md mb-2.5">
               <Sparkles className="h-3 w-3 text-stone-800" />
               <span>live creator dispatch radar</span>
               <span className="text-stone-400">&middot;</span>
@@ -217,7 +217,7 @@ export function LiveNotificationsStream() {
           {/* Left: Featured Active Drop Spotlight */}
           <div className="lg:col-span-6 border border-[#ede8df] bg-white p-5 sm:p-6 rounded-md shadow-xs flex flex-col justify-between relative overflow-hidden">
             {/* Soft Warm Glow */}
-            <div className="absolute top-0 right-0 w-48 h-48 bg-[#F4DCB4]/20 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute top-0 right-0 w-48 h-48 bg-secondary/20 rounded-full blur-2xl pointer-events-none" />
 
             <AnimatePresence mode="wait">
               <motion.div
@@ -332,7 +332,7 @@ export function LiveNotificationsStream() {
                   className={`w-full text-left p-3 sm:p-3.5 border rounded-md transition-all flex items-center justify-between gap-3 cursor-pointer ${
                     isSelected
                       ? "border-stone-900 bg-white shadow-xs"
-                      : "border-[#ede8df] bg-white/70 hover:bg-white hover:border-[#dfc39a]"
+                      : "border-[#ede8df] bg-white/70 hover:bg-white hover:border-secondary-border"
                   }`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
@@ -369,7 +369,7 @@ export function LiveNotificationsStream() {
             })}
 
             {/* Quick Guarantees Pill Bar */}
-            <div className="p-2.5 rounded-md border border-dashed border-[#dfc39a] bg-[#F4DCB4]/20 flex items-center justify-between font-mono text-[11px] text-stone-700">
+            <div className="p-2.5 rounded-md border border-dashed border-secondary-border bg-secondary/20 flex items-center justify-between font-mono text-[11px] text-stone-700">
               <span className="flex items-center gap-1.5">
                 <TrendingUp className="h-3.5 w-3.5 text-stone-900" />
                 <span>each channel executes independently</span>

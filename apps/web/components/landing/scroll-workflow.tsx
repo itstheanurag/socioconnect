@@ -227,7 +227,7 @@ export function ScrollWorkflow() {
                 className={`text-left p-4 border transition-all rounded-md cursor-pointer ${
                   isActive
                     ? "border-stone-900 bg-[#faf8f5] shadow-xs"
-                    : "border-[#ede8df] bg-white hover:border-[#dfc39a]"
+                    : "border-[#ede8df] bg-white hover:border-secondary-border"
                 }`}
               >
                 <div className="flex items-center justify-between font-mono text-xs mb-2">

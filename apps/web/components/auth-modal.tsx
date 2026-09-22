@@ -71,7 +71,7 @@ export function AuthModal() {
 
           {/* Modal Header */}
           <div className="text-center relative">
-            <div className="inline-flex items-center gap-2 border border-dashed border-[#dfc39a] bg-[#F4DCB4]/30 px-3 py-1 text-xs font-mono font-semibold text-stone-900 rounded-md mb-3">
+            <div className="inline-flex items-center gap-2 border border-dashed border-secondary-border bg-secondary/30 px-3 py-1 text-xs font-mono font-semibold text-stone-900 rounded-md mb-3">
               <Sparkles className="h-3 w-3 text-stone-800" />
               <span>official google authentication</span>
             </div>
@@ -128,7 +128,7 @@ export function AuthModal() {
                 type="button"
                 disabled={isLoading || isDemoLoading}
                 onClick={handleDemoLogin}
-                className="w-full flex items-center justify-center gap-2 border border-[#dfc39a] bg-[#F4DCB4] p-2.5 font-mono text-xs font-bold text-stone-900 hover:bg-[#ebd0a3] transition-all rounded-md shadow-2xs disabled:opacity-60 cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 border border-secondary-border bg-secondary p-2.5 font-mono text-xs font-bold text-stone-900 hover:bg-[#ebd0a3] transition-all rounded-md shadow-2xs disabled:opacity-60 cursor-pointer"
               >
                 <Sparkles className="h-3.5 w-3.5" />
                 <span>
