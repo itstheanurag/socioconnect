@@ -1,14 +1,18 @@
-import { and, desc, eq, isNull, lte } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull, lte, or } from "drizzle-orm";
 import { type DBTransaction, db } from "../connection";
 import {
   postsTable,
   postDispatchesTable,
+  dispatchTransactionsTable,
   type Post,
   type NewPost,
   type PostDispatch,
   type NewPostDispatch,
+  type DispatchTransaction,
+  type NewDispatchTransaction,
   PostStatusEnum,
   DispatchStatusEnum,
+  TransactionOutcomeEnum,
 } from "../schema";
 import { withMetrics } from "../utils/metrics-wrapper";
 import { logger } from "@repo/shared";
@@ -116,7 +120,7 @@ export namespace PostsRepository {
   }
 
   /**
-   * Finds all pending dispatches that are due for execution (Worker Queue)
+   * Finds and atomically claims all pending dispatches due for execution (Worker Queue)
    */
   export async function findDueDispatches(
     now: Date = new Date(),
@@ -127,7 +131,10 @@ export namespace PostsRepository {
     return await withMetrics("select", "post_dispatches", async () =>
       queryClient.query.postDispatchesTable.findMany({
         where: and(
-          eq(postDispatchesTable.status, DispatchStatusEnum.PENDING),
+          or(
+            eq(postDispatchesTable.status, DispatchStatusEnum.PENDING),
+            eq(postDispatchesTable.status, DispatchStatusEnum.RATE_LIMITED),
+          ),
           lte(postDispatchesTable.scheduledFor, now),
         ),
         limit,
@@ -141,7 +148,84 @@ export namespace PostsRepository {
   }
 
   /**
-   * Updates dispatch execution outcome
+   * Atomically marks dispatches as PROCESSING to prevent duplicate worker execution
+   */
+  export async function claimDispatchesForExecution(
+    dispatchIds: string[],
+    options?: { tx?: DBTransaction },
+  ): Promise<string[]> {
+    if (dispatchIds.length === 0) return [];
+    const queryClient = options?.tx || db;
+
+    const claimed = await queryClient
+      .update(postDispatchesTable)
+      .set({
+        status: DispatchStatusEnum.PROCESSING,
+        updatedAt: new Date(),
+      })
+      .where(
+        and(
+          inArray(postDispatchesTable.id, dispatchIds),
+          or(
+            eq(postDispatchesTable.status, DispatchStatusEnum.PENDING),
+            eq(postDispatchesTable.status, DispatchStatusEnum.RATE_LIMITED),
+          ),
+        ),
+      )
+      .returning({ id: postDispatchesTable.id });
+
+    return claimed.map((c) => c.id);
+  }
+
+  /**
+   * Records an immutable transaction record for an execution attempt
+   */
+  export async function recordDispatchTransaction(
+    payload: NewDispatchTransaction,
+    options?: { tx?: DBTransaction },
+  ): Promise<DispatchTransaction> {
+    const queryClient = options?.tx || db;
+    const [record] = await queryClient
+      .insert(dispatchTransactionsTable)
+      .values(payload)
+      .returning();
+
+    logger.audit("dispatch transaction recorded", {
+      module: "dispatches",
+      action: "recordTransaction",
+      transactionId: record.id,
+      dispatchId: record.dispatchId,
+      platform: record.platform,
+      outcome: record.outcome,
+      latencyMs: record.latencyMs,
+    });
+
+    return record;
+  }
+
+  /**
+   * Retrieves transaction execution logs for a post or dispatch
+   */
+  export async function getDispatchTransactions(
+    filter: { postId?: string; dispatchId?: string },
+    options?: { tx?: DBTransaction },
+  ): Promise<DispatchTransaction[]> {
+    const queryClient = options?.tx || db;
+    return await withMetrics("select", "dispatch_transactions", async () => {
+      const conditions = [];
+      if (filter.postId) conditions.push(eq(dispatchTransactionsTable.postId, filter.postId));
+      if (filter.dispatchId)
+        conditions.push(eq(dispatchTransactionsTable.dispatchId, filter.dispatchId));
+
+      return queryClient.query.dispatchTransactionsTable.findMany({
+        where: conditions.length > 0 ? and(...conditions) : undefined,
+        orderBy: [desc(dispatchTransactionsTable.executedAt)],
+      });
+    });
+  }
+
+  /**
+   * Updates dispatch execution outcome and triggers master post status recalculation
    */
   export async function updateDispatchResult(
     dispatchId: string,
@@ -166,14 +250,14 @@ export namespace PostsRepository {
       .where(eq(postDispatchesTable.id, dispatchId))
       .returning();
 
-    // Check if all dispatches for parent post have concluded
+    // Recalculate master post status in transaction
     await syncMasterPostStatus(updated.postId, queryClient as any);
 
     return updated;
   }
 
   /**
-   * Recalculates master post status based on child dispatches
+   * Recalculates master post status based on child dispatches in an isolated manner
    */
   async function syncMasterPostStatus(postId: string, tx: DBTransaction) {
     const allDispatches = await tx.query.postDispatchesTable.findMany({
@@ -183,10 +267,15 @@ export namespace PostsRepository {
     if (allDispatches.length === 0) return;
 
     const isAllSuccess = allDispatches.every((d) => d.status === DispatchStatusEnum.SUCCESS);
-    const isAllFailed = allDispatches.every((d) => d.status === DispatchStatusEnum.FAILED);
+    const isAllFailed = allDispatches.every(
+      (d) => d.status === DispatchStatusEnum.FAILED || d.status === DispatchStatusEnum.CANCELLED,
+    );
     const hasAnySuccess = allDispatches.some((d) => d.status === DispatchStatusEnum.SUCCESS);
-    const hasAnyProcessing = allDispatches.some(
-      (d) => d.status === DispatchStatusEnum.PENDING || d.status === DispatchStatusEnum.PROCESSING,
+    const hasAnyPendingOrProcessing = allDispatches.some(
+      (d) =>
+        d.status === DispatchStatusEnum.PENDING ||
+        d.status === DispatchStatusEnum.PROCESSING ||
+        d.status === DispatchStatusEnum.RATE_LIMITED,
     );
 
     let newStatus = PostStatusEnum.DISPATCHING;
@@ -195,8 +284,10 @@ export namespace PostsRepository {
       newStatus = PostStatusEnum.PUBLISHED;
     } else if (isAllFailed) {
       newStatus = PostStatusEnum.FAILED;
-    } else if (hasAnySuccess && !hasAnyProcessing) {
+    } else if (hasAnySuccess && !hasAnyPendingOrProcessing) {
       newStatus = PostStatusEnum.PARTIALLY_FAILED;
+    } else if (hasAnyPendingOrProcessing) {
+      newStatus = PostStatusEnum.DISPATCHING;
     }
 
     await tx

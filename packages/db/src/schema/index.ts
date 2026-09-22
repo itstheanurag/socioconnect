@@ -60,6 +60,14 @@ export {
   type NewPostDispatch,
   type UpdatePostDispatch,
 } from "./posts/post-dispatches.db";
+export {
+  dispatchTransactionsTable,
+  dispatchTransactionsRelations,
+  TransactionOutcomeEnum,
+  transactionOutcomePgEnum,
+  type DispatchTransaction,
+  type NewDispatchTransaction,
+} from "./posts/dispatch-transactions.db";
 
 // Media Assets Schema
 export { mediaSchema } from "./media";
