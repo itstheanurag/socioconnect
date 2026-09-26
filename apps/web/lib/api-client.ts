@@ -125,30 +125,26 @@ class ApiClient {
       ...(options.headers || {}),
     };
 
-    try {
-      const res = await fetch(url, {
-        ...options,
-        headers,
-        credentials: "include",
-      });
+    const res = await fetch(url, {
+      ...options,
+      headers,
+      credentials: "include",
+    });
 
-      if (res.status === 401 && retryOnAuthFailure) {
-        // Try refreshing access token
-        const refreshed = await this.refreshToken();
-        if (refreshed) {
-          return this.request<T>(endpoint, options, false);
-        }
+    if (res.status === 401 && retryOnAuthFailure) {
+      // Try refreshing access token
+      const refreshed = await this.refreshToken();
+      if (refreshed) {
+        return this.request<T>(endpoint, options, false);
       }
-
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data?.message || `API request failed with status ${res.status}`);
-      }
-
-      return data as ApiResponse<T>;
-    } catch (err: unknown) {
-      throw err;
     }
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data?.message || `API request failed with status ${res.status}`);
+    }
+
+    return data as ApiResponse<T>;
   }
 
   private async refreshToken(): Promise<boolean> {
@@ -203,9 +199,7 @@ class ApiClient {
       if (params?.limit) query.set("limit", String(params.limit));
       if (params?.status) query.set("status", params.status);
 
-      return this.request<{ posts: PostSummary[]; total: number }>(
-        `/v1/posts?${query.toString()}`,
-      );
+      return this.request<{ posts: PostSummary[]; total: number }>(`/v1/posts?${query.toString()}`);
     },
 
     create: async (body: {
