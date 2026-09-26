@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { apiClient, type ApiUser } from "./api-client";
 
 export interface AuthUser {
   id: string;
@@ -23,11 +24,10 @@ interface AuthContextType {
   loginWithDemo: (mockUser?: Partial<AuthUser>) => void;
   mockLogin: (mockUser?: Partial<AuthUser>) => void;
   logout: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 function setCookie(name: string, value: string, days = 30) {
   if (typeof document === "undefined") return;
@@ -53,57 +53,51 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [modalRedirect, setModalRedirect] = useState("/app");
   const router = useRouter();
 
+  // Refresh profile from /v1/auth/me
+  const refreshProfile = useCallback(async () => {
+    try {
+      const apiUser: ApiUser = await apiClient.auth.getMe();
+      if (apiUser) {
+        const mappedUser: AuthUser = {
+          id: apiUser.id,
+          email: apiUser.email,
+          firstName: apiUser.firstName || "Creator",
+          lastName: apiUser.lastName,
+          avatar: apiUser.avatar,
+          role: apiUser.role || "USER",
+        };
+        setUser(mappedUser);
+        setCookie("socioconnect_user", JSON.stringify(mappedUser));
+      }
+    } catch {
+      // User not authenticated with backend
+    }
+  }, []);
+
   // Check authentication status on mount
   const checkAuth = useCallback(async () => {
     setIsLoading(true);
     try {
-      // 1. First check if user cookie exists
+      // 1. Check if user cookie exists
       const savedUser = getCookie("socioconnect_user");
       if (savedUser) {
         try {
           const parsed = JSON.parse(savedUser) as AuthUser;
           setUser(parsed);
-          setIsLoading(false);
-          return;
         } catch {
           removeCookie("socioconnect_user");
         }
       }
 
-      // 2. Check if accessToken cookie exists or try calling /v1/auth/me
+      // 2. Attempt fetching fresh profile if token exists
       const token = getCookie("access_token");
       if (token) {
-        try {
-          const res = await fetch(`${API_BASE_URL}/v1/auth/me`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            credentials: "include",
-          });
-
-          if (res.ok) {
-            const data = await res.json();
-            if (data?.payload?.user) {
-              const fetchedUser: AuthUser = {
-                id: data.payload.user.email,
-                email: data.payload.user.email,
-                firstName: data.payload.user.firstName || "Creator",
-                lastName: data.payload.user.lastName || null,
-                avatar: data.payload.user.avatar || null,
-                role: data.payload.user.role || "USER",
-              };
-              setUser(fetchedUser);
-              setCookie("socioconnect_user", JSON.stringify(fetchedUser));
-            }
-          }
-        } catch {
-          // Backend might be unavailable in local static preview
-        }
+        await refreshProfile();
       }
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [refreshProfile]);
 
   useEffect(() => {
     void checkAuth();
@@ -143,21 +137,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         sessionStorage.setItem("auth_redirect", redirectTo);
       }
 
-      const res = await fetch(`${API_BASE_URL}/v1/oauth/google?redirect=false`, {
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        if (data?.payload?.link) {
-          window.location.href = data.payload.link;
-          return;
-        }
+      const authUrl = await apiClient.auth.getOAuthUrl("google", "false");
+      if (authUrl) {
+        window.location.href = authUrl;
+        return;
       }
 
-      window.location.href = `${API_BASE_URL}/v1/oauth/google?redirect=true`;
+      // Fallback
+      window.location.href = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/v1/oauth/google?redirect=true`;
     } catch {
-      window.location.href = `${API_BASE_URL}/v1/oauth/google?redirect=true`;
+      window.location.href = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/v1/oauth/google?redirect=true`;
     } finally {
       setIsLoading(false);
     }
@@ -192,14 +181,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
-      const token = getCookie("access_token");
-      if (token) {
-        await fetch(`${API_BASE_URL}/v1/auth/logout`, {
-          method: "GET",
-          headers: { Authorization: `Bearer ${token}` },
-          credentials: "include",
-        }).catch(() => {});
-      }
+      await apiClient.auth.logout();
+    } catch {
+      // Ignored
     } finally {
       removeCookie("access_token");
       removeCookie("socioconnect_user");
@@ -222,6 +206,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         loginWithDemo: mockLogin,
         mockLogin,
         logout,
+        refreshProfile,
       }}
     >
       {children}
