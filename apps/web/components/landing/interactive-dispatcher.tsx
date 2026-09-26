@@ -29,17 +29,6 @@ const CHANNELS: ChannelConfig[] = [
     features: ["community post", "video premiere alert", "pinned comment"],
   },
   {
-    id: "twitch",
-    name: "twitch",
-    badge: "stream alerts",
-    charLimit: 500,
-    bestFormat: "🔴 go-live stream alert with stream category and title",
-    peakTime: "06:30 pm",
-    peakReason: "prime stream browsing & hangout time",
-    audienceContext: "live viewers waiting for the stream to start",
-    features: ["go-live notification", "channel feed drop", "stream title sync"],
-  },
-  {
     id: "instagram",
     name: "instagram",
     badge: "reels & captions",
@@ -49,6 +38,17 @@ const CHANNELS: ChannelConfig[] = [
     peakReason: "lunchtime mobile scrolling break",
     audienceContext: "visual followers scanning stories and reels",
     features: ["reel caption sync", "carousel preview", "hashtag presets"],
+  },
+  {
+    id: "tiktok",
+    name: "tiktok",
+    badge: "short video",
+    charLimit: 2200,
+    bestFormat: "trending hook + concise caption + sound tags",
+    peakTime: "07:00 pm",
+    peakReason: "evening relax and entertainment window",
+    audienceContext: "mobile video scrollers looking for quick insights",
+    features: ["sound tag sync", "cover thumbnail", "caption spacing"],
   },
   {
     id: "linkedin",
@@ -62,17 +62,6 @@ const CHANNELS: ChannelConfig[] = [
     features: ["article intro", "founder story", "document drop"],
   },
   {
-    id: "peerlist",
-    name: "peerlist",
-    badge: "makers & tech",
-    charLimit: 1000,
-    bestFormat: "project launch spotlight with feature highlights",
-    peakTime: "10:00 am",
-    peakReason: "morning product hunt for tech creators",
-    audienceContext: "designers, makers, and indie builders",
-    features: ["project spotlight", "maker feed", "changelog tag"],
-  },
-  {
     id: "x",
     name: "x (twitter)",
     badge: "quick bites & threads",
@@ -84,41 +73,52 @@ const CHANNELS: ChannelConfig[] = [
     features: ["auto thread splitting", "media cards", "reply pinning"],
   },
   {
+    id: "threads",
+    name: "threads",
+    badge: "conversations",
+    charLimit: 500,
+    bestFormat: "casual conversational prompt or behind the scenes thought",
+    peakTime: "03:00 pm",
+    peakReason: "afternoon casual scroll peak",
+    audienceContext: "engaged community having casual discussions",
+    features: ["reply branching", "photo carousel", "topic tags"],
+  },
+  {
     id: "reddit",
     name: "reddit",
     badge: "niche communities",
     charLimit: 4000,
     bestFormat: "transparent behind-the-scenes discussion",
-    peakTime: "07:00 pm",
+    peakTime: "06:00 pm",
     peakReason: "evening deep-dive reading sessions",
     audienceContext: "specific subreddit members wanting genuine value",
-    features: ["subreddit flairs", "markdown preview", "spoiler tags"],
+    features: ["subreddit flairs", "markdown preview", "anti-spam stagger"],
   },
   {
-    id: "bluesky",
-    name: "bluesky",
-    badge: "open social",
-    charLimit: 300,
-    bestFormat: "concise conversational thought or media share",
-    peakTime: "02:00 pm",
-    peakReason: "afternoon community discussions",
-    audienceContext: "tech, art, and journalism open web enthusiasts",
-    features: ["custom feeds", "rich links", "thread builder"],
+    id: "discord",
+    name: "discord",
+    badge: "community guilds",
+    charLimit: 2000,
+    bestFormat: "formatted announcement with emojis and server channel role pings",
+    peakTime: "05:30 pm",
+    peakReason: "after-work gaming & creator hangout hours",
+    audienceContext: "core superfans & community members in your server",
+    features: ["channel selection", "role pings", "rich embeds"],
   },
 ];
 
 const PRESETS = [
   {
-    label: "🎬 new video drop",
-    text: "just dropped a full deep-dive on building fullstack web apps in 2026! check out the architecture walkthrough and code examples. link in bio/comments! 🔥",
+    label: "🎬 new video & episode drop",
+    text: "just released our newest deep-dive episode! we break down the 3 strategies that took our creator channel from 0 to 100k subscribers in 12 months. link in bio & first comment! 🚀✨",
   },
   {
-    label: "🔴 stream going live",
-    text: "live now: building a modern multi-channel social studio from scratch. come hang out, ask questions, and chat! 🎮",
+    label: "🎙️ podcast & interview teaser",
+    text: "new podcast episode live! sitting down with top creators to discuss audience retention, creator burnout, and how to build a sustainable business with one calm studio. 🎧🔥",
   },
   {
-    label: "🚀 product launch story",
-    text: "after 6 months of private testing with 500 creators, socioconnect is officially live! one studio to schedule your content at peak audience hours.",
+    label: "🚀 product launch & story",
+    text: "after 6 months of building and private testing with 500 creators, our new collection is officially live! one calm studio to publish your story across every channel at peak hours.",
   },
 ];
 
@@ -176,19 +176,19 @@ export function InteractiveDispatcher() {
       const domain =
         ch === "youtube"
           ? "youtube.com/post"
-          : ch === "twitch"
-            ? "twitch.tv/alex_codes"
-            : ch === "instagram"
-              ? "instagram.com/p"
+          : ch === "instagram"
+            ? "instagram.com/p"
+            : ch === "tiktok"
+              ? "tiktok.com/@creator"
               : ch === "linkedin"
                 ? "linkedin.com/feed/update"
-                : ch === "peerlist"
-                  ? "peerlist.io/post"
+                : ch === "threads"
+                  ? "threads.net/@creator"
                   : ch === "x"
                     ? "x.com/status"
                     : ch === "reddit"
-                      ? "reddit.com/r/videos"
-                      : "bsky.app/profile/post";
+                      ? "reddit.com/r/community"
+                      : "discord.com/channels";
 
       results[ch] = {
         success: true,
@@ -213,285 +213,268 @@ export function InteractiveDispatcher() {
         <div className="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end lowercase">
           <div>
             <div className="flex items-center gap-2 font-mono text-xs font-semibold text-stone-700">
-              <span className="h-2 w-2 rounded-full bg-[#dfc39a]\" />
+              <span className="h-2 w-2 rounded-full bg-[#dfc39a]" />
               <span>creator posting studio</span>
             </div>
             <h2 className="mt-2 text-3xl font-semibold tracking-tight text-stone-900 sm:text-4xl">
               write once.{" "}
               <span className="font-serif italic font-normal text-stone-800">
-                reach every audience at their best time.
+                preview and publish everywhere.
               </span>
             </h2>
-            <p className="mt-1 max-w-2xl text-sm text-stone-600">
-              switch between <strong>staggered peak hours</strong> or an{" "}
-              <strong>instant simultaneous drop</strong> across all your accounts.
+            <p className="mt-2 text-sm sm:text-base text-stone-600">
+              try this live simulation: choose your channels, pick a message preset, and watch how
+              socioconnect adapts the schedule for each platform.
             </p>
+          </div>
+
+          <div className="flex items-center gap-2 text-xs font-mono text-stone-500">
+            <span className="flex h-2 w-2 rounded-full bg-emerald-500" />
+            <span>live interactive simulation</span>
           </div>
         </div>
 
-        {/* Main Composer Box */}
-        <div className="border border-line bg-white shadow-xs rounded-md overflow-hidden lowercase">
-          {/* Top Bar: Channel Toggle Pills & Mode Switcher */}
-          <div className="border-b border-line bg-[#faf8f5] p-4 sm:p-5">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-              <div>
-                <div className="flex items-center gap-2 mb-2 font-mono text-xs font-bold text-stone-800">
-                  <span>1. select target platforms</span>
-                  <span className="text-stone-500 font-normal">
-                    ({selectedChannels.length} active)
-                  </span>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-2">
-                  {CHANNELS.map((ch) => {
-                    const isSelected = selectedChannels.includes(ch.id);
-                    return (
-                      <button
-                        key={ch.id}
-                        type="button"
-                        onClick={() => toggleChannel(ch.id)}
-                        className={`flex items-center gap-2 p-1.5 border text-xs transition-all rounded-md cursor-pointer ${
-                          isSelected
-                            ? "border-stone-900 bg-white font-bold text-stone-900 shadow-2xs"
-                            : "border-line bg-white/60 text-stone-400 hover:border-stone-300 hover:text-stone-600"
-                        }`}
-                      >
-                        <div className="flex h-5 w-5 items-center justify-center rounded-sm shrink-0">
-                          <PlatformIcon platform={ch.id} size={15} />
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
+        {/* The Interactive Studio Box */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 rounded-md border border-line bg-white p-4 sm:p-6 shadow-xs lowercase">
+          {/* Left Column (7 cols): Channel Selector + Text Composer */}
+          <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
+            {/* Platform Badges (Interactive multi-select) */}
+            <div>
+              <div className="mb-3 flex items-center justify-between text-xs font-mono">
+                <span className="font-bold text-stone-800">1. select target channels:</span>
+                <span className="text-stone-500">
+                  {selectedChannels.length} of 8 channels selected
+                </span>
               </div>
 
-              {/* Timing mode selector */}
-              <div className="border-t lg:border-t-0 lg:border-l border-dashed border-line pt-3 lg:pt-0 lg:pl-5">
-                <div className="flex items-center gap-2 mb-2 font-mono text-xs font-bold text-stone-800">
-                  <span>2. timing strategy</span>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {CHANNELS.map((channel) => {
+                  const isSelected = selectedChannels.includes(channel.id);
+                  return (
+                    <button
+                      key={channel.id}
+                      type="button"
+                      onClick={() => toggleChannel(channel.id)}
+                      className={`flex items-center gap-2 rounded-md border p-2.5 text-left font-mono text-xs transition-all cursor-pointer ${
+                        isSelected
+                          ? "border-[#dfc39a] bg-secondary/50 font-bold text-stone-900 shadow-2xs"
+                          : "border-line bg-[#faf8f5] text-stone-600 hover:border-stone-400 hover:bg-white"
+                      }`}
+                    >
+                      <PlatformIcon platform={channel.id} size={15} />
+                      <span className="truncate">{channel.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Content Input & Presets */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between text-xs font-mono">
+                <span className="font-bold text-stone-800">2. craft your core post:</span>
+                <span className="text-stone-500">{content.length} characters</span>
+              </div>
+
+              <textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                rows={4}
+                className="w-full rounded-md border border-line bg-[#faf8f5] p-3.5 font-sans text-sm text-stone-900 focus:border-stone-500 focus:outline-hidden focus:ring-1 focus:ring-stone-500"
+                placeholder="write your video launch, story, or announcement here..."
+              />
+
+              {/* Sample Presets */}
+              <div className="flex flex-wrap items-center gap-2 pt-1 text-xs font-mono">
+                <span className="text-stone-400">quick presets:</span>
+                {PRESETS.map((preset) => (
+                  <button
+                    key={preset.label}
+                    type="button"
+                    onClick={() => handlePreset(preset.text)}
+                    className="rounded-sm border border-line bg-white px-2 py-1 text-stone-700 hover:bg-stone-100 transition-colors cursor-pointer shadow-2xs"
+                  >
+                    {preset.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Timing Strategy & Dispatch CTA */}
+            <div className="border-t border-dashed border-line pt-4 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-stone-800">3. timing strategy:</span>
                 </div>
-                <div className="inline-flex border border-secondary-border bg-white p-0.5 rounded-md font-mono text-xs">
+
+                <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() => setScheduleMode("staggered")}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-colors cursor-pointer ${
+                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-sm border transition-colors cursor-pointer ${
                       scheduleMode === "staggered"
-                        ? "bg-secondary font-bold text-stone-900"
-                        : "text-stone-600 hover:text-stone-900"
+                        ? "bg-secondary border-[#dfc39a] text-stone-900 font-bold"
+                        : "bg-white border-line text-stone-600 hover:text-stone-900"
                     }`}
                   >
                     <Clock className="h-3 w-3" />
-                    <span>staggered</span>
+                    <span>staggered peak hours</span>
                   </button>
+
                   <button
                     type="button"
                     onClick={() => setScheduleMode("simultaneous")}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-colors cursor-pointer ${
+                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-sm border transition-colors cursor-pointer ${
                       scheduleMode === "simultaneous"
-                        ? "bg-secondary font-bold text-stone-900"
-                        : "text-stone-600 hover:text-stone-900"
+                        ? "bg-secondary border-[#dfc39a] text-stone-900 font-bold"
+                        : "bg-white border-line text-stone-600 hover:text-stone-900"
                     }`}
                   >
                     <Zap className="h-3 w-3" />
-                    <span>instant</span>
+                    <span>instant blast</span>
                   </button>
                 </div>
               </div>
+
+              {/* Trigger Button */}
+              <button
+                type="button"
+                onClick={handlePublish}
+                disabled={isPublishing || selectedChannels.length === 0}
+                className="w-full flex items-center justify-center gap-2 border border-[#dfc39a] bg-secondary hover:bg-[#ebd0a3] p-3.5 rounded-md font-mono text-xs font-bold text-stone-900 transition-colors shadow-xs cursor-pointer disabled:opacity-50"
+              >
+                <Sparkles className="h-4 w-4" />
+                <span>
+                  {isPublishing
+                    ? "adapting & dispatching..."
+                    : `dispatch to ${selectedChannels.length} channels now`}
+                </span>
+              </button>
             </div>
           </div>
 
-          {/* Composer Body */}
-          <div className="grid grid-cols-1 lg:grid-cols-12">
-            {/* Left: Text Editor */}
-            <div className="lg:col-span-7 p-5 sm:p-6 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-line">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="font-mono text-xs font-bold text-stone-800">compose post</span>
-                  <span className="font-mono text-xs text-stone-500">
-                    {content.length} characters
+          {/* Right Column (5 cols): Live Per-Channel Inspector & Simulation Preview */}
+          <div className="lg:col-span-5 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-line lg:pl-6 pt-6 lg:pt-0">
+            <div>
+              <div className="flex items-center justify-between text-xs font-mono mb-3">
+                <span className="font-bold text-stone-800">channel format preview:</span>
+                <span className="text-stone-500">live character meter</span>
+              </div>
+
+              {/* Inspect Channel Tabs */}
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                {selectedChannels.map((chId) => {
+                  const ch = CHANNELS.find((c) => c.id === chId);
+                  const isInspecting = activeInspectTab === chId;
+                  return (
+                    <button
+                      key={chId}
+                      type="button"
+                      onClick={() => setActiveInspectTab(chId)}
+                      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-sm border font-mono text-xs cursor-pointer transition-all ${
+                        isInspecting
+                          ? "bg-stone-900 border-stone-900 text-white font-bold"
+                          : "bg-[#faf8f5] border-line text-stone-700 hover:bg-white"
+                      }`}
+                    >
+                      <PlatformIcon platform={chId} size={12} />
+                      <span>{ch?.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Selected Channel Context Box */}
+              <div className="rounded-md border border-line bg-[#faf8f5] p-4 space-y-3 font-mono text-xs">
+                <div className="flex items-center justify-between border-b border-dashed border-line pb-2">
+                  <div className="flex items-center gap-2">
+                    <PlatformIcon platform={activeInspectChannel.id} size={16} />
+                    <span className="font-bold text-stone-900 font-sans">
+                      {activeInspectChannel.name}
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-stone-500 bg-white px-2 py-0.5 rounded-xs border border-line">
+                    {activeInspectChannel.badge}
                   </span>
                 </div>
 
-                {/* Preset Switcher Pills */}
-                <div className="flex items-center gap-1.5 mb-2.5 overflow-x-auto pb-1 scrollbar-none font-mono text-[11px]">
-                  <span className="text-stone-400 text-[10px] shrink-0">presets:</span>
-                  {PRESETS.map((preset) => (
-                    <button
-                      key={preset.label}
-                      type="button"
-                      onClick={() => handlePreset(preset.text)}
-                      className="px-2 py-0.5 border border-line bg-[#faf8f5] hover:border-stone-400 rounded-sm text-stone-700 hover:text-stone-900 shrink-0 cursor-pointer"
+                <div className="space-y-1.5 text-[11px]">
+                  <div className="text-stone-500">
+                    <span className="font-bold text-stone-800">best format: </span>
+                    <span>{activeInspectChannel.bestFormat}</span>
+                  </div>
+
+                  <div className="text-stone-500">
+                    <span className="font-bold text-stone-800">optimal peak drop: </span>
+                    <span className="text-stone-900 font-bold bg-[#F4DCB4] px-1 rounded-xs">
+                      {activeInspectChannel.peakTime}
+                    </span>
+                    <span className="text-stone-400"> ({activeInspectChannel.peakReason})</span>
+                  </div>
+                </div>
+
+                {/* Character Limit Meter */}
+                <div className="pt-2 border-t border-dashed border-line space-y-1">
+                  <div className="flex items-center justify-between text-[10px]">
+                    <span className="text-stone-500">character meter:</span>
+                    <span
+                      className={`font-bold ${
+                        content.length > activeInspectChannel.charLimit
+                          ? "text-red-600"
+                          : "text-emerald-700"
+                      }`}
                     >
-                      {preset.label}
-                    </button>
-                  ))}
+                      {content.length} / {activeInspectChannel.charLimit}
+                    </span>
+                  </div>
+                  <div className="w-full h-1.5 bg-stone-200 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full transition-all ${
+                        content.length > activeInspectChannel.charLimit
+                          ? "bg-red-500"
+                          : "bg-emerald-500"
+                      }`}
+                      style={{
+                        width: `${Math.min(
+                          100,
+                          (content.length / activeInspectChannel.charLimit) * 100,
+                        )}%`,
+                      }}
+                    />
+                  </div>
                 </div>
-
-                <textarea
-                  value={content}
-                  onChange={(e) => {
-                    setContent(e.target.value);
-                    setPublishedResults(null);
-                  }}
-                  rows={6}
-                  placeholder="what are you sharing with your audience today?"
-                  className="w-full resize-none border border-line bg-[#faf8f5] p-3.5 font-sans text-sm text-stone-900 focus:border-stone-900 focus:bg-white focus:outline-hidden transition-all rounded-md"
-                />
-
-                {/* Platform Character Budget Pills */}
-                <div className="mt-3 flex flex-wrap items-center gap-2">
-                  {selectedChannels.map((chId) => {
-                    const c = CHANNELS.find((ch) => ch.id === chId);
-                    if (!c) return null;
-                    const remaining = c.charLimit - content.length;
-                    const isOver = remaining < 0;
-
-                    return (
-                      <div
-                        key={c.id}
-                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 border font-mono text-[10px] rounded-md ${
-                          isOver
-                            ? "border-red-300 bg-red-50 text-red-700"
-                            : "border-line bg-white text-stone-600"
-                        }`}
-                      >
-                        <PlatformIcon platform={c.id} size={12} />
-                        <span>{c.name}:</span>
-                        <span className={isOver ? "font-bold text-red-600" : "font-semibold"}>
-                          {remaining} left
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Action Bar */}
-              <div className="mt-6 pt-4 border-t border-dashed border-line flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-1.5 font-mono text-xs text-stone-500">
-                  <Shield className="h-3.5 w-3.5 text-emerald-600" />
-                  <span>100% private &middot; zero passwords stored</span>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handlePublish}
-                  disabled={isPublishing || selectedChannels.length === 0}
-                  className="group inline-flex items-center gap-2 border border-secondary-border bg-secondary px-5 py-2.5 font-mono text-xs font-bold text-stone-900 transition-all hover:bg-[#ebd0a3] disabled:opacity-50 rounded-md shadow-xs cursor-pointer"
-                >
-                  {isPublishing ? (
-                    <>
-                      <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-stone-800 border-t-transparent" />
-                      <span>publishing to {selectedChannels.length} apps...</span>
-                    </>
-                  ) : scheduleMode === "staggered" ? (
-                    <>
-                      <CalendarDays className="h-3.5 w-3.5 text-stone-800" />
-                      <span>schedule {selectedChannels.length} apps at peak times</span>
-                    </>
-                  ) : (
-                    <>
-                      <Send className="h-3.5 w-3.5 text-stone-800" />
-                      <span>post to {selectedChannels.length} channels now</span>
-                    </>
-                  )}
-                </button>
               </div>
             </div>
 
-            {/* Right: Live Preview & Inspection */}
-            <div className="lg:col-span-5 p-5 sm:p-6 bg-[#faf8f5] flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="font-mono text-xs font-bold text-stone-800">
-                    channel preview &amp; peak times
-                  </span>
-                  <span className="font-mono text-[10px] text-stone-500">click to inspect</span>
-                </div>
-
-                {/* Inspect Tabs */}
-                <div className="flex items-center gap-1.5 overflow-x-auto pb-2 mb-3 scrollbar-none font-mono text-xs">
-                  {selectedChannels.map((chId) => {
-                    const ch = CHANNELS.find((c) => c.id === chId);
-                    if (!ch) return null;
-                    const isActive = activeInspectTab === ch.id;
-                    return (
-                      <button
-                        key={ch.id}
-                        type="button"
-                        onClick={() => setActiveInspectTab(ch.id)}
-                        className={`px-3 py-1.5 border transition-colors rounded-md flex items-center gap-1.5 shrink-0 cursor-pointer ${
-                          isActive
-                            ? "border-stone-900 bg-white text-stone-900 font-bold shadow-2xs"
-                            : "border-line bg-white/50 text-stone-500 hover:border-stone-400"
-                        }`}
+            {/* Published Results Box */}
+            <div className="mt-4 pt-4 border-t border-dashed border-line">
+              {publishedResults ? (
+                <div className="space-y-2 font-mono text-xs">
+                  <div className="flex items-center gap-2 text-emerald-700 font-bold">
+                    <span className="flex h-2 w-2 rounded-full bg-emerald-500" />
+                    <span>dispatched successfully:</span>
+                  </div>
+                  <div className="space-y-1 max-h-36 overflow-y-auto pr-1">
+                    {Object.entries(publishedResults).map(([platformKey, item]) => (
+                      <div
+                        key={platformKey}
+                        className="flex items-center justify-between bg-[#faf8f5] p-2 rounded-sm border border-line text-[11px]"
                       >
-                        <PlatformIcon platform={ch.id} size={13} />
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Channel Details Card */}
-                <div className="border border-line bg-white p-4 rounded-md shadow-2xs font-mono text-xs space-y-3">
-                  <div className="flex items-center justify-between border-b border-dashed border-line pb-2">
-                    <div className="flex items-center gap-2">
-                      <PlatformIcon platform={activeInspectChannel.id} size={15} />
-                      <span className="font-bold text-stone-900">{activeInspectChannel.name}</span>
-                    </div>
-                    <span className="text-[10px] text-stone-500 px-2 py-0.5 bg-stone-100 rounded-sm">
-                      {activeInspectChannel.badge}
-                    </span>
-                  </div>
-
-                  <div className="space-y-1 text-xs">
-                    <div className="text-stone-500 text-[10px]">best format:</div>
-                    <div className="font-sans text-stone-800">
-                      {activeInspectChannel.bestFormat}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-dashed border-line text-[11px]">
-                    <div className="bg-[#faf8f5] p-2.5 rounded-md border border-line">
-                      <span className="text-stone-400 text-[9px] block">recommended peak</span>
-                      <span className="font-bold text-stone-800 flex items-center gap-1">
-                        <Clock className="h-3 w-3 text-[#dfc39a]" />
-                        {activeInspectChannel.peakTime}
-                      </span>
-                    </div>
-                    <div className="bg-[#faf8f5] p-2.5 rounded-md border border-line">
-                      <span className="text-stone-400 text-[9px] block">audience focus</span>
-                      <span className="font-bold text-stone-800 truncate block">
-                        {activeInspectChannel.audienceContext}
-                      </span>
-                    </div>
+                        <span className="font-bold text-stone-800 flex items-center gap-1.5">
+                          <PlatformIcon platform={platformKey} size={12} />
+                          <span>{platformKey}</span>
+                        </span>
+                        <span className="text-stone-500 text-[10px]">{item.status}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
-
-                {/* Published Results Display */}
-                {publishedResults && (
-                  <div className="mt-4 border border-emerald-200 bg-emerald-50/70 p-3.5 rounded-md space-y-2">
-                    <div className="flex items-center gap-1.5 font-mono text-xs font-bold text-emerald-900">
-                      <Sparkles className="h-3.5 w-3.5 text-emerald-700" />
-                      <span>all channels dispatched successfully!</span>
-                    </div>
-                    <div className="space-y-1 font-mono text-[11px]">
-                      {Object.entries(publishedResults).map(([plat, res]) => (
-                        <div
-                          key={plat}
-                          className="flex items-center justify-between text-emerald-800"
-                        >
-                          <span className="flex items-center gap-1.5">
-                            <PlatformIcon platform={plat} size={11} />
-                            <span>{plat}</span>
-                          </span>
-                          <span className="text-emerald-700 font-semibold">{res.status}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
+              ) : (
+                <div className="flex items-center gap-2 text-stone-400 font-mono text-xs">
+                  <Shield className="h-3.5 w-3.5 text-stone-400" />
+                  <span>100% private encrypted oauth &middot; zero passwords stored</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -499,5 +482,3 @@ export function InteractiveDispatcher() {
     </section>
   );
 }
-
-export const LandingInteractiveDispatcher = InteractiveDispatcher;

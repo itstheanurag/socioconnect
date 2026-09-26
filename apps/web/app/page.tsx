@@ -2,6 +2,7 @@ import { LandingHeader } from "../components/landing/header";
 import { LandingHero } from "../components/landing/hero";
 import { InteractiveDispatcher } from "../components/landing/interactive-dispatcher";
 import { LiveNotificationsStream } from "../components/landing/live-notifications-stream";
+import { Features } from "../components/landing/features/features";
 import { InteractiveCalendar } from "../components/landing/interactive-calendar";
 import { ScrollWorkflow } from "../components/landing/scroll-workflow";
 import { BlastRadiusComparison } from "../components/landing/blast-radius-comparison";
@@ -17,6 +18,7 @@ export default function LandingPage() {
       <main>
         <LandingHero />
         <InteractiveDispatcher />
+        <Features />
         <LiveNotificationsStream />
         <InteractiveCalendar />
         <ScrollWorkflow />

@@ -9,8 +9,9 @@ import { useAuth } from "../../lib/auth-context";
 
 const NAV_ITEMS = [
   { label: "studio", href: "/app" },
+  { label: "features", href: "#features" },
   { label: "schedule", href: "#calendar" },
-  { label: "platforms", href: "#platforms" },
+  { label: "workflow", href: "#workflow" },
   { label: "pricing", href: "#pricing" },
   { label: "faq", href: "#faq" },
 ];
