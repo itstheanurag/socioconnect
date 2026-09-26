@@ -1,8 +1,20 @@
 /**
  * SocioConnect Frontend Typed API Client
  * Seamlessly interfaces with apps/api backend endpoints with automatic Bearer token injection
- * and token refresh capabilities.
+ * and token refresh capabilities using shared @repo/contracts DTOs.
  */
+
+import type {
+  ApiResponse,
+  AuthUserDto,
+  PostSummary,
+  ConnectedAccountSummary,
+  CommunityGroupSummary,
+  CommunityAutomationSummary,
+  CreatePostRequest,
+  CreateCommunityGroupRequest,
+  CreateCommunityAutomationRequest,
+} from "@repo/contracts";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -23,80 +35,14 @@ function removeCookie(name: string) {
   document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax`;
 }
 
-export interface ApiResponse<T = unknown> {
-  message: string;
-  payload: T;
-}
-
-export interface ApiUser {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string | null;
-  avatar: string | null;
-  role: string;
-  createdAt: string;
-}
-
-export interface PostDispatchSummary {
-  id: string;
-  platform: string;
-  status: string;
-  scheduledFor: string | null;
-  publishedAt: string | null;
-  permalink?: string;
-  errorMessage?: string;
-}
-
-export interface PostSummary {
-  id: string;
-  title: string | null;
-  content: string;
-  tags: string[];
-  status: string;
-  scheduledAt: string | null;
-  dispatches: PostDispatchSummary[];
-  createdAt: string;
-}
-
-export interface ConnectedAccountSummary {
-  id: string;
-  platform: string;
-  accountName: string;
-  accountHandle: string | null;
-  avatarUrl: string | null;
-  connectedAt: string;
-  isActive: boolean;
-}
-
-export interface CommunityGroupSummary {
-  id: string;
-  name: string;
-  platform: string;
-  destinationIds: string[];
-  staggerMinutes: number;
-  tags: string[];
-  isActive: boolean;
-  createdAt: string;
-}
-
-export interface CommunityAutomationSummary {
-  id: string;
-  groupId: string;
-  groupName: string;
-  platform: string;
-  title: string;
-  scheduleType: string;
-  cronSchedule: string;
-  contentTemplate: string;
-  topicPool: string[];
-  autoAdaptTone: boolean;
-  status: string;
-  totalRuns: number;
-  lastRunAt: string | null;
-  nextRunAt: string | null;
-  createdAt: string;
-}
+export type {
+  ApiResponse,
+  AuthUserDto as ApiUser,
+  PostSummary,
+  ConnectedAccountSummary,
+  CommunityGroupSummary,
+  CommunityAutomationSummary,
+};
 
 class ApiClient {
   private baseUrl: string;
@@ -132,7 +78,6 @@ class ApiClient {
     });
 
     if (res.status === 401 && retryOnAuthFailure) {
-      // Try refreshing access token
       const refreshed = await this.refreshToken();
       if (refreshed) {
         return this.request<T>(endpoint, options, false);
@@ -168,8 +113,8 @@ class ApiClient {
 
   // 1. Auth Methods
   public auth = {
-    getMe: async (): Promise<ApiUser> => {
-      const res = await this.request<{ user: ApiUser }>("/v1/auth/me");
+    getMe: async (): Promise<AuthUserDto> => {
+      const res = await this.request<{ user: AuthUserDto }>("/v1/auth/me");
       return res.payload.user;
     },
 
@@ -202,21 +147,7 @@ class ApiClient {
       return this.request<{ posts: PostSummary[]; total: number }>(`/v1/posts?${query.toString()}`);
     },
 
-    create: async (body: {
-      title?: string;
-      content: string;
-      tags?: string[];
-      timingStrategy?: string;
-      scheduledAt?: string;
-      dispatches: Array<{
-        accountId: string;
-        destinationId?: string;
-        platform: string;
-        customTitle?: string;
-        customContent?: string;
-        scheduledFor?: string;
-      }>;
-    }) => {
+    create: async (body: CreatePostRequest) => {
       return this.request<{ post: { id: string } }>("/v1/posts", {
         method: "POST",
         body: JSON.stringify(body),
@@ -253,14 +184,7 @@ class ApiClient {
       return this.request<{ groups: CommunityGroupSummary[] }>("/v1/communities/groups");
     },
 
-    createGroup: async (body: {
-      accountId: string;
-      name: string;
-      platform: string;
-      destinationIds: string[];
-      staggerMinutes?: number;
-      tags?: string[];
-    }) => {
+    createGroup: async (body: CreateCommunityGroupRequest) => {
       return this.request<{ group: { id: string; name: string } }>("/v1/communities/groups", {
         method: "POST",
         body: JSON.stringify(body),
@@ -279,18 +203,7 @@ class ApiClient {
       );
     },
 
-    createAutomation: async (
-      groupId: string,
-      body: {
-        title: string;
-        scheduleType?: string;
-        cronSchedule?: string;
-        contentTemplate: string;
-        titleTemplate?: string;
-        topicPool?: string[];
-        autoAdaptTone?: boolean;
-      },
-    ) => {
+    createAutomation: async (groupId: string, body: CreateCommunityAutomationRequest) => {
       return this.request<{ automation: { id: string; title: string } }>(
         `/v1/communities/groups/${groupId}/automations`,
         {
