@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AlertCircle, CheckCircle2, Sparkles, XCircle, Clock, Zap } from "lucide-react";
+import { AlertCircle, CheckCircle2, Sparkles, XCircle } from "lucide-react";
 import { PlatformIcon } from "./platform-icons";
 
 export function BlastRadiusComparison() {

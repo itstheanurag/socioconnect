@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Send, Clock, Zap, CalendarDays, Shield, Sparkles } from "lucide-react";
+import { Clock, Zap, Shield, Sparkles } from "lucide-react";
 import { PlatformIcon } from "./platform-icons";
 
 interface ChannelConfig {

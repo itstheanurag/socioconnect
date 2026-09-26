@@ -3,23 +3,14 @@
 import { useState } from "react";
 import {
   Sparkles,
-  Layers,
   Calendar,
   Users,
   BarChart3,
   ShieldCheck,
-  Zap,
   Clock,
   ArrowRight,
   CheckCircle2,
-  Sliders,
-  Send,
-  RefreshCw,
-  Eye,
-  Hash,
-  MessageSquare,
   Bot,
-  Flame,
 } from "lucide-react";
 import { PlatformIcon } from "../platform-icons";
 
