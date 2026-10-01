@@ -41,6 +41,7 @@ export default function RedditCommunityFlow() {
         transition={{
           duration: 1.2,
           ease: "easeOut",
+          repeat: Infinity,
         }}
         className="pointer-events-none absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-orange-500/5.5 blur-3xl"
       />
