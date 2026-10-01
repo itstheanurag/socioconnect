@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Space_Grotesk, Instrument_Serif, Caveat } from "next/font/google";
+import { NotificationProvider } from "@/context/notification-context";
+import { NotificationToasts } from "@/component/ui/notification-toast";
+import { AuthProvider } from "@/context/auth-context";
+import AuthModal from "@/component/auth/auth-modal";
 import "./globals.css";
 
 const jakartaSans = Plus_Jakarta_Sans({
@@ -43,7 +47,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         suppressHydrationWarning
         className="min-h-full flex flex-col bg-[#050508] text-neutral-100 font-sans"
       >
-        {children}
+        <NotificationProvider>
+          <AuthProvider>
+            {children}
+            <AuthModal />
+            <NotificationToasts />
+          </AuthProvider>
+        </NotificationProvider>
       </body>
     </html>
   );

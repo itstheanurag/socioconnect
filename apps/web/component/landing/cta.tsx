@@ -2,6 +2,7 @@
 
 import { motion, type Variants } from "motion/react";
 import { ArrowRight } from "lucide-react";
+import { useAuth } from "@/context/auth-context";
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 24 },
@@ -13,6 +14,8 @@ const fadeInUp: Variants = {
 };
 
 export default function Cta() {
+  const { openAuthModal } = useAuth();
+
   return (
     <motion.div
       initial="hidden"
@@ -40,16 +43,17 @@ export default function Cta() {
         </p>
 
         <div className="mt-8 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-          <motion.a
-            href="#signup"
+          <motion.button
+            type="button"
+            onClick={openAuthModal}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.96 }}
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
-            className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full font-semibold text-white bg-red-600 hover:bg-red-500 shadow-[0_0_25px_rgba(220,38,38,0.4)] hover:shadow-[0_0_35px_rgba(220,38,38,0.6)] transition-all duration-300"
+            className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full font-semibold text-white bg-red-600 hover:bg-red-500 shadow-[0_0_25px_rgba(220,38,38,0.4)] hover:shadow-[0_0_35px_rgba(220,38,38,0.6)] transition-all duration-300 cursor-pointer"
           >
             <span>Start publishing</span>
             <ArrowRight className="w-4 h-4" />
-          </motion.a>
+          </motion.button>
 
           <motion.a
             href="#demo"

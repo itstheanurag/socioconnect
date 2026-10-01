@@ -4,8 +4,11 @@ import Auralis from "@/component/background/auralis";
 import HoneycombGrid from "@/component/landing/honeycomb-grid";
 import { motion } from "motion/react";
 import { ArrowRight, Play, Check } from "lucide-react";
+import { useAuth } from "@/context/auth-context";
 
 export default function Hero() {
+  const { openAuthModal } = useAuth();
+
   return (
     <section className="relative min-h-screen w-full flex flex-col justify-center items-center pt-32 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden bg-[#050508]">
       {/* Background Auralis Shader Layer - strictly decorative & non-interactive */}
@@ -29,6 +32,7 @@ export default function Hero() {
         <motion.div
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
+          onClick={openAuthModal}
           className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.05] border border-white/10 backdrop-blur-md shadow-sm mb-6 hover:bg-white/[0.08] transition-all cursor-pointer group"
         >
           <span className="flex h-2 w-2 rounded-full bg-rose-500 animate-pulse" />
@@ -59,16 +63,17 @@ export default function Hero() {
 
         {/* Call to Actions with motion tap/hover */}
         <div className="mt-8 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-          <motion.a
-            href="#get-started"
+          <motion.button
+            type="button"
+            onClick={openAuthModal}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.96 }}
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
-            className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full font-semibold text-white bg-red-600 hover:bg-red-500 shadow-[0_0_25px_rgba(220,38,38,0.4)] hover:shadow-[0_0_35px_rgba(220,38,38,0.6)] transition-all duration-300"
+            className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full font-semibold text-white bg-red-600 hover:bg-red-500 shadow-[0_0_25px_rgba(220,38,38,0.4)] hover:shadow-[0_0_35px_rgba(220,38,38,0.6)] transition-all duration-300 cursor-pointer"
           >
             <span>Start Free Trial</span>
             <ArrowRight className="w-4 h-4" />
-          </motion.a>
+          </motion.button>
 
           <motion.a
             href="#demo"
@@ -92,7 +97,7 @@ export default function Hero() {
             <Check className="w-3.5 h-3.5 text-emerald-400" />
             No credit card required
           </span>
-          <span className="hidden items-center gap-1.5 sm:flex">
+          <span className="flex items-center gap-1.5 hidden sm:flex">
             <Check className="w-3.5 h-3.5 text-emerald-400" />
             Instant multi-channel sync
           </span>

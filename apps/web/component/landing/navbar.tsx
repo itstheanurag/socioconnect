@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Share2, Menu, X, ArrowRight } from "lucide-react";
+import { Share2, Menu, X, ArrowRight, User, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { useAuth } from "@/context/auth-context";
 
 const NAV_LINKS = [
   { name: "Features", href: "#features" },
@@ -17,6 +18,10 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeLink, setActiveLink] = useState<string>("Features");
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const { user, isAuthenticated, isLoading, openAuthModal, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,9 +31,20 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setUserDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         scrolled ? "py-3" : "py-5"
       }`}
     >
@@ -101,32 +117,95 @@ export default function Navbar() {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-3">
-            <motion.div
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.94 }}
-              transition={{ type: "spring", stiffness: 400, damping: 20 }}
-            >
-              <Link
-                href="#login"
-                className="px-4 py-2 text-sm font-medium text-neutral-300 hover:text-white transition-colors"
-              >
-                Sign In
-              </Link>
-            </motion.div>
+            {!isLoading && isAuthenticated && user ? (
+              <div className="relative" ref={dropdownRef}>
+                <motion.button
+                  type="button"
+                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:border-white/20 transition-all cursor-pointer text-sm font-medium text-white"
+                >
+                  {user.avatar ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={user.avatar}
+                      alt={user.firstName}
+                      className="w-6 h-6 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-6 h-6 rounded-full bg-rose-500/20 text-rose-300 flex items-center justify-center text-xs font-bold">
+                      {user.firstName ? user.firstName[0]?.toUpperCase() : "U"}
+                    </div>
+                  )}
+                  <span className="text-xs text-neutral-200">{user.firstName}</span>
+                </motion.button>
 
-            <motion.div
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 400, damping: 20 }}
-            >
-              <Link
-                href="#signup"
-                className="group relative inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold text-white bg-red-600 hover:bg-red-500 shadow-lg shadow-red-600/25 transition-all duration-200"
-              >
-                <span>Get Started</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-              </Link>
-            </motion.div>
+                <AnimatePresence>
+                  {userDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 mt-2 w-56 rounded-2xl bg-[#0a0a14] border border-white/12 shadow-2xl p-2 z-50 text-white backdrop-blur-xl"
+                    >
+                      <div className="px-3 py-2 border-b border-white/8 mb-1">
+                        <p className="text-xs font-semibold text-white truncate">
+                          {user.firstName} {user.lastName || ""}
+                        </p>
+                        <p className="text-[11px] font-mono text-neutral-400 truncate">
+                          {user.email}
+                        </p>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setUserDropdownOpen(false);
+                          logout();
+                        }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors cursor-pointer"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        <span>Sign Out</span>
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <>
+                <motion.div
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.94 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                >
+                  <button
+                    type="button"
+                    onClick={openAuthModal}
+                    className="px-4 py-2 text-sm font-medium text-neutral-300 hover:text-white transition-colors cursor-pointer"
+                  >
+                    Sign In
+                  </button>
+                </motion.div>
+
+                <motion.div
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                >
+                  <button
+                    type="button"
+                    onClick={openAuthModal}
+                    className="group relative inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold text-white bg-red-600 hover:bg-red-500 shadow-lg shadow-red-600/25 transition-all duration-200 cursor-pointer"
+                  >
+                    <span>Get Started</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                  </button>
+                </motion.div>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button with Animated Toggle */}
@@ -153,7 +232,7 @@ export default function Navbar() {
                   key="menu"
                   initial={{ rotate: 90, opacity: 0 }}
                   animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: -90, opacity: 0 }}
+                  exit={{ rotate: 90, opacity: 0 }}
                   transition={{ duration: 0.15 }}
                 >
                   <Menu className="w-5 h-5" />
@@ -205,25 +284,55 @@ export default function Navbar() {
               </div>
 
               <div className="pt-3 border-t border-white/10 flex flex-col gap-2">
-                <motion.div whileTap={{ scale: 0.97 }}>
-                  <Link
-                    href="#login"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="w-full block text-center py-2.5 text-sm font-medium text-neutral-200 hover:text-white transition-colors"
-                  >
-                    Sign In
-                  </Link>
-                </motion.div>
-                <motion.div whileTap={{ scale: 0.97 }}>
-                  <Link
-                    href="#signup"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-white bg-red-600 hover:bg-red-500 shadow-md shadow-red-600/20"
-                  >
-                    <span>Get Started Free</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </motion.div>
+                {!isLoading && isAuthenticated && user ? (
+                  <div className="flex flex-col gap-2 p-2 rounded-xl bg-white/4 border border-white/8">
+                    <div className="flex items-center gap-2">
+                      <User className="w-4 h-4 text-rose-400" />
+                      <span className="text-xs text-neutral-200">
+                        {user.firstName} ({user.email})
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        logout();
+                      }}
+                      className="w-full flex items-center justify-center gap-2 py-2 text-xs font-semibold text-red-400 bg-red-500/10 rounded-lg hover:bg-red-500/20 transition-colors"
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <motion.div whileTap={{ scale: 0.97 }}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          openAuthModal();
+                        }}
+                        className="w-full block text-center py-2.5 text-sm font-medium text-neutral-200 hover:text-white transition-colors cursor-pointer"
+                      >
+                        Sign In
+                      </button>
+                    </motion.div>
+                    <motion.div whileTap={{ scale: 0.97 }}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          openAuthModal();
+                        }}
+                        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-white bg-red-600 hover:bg-red-500 shadow-md shadow-red-600/20 cursor-pointer"
+                      >
+                        <span>Get Started Free</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </motion.div>
+                  </>
+                )}
               </div>
             </motion.div>
           )}

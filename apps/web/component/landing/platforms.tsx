@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion, type Variants } from "motion/react";
 import { PlatformConfig } from "@/component/icons/social-icons";
 import { HoneycombGrid, GridRowConfig } from "@/component/landing/honeycomb";
-import { Sparkles, CheckCircle2, ArrowUpRight } from "lucide-react";
+import { Sparkles, CheckCircle2 } from "lucide-react";
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 24 },
@@ -60,14 +60,14 @@ export default function Platforms() {
           {/* Section Pill */}
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/4 border border-white/10 backdrop-blur-md mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
-            <span className="text-xs font-medium lowercase tracking-wider text-neutral-300">
-              All platforms
+            <span className="text-xs font-medium uppercase tracking-wider text-neutral-300">
+              Native Distribution Matrix
             </span>
           </div>
 
           <h2 className="font-display text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.15]">
-            Everything at{" "}
-            <span className="font-serif italic font-normal text-rose-300">your command</span>
+            Every platform where your audience gathers.{" "}
+            <span className="font-serif italic font-normal text-rose-300">Synchronized.</span>
           </h2>
 
           <p className="mt-4 text-base sm:text-lg text-neutral-400 font-light leading-relaxed max-w-2xl mx-auto">

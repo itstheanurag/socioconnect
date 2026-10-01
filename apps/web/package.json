@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@repo/contracts": "workspace:*",
     "lucide-react": "^1.49.0",
     "motion": "^13.4.6",
     "next": "16.3.7",
