@@ -54,8 +54,18 @@ export async function getCurrentUser(): Promise<UserProfile | null> {
       return null;
     }
 
-    const data = (await response.json()) as ApiResponse<{ user: UserProfile }>;
-    return data.payload?.user || null;
+    const data = await response.json();
+    // Handle both payload.user and direct user response shapes
+    if (data.payload?.user) {
+      return data.payload.user;
+    }
+    if (data.user) {
+      return data.user;
+    }
+    if (data.email) {
+      return data as UserProfile;
+    }
+    return null;
   } catch {
     return null;
   }

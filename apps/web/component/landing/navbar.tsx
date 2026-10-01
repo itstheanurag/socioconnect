@@ -1,25 +1,22 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Share2, Menu, X, ArrowRight, User, LogOut, LayoutDashboard } from "lucide-react";
+import { Share2, Menu, X, Sparkles, ArrowRight, LogOut, User, LayoutDashboard } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from "@/context/auth-context";
 
 const NAV_LINKS = [
-  { name: "Features", href: "#features" },
-  { name: "Use Cases", href: "#use-cases" },
-  { name: "Platforms", href: "#platforms" },
-  { name: "Scheduler", href: "#features" },
-  { name: "Pricing", href: "#pricing" },
+  { href: "#capabilities", label: "Capabilities" },
+  { href: "#platforms", label: "Platforms" },
+  { href: "#architecture", label: "Architecture" },
+  { href: "#open-source", label: "Open Source" },
 ];
 
-export default function Navbar() {
+export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeLink, setActiveLink] = useState<string>("Features");
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const { user, isAuthenticated, isLoading, openAuthModal, logout } = useAuth();
 
@@ -31,107 +28,54 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close dropdown on outside click
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setUserDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-        scrolled ? "py-3" : "py-5"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "bg-[#050508]/80 backdrop-blur-xl border-b border-white/[0.08] py-3 shadow-2xl shadow-black/50"
+          : "bg-transparent py-5"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <nav
-          className={`flex items-center justify-between px-4 sm:px-6 py-2.5 rounded-full transition-all duration-300 ${
-            scrolled
-              ? "bg-[#09090f]/85 backdrop-blur-xl border border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.5)]"
-              : "bg-white/3 backdrop-blur-md border border-white/8"
-          }`}
-        >
-          {/* Logo with Motion Interactive Feedback */}
-          <Link href="/" className="group">
-            <motion.div
-              className="flex items-center gap-2.5"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 400, damping: 20 }}
-            >
-              <div className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-red-600 shadow-md shadow-red-600/25">
-                <Share2 className="w-5 h-5 text-white" />
-                <div className="absolute -inset-0.5 bg-red-500 rounded-xl blur-sm opacity-40 group-hover:opacity-75 transition duration-300 -z-10" />
-              </div>
-              <span className="font-display text-lg font-bold tracking-tight text-white flex items-center">
-                Socio
-                <span className="font-serif italic font-normal text-rose-400 text-xl ml-0.5">
-                  Connect
-                </span>
+        <div className="flex items-center justify-between">
+          {/* Brand Logo */}
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-red-600 shadow-lg shadow-red-600/30 transition-transform duration-300 group-hover:scale-105">
+              <Share2 className="w-4 h-4 text-white" />
+              <div className="absolute -inset-1 bg-red-500 rounded-xl blur-xs opacity-40 group-hover:opacity-75 transition duration-300 -z-10" />
+            </div>
+            <span className="font-display text-lg font-bold tracking-tight text-white flex items-center">
+              Socio
+              <span className="font-serif italic font-normal text-rose-400 text-xl ml-0.5">
+                Connect
               </span>
-            </motion.div>
+            </span>
           </Link>
 
-          {/* Desktop Navigation Links with Animated Pill Glider */}
-          <div className="hidden md:flex items-center gap-1 relative p-1 ">
-            {NAV_LINKS.map((link) => {
-              const isActive = activeLink === link.name;
-              return (
-                <motion.div
-                  key={link.name}
-                  whileTap={{ scale: 0.92 }}
-                  whileHover={{ y: -1 }}
-                  transition={{ type: "spring", stiffness: 450, damping: 25 }}
-                >
-                  <Link
-                    href={link.href}
-                    onClick={() => setActiveLink(link.name)}
-                    className={`relative px-4 py-1.5 text-sm font-medium rounded-full transition-colors inline-block z-10 ${
-                      isActive
-                        ? "text-white font-semibold"
-                        : "text-neutral-400 hover:text-neutral-200"
-                    }`}
-                  >
-                    {isActive && (
-                      <motion.span
-                        layoutId="navPill"
-                        className="absolute inset-0 bg-white/12 border border-white/15 rounded-full shadow-inner -z-10"
-                        transition={{
-                          type: "spring",
-                          stiffness: 380,
-                          damping: 30,
-                        }}
-                      />
-                    )}
-                    {link.name}
-                  </Link>
-                </motion.div>
-              );
-            })}
-          </div>
+          {/* Desktop Navigation Links */}
+          <nav className="hidden md:flex items-center gap-1 px-4 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
+            {NAV_LINKS.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="px-4 py-1.5 text-xs font-medium text-neutral-300 hover:text-white rounded-full transition-colors hover:bg-white/[0.06]"
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
 
-          {/* Desktop Actions */}
+          {/* CTA & Authentication */}
           <div className="hidden md:flex items-center gap-3">
-            {!isLoading && isAuthenticated && user ? (
-              <div className="flex items-center gap-2">
-                <Link
-                  href="/dashboard"
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/25 text-xs font-semibold text-rose-300 transition-all"
-                >
-                  <LayoutDashboard className="w-3.5 h-3.5" />
-                  <span>Dashboard</span>
-                </Link>
-
-                <div className="relative" ref={dropdownRef}>
+            {isLoading ? (
+              <div className="w-24 h-8 rounded-full bg-white/5 animate-pulse" />
+            ) : isAuthenticated && user ? (
+              <div className="relative">
+                <div className="flex items-center gap-2">
                   <motion.button
                     type="button"
                     onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                    whileHover={{ scale: 1.03 }}
+                    whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.97 }}
                     className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:border-white/20 transition-all cursor-pointer text-sm font-medium text-white"
                   >
@@ -140,6 +84,7 @@ export default function Navbar() {
                       <img
                         src={user.avatar}
                         alt={user.firstName}
+                        referrerPolicy="no-referrer"
                         className="w-5 h-5 rounded-full object-cover"
                       />
                     ) : (
@@ -150,221 +95,148 @@ export default function Navbar() {
                     <span className="text-xs text-neutral-200">{user.firstName}</span>
                   </motion.button>
 
-                  <AnimatePresence>
-                    {userDropdownOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 8, scale: 0.96 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                        transition={{ duration: 0.15 }}
-                        className="absolute right-0 mt-2 w-56 rounded-2xl bg-[#0a0a14] border border-white/12 shadow-2xl p-2 z-50 text-white backdrop-blur-xl"
-                      >
-                        <div className="px-3 py-2 border-b border-white/8 mb-1">
-                          <p className="text-xs font-semibold text-white truncate">
-                            {user.firstName} {user.lastName || ""}
-                          </p>
-                          <p className="text-[11px] font-mono text-neutral-400 truncate">
-                            {user.email}
-                          </p>
-                        </div>
-
-                        <Link
-                          href="/dashboard"
-                          onClick={() => setUserDropdownOpen(false)}
-                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-neutral-300 hover:text-white hover:bg-white/5 transition-colors"
-                        >
-                          <LayoutDashboard className="w-4 h-4" />
-                          <span>Open Dashboard</span>
-                        </Link>
-
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setUserDropdownOpen(false);
-                            logout();
-                          }}
-                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors cursor-pointer"
-                        >
-                          <LogOut className="w-4 h-4" />
-                          <span>Sign Out</span>
-                        </button>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  <Link
+                    href="/dashboard"
+                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold text-white bg-red-600 hover:bg-red-500 shadow-md shadow-red-600/20 transition-all"
+                  >
+                    <LayoutDashboard className="w-3.5 h-3.5" />
+                    <span>Dashboard</span>
+                  </Link>
                 </div>
+
+                <AnimatePresence>
+                  {userDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 mt-2 w-56 rounded-2xl bg-[#0a0a14] border border-white/12 shadow-2xl p-2 z-50 text-white backdrop-blur-xl"
+                    >
+                      <div className="px-3 py-2 border-b border-white/8 mb-1">
+                        <p className="text-xs font-semibold text-white">
+                          {user.firstName} {user.lastName || ""}
+                        </p>
+                        <p className="text-[11px] font-mono text-neutral-400 truncate">
+                          {user.email}
+                        </p>
+                      </div>
+
+                      <Link
+                        href="/dashboard"
+                        className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-neutral-300 hover:text-white hover:bg-white/5 transition-colors"
+                        onClick={() => setUserDropdownOpen(false)}
+                      >
+                        <LayoutDashboard className="w-3.5 h-3.5 text-neutral-400" />
+                        <span>Command Center</span>
+                      </Link>
+
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          setUserDropdownOpen(false);
+                          await logout();
+                        }}
+                        className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                      >
+                        <LogOut className="w-3.5 h-3.5" />
+                        <span>Sign Out</span>
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             ) : (
-              <>
-                <motion.div
-                  whileHover={{ scale: 1.04 }}
-                  whileTap={{ scale: 0.94 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                >
-                  <button
-                    type="button"
-                    onClick={openAuthModal}
-                    className="px-4 py-2 text-sm font-medium text-neutral-300 hover:text-white transition-colors cursor-pointer"
-                  >
-                    Sign In
-                  </button>
-                </motion.div>
-
-                <motion.div
-                  whileHover={{ scale: 1.04 }}
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                >
-                  <button
-                    type="button"
-                    onClick={openAuthModal}
-                    className="group relative inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold text-white bg-red-600 hover:bg-red-500 shadow-lg shadow-red-600/25 transition-all duration-200 cursor-pointer"
-                  >
-                    <span>Get Started</span>
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                  </button>
-                </motion.div>
-              </>
+              <motion.button
+                type="button"
+                onClick={openAuthModal}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="relative group overflow-hidden px-4 py-2 rounded-full text-xs font-semibold text-white bg-linear-to-r from-red-600 via-rose-600 to-red-600 bg-size-200 hover:bg-right transition-all duration-300 shadow-md shadow-red-600/25 flex items-center gap-2 cursor-pointer"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-rose-200" />
+                <span>Get Started</span>
+                <ArrowRight className="w-3 h-3 text-rose-200 group-hover:translate-x-0.5 transition-transform" />
+              </motion.button>
             )}
           </div>
 
-          {/* Mobile Menu Button with Animated Toggle */}
-          <motion.button
-            type="button"
-            whileTap={{ scale: 0.9 }}
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg text-neutral-300 hover:text-white hover:bg-white/10 transition-colors"
-            aria-label="Toggle Navigation Menu"
-          >
-            <AnimatePresence mode="wait" initial={false}>
-              {mobileMenuOpen ? (
-                <motion.div
-                  key="close"
-                  initial={{ rotate: -90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 90, opacity: 0 }}
-                  transition={{ duration: 0.15 }}
-                >
-                  <X className="w-5 h-5" />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="menu"
-                  initial={{ rotate: 90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 90, opacity: 0 }}
-                  transition={{ duration: 0.15 }}
-                >
-                  <Menu className="w-5 h-5" />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.button>
-        </nav>
-
-        {/* Mobile Menu Dropdown with Motion Animations */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -12, scale: 0.96 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -12, scale: 0.96 }}
-              transition={{ type: "spring", stiffness: 350, damping: 26 }}
-              className="md:hidden mt-2 p-4 rounded-2xl bg-[#09090f]/95 backdrop-blur-2xl border border-white/10 shadow-2xl space-y-3"
+          {/* Mobile Menu Button */}
+          <div className="flex items-center gap-2 md:hidden">
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-xl text-neutral-400 hover:text-white bg-white/5 border border-white/10"
+              aria-label="Toggle menu"
             >
-              <div className="flex flex-col space-y-1">
-                {NAV_LINKS.map((link, index) => {
-                  const isActive = activeLink === link.name;
-                  return (
-                    <motion.div
-                      key={link.name}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.04, duration: 0.2 }}
-                      whileTap={{ scale: 0.96 }}
-                    >
-                      <Link
-                        href={link.href}
-                        onClick={() => {
-                          setActiveLink(link.name);
-                          setMobileMenuOpen(false);
-                        }}
-                        className={`flex items-center justify-between px-4 py-2.5 text-base font-medium rounded-lg transition-colors ${
-                          isActive
-                            ? "text-white bg-white/10 font-semibold"
-                            : "text-neutral-300 hover:text-white hover:bg-white/[0.06]"
-                        }`}
-                      >
-                        <span>{link.name}</span>
-                        {isActive && <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />}
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-              </div>
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
+        </div>
+      </div>
 
-              <div className="pt-3 border-t border-white/10 flex flex-col gap-2">
-                {!isLoading && isAuthenticated && user ? (
-                  <div className="flex flex-col gap-2 p-2 rounded-xl bg-white/4 border border-white/8">
-                    <div className="flex items-center gap-2">
-                      <User className="w-4 h-4 text-rose-400" />
-                      <span className="text-xs text-neutral-200">
-                        {user.firstName} ({user.email})
-                      </span>
-                    </div>
+      {/* Mobile Drawer */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden border-b border-white/10 bg-[#07070c]/95 backdrop-blur-2xl"
+          >
+            <div className="px-4 pt-3 pb-6 space-y-3">
+              {NAV_LINKS.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-3 py-2 rounded-xl text-sm font-medium text-neutral-300 hover:text-white hover:bg-white/5"
+                >
+                  {link.label}
+                </a>
+              ))}
+              <div className="pt-3 border-t border-white/10">
+                {isAuthenticated && user ? (
+                  <div className="space-y-2">
                     <Link
                       href="/dashboard"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="w-full flex items-center justify-center gap-2 py-2 text-xs font-semibold text-white bg-white/10 rounded-lg hover:bg-white/15 transition-colors"
+                      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-red-600 text-white text-xs font-semibold shadow-md"
                     >
-                      <LayoutDashboard className="w-3.5 h-3.5" />
-                      <span>Dashboard</span>
+                      <LayoutDashboard className="w-4 h-4" />
+                      <span>Open Dashboard</span>
                     </Link>
                     <button
                       type="button"
-                      onClick={() => {
+                      onClick={async () => {
                         setMobileMenuOpen(false);
-                        logout();
+                        await logout();
                       }}
-                      className="w-full flex items-center justify-center gap-2 py-2 text-xs font-semibold text-red-400 bg-red-500/10 rounded-lg hover:bg-red-500/20 transition-colors cursor-pointer"
+                      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 text-rose-400 text-xs font-semibold"
                     >
-                      <LogOut className="w-3.5 h-3.5" />
+                      <LogOut className="w-4 h-4" />
                       <span>Sign Out</span>
                     </button>
                   </div>
                 ) : (
-                  <>
-                    <motion.div whileTap={{ scale: 0.97 }}>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setMobileMenuOpen(false);
-                          openAuthModal();
-                        }}
-                        className="w-full block text-center py-2.5 text-sm font-medium text-neutral-200 hover:text-white transition-colors cursor-pointer"
-                      >
-                        Sign In
-                      </button>
-                    </motion.div>
-                    <motion.div whileTap={{ scale: 0.97 }}>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setMobileMenuOpen(false);
-                          openAuthModal();
-                        }}
-                        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-white bg-red-600 hover:bg-red-500 shadow-md shadow-red-600/20 cursor-pointer"
-                      >
-                        <span>Get Started Free</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </button>
-                    </motion.div>
-                  </>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      openAuthModal();
+                    }}
+                    className="w-full py-2.5 rounded-xl bg-red-600 text-white text-xs font-semibold shadow-md"
+                  >
+                    Sign In / Get Started
+                  </button>
                 )}
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
+
+export default Navbar;
