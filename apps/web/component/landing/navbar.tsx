@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Share2, Menu, X, ArrowRight, User, LogOut } from "lucide-react";
+import { Share2, Menu, X, ArrowRight, User, LogOut, LayoutDashboard } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from "@/context/auth-context";
 
@@ -118,61 +118,80 @@ export default function Navbar() {
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-3">
             {!isLoading && isAuthenticated && user ? (
-              <div className="relative" ref={dropdownRef}>
-                <motion.button
-                  type="button"
-                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:border-white/20 transition-all cursor-pointer text-sm font-medium text-white"
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/dashboard"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/25 text-xs font-semibold text-rose-300 transition-all"
                 >
-                  {user.avatar ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={user.avatar}
-                      alt={user.firstName}
-                      className="w-6 h-6 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-6 h-6 rounded-full bg-rose-500/20 text-rose-300 flex items-center justify-center text-xs font-bold">
-                      {user.firstName ? user.firstName[0]?.toUpperCase() : "U"}
-                    </div>
-                  )}
-                  <span className="text-xs text-neutral-200">{user.firstName}</span>
-                </motion.button>
+                  <LayoutDashboard className="w-3.5 h-3.5" />
+                  <span>Dashboard</span>
+                </Link>
 
-                <AnimatePresence>
-                  {userDropdownOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 8, scale: 0.96 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                      transition={{ duration: 0.15 }}
-                      className="absolute right-0 mt-2 w-56 rounded-2xl bg-[#0a0a14] border border-white/12 shadow-2xl p-2 z-50 text-white backdrop-blur-xl"
-                    >
-                      <div className="px-3 py-2 border-b border-white/8 mb-1">
-                        <p className="text-xs font-semibold text-white truncate">
-                          {user.firstName} {user.lastName || ""}
-                        </p>
-                        <p className="text-[11px] font-mono text-neutral-400 truncate">
-                          {user.email}
-                        </p>
+                <div className="relative" ref={dropdownRef}>
+                  <motion.button
+                    type="button"
+                    onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:border-white/20 transition-all cursor-pointer text-sm font-medium text-white"
+                  >
+                    {user.avatar ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={user.avatar}
+                        alt={user.firstName}
+                        className="w-5 h-5 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-5 h-5 rounded-full bg-rose-500/20 text-rose-300 flex items-center justify-center text-[10px] font-bold">
+                        {user.firstName ? user.firstName[0]?.toUpperCase() : "U"}
                       </div>
+                    )}
+                    <span className="text-xs text-neutral-200">{user.firstName}</span>
+                  </motion.button>
 
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setUserDropdownOpen(false);
-                          logout();
-                        }}
-                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors cursor-pointer"
+                  <AnimatePresence>
+                    {userDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute right-0 mt-2 w-56 rounded-2xl bg-[#0a0a14] border border-white/12 shadow-2xl p-2 z-50 text-white backdrop-blur-xl"
                       >
-                        <LogOut className="w-4 h-4" />
-                        <span>Sign Out</span>
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                        <div className="px-3 py-2 border-b border-white/8 mb-1">
+                          <p className="text-xs font-semibold text-white truncate">
+                            {user.firstName} {user.lastName || ""}
+                          </p>
+                          <p className="text-[11px] font-mono text-neutral-400 truncate">
+                            {user.email}
+                          </p>
+                        </div>
+
+                        <Link
+                          href="/dashboard"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-neutral-300 hover:text-white hover:bg-white/5 transition-colors"
+                        >
+                          <LayoutDashboard className="w-4 h-4" />
+                          <span>Open Dashboard</span>
+                        </Link>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setUserDropdownOpen(false);
+                            logout();
+                          }}
+                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors cursor-pointer"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          <span>Sign Out</span>
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
             ) : (
               <>
@@ -292,13 +311,21 @@ export default function Navbar() {
                         {user.firstName} ({user.email})
                       </span>
                     </div>
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="w-full flex items-center justify-center gap-2 py-2 text-xs font-semibold text-white bg-white/10 rounded-lg hover:bg-white/15 transition-colors"
+                    >
+                      <LayoutDashboard className="w-3.5 h-3.5" />
+                      <span>Dashboard</span>
+                    </Link>
                     <button
                       type="button"
                       onClick={() => {
                         setMobileMenuOpen(false);
                         logout();
                       }}
-                      className="w-full flex items-center justify-center gap-2 py-2 text-xs font-semibold text-red-400 bg-red-500/10 rounded-lg hover:bg-red-500/20 transition-colors"
+                      className="w-full flex items-center justify-center gap-2 py-2 text-xs font-semibold text-red-400 bg-red-500/10 rounded-lg hover:bg-red-500/20 transition-colors cursor-pointer"
                     >
                       <LogOut className="w-3.5 h-3.5" />
                       <span>Sign Out</span>

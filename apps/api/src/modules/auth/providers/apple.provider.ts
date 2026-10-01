@@ -10,10 +10,7 @@ import { createPrivateKey, createPublicKey, type JsonWebKey, type KeyObject } fr
 function normalizeApplePrivateKey(raw: string): KeyObject {
   let key = raw.trim();
 
-  if (
-    (key.startsWith('"') && key.endsWith('"')) ||
-    (key.startsWith("'") && key.endsWith("'"))
-  ) {
+  if ((key.startsWith('"') && key.endsWith('"')) || (key.startsWith("'") && key.endsWith("'"))) {
     key = key.slice(1, -1);
   }
 

@@ -16,7 +16,8 @@ export interface ApiResponse<T> {
 }
 
 export async function getGoogleOAuthUrl(): Promise<string> {
-  const url = `${API_BASE_URL}/v1/oauth/google?redirect=false`;
+  // redirect=true ensures the backend callback establishes HttpOnly session cookies and redirects to /dashboard
+  const url = `${API_BASE_URL}/v1/oauth/google?redirect=true`;
   const response = await fetch(url, {
     method: "GET",
     headers: {

@@ -73,10 +73,13 @@ function resolveOAuthNameFields(
 
   let firstName = givenName || fullName?.split(/\s+/)[0];
   let lastName =
-    familyName ??
-    (fullName?.includes(" ") ? fullName.split(/\s+/).slice(1).join(" ") : undefined);
+    familyName ?? (fullName?.includes(" ") ? fullName.split(/\s+/).slice(1).join(" ") : undefined);
 
-  if (!firstName && existingUser?.firstName && !isPlaceholderName(existingUser.firstName, userInfo.email)) {
+  if (
+    !firstName &&
+    existingUser?.firstName &&
+    !isPlaceholderName(existingUser.firstName, userInfo.email)
+  ) {
     firstName = existingUser.firstName;
   }
 

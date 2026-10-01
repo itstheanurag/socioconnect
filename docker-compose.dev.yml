@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
-      POSTGRES_DB: "backend-template"
+      POSTGRES_DB: "socioconnect_dev"
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:

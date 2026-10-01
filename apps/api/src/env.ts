@@ -1,5 +1,11 @@
 import { z } from "zod";
 import { baseEnvSchema } from "@repo/config";
+import dotenv from "dotenv";
+import path from "path";
+
+// Explicitly load .env from root and current directory
+dotenv.config({ path: path.resolve(process.cwd(), "../../.env") });
+dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 
 /**
  * API-specific environment schema
@@ -17,18 +23,19 @@ const apiEnvSchema = baseEnvSchema.extend({
   GOOGLE_CLIENT_SECRET: z.string({ message: "GOOGLE_CLIENT_SECRET is required" }),
   GOOGLE_REDIRECT_URI: z.string({ message: "GOOGLE_REDIRECT_URI is required" }),
 
-  // OAuth - Apple
-  APPLE_CLIENT_ID: z.string({ message: "APPLE_CLIENT_ID is required" }),
-  APPLE_TEAM_ID: z.string({ message: "APPLE_TEAM_ID is required" }),
-  APPLE_KEY_ID: z.string({ message: "APPLE_KEY_ID is required" }),
-  APPLE_PRIVATE_KEY: z.string({ message: "APPLE_PRIVATE_KEY is required" }),
-  APPLE_REDIRECT_URI: z.string({ message: "APPLE_REDIRECT_URI is required" }),
+  // OAuth - Apple (Optional)
+  APPLE_CLIENT_ID: z.string().optional().default(""),
+  APPLE_TEAM_ID: z.string().optional().default(""),
+  APPLE_KEY_ID: z.string().optional().default(""),
+  APPLE_PRIVATE_KEY: z.string().optional().default(""),
+  APPLE_REDIRECT_URI: z
+    .string()
+    .optional()
+    .default("http://localhost:8000/v1/oauth/apple/callback"),
 
   // Security
   ENCRYPTION_KEY: z.string({ message: "ENCRYPTION_KEY is required" }).refine(
     (val) => {
-      // AES-256-GCM requires a 32-byte (256-bit) key
-      // Hex encoded means 64 characters (32 bytes * 2)
       return /^[0-9a-fA-F]{64}$/.test(val);
     },
     {
