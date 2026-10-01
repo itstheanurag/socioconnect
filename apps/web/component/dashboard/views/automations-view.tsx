@@ -60,7 +60,8 @@ export function AutomationsView() {
             Publishing Automations
           </h1>
           <p className="text-xs sm:text-sm text-neutral-400 mt-1">
-            Build event-driven publishing workflows to cross-post, transform, and mirror content across platforms autonomously.
+            Build event-driven publishing workflows to cross-post, transform, and mirror content
+            across platforms autonomously.
           </p>
         </div>
 

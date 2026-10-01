@@ -20,11 +20,41 @@ export function AnalyticsView() {
   const [timeRange, setTimeRange] = useState<"7d" | "30d" | "90d">("30d");
 
   const platformPerformance = [
-    { platformId: "instagram" as PlatformId, name: "Instagram", impressions: "142.8k", engagement: "5.4%", growth: "+18%" },
-    { platformId: "twitter" as PlatformId, name: "X (Twitter)", impressions: "289.4k", engagement: "3.8%", growth: "+24%" },
-    { platformId: "linkedin" as PlatformId, name: "LinkedIn", impressions: "94.2k", engagement: "7.1%", growth: "+12%" },
-    { platformId: "reddit" as PlatformId, name: "Reddit", impressions: "68.5k", engagement: "8.9%", growth: "+31%" },
-    { platformId: "telegram" as PlatformId, name: "Telegram", impressions: "112.0k", engagement: "14.2%", growth: "+19%" },
+    {
+      platformId: "instagram" as PlatformId,
+      name: "Instagram",
+      impressions: "142.8k",
+      engagement: "5.4%",
+      growth: "+18%",
+    },
+    {
+      platformId: "twitter" as PlatformId,
+      name: "X (Twitter)",
+      impressions: "289.4k",
+      engagement: "3.8%",
+      growth: "+24%",
+    },
+    {
+      platformId: "linkedin" as PlatformId,
+      name: "LinkedIn",
+      impressions: "94.2k",
+      engagement: "7.1%",
+      growth: "+12%",
+    },
+    {
+      platformId: "reddit" as PlatformId,
+      name: "Reddit",
+      impressions: "68.5k",
+      engagement: "8.9%",
+      growth: "+31%",
+    },
+    {
+      platformId: "telegram" as PlatformId,
+      name: "Telegram",
+      impressions: "112.0k",
+      engagement: "14.2%",
+      growth: "+19%",
+    },
   ];
 
   return (
@@ -40,7 +70,8 @@ export function AnalyticsView() {
             Analytics &amp; Network Reach
           </h1>
           <p className="text-xs sm:text-sm text-neutral-400 mt-1">
-            Track cross-platform audience engagement, peak distribution windows, and content conversions.
+            Track cross-platform audience engagement, peak distribution windows, and content
+            conversions.
           </p>
         </div>
 
@@ -130,12 +161,17 @@ export function AnalyticsView() {
                 <tr key={item.platformId} className="group hover:bg-white/[0.02]">
                   <td className="py-3.5 flex items-center gap-2.5">
                     <div className="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
-                      <PlatformIcon platformId={item.platformId} className="w-3.5 h-3.5 text-white" />
+                      <PlatformIcon
+                        platformId={item.platformId}
+                        className="w-3.5 h-3.5 text-white"
+                      />
                     </div>
                     <span className="font-semibold text-white">{item.name}</span>
                   </td>
                   <td className="py-3.5 font-mono text-neutral-300">{item.impressions}</td>
-                  <td className="py-3.5 font-mono text-rose-300 font-semibold">{item.engagement}</td>
+                  <td className="py-3.5 font-mono text-rose-300 font-semibold">
+                    {item.engagement}
+                  </td>
                   <td className="py-3.5 font-mono text-emerald-400">{item.growth}</td>
                   <td className="py-3.5 text-right">
                     <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">

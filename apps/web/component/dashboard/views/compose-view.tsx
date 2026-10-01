@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import {
   Sparkles,
   Image as ImageIcon,
@@ -15,12 +15,12 @@ import {
   Eye,
   Hash,
   Smile,
-  SlidersHorizontal,
   Info,
 } from "lucide-react";
 import { useDashboard } from "../context/dashboard-context";
+import { useComposeStore, SAMPLE_MEDIA_LIBRARY } from "../store/use-compose-store";
 import { PlatformIcon, getPlatformBrandColor } from "../ui/platform-icon";
-import { PlatformId, PostMedia, PlatformOverride } from "../types";
+import { PlatformId, PostMedia } from "../types";
 import {
   analyzePlatformCompatibility,
   getPlatformDisplayName,
@@ -36,30 +36,6 @@ const AVAILABLE_PLATFORMS: PlatformId[] = [
   "threads",
 ];
 
-const SAMPLE_MEDIA_LIBRARY: PostMedia[] = [
-  {
-    id: "lib-1",
-    type: "image",
-    url: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80",
-    name: "launch_gradient_visual.png",
-    sizeMb: 2.1,
-  },
-  {
-    id: "lib-2",
-    type: "image",
-    url: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=800&auto=format&fit=crop&q=80",
-    name: "feature_matrix.png",
-    sizeMb: 1.8,
-  },
-  {
-    id: "lib-3",
-    type: "image",
-    url: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&auto=format&fit=crop&q=80",
-    name: "architecture_diagram.png",
-    sizeMb: 3.4,
-  },
-];
-
 export function ComposeView() {
   const {
     createPost,
@@ -70,67 +46,52 @@ export function ComposeView() {
     setCurrentSection,
   } = useDashboard();
 
-  // Composer state
-  const [title, setTitle] = useState(composeDraft?.title || "");
-  const [baseContent, setBaseContent] = useState(
-    composeDraft?.baseContent ||
-      "🚀 Introducing SocioConnect 2.0 — create content once, and Socioconnect intelligently adapts it to the platforms where it makes sense.\n\nExperience platform-aware formatting, autonomous Telegram bots, and unified scheduling.",
-  );
-  const [mediaList, setMediaList] = useState<PostMedia[]>(
-    composeDraft?.media && composeDraft.media.length > 0
-      ? composeDraft.media
-      : [SAMPLE_MEDIA_LIBRARY[0], SAMPLE_MEDIA_LIBRARY[1]],
-  );
-  const [hasAudio, setHasAudio] = useState(composeDraft?.hasAudio ?? true);
-  const [isAutoSelectPlatforms, setIsAutoSelectPlatforms] = useState(true);
-  const [selectedPlatforms, setSelectedPlatforms] = useState<PlatformId[]>(
-    composeDraft?.targetPlatforms || ["instagram", "twitter", "linkedin", "reddit", "telegram"],
-  );
-  const [activeOverrideTab, setActiveOverrideTab] = useState<"base" | PlatformId>("base");
-  const [platformOverrides, setPlatformOverrides] = useState<
-    Partial<Record<PlatformId, PlatformOverride>>
-  >(
-    composeDraft?.platformOverrides || {
-      reddit: {
-        enabled: true,
-        title:
-          "We built SocioConnect: A platform-aware engine that formats & dispatches to Reddit, X, Telegram & LinkedIn",
-        subreddit: "r/programming",
-        flair: "Showcase",
-      },
-      twitter: {
-        enabled: true,
-        caption:
-          "🚀 SocioConnect 2.0 is officially live!\n\nWrite once, publish across 32 platform dialects with zero copy-paste friction. 👇",
-      },
-      telegram: {
-        enabled: true,
-        caption:
-          "✨ *SocioConnect 2.0 Launch Announcement*\n\nRead our technical breakdown and try the new Telegram bot integration today.",
-        silentBroadcast: false,
-      },
-    },
-  );
-
-  const [selectedCommunityIds, setSelectedCommunityIds] = useState<string[]>(
-    composeDraft?.communityIds || ["comm-1"],
-  );
-  const [publishMode, setPublishMode] = useState<"now" | "schedule">("schedule");
-  const [scheduledDateTime, setScheduledDateTime] = useState("2026-10-02T10:30");
+  // Zustand Compose Store
+  const {
+    title,
+    baseContent,
+    mediaList,
+    hasAudio,
+    isAutoSelectPlatforms,
+    selectedPlatforms,
+    activeOverrideTab,
+    platformOverrides,
+    selectedCommunityIds,
+    isScheduling,
+    scheduleDateIso,
+    setTitle,
+    setBaseContent,
+    addMedia,
+    removeMedia,
+    setHasAudio,
+    setIsAutoSelectPlatforms,
+    setSelectedPlatforms,
+    togglePlatform,
+    setActiveOverrideTab,
+    setPlatformOverride,
+    setSelectedCommunityIds,
+    setIsScheduling,
+    setScheduleDateIso,
+    applyDraft,
+    resetComposer,
+  } = useComposeStore();
 
   // Consume incoming draft once
   useEffect(() => {
     if (composeDraft) {
-      if (composeDraft.title) setTitle(composeDraft.title);
-      if (composeDraft.baseContent) setBaseContent(composeDraft.baseContent);
-      if (composeDraft.media) setMediaList(composeDraft.media);
-      if (composeDraft.hasAudio !== undefined) setHasAudio(composeDraft.hasAudio);
-      if (composeDraft.targetPlatforms) setSelectedPlatforms(composeDraft.targetPlatforms);
-      if (composeDraft.platformOverrides) setPlatformOverrides(composeDraft.platformOverrides);
-      if (composeDraft.communityIds) setSelectedCommunityIds(composeDraft.communityIds);
+      applyDraft({
+        title: composeDraft.title,
+        baseContent: composeDraft.baseContent,
+        media: composeDraft.media,
+        hasAudio: composeDraft.hasAudio,
+        targetPlatforms: composeDraft.targetPlatforms,
+        communityIds: composeDraft.communityIds,
+        scheduledFor: composeDraft.scheduledFor,
+        platformOverrides: composeDraft.platformOverrides,
+      });
       setComposeDraft(null);
     }
-  }, [composeDraft, setComposeDraft]);
+  }, [composeDraft, setComposeDraft, applyDraft]);
 
   // Compute live compatibility with memoization
   const currentContentPayload = useMemo(
@@ -177,23 +138,11 @@ export function ComposeView() {
         return newSelected;
       });
     }
-  }, [isAutoSelectPlatforms, recommendedKey, recommendation]);
+  }, [isAutoSelectPlatforms, recommendedKey, recommendation, setSelectedPlatforms]);
 
   const togglePlatformManual = (platformId: PlatformId) => {
     setIsAutoSelectPlatforms(false);
-    setSelectedPlatforms((prev) =>
-      prev.includes(platformId) ? prev.filter((p) => p !== platformId) : [...prev, platformId],
-    );
-  };
-
-  const handleAddMedia = (mediaItem: PostMedia) => {
-    if (!mediaList.some((m) => m.id === mediaItem.id)) {
-      setMediaList((prev) => [...prev, mediaItem]);
-    }
-  };
-
-  const handleRemoveMedia = (id: string) => {
-    setMediaList((prev) => prev.filter((m) => m.id !== id));
+    togglePlatform(platformId);
   };
 
   const handleOpenPreview = () => {
@@ -206,16 +155,15 @@ export function ComposeView() {
       targetPlatforms: selectedPlatforms,
       communityIds: selectedCommunityIds,
       platformOverrides,
-      status: publishMode === "now" ? "published" : "scheduled",
-      scheduledFor:
-        publishMode === "schedule" ? new Date(scheduledDateTime).toISOString() : undefined,
+      status: isScheduling ? "scheduled" : "published",
+      scheduledFor: isScheduling ? new Date(scheduleDateIso).toISOString() : undefined,
       createdAt: new Date().toISOString(),
       author: { name: "Gaurav" },
     });
   };
 
   const handlePublishOrSchedule = () => {
-    createPost({
+    const success = createPost({
       title: title || baseContent.slice(0, 40) + "...",
       baseContent,
       media: mediaList,
@@ -223,13 +171,16 @@ export function ComposeView() {
       targetPlatforms: selectedPlatforms,
       communityIds: selectedCommunityIds,
       platformOverrides,
-      status: publishMode === "now" ? "published" : "scheduled",
-      scheduledFor:
-        publishMode === "schedule" ? new Date(scheduledDateTime).toISOString() : undefined,
-      publishedAt: publishMode === "now" ? new Date().toISOString() : undefined,
+      status: isScheduling ? "scheduled" : "published",
+      scheduledFor: isScheduling ? new Date(scheduleDateIso).toISOString() : undefined,
+      publishedAt: !isScheduling ? new Date().toISOString() : undefined,
       author: { name: "Gaurav" },
     });
-    setCurrentSection("posts");
+
+    if (success) {
+      resetComposer();
+      setCurrentSection("posts");
+    }
   };
 
   return (
@@ -265,7 +216,7 @@ export function ComposeView() {
             onClick={handlePublishOrSchedule}
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-semibold shadow-lg shadow-red-600/25 transition-all cursor-pointer active:scale-95"
           >
-            {publishMode === "now" ? (
+            {!isScheduling ? (
               <>
                 <Send className="w-3.5 h-3.5" />
                 <span>Publish Now</span>
@@ -362,7 +313,7 @@ export function ComposeView() {
                     <button
                       type="button"
                       onClick={() =>
-                        setBaseContent((prev) => prev + " #SocioConnect #DevTools #Automation")
+                        setBaseContent(baseContent + " #SocioConnect #DevTools #Automation")
                       }
                       className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 hover:text-white border border-white/5 transition-colors cursor-pointer"
                     >
@@ -371,7 +322,7 @@ export function ComposeView() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setBaseContent((prev) => prev + " 🚀✨")}
+                      onClick={() => setBaseContent(baseContent + " 🚀✨")}
                       className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 hover:text-white border border-white/5 transition-colors cursor-pointer"
                     >
                       <Smile className="w-3 h-3 text-amber-400" />
@@ -399,13 +350,9 @@ export function ComposeView() {
                       type="checkbox"
                       checked={platformOverrides.reddit?.enabled ?? true}
                       onChange={(e) =>
-                        setPlatformOverrides((prev) => ({
-                          ...prev,
-                          reddit: {
-                            ...prev.reddit,
-                            enabled: e.target.checked,
-                          },
-                        }))
+                        setPlatformOverride("reddit", {
+                          enabled: e.target.checked,
+                        })
                       }
                       className="rounded accent-rose-500"
                     />
@@ -423,14 +370,10 @@ export function ComposeView() {
                     type="text"
                     value={platformOverrides.reddit?.title || ""}
                     onChange={(e) =>
-                      setPlatformOverrides((prev) => ({
-                        ...prev,
-                        reddit: {
-                          ...prev.reddit,
-                          enabled: true,
-                          title: e.target.value,
-                        },
-                      }))
+                      setPlatformOverride("reddit", {
+                        title: e.target.value,
+                        enabled: true,
+                      })
                     }
                     placeholder="Write an engaging title suited for developers/community..."
                     className="w-full px-3.5 py-2 rounded-xl bg-white/[0.03] border border-white/10 text-xs text-white placeholder:text-neutral-500 focus:outline-hidden focus:border-orange-500/50"
@@ -443,14 +386,10 @@ export function ComposeView() {
                     <select
                       value={platformOverrides.reddit?.subreddit || "r/programming"}
                       onChange={(e) =>
-                        setPlatformOverrides((prev) => ({
-                          ...prev,
-                          reddit: {
-                            ...prev.reddit,
-                            enabled: true,
-                            subreddit: e.target.value,
-                          },
-                        }))
+                        setPlatformOverride("reddit", {
+                          subreddit: e.target.value,
+                          enabled: true,
+                        })
                       }
                       className="w-full px-3.5 py-2 rounded-xl bg-[#0e0e18] border border-white/10 text-xs text-white focus:outline-hidden cursor-pointer"
                     >
@@ -467,14 +406,10 @@ export function ComposeView() {
                       type="text"
                       value={platformOverrides.reddit?.flair || "Showcase"}
                       onChange={(e) =>
-                        setPlatformOverrides((prev) => ({
-                          ...prev,
-                          reddit: {
-                            ...prev.reddit,
-                            enabled: true,
-                            flair: e.target.value,
-                          },
-                        }))
+                        setPlatformOverride("reddit", {
+                          flair: e.target.value,
+                          enabled: true,
+                        })
                       }
                       placeholder="e.g. Showcase, Tutorial, Project"
                       className="w-full px-3.5 py-2 rounded-xl bg-white/[0.03] border border-white/10 text-xs text-white placeholder:text-neutral-500 focus:outline-hidden"
@@ -502,14 +437,10 @@ export function ComposeView() {
                     rows={4}
                     value={platformOverrides.twitter?.caption || baseContent}
                     onChange={(e) =>
-                      setPlatformOverrides((prev) => ({
-                        ...prev,
-                        twitter: {
-                          ...prev.twitter,
-                          enabled: true,
-                          caption: e.target.value,
-                        },
-                      }))
+                      setPlatformOverride("twitter", {
+                        caption: e.target.value,
+                        enabled: true,
+                      })
                     }
                     className="w-full p-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs text-white placeholder:text-neutral-500 focus:outline-hidden leading-relaxed"
                   />
@@ -530,14 +461,10 @@ export function ComposeView() {
                       type="checkbox"
                       checked={platformOverrides.telegram?.silentBroadcast ?? false}
                       onChange={(e) =>
-                        setPlatformOverrides((prev) => ({
-                          ...prev,
-                          telegram: {
-                            ...prev.telegram,
-                            enabled: true,
-                            silentBroadcast: e.target.checked,
-                          },
-                        }))
+                        setPlatformOverride("telegram", {
+                          silentBroadcast: e.target.checked,
+                          enabled: true,
+                        })
                       }
                       className="rounded accent-rose-500"
                     />
@@ -553,14 +480,10 @@ export function ComposeView() {
                     rows={4}
                     value={platformOverrides.telegram?.caption || baseContent}
                     onChange={(e) =>
-                      setPlatformOverrides((prev) => ({
-                        ...prev,
-                        telegram: {
-                          ...prev.telegram,
-                          enabled: true,
-                          caption: e.target.value,
-                        },
-                      }))
+                      setPlatformOverride("telegram", {
+                        caption: e.target.value,
+                        enabled: true,
+                      })
                     }
                     className="w-full p-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs text-white placeholder:text-neutral-500 focus:outline-hidden leading-relaxed font-mono"
                   />
@@ -582,14 +505,10 @@ export function ComposeView() {
                   rows={4}
                   value={platformOverrides[activeOverrideTab]?.caption || baseContent}
                   onChange={(e) =>
-                    setPlatformOverrides((prev) => ({
-                      ...prev,
-                      [activeOverrideTab]: {
-                        ...prev[activeOverrideTab],
-                        enabled: true,
-                        caption: e.target.value,
-                      },
-                    }))
+                    setPlatformOverride(activeOverrideTab, {
+                      caption: e.target.value,
+                      enabled: true,
+                    })
                   }
                   className="w-full p-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs text-white focus:outline-hidden leading-relaxed"
                 />
@@ -623,7 +542,7 @@ export function ComposeView() {
                   <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 p-2">
                     <button
                       type="button"
-                      onClick={() => handleRemoveMedia(m.id)}
+                      onClick={() => removeMedia(m.id)}
                       className="p-1.5 rounded-lg bg-rose-600/90 text-white hover:bg-rose-600 transition-colors cursor-pointer"
                       title="Remove image"
                     >
@@ -648,7 +567,7 @@ export function ComposeView() {
                     <button
                       key={sample.id}
                       type="button"
-                      onClick={() => handleAddMedia(sample)}
+                      onClick={() => addMedia(sample)}
                       className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/15 text-neutral-300 border border-white/10 transition-colors cursor-pointer"
                     >
                       + {sample.name.split("_")[0]}
@@ -827,9 +746,9 @@ export function ComposeView() {
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <button
                   type="button"
-                  onClick={() => setPublishMode("now")}
+                  onClick={() => setIsScheduling(false)}
                   className={`py-2 rounded-xl border text-center font-medium transition-all cursor-pointer ${
-                    publishMode === "now"
+                    !isScheduling
                       ? "bg-rose-500/20 text-rose-300 border-rose-500/30 font-semibold"
                       : "bg-white/[0.02] text-neutral-400 border-white/5 hover:text-white"
                   }`}
@@ -838,9 +757,9 @@ export function ComposeView() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setPublishMode("schedule")}
+                  onClick={() => setIsScheduling(true)}
                   className={`py-2 rounded-xl border text-center font-medium transition-all cursor-pointer ${
-                    publishMode === "schedule"
+                    isScheduling
                       ? "bg-rose-500/20 text-rose-300 border-rose-500/30 font-semibold"
                       : "bg-white/[0.02] text-neutral-400 border-white/5 hover:text-white"
                   }`}
@@ -849,15 +768,15 @@ export function ComposeView() {
                 </button>
               </div>
 
-              {publishMode === "schedule" && (
+              {isScheduling && (
                 <div className="space-y-1.5 animate-in fade-in duration-200">
                   <label className="text-[11px] font-mono text-neutral-400">
                     Select Target Date &amp; Time
                   </label>
                   <input
                     type="datetime-local"
-                    value={scheduledDateTime}
-                    onChange={(e) => setScheduledDateTime(e.target.value)}
+                    value={scheduleDateIso}
+                    onChange={(e) => setScheduleDateIso(e.target.value)}
                     className="w-full px-3.5 py-2 rounded-xl bg-white/[0.03] border border-white/10 text-xs text-white focus:outline-hidden font-mono"
                   />
                   <div className="text-[10px] text-emerald-400 flex items-center gap-1 mt-1 font-mono">
