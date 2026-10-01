@@ -92,7 +92,7 @@ export default function Hero() {
             <Check className="w-3.5 h-3.5 text-emerald-400" />
             No credit card required
           </span>
-          <span className="flex items-center gap-1.5 hidden sm:flex">
+          <span className="hidden items-center gap-1.5 sm:flex">
             <Check className="w-3.5 h-3.5 text-emerald-400" />
             Instant multi-channel sync
           </span>

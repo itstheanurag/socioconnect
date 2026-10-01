@@ -5,6 +5,7 @@ export interface PlatformConfig {
   name: string;
   color: string;
   glowColor: string;
+  category?: "social" | "video" | "newsletter" | "developer" | "community";
   icon: (props: { className?: string }) => React.ReactNode;
 }
 
@@ -115,15 +116,15 @@ export const TwitchIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-export const MediumIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z" />
-  </svg>
-);
-
 export const SpotifyIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
     <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.49 17.306a.755.755 0 0 1-1.04.249c-2.848-1.74-6.434-2.134-10.658-1.168a.754.754 0 1 1-.338-1.47c4.618-1.057 8.583-.607 11.787 1.35.37.227.487.712.249 1.039zm1.464-3.26a.945.945 0 0 1-1.302.311c-3.26-2.003-8.23-2.585-12.086-1.414a.945.945 0 1 1-.555-1.807c4.412-1.34 9.89-.691 13.632 1.609.426.262.559.822.311 1.301zm.126-3.41c-3.91-2.321-10.354-2.535-14.077-1.405a1.133 1.133 0 1 1-.656-2.17c4.275-1.298 11.39-1.048 15.89 1.623a1.134 1.134 0 0 1-1.157 1.952z" />
+  </svg>
+);
+
+export const MediumIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z" />
   </svg>
 );
 
@@ -145,13 +146,81 @@ export const GithubIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-// Comprehensive Platform Pool with brand styling and subtle glows
+// Extended Brand Vector SVGs for rich platform pool
+export const DevtoIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M7.42 10.05c-.18-.16-.46-.23-.84-.23H5.34v4.36h1.24c.38 0 .66-.07.84-.23.19-.16.29-.43.29-.82v-2.26c0-.39-.1-.66-.29-.82zM0 3.75v16.5h24V3.75H0zm8.85 9.42c0 .76-.24 1.34-.73 1.73-.48.4-1.19.59-2.12.59H3.92V8.41h2.08c.93 0 1.64.2 2.12.59.49.39.73.97.73 1.73v2.44zm6.05-3.35h-3.48v1.85h2.32v1.39h-2.32v1.85h3.48v1.4h-4.9V8.41h4.9v1.41zm5.28 4.26c-.36.93-.9 1.4-1.63 1.4-.73 0-1.27-.47-1.63-1.4L17.1 8.41h1.53l.87 3.35.87-3.35h1.53l-1.72 5.67z" />
+  </svg>
+);
+
+export const HashnodeIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M22.351 8.019l-6.37-6.37a5.676 5.676 0 0 0-8.026 0l-6.37 6.37a5.676 5.676 0 0 0 0 8.026l6.37 6.37a5.676 5.676 0 0 0 8.026 0l6.37-6.37a5.676 5.676 0 0 0 0-8.026zm-10.351 7.981a4 4 0 1 1 0-8 4 4 0 0 1 0 8z" />
+  </svg>
+);
+
+export const ProductHuntIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M13.6 8.4h-3.4v4h3.4c1.1 0 2-.9 2-2s-.9-2-2-2zM12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zm1.6 15.6h-3.4v3.6H6.8V4.8h6.8c3.1 0 5.6 2.5 5.6 5.6s-2.5 5.2-5.6 5.2z" />
+  </svg>
+);
+
+export const HackerNewsIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M0 0v24h24V0H0zm12.984 13.92v4.8H11.04v-4.8L7.2 6.72h2.232l2.568 5.16 2.544-5.16h2.208l-3.768 7.2z" />
+  </svg>
+);
+
+export const BeehiivIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2L3 7.5v9L12 22l9-5.5v-9L12 2zm0 3.6l6 3.6-6 3.6-6-3.6 6-3.6zm-6.5 6.2l5.5 3.3v5.4l-5.5-3.3v-5.4zm13 5.4l-5.5 3.3v-5.4l5.5-3.3v5.4z" />
+  </svg>
+);
+
+export const DribbbleIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm8.995 10.74c-.035-.018-.737-.37-1.782-.23-.298-.696-.622-1.39-.972-2.072 1.492-.93 2.138-1.927 2.164-1.968a10.024 10.024 0 0 1 .59 4.27zm-2.077-5.437c-.027.042-.64.992-2.08 1.902-1.282-1.89-2.775-3.328-2.932-3.477a10.027 10.027 0 0 1 5.012 1.575zm-6.918-3.143c.16.15 1.66 1.597 2.94 3.493a32.08 32.08 0 0 1-6.195 1.348c.84-2.05 2.062-3.882 3.255-4.841zM7.74 8.21c1.942-.31 4.09-.762 5.952-1.32.348.675.67 1.36.965 2.046-3.795 1.15-7.397 1.258-7.747 1.267a10.158 10.158 0 0 1 .83-1.993zM3.01 12.18c.365-.01 3.73-.122 7.625-1.25.132.312.257.627.375.945-2.22 1.057-4.667 3.033-5.753 4.148a10.038 10.038 0 0 1-2.247-3.843zm3.432 4.98c.995-1.028 3.327-2.905 5.485-3.923.473 1.288.85 2.613 1.127 3.96-2.585.807-5.013.805-6.612-.037zm7.848-.28c-.27-1.32-.638-2.618-1.098-3.882 1.178-.14 2.223.195 2.268.21.328 1.488.243 2.933-.17 3.672zm1.254-4.895c-.048-.015-.992-.327-2.05-.205-.125-.332-.257-.66-.398-.985 1.037-.14 1.77.202 1.808.22a9.98 9.98 0 0 1 .64 1.97z" />
+  </svg>
+);
+
+export const BehanceIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M22 7h-7V5h7v2zm1.726 10c-.442 1.297-1.646 2.308-3.418 2.308-2.518 0-4.04-1.748-4.04-4.287 0-2.484 1.577-4.308 3.966-4.308 2.454 0 3.79 1.771 3.79 4.237v.882h-5.597c.078 1.487 1.002 2.115 2.052 2.115.82 0 1.464-.383 1.758-1.027l1.489.08zm-5.46-3.033h3.58c-.078-1.226-.782-1.92-1.776-1.92-.992 0-1.726.694-1.804 1.92zm-9.034 5.333H2V4.7h6.632c2.45 0 4.225 1.34 4.225 3.535 0 1.344-.664 2.383-1.804 2.923 1.503.498 2.36 1.74 2.36 3.377 0 2.583-1.99 4.765-4.685 4.765zm-4.304-7.53h4.08c1.328 0 2.176-.713 2.176-1.854 0-1.156-.848-1.824-2.176-1.824H4.928v3.678zm0 5.61h4.41c1.472 0 2.443-.76 2.443-2.083 0-1.34-.97-2.1-2.443-2.1h-4.41v4.183z" />
+  </svg>
+);
+
+export const GhostIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.373 0 0 5.373 0 12c0 3.753 1.724 7.106 4.433 9.309L4.4 24l4.24-1.413C9.76 23.47 10.86 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm-3 13.5c-.828 0-1.5-.672-1.5-1.5s.672-1.5 1.5-1.5 1.5.672 1.5 1.5-.672 1.5-1.5 1.5zm6 0c-.828 0-1.5-.672-1.5-1.5s.672-1.5 1.5-1.5 1.5.672 1.5 1.5-.672 1.5-1.5 1.5z" />
+  </svg>
+);
+
+export const NotionIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M4.459 4.208c.746.606 1.026.56 2.428.466l13.215-.793c.28 0 .047-.28-.093-.373L17.842 1.9c-.373-.28-.84-.467-1.353-.42L3.106 2.507c-.467.047-.56.327-.373.56l1.726 1.141zm.84 3.733v13.626c0 .56.373.747.933.7l14.475-.84c.56-.046.7-.42.7-.933V6.915c0-.467-.187-.7-.653-.653l-14.8.886c-.467.047-.655.327-.655.793zm11.95 2.147l-1.307 7.747c-.046.327-.28.42-.513.42-.233 0-.466-.093-.606-.327l-3.36-5.18v4.993c0 .373-.187.56-.56.56h-.934c-.373 0-.56-.187-.56-.56V10.27c0-.373.187-.56.56-.56h1.213c.327 0 .56.14.747.42l3.407 5.273V10.27c0-.373.187-.56.56-.56h.933c.373 0 .56.187.56.56v.198z" />
+  </svg>
+);
+
+export const FarcasterIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M18.24.24H5.76A5.76 5.76 0 0 0 0 6v12a5.76 5.76 0 0 0 5.76 5.76h12.48A5.76 5.76 0 0 0 24 18V6A5.76 5.76 0 0 0 18.24.24zm-1.44 14.4h-2.16v2.16H9.36v-2.16H7.2V9.36h2.16V7.2h5.28v2.16h2.16v5.28z" />
+  </svg>
+);
+
+export const PatreonIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M15.386.5C10.748.5 7 4.248 7 8.886c0 4.582 3.748 8.33 8.386 8.33 4.582 0 8.33-3.748 8.33-8.33C23.716 4.248 19.968.5 15.386.5zM0 23.5h4.896V.5H0v23z" />
+  </svg>
+);
+
+// Comprehensive Platform Pool with brand styling and subtle glows (32 platforms!)
 export const COMPLETE_PLATFORM_POOL: PlatformConfig[] = [
   {
     id: "twitter",
-    name: "X",
+    name: "X (Twitter)",
     color: "#FFFFFF",
     glowColor: "rgba(255, 255, 255, 0.16)",
+    category: "social",
     icon: XIcon,
   },
   {
@@ -159,6 +228,7 @@ export const COMPLETE_PLATFORM_POOL: PlatformConfig[] = [
     name: "LinkedIn",
     color: "#0A66C2",
     glowColor: "rgba(10, 102, 194, 0.25)",
+    category: "social",
     icon: LinkedInIcon,
   },
   {
@@ -166,6 +236,7 @@ export const COMPLETE_PLATFORM_POOL: PlatformConfig[] = [
     name: "Instagram",
     color: "#E1306C",
     glowColor: "rgba(225, 48, 108, 0.25)",
+    category: "social",
     icon: InstagramIcon,
   },
   {
@@ -173,6 +244,7 @@ export const COMPLETE_PLATFORM_POOL: PlatformConfig[] = [
     name: "TikTok",
     color: "#00F2FE",
     glowColor: "rgba(0, 242, 254, 0.22)",
+    category: "video",
     icon: TikTokIcon,
   },
   {
@@ -180,6 +252,7 @@ export const COMPLETE_PLATFORM_POOL: PlatformConfig[] = [
     name: "Threads",
     color: "#F5F5F7",
     glowColor: "rgba(245, 245, 247, 0.16)",
+    category: "social",
     icon: ThreadsIcon,
   },
   {
@@ -187,6 +260,7 @@ export const COMPLETE_PLATFORM_POOL: PlatformConfig[] = [
     name: "YouTube",
     color: "#FF0000",
     glowColor: "rgba(255, 0, 0, 0.25)",
+    category: "video",
     icon: YouTubeIcon,
   },
   {
@@ -194,6 +268,7 @@ export const COMPLETE_PLATFORM_POOL: PlatformConfig[] = [
     name: "Facebook",
     color: "#1877F2",
     glowColor: "rgba(24, 119, 242, 0.25)",
+    category: "social",
     icon: FacebookIcon,
   },
   {
@@ -201,6 +276,7 @@ export const COMPLETE_PLATFORM_POOL: PlatformConfig[] = [
     name: "Pinterest",
     color: "#E60023",
     glowColor: "rgba(230, 0, 35, 0.25)",
+    category: "social",
     icon: PinterestIcon,
   },
   {
@@ -208,6 +284,7 @@ export const COMPLETE_PLATFORM_POOL: PlatformConfig[] = [
     name: "Reddit",
     color: "#FF4500",
     glowColor: "rgba(255, 69, 0, 0.25)",
+    category: "community",
     icon: RedditIcon,
   },
   {
@@ -215,6 +292,7 @@ export const COMPLETE_PLATFORM_POOL: PlatformConfig[] = [
     name: "Bluesky",
     color: "#1185FE",
     glowColor: "rgba(17, 133, 254, 0.25)",
+    category: "social",
     icon: BlueskyIcon,
   },
   {
@@ -222,6 +300,7 @@ export const COMPLETE_PLATFORM_POOL: PlatformConfig[] = [
     name: "Discord",
     color: "#5865F2",
     glowColor: "rgba(88, 101, 242, 0.25)",
+    category: "community",
     icon: DiscordIcon,
   },
   {
@@ -229,6 +308,7 @@ export const COMPLETE_PLATFORM_POOL: PlatformConfig[] = [
     name: "WhatsApp",
     color: "#25D366",
     glowColor: "rgba(37, 211, 102, 0.25)",
+    category: "community",
     icon: WhatsAppIcon,
   },
   {
@@ -236,6 +316,7 @@ export const COMPLETE_PLATFORM_POOL: PlatformConfig[] = [
     name: "Telegram",
     color: "#24A1DE",
     glowColor: "rgba(36, 161, 222, 0.25)",
+    category: "community",
     icon: TelegramIcon,
   },
   {
@@ -243,6 +324,7 @@ export const COMPLETE_PLATFORM_POOL: PlatformConfig[] = [
     name: "Mastodon",
     color: "#6364FF",
     glowColor: "rgba(99, 100, 255, 0.25)",
+    category: "community",
     icon: MastodonIcon,
   },
   {
@@ -250,48 +332,143 @@ export const COMPLETE_PLATFORM_POOL: PlatformConfig[] = [
     name: "Substack",
     color: "#FF6719",
     glowColor: "rgba(255, 103, 25, 0.25)",
+    category: "newsletter",
     icon: SubstackIcon,
   },
   {
-    id: "twitch",
-    name: "Twitch",
-    color: "#9146FF",
-    glowColor: "rgba(145, 70, 255, 0.25)",
-    icon: TwitchIcon,
+    id: "beehiiv",
+    name: "Beehiiv",
+    color: "#FFAE00",
+    glowColor: "rgba(255, 174, 0, 0.25)",
+    category: "newsletter",
+    icon: BeehiivIcon,
   },
   {
-    id: "spotify",
-    name: "Spotify",
-    color: "#1ED760",
-    glowColor: "rgba(30, 215, 96, 0.25)",
-    icon: SpotifyIcon,
+    id: "ghost",
+    name: "Ghost",
+    color: "#738A9C",
+    glowColor: "rgba(115, 138, 156, 0.25)",
+    category: "newsletter",
+    icon: GhostIcon,
   },
   {
     id: "medium",
     name: "Medium",
     color: "#FFFFFF",
     glowColor: "rgba(255, 255, 255, 0.16)",
+    category: "newsletter",
     icon: MediumIcon,
   },
   {
-    id: "tumblr",
-    name: "Tumblr",
-    color: "#36465D",
-    glowColor: "rgba(54, 70, 93, 0.3)",
-    icon: TumblrIcon,
+    id: "devto",
+    name: "DEV Community",
+    color: "#0A0A0A",
+    glowColor: "rgba(255, 255, 255, 0.2)",
+    category: "developer",
+    icon: DevtoIcon,
   },
   {
-    id: "slack",
-    name: "Slack",
-    color: "#E01E5A",
-    glowColor: "rgba(224, 30, 90, 0.25)",
-    icon: SlackIcon,
+    id: "hashnode",
+    name: "Hashnode",
+    color: "#2962FF",
+    glowColor: "rgba(41, 98, 255, 0.25)",
+    category: "developer",
+    icon: HashnodeIcon,
   },
   {
     id: "github",
     name: "GitHub",
     color: "#F0F6FC",
     glowColor: "rgba(240, 246, 252, 0.16)",
+    category: "developer",
     icon: GithubIcon,
+  },
+  {
+    id: "producthunt",
+    name: "Product Hunt",
+    color: "#DA552F",
+    glowColor: "rgba(218, 85, 47, 0.25)",
+    category: "developer",
+    icon: ProductHuntIcon,
+  },
+  {
+    id: "hackernews",
+    name: "Hacker News",
+    color: "#FF6600",
+    glowColor: "rgba(255, 102, 0, 0.25)",
+    category: "developer",
+    icon: HackerNewsIcon,
+  },
+  {
+    id: "farcaster",
+    name: "Farcaster",
+    color: "#8A63D2",
+    glowColor: "rgba(138, 99, 210, 0.25)",
+    category: "community",
+    icon: FarcasterIcon,
+  },
+  {
+    id: "twitch",
+    name: "Twitch",
+    color: "#9146FF",
+    glowColor: "rgba(145, 70, 255, 0.25)",
+    category: "video",
+    icon: TwitchIcon,
+  },
+  {
+    id: "spotify",
+    name: "Spotify Podcasts",
+    color: "#1ED760",
+    glowColor: "rgba(30, 215, 96, 0.25)",
+    category: "video",
+    icon: SpotifyIcon,
+  },
+  {
+    id: "patreon",
+    name: "Patreon",
+    color: "#FF424D",
+    glowColor: "rgba(255, 66, 77, 0.25)",
+    category: "community",
+    icon: PatreonIcon,
+  },
+  {
+    id: "dribbble",
+    name: "Dribbble",
+    color: "#EA4C89",
+    glowColor: "rgba(234, 76, 137, 0.25)",
+    category: "social",
+    icon: DribbbleIcon,
+  },
+  {
+    id: "behance",
+    name: "Behance",
+    color: "#0057FF",
+    glowColor: "rgba(0, 87, 255, 0.25)",
+    category: "social",
+    icon: BehanceIcon,
+  },
+  {
+    id: "notion",
+    name: "Notion",
+    color: "#FFFFFF",
+    glowColor: "rgba(255, 255, 255, 0.2)",
+    category: "newsletter",
+    icon: NotionIcon,
+  },
+  {
+    id: "tumblr",
+    name: "Tumblr",
+    color: "#36465D",
+    glowColor: "rgba(54, 70, 93, 0.3)",
+    category: "social",
+    icon: TumblrIcon,
+  },
+  {
+    id: "slack",
+    name: "Slack Communities",
+    color: "#E01E5A",
+    glowColor: "rgba(224, 30, 90, 0.25)",
+    category: "community",
+    icon: SlackIcon,
   },
 ];

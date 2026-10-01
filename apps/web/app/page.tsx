@@ -1,6 +1,7 @@
 import Navbar from "@/component/landing/navbar";
 import Hero from "@/component/landing/hero";
 import Features from "@/component/landing/features";
+import Platforms from "@/component/landing/platforms";
 import UseCases from "@/component/landing/use-cases";
 import Footer from "@/component/landing/footer";
 import Cta from "@/component/landing/cta";
@@ -12,6 +13,7 @@ export default function Home() {
       <main className="flex-1 w-full">
         <Hero />
         <Features />
+        <Platforms />
         <UseCases />
         <Cta />
       </main>
