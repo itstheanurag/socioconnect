@@ -12,14 +12,14 @@ const fadeInUp: Variants = {
   },
 };
 
-export default function FeaturesCta() {
+export default function Cta() {
   return (
     <motion.div
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: "-80px" }}
       variants={fadeInUp}
-      className="mt-28 sm:mt-36 relative rounded-3xl border border-white/[0.1] bg-gradient-to-b from-[#0c0c14] to-[#07070d] p-8 sm:p-14 text-center overflow-hidden shadow-2xl"
+      className="mt-28 sm:mt-36 relative rounded-3xl border border-white/1 bg-linear-to-b from-[#0c0c14] to-[#07070d] p-8 sm:p-14 text-center overflow-hidden shadow-2xl"
     >
       {/* Subtle Ambient Radial Glow Behind CTA */}
       <div
@@ -56,7 +56,7 @@ export default function FeaturesCta() {
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.96 }}
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-medium text-neutral-200 bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 backdrop-blur-md transition-all duration-200 hover:text-white"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-medium text-neutral-200 bg-white/5 hover:bg-white/10 border border-white/10 backdrop-blur-md transition-all duration-200 hover:text-white"
           >
             <span>See how it works</span>
           </motion.a>

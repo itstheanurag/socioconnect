@@ -6,7 +6,6 @@ import {
   TimingCard,
   DistributionCard,
   RedditCard,
-  FeaturesCta,
 } from "@/component/landing/features/index";
 
 export default function Features() {
@@ -39,9 +38,6 @@ export default function Features() {
           {/* Card 4: Reddit Communities (Span 4) */}
           <RedditCard />
         </div>
-
-        {/* Final CTA Section */}
-        <FeaturesCta />
       </div>
     </section>
   );

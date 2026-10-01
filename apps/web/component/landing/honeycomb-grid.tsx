@@ -4,17 +4,14 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { COMPLETE_PLATFORM_POOL, PlatformConfig } from "@/component/icons/social-icons";
 
-// 5 → 7 → 8 → 7 → 5 = 32 slots
+// 7 → 6 → 7 = 20 slots
 //
 // The last row is intentionally included so the honeycomb
 // doesn't visually terminate too early.
 //
-//   ● ● ● ● ●
-//    ● ● ● ● ● ● ●
-//   ● ● ● ● ● ● ● ●
-//    ● ● ● ● ● ● ●
-//     ● ● ● ● ●
-//
+//   ● ● ● ● ● ● ●
+//    ● ● ● ● ● ●
+//   ● ● ● ● ● ● ●
 const GRID_ROWS = [
   { row: 0, count: 7, offset: false },
   { row: 1, count: 6, offset: true },
@@ -39,6 +36,24 @@ function shuffle<T>(array: T[]): T[] {
 
   for (let i = result.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
+
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+
+  return result;
+}
+
+function seededRandom(seed: number) {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
+function deterministicShuffle<T>(array: T[], seed: number): T[] {
+  const result = [...array];
+
+  for (let i = result.length - 1; i > 0; i--) {
+    const random = seededRandom(seed + i * 17);
+    const j = Math.floor(random * (i + 1));
 
     [result[i], result[j]] = [result[j], result[i]];
   }
@@ -122,10 +137,11 @@ function getNextPlatform(
 /**
  * Generate the initial state.
  *
- * We intentionally distribute platforms through the entire
- * honeycomb rather than randomly filling arbitrary positions.
+ * This function is deterministic, so it is safe to call during
+ * the initial render. It does not use Math.random().
  *
- * This guarantees that the bottom row also starts with platforms.
+ * Keeping this initialization outside of an effect means we don't
+ * need a synchronous setState() call inside useEffect.
  */
 function generateInitialOccupancy(positions: SlotMeta[]) {
   const initial: {
@@ -136,23 +152,10 @@ function generateInitialOccupancy(positions: SlotMeta[]) {
     initial[pos.posId] = null;
   });
 
-  let platformQueue = createPlatformQueue();
+  let platformQueue = deterministicShuffle(COMPLETE_PLATFORM_POOL, 42);
 
-  /**
-   * Occupancy per row.
-   *
-   * We intentionally keep at least:
-   *
-   *   4 / 5
-   *   5 / 7
-   *   6 / 8
-   *   5 / 7
-   *   4 / 5
-   *
-   * This makes sure the last row is always visually alive.
-   */
   const rowOccupancy: Record<number, number> = {
-    0: 4,
+    0: 5,
     1: 5,
     2: 6,
   };
@@ -160,16 +163,13 @@ function generateInitialOccupancy(positions: SlotMeta[]) {
   GRID_ROWS.forEach(({ row }) => {
     const rowSlots = positions.filter((position) => position.row === row);
 
-    const shuffledSlots = shuffle(rowSlots);
+    const shuffledSlots = deterministicShuffle(rowSlots, 42 + row * 100);
 
     const target = Math.min(rowOccupancy[row], rowSlots.length);
 
     shuffledSlots.slice(0, target).forEach((slot) => {
-      /**
-       * If the queue is exhausted, start another shuffled cycle.
-       */
       if (platformQueue.length === 0) {
-        platformQueue = createPlatformQueue();
+        platformQueue = deterministicShuffle(COMPLETE_PLATFORM_POOL, 42 + row * 1000);
       }
 
       const platform = platformQueue.shift();
@@ -197,15 +197,13 @@ export default function HoneycombGrid() {
         /**
          * Center of the honeycomb.
          *
-         * Since we now have 5 rows:
+         * Since we now have 3 rows:
          *
          *   0
          *   1
-         *   2 ← center
-         *   3
-         *   4
+         *   2 ← lower row
          */
-        const normRowDist = Math.abs(row - 2) / 2;
+        const normRowDist = Math.abs(row - 1) / 1;
 
         const normColDist = Math.abs(col - (count - 1) / 2) / 3.5;
 
@@ -239,6 +237,14 @@ export default function HoneycombGrid() {
 
   /**
    * Active platform state.
+   *
+   * IMPORTANT:
+   *
+   * The initial occupancy is deterministic, so it can safely be
+   * created during the initial render. This avoids calling
+   * setState() synchronously inside an effect.
+   *
+   * Randomized behavior starts only after hydration in the effect below.
    */
   const [activeSlots, setActiveSlots] = useState<{
     [posId: string]: PlatformConfig | null;
@@ -247,14 +253,23 @@ export default function HoneycombGrid() {
   /**
    * Persistent platform queue.
    *
-   * This is the important part.
+   * This starts empty so that we don't execute createPlatformQueue()
+   * during the server render.
    *
-   * It survives between interval executions and prevents
-   * the same few platforms from being selected repeatedly.
+   * It gets initialized inside useEffect after hydration.
    */
-  const platformQueue = useRef<PlatformConfig[]>(createPlatformQueue());
+  const platformQueue = useRef<PlatformConfig[]>([]);
 
+  /**
+   * Initialize randomized state after hydration and start
+   * the platform replacement animation.
+   */
   useEffect(() => {
+    /**
+     * Randomized initialization happens here, after hydration.
+     */
+    platformQueue.current = createPlatformQueue();
+
     const interval = setInterval(() => {
       setActiveSlots((prev) => {
         const next = { ...prev };
@@ -275,7 +290,7 @@ export default function HoneycombGrid() {
          * Don't allow the last row to become completely empty.
          */
         const bottomRowSlots = totalPositions
-          .filter((slot) => slot.row === 4)
+          .filter((slot) => slot.row === 2)
           .map((slot) => slot.posId);
 
         const occupiedBottomRow = bottomRowSlots.filter((key) => next[key] !== null);
@@ -322,7 +337,6 @@ export default function HoneycombGrid() {
          * PICK A NEW EMPTY SLOT
          * --------------------------------------------------
          */
-
         const populateKey = emptyKeys[Math.floor(Math.random() * emptyKeys.length)];
 
         /**
@@ -335,7 +349,6 @@ export default function HoneycombGrid() {
          * PUT THE NEW PLATFORM INTO THE GRID
          * --------------------------------------------------
          */
-
         next[populateKey] = newPlatform;
 
         return next;
@@ -358,7 +371,6 @@ export default function HoneycombGrid() {
         style={{
           maskImage:
             "radial-gradient(ellipse 75% 70% at 50% 50%, rgba(0,0,0,1) 35%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,0.25) 85%, transparent 100%)",
-
           WebkitMaskImage:
             "radial-gradient(ellipse 75% 70% at 50% 50%, rgba(0,0,0,1) 35%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,0.25) 85%, transparent 100%)",
         }}
@@ -389,8 +401,8 @@ export default function HoneycombGrid() {
                       className="relative flex h-12.5 w-12.5 items-center justify-center rounded-xl sm:h-15.5 sm:w-15.5 md:h-17.5 md:w-17.5"
                     >
                       {/*
-                          Fixed ghost grid slot.
-                        */}
+                        Fixed ghost grid slot.
+                      */}
                       <div
                         className="absolute inset-0 rounded-xl"
                         style={{
@@ -398,7 +410,6 @@ export default function HoneycombGrid() {
                             0.015,
                             slot.borderAlpha * 0.25,
                           )})`,
-
                           backgroundColor: `rgba(255, 255, 255, ${Math.max(
                             0.004,
                             slot.opacity * 0.01,
@@ -436,11 +447,10 @@ export default function HoneycombGrid() {
                             }}
                             style={{
                               borderColor: `rgba(255, 255, 255, ${slot.borderAlpha})`,
-
                               boxShadow: `
-                                  0 0 10px -2px ${currentPlatform.glowColor},
-                                  inset 0 0 8px -3px ${currentPlatform.glowColor}
-                                `,
+                                0 0 10px -2px ${currentPlatform.glowColor},
+                                inset 0 0 8px -3px ${currentPlatform.glowColor}
+                              `,
                             }}
                             className="group relative flex h-full w-full cursor-pointer items-center justify-center rounded-xl border bg-[#0c0c14]/90 backdrop-blur-md transition-colors hover:bg-[#141422] hover:border-white/35!"
                           >

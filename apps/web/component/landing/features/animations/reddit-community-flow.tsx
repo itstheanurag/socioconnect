@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { Check, Search, Target } from "lucide-react";
 import { RedditIcon } from "@/component/icons/social-icons";
@@ -37,11 +38,20 @@ type CommunityItemProps = {
   score: string;
   selected: boolean;
   delay: number;
+  cycleKey: number;
 };
 
-function CommunityItem({ name, description, score, selected, delay }: CommunityItemProps) {
+function CommunityItem({
+  name,
+  description,
+  score,
+  selected,
+  delay,
+  cycleKey,
+}: CommunityItemProps) {
   return (
     <motion.div
+      key={`${name}-${cycleKey}`}
       initial={{
         opacity: 0,
         x: -12,
@@ -120,6 +130,7 @@ function CommunityItem({ name, description, score, selected, delay }: CommunityI
       {/* Community information */}
       <div className="min-w-0 flex-1">
         <div className="text-[10px] font-medium text-neutral-200">{name}</div>
+
         <div className="truncate text-[9px] text-neutral-500">{description}</div>
       </div>
 
@@ -144,6 +155,7 @@ function CommunityItem({ name, description, score, selected, delay }: CommunityI
         >
           {score}
         </motion.div>
+
         <div className="text-[8px] uppercase tracking-wider text-neutral-600">match</div>
       </div>
 
@@ -159,9 +171,9 @@ function CommunityItem({ name, description, score, selected, delay }: CommunityI
           transition={{
             delay: delay + 0.7,
             duration: 2.2,
-            repeat: Infinity,
-            repeatDelay: 4,
             ease: "easeInOut",
+            repeat: Infinity,
+            repeatDelay: 1.5,
           }}
           className="pointer-events-none absolute inset-0 rounded-lg bg-orange-400/[0.035]"
         />
@@ -208,22 +220,44 @@ function CommunityItem({ name, description, score, selected, delay }: CommunityI
 }
 
 export default function RedditCommunityFlow() {
+  const [cycleKey, setCycleKey] = useState(0);
+
+  /*
+   * Timeline:
+   *
+   * 0.00s  search appears
+   * 0.45s  search packet starts
+   * 0.70s  communities start appearing
+   * ~2.0s  all communities visible
+   * 5.5s   cycle restarts
+   */
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setCycleKey((current) => current + 1);
+    }, 5500);
+
+    return () => window.clearTimeout(timer);
+  }, [cycleKey]);
+
   return (
     <div className="relative mt-7 h-[250px] w-full overflow-hidden">
       {/* Ambient glow */}
       <motion.div
+        key={`ambient-${cycleKey}`}
         initial={{ opacity: 0 }}
-        animate={{ opacity: [0, 1, 0.7] }}
+        animate={{
+          opacity: [0, 1, 0.7, 0.9],
+        }}
         transition={{
           duration: 1.2,
           ease: "easeOut",
-          repeat: Infinity,
         }}
         className="pointer-events-none absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-orange-500/5.5 blur-3xl"
       />
 
       {/* Search / source */}
       <motion.div
+        key={`search-${cycleKey}`}
         initial={{
           opacity: 0,
           y: 8,
@@ -263,6 +297,7 @@ export default function RedditCommunityFlow() {
           <div className="text-[9px] uppercase tracking-wider text-neutral-500">
             Matching content
           </div>
+
           <div className="truncate text-[11px] font-medium text-neutral-200">
             Startup growth strategy
           </div>
@@ -289,8 +324,9 @@ export default function RedditCommunityFlow() {
       <div className="relative mx-auto h-7 w-px overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-orange-400/20" />
 
-        {/* Search packet travelling down */}
+        {/* Search packet */}
         <motion.div
+          key={`packet-${cycleKey}`}
           initial={{
             top: "-8px",
             opacity: 0,
@@ -303,8 +339,6 @@ export default function RedditCommunityFlow() {
             delay: 0.45,
             duration: 0.65,
             ease: "easeInOut",
-            repeat: Infinity,
-            repeatDelay: 4,
           }}
           className="absolute left-1/2 h-2 w-1 -translate-x-1/2 rounded-full bg-orange-300 shadow-[0_0_8px_rgba(251,146,60,0.9)]"
         />
@@ -314,12 +348,13 @@ export default function RedditCommunityFlow() {
       <div className="relative mx-auto flex max-w-[280px] flex-col gap-1.5">
         {communities.map((community, index) => (
           <CommunityItem
-            key={community.name}
+            key={`${community.name}-${cycleKey}`}
             name={community.name}
             description={community.description}
             score={community.score}
             selected={community.selected}
             delay={0.7 + index * 0.16}
+            cycleKey={cycleKey}
           />
         ))}
       </div>
