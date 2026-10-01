@@ -31,7 +31,7 @@ export default function RedditCard() {
         margin: "-60px",
       }}
       variants={fadeInUp}
-      className="group relative md:col-span-6 lg:col-span-4 overflow-hidden rounded-2xl border border-white/8 bg-[#0c0c14]/90 p-6 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-white/20 sm:p-7"
+      className="group relative md:col-span-12 lg:col-span-4 flex flex-col justify-between overflow-hidden rounded-2xl border border-white/8 bg-[#0c0c14]/90 p-6 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-white/20 sm:p-8"
     >
       {/* Ambient glow */}
       <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-orange-500/6 blur-3xl transition-all duration-700 group-hover:bg-orange-500/10" />

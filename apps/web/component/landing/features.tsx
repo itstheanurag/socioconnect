@@ -6,11 +6,6 @@ import {
   TimingCard,
   DistributionCard,
   RedditCard,
-  ThreadsCard,
-  TelegramCard,
-  AiPublishingCard,
-  PlatformAwareCard,
-  AudienceEngineCard,
   FeaturesCta,
 } from "@/component/landing/features/index";
 
@@ -43,21 +38,6 @@ export default function Features() {
 
           {/* Card 4: Reddit Communities (Span 4) */}
           <RedditCard />
-
-          {/* Card 5: Threads & Conversational Content (Span 4) */}
-          <ThreadsCard />
-
-          {/* Card 6: Publish from Telegram (Span 4) */}
-          <TelegramCard />
-
-          {/* Card 7: AI-Native Publishing — Coming Soon (Span 4) */}
-          <AiPublishingCard />
-
-          {/* Card 8: Platform-Aware Publishing (Span 6) */}
-          <PlatformAwareCard />
-
-          {/* Card 9: Creators & Businesses Engine (Span 6) */}
-          <AudienceEngineCard />
         </div>
 
         {/* Final CTA Section */}

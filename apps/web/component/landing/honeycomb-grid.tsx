@@ -16,10 +16,9 @@ import { COMPLETE_PLATFORM_POOL, PlatformConfig } from "@/component/icons/social
 //     ● ● ● ● ●
 //
 const GRID_ROWS = [
-  { row: 0, count: 8, offset: false },
+  { row: 0, count: 7, offset: false },
   { row: 1, count: 6, offset: true },
   { row: 2, count: 7, offset: false },
-  { row: 3, count: 6, offset: true },
 ];
 
 interface SlotMeta {
@@ -156,8 +155,6 @@ function generateInitialOccupancy(positions: SlotMeta[]) {
     0: 4,
     1: 5,
     2: 6,
-    3: 5,
-    4: 4,
   };
 
   GRID_ROWS.forEach(({ row }) => {

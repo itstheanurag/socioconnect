@@ -34,7 +34,7 @@ export default function FeaturesHeader() {
         What you say <span className="font-serif italic font-normal text-rose-300">matters.</span>
         <br />
         <span className="font-serif italic font-normal text-rose-300">
-          Where you say it matters even more.
+          When you say it matters even more.
         </span>{" "}
         <br />
       </h2>
