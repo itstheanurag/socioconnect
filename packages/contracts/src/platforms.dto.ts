@@ -1,0 +1,50 @@
+import { z } from "zod";
+
+export const PlatformIdSchema = z.enum([
+  "instagram",
+  "reddit",
+  "twitter",
+  "telegram",
+  "linkedin",
+  "facebook",
+  "tiktok",
+  "youtube",
+  "threads",
+]);
+export type PlatformId = z.infer<typeof PlatformIdSchema>;
+
+export const PlatformCapabilitySchema = z.object({
+  text: z.boolean(),
+  maxTextLength: z.number(),
+  singleImage: z.boolean(),
+  carousel: z.boolean(),
+  maxCarouselImages: z.number(),
+  video: z.boolean(),
+  maxVideoDurationSec: z.number(),
+  audioMusic: z.boolean(),
+  markdown: z.boolean(),
+  threading: z.boolean(),
+  polls: z.boolean(),
+  scheduling: z.boolean(),
+});
+export type PlatformCapability = z.infer<typeof PlatformCapabilitySchema>;
+
+export const ConnectorAccountSchema = z.object({
+  id: z.string(),
+  platformId: PlatformIdSchema,
+  platformName: z.string(),
+  accountHandle: z.string(),
+  accountName: z.string(),
+  avatarUrl: z.string().optional(),
+  status: z.enum(["connected", "syncing", "reconnect_required", "disconnected"]),
+  connectedAt: z.string(),
+  lastSyncAt: z.string(),
+  capabilities: PlatformCapabilitySchema,
+  stats: z.object({
+    followers: z.number().optional(),
+    subscribers: z.number().optional(),
+    members: z.number().optional(),
+    postsCount: z.number().default(0),
+  }),
+});
+export type ConnectorAccount = z.infer<typeof ConnectorAccountSchema>;
