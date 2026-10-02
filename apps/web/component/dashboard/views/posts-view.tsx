@@ -52,9 +52,9 @@ export function PostsView() {
   return (
     <div className="space-y-6 animate-in fade-in duration-300 pb-16">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/[0.06]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-neutral-800">
         <div>
-          <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-white">
+          <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-neutral-100">
             Content Library &amp; Posts
           </h1>
           <p className="text-xs sm:text-sm text-neutral-400 mt-1">
@@ -66,7 +66,7 @@ export function PostsView() {
         <button
           type="button"
           onClick={() => navigateToCompose()}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-semibold shadow-lg shadow-red-600/25 transition-all cursor-pointer active:scale-95 self-start sm:self-auto"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-neutral-100 text-xs font-semibold shadow-lg shadow-red-600/25 transition-all cursor-pointer active:scale-95 self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
           <span>Compose Post</span>
@@ -76,7 +76,7 @@ export function PostsView() {
       {/* Filter and Search Bar */}
       <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
         {/* Status Tabs */}
-        <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-white/[0.03] border border-white/6 overflow-x-auto scrollbar-none">
+        <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-neutral-900 border border-neutral-800 overflow-x-auto scrollbar-none">
           {(
             [
               { id: "all", label: "All Posts" },
@@ -92,12 +92,12 @@ export function PostsView() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer whitespace-nowrap ${
                 activeTab === tab.id
-                  ? "bg-rose-500/20 text-white font-semibold border border-rose-500/30"
-                  : "text-neutral-400 hover:text-white hover:bg-white/5"
+                  ? "bg-rose-500/20 text-neutral-100 font-semibold border border-rose-500/30"
+                  : "text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800/60"
               }`}
             >
               <span>{tab.label}</span>
-              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-white/5 text-neutral-300">
+              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-neutral-800 text-neutral-300">
                 {statusCounts[tab.id]}
               </span>
             </button>
@@ -113,14 +113,14 @@ export function PostsView() {
               value={searchFilter}
               onChange={(e) => setSearchFilter(e.target.value)}
               placeholder="Filter posts..."
-              className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs text-white placeholder:text-neutral-500 focus:outline-hidden"
+              className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-neutral-900 border border-neutral-800 text-xs text-neutral-200 placeholder:text-neutral-500 focus:outline-hidden"
             />
           </div>
 
           <select
             value={platformFilter}
             onChange={(e) => setPlatformFilter(e.target.value as any)}
-            className="px-3 py-1.5 rounded-xl bg-[#0e0e18] border border-white/10 text-xs text-neutral-300 focus:outline-hidden cursor-pointer"
+            className="px-3 py-1.5 rounded-xl bg-neutral-900 border border-neutral-800 text-xs text-neutral-300 focus:outline-hidden cursor-pointer"
           >
             <option value="all">All Networks</option>
             <option value="instagram">Instagram</option>
@@ -136,7 +136,7 @@ export function PostsView() {
       {/* Post List */}
       <div className="space-y-3">
         {filteredPosts.length === 0 ? (
-          <div className="rounded-3xl border border-white/[0.06] bg-[#090912]/50 p-12 text-center space-y-3">
+          <div className="rounded-3xl border border-neutral-800 bg-neutral-900/50 p-12 text-center space-y-3">
             <FileText className="w-8 h-8 text-neutral-600 mx-auto" />
             <div className="text-sm font-semibold text-neutral-400">
               No posts found in this filter
@@ -150,7 +150,7 @@ export function PostsView() {
             <motion.div
               key={post.id}
               whileHover={{ y: -1 }}
-              className="group rounded-3xl border border-white/[0.08] bg-[#090912]/80 backdrop-blur-xl p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl hover:border-white/15 transition-all"
+              className="group rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl hover:border-neutral-700 transition-all"
             >
               {/* Left: Thumbnail & Title & Excerpt */}
               <div className="flex items-start gap-4 flex-1 min-w-0">
@@ -159,10 +159,10 @@ export function PostsView() {
                   <img
                     src={post.media[0].url}
                     alt={post.title}
-                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border border-white/10 shrink-0"
+                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border border-neutral-800 shrink-0"
                   />
                 ) : (
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-linear-to-br from-rose-950/30 to-[#0e0e1a] border border-white/10 flex items-center justify-center text-neutral-500 shrink-0">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-neutral-950 border border-neutral-800 flex items-center justify-center text-neutral-500 shrink-0">
                     <FileText className="w-6 h-6 text-neutral-400" />
                   </div>
                 )}
@@ -205,7 +205,7 @@ export function PostsView() {
 
                   <h3
                     onClick={() => openContextualPanel("post_details", post)}
-                    className="font-display text-sm sm:text-base font-bold text-white hover:text-rose-300 transition-colors cursor-pointer truncate"
+                    className="font-display text-sm sm:text-base font-bold text-neutral-100 hover:text-rose-300 transition-colors cursor-pointer truncate"
                   >
                     {post.title}
                   </h3>
@@ -224,7 +224,7 @@ export function PostsView() {
               </div>
 
               {/* Right: Platform Badges & Actions */}
-              <div className="flex items-center justify-between md:justify-end gap-3 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-white/[0.05]">
+              <div className="flex items-center justify-between md:justify-end gap-3 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-neutral-800">
                 {/* Platform Icons */}
                 <div className="flex items-center gap-1">
                   {post.targetPlatforms.map((p) => {
@@ -246,7 +246,7 @@ export function PostsView() {
                   <button
                     type="button"
                     onClick={() => openContextualPanel("post_preview", post)}
-                    className="p-2 rounded-xl text-neutral-400 hover:text-white bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.06] transition-colors cursor-pointer"
+                    className="p-2 rounded-xl text-neutral-400 hover:text-neutral-100 bg-neutral-950/40 hover:bg-neutral-800 border border-neutral-800 transition-colors cursor-pointer"
                     title="Live Preview"
                   >
                     <Eye className="w-3.5 h-3.5" />
@@ -255,7 +255,7 @@ export function PostsView() {
                   <button
                     type="button"
                     onClick={() => navigateToCompose(post)}
-                    className="p-2 rounded-xl text-neutral-400 hover:text-white bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.06] transition-colors cursor-pointer"
+                    className="p-2 rounded-xl text-neutral-400 hover:text-neutral-100 bg-neutral-950/40 hover:bg-neutral-800 border border-neutral-800 transition-colors cursor-pointer"
                     title="Edit in Composer"
                   >
                     <SlidersHorizontal className="w-3.5 h-3.5 text-rose-400" />
@@ -264,7 +264,7 @@ export function PostsView() {
                   <button
                     type="button"
                     onClick={() => duplicatePost(post.id)}
-                    className="p-2 rounded-xl text-neutral-400 hover:text-white bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.06] transition-colors cursor-pointer"
+                    className="p-2 rounded-xl text-neutral-400 hover:text-neutral-100 bg-neutral-950/40 hover:bg-neutral-800 border border-neutral-800 transition-colors cursor-pointer"
                     title="Duplicate Post"
                   >
                     <Copy className="w-3.5 h-3.5" />

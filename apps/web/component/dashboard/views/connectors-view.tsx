@@ -2,253 +2,250 @@
 
 import React, { useState } from "react";
 import {
-  Radio,
+  Link2,
   Plus,
   RefreshCw,
-  CheckCircle2,
-  AlertTriangle,
-  SlidersHorizontal,
-  X,
+  Trash2,
   ExternalLink,
   ShieldCheck,
+  AlertCircle,
+  Clock,
   Sparkles,
-  ChevronDown,
-  ChevronUp,
+  CheckCircle2,
+  X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useDashboard } from "../context/dashboard-context";
-import { PlatformIcon, getPlatformBrandColor } from "../ui/platform-icon";
-import { COMPLETE_PLATFORM_POOL } from "@/component/icons/social-icons";
+import { PlatformIcon, getPlatformBrandColor, getPlatformDisplayName } from "../ui/platform-icon";
 import { ConnectorAccount, PlatformId } from "../types";
 
-export function ConnectorsView() {
-  const { connectors, toggleConnectorSync, openContextualPanel } = useDashboard();
-  const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
-  const [expandedCapabilitiesId, setExpandedCapabilitiesId] = useState<string | null>(null);
+const ALL_AVAILABLE_PLATFORMS: { id: PlatformId; name: string; authType: string }[] = [
+  { id: "twitter", name: "X (Twitter)", authType: "OAuth 2.0 PKCE" },
+  { id: "linkedin", name: "LinkedIn Pages & Profiles", authType: "OAuth 2.0 OpenID" },
+  { id: "instagram", name: "Instagram Graph API", authType: "Facebook Graph OAuth" },
+  { id: "telegram", name: "Telegram Bot & Channel API", authType: "BotToken / MTProto" },
+  { id: "reddit", name: "Reddit OAuth & Mod API", authType: "OAuth 2.0 Script" },
+  { id: "threads", name: "Meta Threads API", authType: "Threads OAuth 2.0" },
+  { id: "youtube", name: "YouTube Studio API", authType: "Google OAuth 2.0" },
+  { id: "facebook", name: "Facebook Pages & Groups", authType: "Facebook Graph OAuth" },
+  { id: "tiktok", name: "TikTok Content Posting API", authType: "TikTok Login Kit" },
+];
 
-  const toggleExpandCaps = (id: string) => {
-    setExpandedCapabilitiesId((prev) => (prev === id ? null : id));
+export function ConnectorsView() {
+  const { connectors, toggleConnectorSync } = useDashboard();
+  const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
+  const [syncingId, setSyncingId] = useState<string | null>(null);
+
+  const handleSync = (id: string) => {
+    setSyncingId(id);
+    setTimeout(() => {
+      toggleConnectorSync(id);
+      setSyncingId(null);
+    }, 600);
   };
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300 pb-16">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/[0.06]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-neutral-800">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold tracking-wider text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 mb-2">
-            <Sparkles className="w-3 h-3" />
-            Active Integrations &amp; OAuth
-          </div>
-          <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-white">
-            Connected Social Accounts
+          <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-neutral-100">
+            Platform Connectors &amp; Accounts
           </h1>
           <p className="text-xs sm:text-sm text-neutral-400 mt-1">
-            Manage authenticated platform API tokens, inspect native capability boundaries, and refresh OAuth permissions.
+            Manage authenticated social accounts, API keys, and channel-level capabilities.
           </p>
         </div>
 
         <button
           type="button"
           onClick={() => setIsConnectModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-semibold shadow-lg shadow-red-600/25 transition-all cursor-pointer active:scale-95 self-start sm:self-auto"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-neutral-100 text-xs font-semibold shadow-md shadow-red-600/20 transition-all cursor-pointer self-start sm:self-auto"
         >
-          <Plus className="w-4 h-4" />
-          <span>Connect New Account</span>
+          <Plus className="w-3.5 h-3.5" />
+          <span>Connect New Platform</span>
         </button>
       </div>
 
-      {/* Connectors Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {connectors.map((connector) => {
-          const brand = getPlatformBrandColor(connector.platformId);
-          const isExpanded = expandedCapabilitiesId === connector.id;
-          const caps = connector.capabilities;
+      {/* Grid of Connected Platforms */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {connectors.map((c) => {
+          const brand = getPlatformBrandColor(c.platformId);
+          const isSyncing = syncingId === c.id;
 
           return (
             <motion.div
-              key={connector.id}
-              whileHover={{ y: -2 }}
-              className="rounded-3xl border border-white/[0.08] bg-[#090912]/80 backdrop-blur-xl p-6 space-y-5 shadow-2xl relative overflow-hidden group"
+              key={c.id}
+              layout
+              className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-4 shadow-xl flex flex-col justify-between hover:border-neutral-700 transition-colors"
             >
-              {/* Account Top Row */}
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3.5">
-                  <div
-                    className={`w-12 h-12 rounded-2xl border flex items-center justify-center ${brand.bg} ${brand.border} ${brand.text} shadow-md`}
+              <div className="space-y-3">
+                {/* Header with Avatar & Platform Badge */}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`w-11 h-11 rounded-2xl border flex items-center justify-center text-lg ${brand.bg} ${brand.border} ${brand.text}`}
+                    >
+                      <PlatformIcon platformId={c.platformId} className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-display text-sm font-bold text-neutral-100 leading-tight">
+                        {c.accountName}
+                      </h3>
+                      <p className="text-xs text-neutral-400 font-mono mt-0.5">{c.accountHandle}</p>
+                    </div>
+                  </div>
+
+                  <span
+                    className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium border ${
+                      c.status === "connected"
+                        ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                        : "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                    }`}
                   >
-                    <PlatformIcon platformId={connector.platformId} className="w-6 h-6" />
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full ${
+                        c.status === "connected" ? "bg-emerald-400" : "bg-amber-400"
+                      }`}
+                    />
+                    <span className="capitalize">{c.status}</span>
+                  </span>
+                </div>
+
+                {/* Account Stats Strip */}
+                <div className="grid grid-cols-3 gap-2 p-2.5 rounded-2xl bg-neutral-950/40 border border-neutral-800 text-center">
+                  <div>
+                    <div className="text-[10px] font-mono text-neutral-500 uppercase">
+                      {c.stats.followers ? "Followers" : c.stats.subscribers ? "Subs" : "Members"}
+                    </div>
+                    <div className="text-xs font-semibold text-neutral-200 mt-0.5">
+                      {(
+                        c.stats.followers ||
+                        c.stats.subscribers ||
+                        c.stats.members ||
+                        0
+                      ).toLocaleString()}
+                    </div>
                   </div>
                   <div>
-                    <h3 className="font-display text-base font-bold text-white group-hover:text-rose-300 transition-colors">
-                      {connector.platformName}
-                    </h3>
-                    <div className="text-xs font-mono text-neutral-400 mt-0.5">
-                      {connector.accountHandle}
+                    <div className="text-[10px] font-mono text-neutral-500 uppercase">
+                      Dispatched
+                    </div>
+                    <div className="text-xs font-semibold text-neutral-200 mt-0.5">
+                      {c.stats.postsCount.toLocaleString()}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-mono text-neutral-500 uppercase">Health</div>
+                    <div className="text-xs font-semibold text-emerald-400 mt-0.5 flex items-center justify-center gap-1">
+                      <ShieldCheck className="w-3 h-3" />
+                      100%
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                    <CheckCircle2 className="w-3 h-3" /> Connected
-                  </span>
-                </div>
-              </div>
-
-              {/* Status and Telemetry */}
-              <div className="grid grid-cols-2 gap-2.5 text-xs">
-                <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/5 space-y-1">
-                  <div className="text-[10px] font-mono text-neutral-400 uppercase">
-                    Last Synced
+                {/* Capabilities Overview */}
+                <div className="grid grid-cols-2 gap-2 pt-2 text-[11px] font-mono text-neutral-400">
+                  <div className="p-2 rounded-xl bg-neutral-950/40 border border-neutral-800">
+                    <div className="text-[9px] uppercase text-neutral-500">Max Chars</div>
+                    <div className="font-semibold text-neutral-200 mt-0.5">
+                      {c.capabilities.maxTextLength.toLocaleString()}
+                    </div>
                   </div>
-                  <div className="font-semibold text-white font-mono text-xs">
-                    {connector.lastSyncAt}
-                  </div>
-                </div>
-
-                <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/5 space-y-1">
-                  <div className="text-[10px] font-mono text-neutral-400 uppercase">
-                    Audience Reach
-                  </div>
-                  <div className="font-semibold text-white font-mono text-xs">
-                    {connector.stats.followers
-                      ? `${(connector.stats.followers / 1000).toFixed(1)}k Followers`
-                      : connector.stats.members
-                      ? `${(connector.stats.members / 1000).toFixed(1)}k Members`
-                      : `${connector.stats.postsCount} Posts`}
+                  <div className="p-2 rounded-xl bg-neutral-950/40 border border-neutral-800">
+                    <div className="text-[9px] uppercase text-neutral-500">Video Max</div>
+                    <div className="font-semibold text-neutral-200 mt-0.5">
+                      {c.capabilities.video
+                        ? `${c.capabilities.maxVideoDurationSec}s`
+                        : "Unsupported"}
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Expandable Capability Spec */}
-              <div className="pt-2 border-t border-white/[0.06] space-y-2">
-                <button
-                  type="button"
-                  onClick={() => toggleExpandCaps(connector.id)}
-                  className="w-full flex items-center justify-between text-xs font-semibold text-neutral-300 hover:text-white transition-colors cursor-pointer py-1"
-                >
-                  <span className="flex items-center gap-1.5">
-                    <SlidersHorizontal className="w-3.5 h-3.5 text-rose-400" />
-                    <span>Native Format Capabilities</span>
-                  </span>
-                  {isExpanded ? (
-                    <ChevronUp className="w-4 h-4 text-neutral-500" />
-                  ) : (
-                    <ChevronDown className="w-4 h-4 text-neutral-500" />
-                  )}
-                </button>
+              {/* Footer Meta & Sync Actions */}
+              <div className="pt-3 border-t border-neutral-800 flex items-center justify-between text-xs">
+                <div className="text-[10px] text-neutral-500 font-mono">Synced {c.lastSyncAt}</div>
 
-                <AnimatePresence>
-                  {isExpanded && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="grid grid-cols-2 gap-2 text-[11px] pt-2"
-                    >
-                      <div className="p-2 rounded-xl bg-white/[0.02] border border-white/5">
-                        <span className="text-neutral-400">Max Text:</span>{" "}
-                        <span className="text-white font-mono">{caps.maxTextLength} chars</span>
-                      </div>
-                      <div className="p-2 rounded-xl bg-white/[0.02] border border-white/5">
-                        <span className="text-neutral-400">Carousel:</span>{" "}
-                        <span className="text-white font-mono">
-                          {caps.carousel ? `Yes (${caps.maxCarouselImages} imgs)` : "No"}
-                        </span>
-                      </div>
-                      <div className="p-2 rounded-xl bg-white/[0.02] border border-white/5">
-                        <span className="text-neutral-400">Audio Music:</span>{" "}
-                        <span className="text-white font-mono">{caps.audioMusic ? "Supported" : "No"}</span>
-                      </div>
-                      <div className="p-2 rounded-xl bg-white/[0.02] border border-white/5">
-                        <span className="text-neutral-400">Threading:</span>{" "}
-                        <span className="text-white font-mono">{caps.threading ? "Supported" : "No"}</span>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              {/* Actions */}
-              <div className="flex items-center justify-between pt-2 border-t border-white/[0.06]">
-                <button
-                  type="button"
-                  onClick={() => openContextualPanel("connector_info", connector)}
-                  className="text-xs font-semibold text-neutral-400 hover:text-white transition-colors cursor-pointer"
-                >
-                  Inspect Credentials
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => toggleConnectorSync(connector.id)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs font-semibold border border-white/10 transition-colors cursor-pointer"
-                >
-                  <RefreshCw className="w-3 h-3" />
-                  <span>Force Sync</span>
-                </button>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => handleSync(c.id)}
+                    className="p-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-neutral-100 transition-colors cursor-pointer"
+                    title="Refresh channel telemetry"
+                  >
+                    <RefreshCw
+                      className={`w-3.5 h-3.5 ${isSyncing ? "animate-spin text-rose-400" : ""}`}
+                    />
+                  </button>
+                </div>
               </div>
             </motion.div>
           );
         })}
       </div>
 
-      {/* Connect Account Modal with 32+ Social Platforms */}
+      {/* Connect Modal */}
       <AnimatePresence>
         {isConnectModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md bg-black/70">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md bg-neutral-950/75">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-2xl rounded-3xl border border-white/12 bg-[#090912] shadow-2xl p-6 space-y-5 max-h-[85vh] flex flex-col"
+              className="w-full max-w-xl rounded-3xl border border-neutral-800 bg-neutral-900/95 p-6 space-y-5 shadow-2xl"
             >
-              <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                <div className="flex items-center gap-2 text-white font-bold text-sm">
-                  <Radio className="w-4 h-4 text-rose-400" />
-                  <span>Connect Social Network Account</span>
+              <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
+                <div>
+                  <h3 className="font-display text-base font-bold text-neutral-100">
+                    Connect Platform Account
+                  </h3>
+                  <p className="text-xs text-neutral-400">
+                    Select a social provider to initialize secure OAuth token handshake.
+                  </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsConnectModalOpen(false)}
-                  className="p-1 rounded-lg text-neutral-400 hover:text-white"
+                  className="p-1 rounded-lg text-neutral-500 hover:text-neutral-200 transition-colors"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto pr-1">
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                  {COMPLETE_PLATFORM_POOL.map((p) => {
-                    const Icon = p.icon;
-                    return (
-                      <button
-                        key={p.id}
-                        type="button"
-                        onClick={() => {
-                          setIsConnectModalOpen(false);
-                          toggleConnectorSync("conn-1");
-                        }}
-                        className="flex items-center gap-2.5 p-3 rounded-2xl bg-white/[0.02] hover:bg-white/[0.08] border border-white/5 hover:border-white/20 text-left transition-all cursor-pointer group"
-                      >
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-96 overflow-y-auto pr-1">
+                {ALL_AVAILABLE_PLATFORMS.map((p) => {
+                  const brand = getPlatformBrandColor(p.id);
+                  return (
+                    <div
+                      key={p.id}
+                      className="p-3.5 rounded-2xl border border-neutral-800 hover:border-neutral-700 bg-neutral-950/40 hover:bg-neutral-950/80 transition-all flex items-center justify-between group cursor-pointer"
+                      onClick={() => {
+                        setIsConnectModalOpen(false);
+                      }}
+                    >
+                      <div className="flex items-center gap-2.5">
                         <div
-                          className="w-8 h-8 rounded-xl flex items-center justify-center"
-                          style={{ backgroundColor: `${p.color}18`, color: p.color }}
+                          className={`w-8 h-8 rounded-xl border flex items-center justify-center ${brand.bg} ${brand.border} ${brand.text}`}
                         >
-                          <Icon className="w-4 h-4" />
+                          <PlatformIcon platformId={p.id} className="w-4 h-4" />
                         </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="text-xs font-semibold text-white group-hover:text-rose-300 transition-colors truncate">
+                        <div>
+                          <div className="text-xs font-semibold text-neutral-100 group-hover:text-rose-400 transition-colors">
                             {p.name}
                           </div>
-                          <div className="text-[10px] text-neutral-500 capitalize font-mono">
-                            {p.category}
-                          </div>
+                          <div className="text-[10px] font-mono text-neutral-500">{p.authType}</div>
                         </div>
-                      </button>
-                    );
-                  })}
-                </div>
+                      </div>
+                      <Plus className="w-4 h-4 text-neutral-600 group-hover:text-rose-400 transition-colors" />
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="p-3 rounded-2xl bg-neutral-950/60 border border-neutral-800 text-[11px] text-neutral-400 flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>All platform tokens are encrypted at rest with AES-256-GCM.</span>
               </div>
             </motion.div>
           </div>

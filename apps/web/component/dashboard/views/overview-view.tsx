@@ -55,7 +55,7 @@ export function OverviewView() {
       name: "X (Twitter)",
       publishedCount: 64,
       activityPercent: 94,
-      color: "bg-neutral-200",
+      color: "bg-neutral-300",
     },
     {
       platformId: "linkedin",
@@ -90,7 +90,7 @@ export function OverviewView() {
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
       {/* Welcome Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-white/[0.06]">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-neutral-800">
         <div className="flex items-center gap-4">
           {userAvatar && !avatarErr ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -102,7 +102,7 @@ export function OverviewView() {
               className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover ring-2 ring-rose-500/30 shadow-xl shrink-0"
             />
           ) : (
-            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-linear-to-tr from-rose-500 to-red-600 text-white flex items-center justify-center font-display text-2xl font-bold ring-2 ring-rose-500/30 shadow-xl shrink-0">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-linear-to-tr from-rose-500 to-red-600 text-neutral-100 flex items-center justify-center font-display text-2xl font-bold ring-2 ring-rose-500/30 shadow-xl shrink-0">
               {userInitial}
             </div>
           )}
@@ -112,7 +112,7 @@ export function OverviewView() {
               <Sparkles className="w-3 h-3" />
               Social Operating System
             </div>
-            <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-white">
+            <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-neutral-100">
               Good morning, {userName}
             </h1>
             <p className="text-xs sm:text-sm text-neutral-400">
@@ -125,7 +125,7 @@ export function OverviewView() {
           <button
             type="button"
             onClick={() => navigateToCompose()}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-semibold shadow-lg shadow-red-600/25 transition-all cursor-pointer active:scale-95"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-neutral-100 text-xs font-semibold shadow-lg shadow-red-600/25 transition-all cursor-pointer active:scale-95"
           >
             <Plus className="w-4 h-4" />
             <span>Create New Post</span>
@@ -137,7 +137,7 @@ export function OverviewView() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <motion.div
           whileHover={{ y: -2 }}
-          className="rounded-2xl border border-white/[0.08] bg-[#090912]/80 backdrop-blur-xl p-5 space-y-3 relative overflow-hidden group shadow-xl"
+          className="rounded-2xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-3 relative overflow-hidden group shadow-xl"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-neutral-400">Scheduled Queue</span>
@@ -146,19 +146,19 @@ export function OverviewView() {
             </div>
           </div>
           <div className="flex items-baseline justify-between">
-            <span className="font-display text-3xl font-bold text-white">
+            <span className="font-display text-3xl font-bold text-neutral-100">
               {scheduledPosts.length}
             </span>
             <span className="text-[11px] font-mono text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded-full">
               Next in 2h
             </span>
           </div>
-          <p className="text-[11px] text-neutral-500">Across 6 destinations</p>
+          <p className="text-[11px] text-neutral-400">Across 6 destinations</p>
         </motion.div>
 
         <motion.div
           whileHover={{ y: -2 }}
-          className="rounded-2xl border border-white/[0.08] bg-[#090912]/80 backdrop-blur-xl p-5 space-y-3 relative overflow-hidden group shadow-xl"
+          className="rounded-2xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-3 relative overflow-hidden group shadow-xl"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-neutral-400">Published Content</span>
@@ -167,19 +167,19 @@ export function OverviewView() {
             </div>
           </div>
           <div className="flex items-baseline justify-between">
-            <span className="font-display text-3xl font-bold text-white">
+            <span className="font-display text-3xl font-bold text-neutral-100">
               {publishedPosts.length > 0 ? publishedPosts.length : 138}
             </span>
             <span className="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full flex items-center gap-0.5">
               <TrendingUp className="w-3 h-3" /> +14%
             </span>
           </div>
-          <p className="text-[11px] text-neutral-500">99.8% dispatch success</p>
+          <p className="text-[11px] text-neutral-400">99.8% dispatch success</p>
         </motion.div>
 
         <motion.div
           whileHover={{ y: -2 }}
-          className="rounded-2xl border border-white/[0.08] bg-[#090912]/80 backdrop-blur-xl p-5 space-y-3 relative overflow-hidden group shadow-xl"
+          className="rounded-2xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-3 relative overflow-hidden group shadow-xl"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-neutral-400">Connected Accounts</span>
@@ -188,19 +188,19 @@ export function OverviewView() {
             </div>
           </div>
           <div className="flex items-baseline justify-between">
-            <span className="font-display text-3xl font-bold text-white">
+            <span className="font-display text-3xl font-bold text-neutral-100">
               {connectedConnectors.length}
             </span>
             <span className="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
               All Synced
             </span>
           </div>
-          <p className="text-[11px] text-neutral-500">Tokens valid &amp; active</p>
+          <p className="text-[11px] text-neutral-400">Tokens valid &amp; active</p>
         </motion.div>
 
         <motion.div
           whileHover={{ y: -2 }}
-          className="rounded-2xl border border-white/[0.08] bg-[#090912]/80 backdrop-blur-xl p-5 space-y-3 relative overflow-hidden group shadow-xl"
+          className="rounded-2xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-3 relative overflow-hidden group shadow-xl"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-neutral-400">Telegram Bots</span>
@@ -209,12 +209,14 @@ export function OverviewView() {
             </div>
           </div>
           <div className="flex items-baseline justify-between">
-            <span className="font-display text-3xl font-bold text-white">{bots.length} active</span>
+            <span className="font-display text-3xl font-bold text-neutral-100">
+              {bots.length} active
+            </span>
             <span className="text-[11px] font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded-full">
               Webhooks OK
             </span>
           </div>
-          <p className="text-[11px] text-neutral-500">18 queued broadcasts</p>
+          <p className="text-[11px] text-neutral-400">18 queued broadcasts</p>
         </motion.div>
       </div>
 
@@ -225,19 +227,21 @@ export function OverviewView() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 text-rose-400" />
-              <h2 className="font-display text-base font-semibold text-white">Upcoming Queue</h2>
+              <h2 className="font-display text-base font-semibold text-neutral-100">
+                Upcoming Queue
+              </h2>
             </div>
             <button
               type="button"
               onClick={() => setCurrentSection("calendar")}
-              className="text-xs font-semibold text-neutral-400 hover:text-white flex items-center gap-1 transition-colors cursor-pointer"
+              className="text-xs font-semibold text-neutral-400 hover:text-neutral-200 flex items-center gap-1 transition-colors cursor-pointer"
             >
               <span>View Full Calendar</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          <div className="rounded-3xl border border-white/[0.08] bg-[#090912]/80 backdrop-blur-xl p-5 space-y-4">
+          <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-4">
             {/* Today Group */}
             <div className="space-y-2">
               <div className="text-[11px] font-mono uppercase tracking-wider text-rose-300 font-semibold flex items-center gap-1.5">
@@ -249,11 +253,11 @@ export function OverviewView() {
                 <div
                   key={post.id}
                   onClick={() => openContextualPanel("post_preview", post)}
-                  className="group flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.05] hover:border-white/12 transition-all cursor-pointer"
+                  className="group flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-neutral-950/40 hover:bg-neutral-800/80 border border-neutral-800 hover:border-neutral-700 transition-all cursor-pointer"
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-mono text-neutral-400 bg-white/5 px-2 py-0.5 rounded-md">
+                      <span className="text-xs font-mono text-neutral-400 bg-neutral-800 px-2 py-0.5 rounded-md">
                         {post.scheduledFor
                           ? new Date(post.scheduledFor).toLocaleTimeString([], {
                               hour: "2-digit",
@@ -261,7 +265,7 @@ export function OverviewView() {
                             })
                           : "10:30"}
                       </span>
-                      <h4 className="text-xs font-bold text-white group-hover:text-rose-300 transition-colors">
+                      <h4 className="text-xs font-bold text-neutral-100 group-hover:text-rose-300 transition-colors">
                         {post.title}
                       </h4>
                     </div>
@@ -283,14 +287,14 @@ export function OverviewView() {
                         );
                       })}
                     </div>
-                    <ArrowUpRight className="w-3.5 h-3.5 text-neutral-500 group-hover:text-white transition-colors" />
+                    <ArrowUpRight className="w-3.5 h-3.5 text-neutral-500 group-hover:text-neutral-200 transition-colors" />
                   </div>
                 </div>
               ))}
             </div>
 
             {/* Tomorrow Group */}
-            <div className="space-y-2 pt-2 border-t border-white/[0.05]">
+            <div className="space-y-2 pt-2 border-t border-neutral-800">
               <div className="text-[11px] font-mono uppercase tracking-wider text-neutral-400 font-semibold flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-neutral-500" />
                 <span>Tomorrow</span>
@@ -300,11 +304,11 @@ export function OverviewView() {
                 <div
                   key={post.id}
                   onClick={() => openContextualPanel("post_preview", post)}
-                  className="group flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.05] hover:border-white/12 transition-all cursor-pointer"
+                  className="group flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-neutral-950/40 hover:bg-neutral-800/80 border border-neutral-800 hover:border-neutral-700 transition-all cursor-pointer"
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-mono text-neutral-400 bg-white/5 px-2 py-0.5 rounded-md">
+                      <span className="text-xs font-mono text-neutral-400 bg-neutral-800 px-2 py-0.5 rounded-md">
                         {post.scheduledFor
                           ? new Date(post.scheduledFor).toLocaleTimeString([], {
                               hour: "2-digit",
@@ -312,7 +316,7 @@ export function OverviewView() {
                             })
                           : "09:00"}
                       </span>
-                      <h4 className="text-xs font-bold text-white group-hover:text-rose-300 transition-colors">
+                      <h4 className="text-xs font-bold text-neutral-100 group-hover:text-rose-300 transition-colors">
                         {post.title}
                       </h4>
                     </div>
@@ -334,7 +338,7 @@ export function OverviewView() {
                         );
                       })}
                     </div>
-                    <ArrowUpRight className="w-3.5 h-3.5 text-neutral-500 group-hover:text-white transition-colors" />
+                    <ArrowUpRight className="w-3.5 h-3.5 text-neutral-500 group-hover:text-neutral-200 transition-colors" />
                   </div>
                 </div>
               ))}
@@ -347,18 +351,20 @@ export function OverviewView() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Layers className="w-4 h-4 text-sky-400" />
-              <h2 className="font-display text-base font-semibold text-white">Platform Activity</h2>
+              <h2 className="font-display text-base font-semibold text-neutral-100">
+                Platform Activity
+              </h2>
             </div>
             <button
               type="button"
               onClick={() => setCurrentSection("connectors")}
-              className="text-xs font-semibold text-neutral-400 hover:text-white transition-colors cursor-pointer"
+              className="text-xs font-semibold text-neutral-400 hover:text-neutral-200 transition-colors cursor-pointer"
             >
               Manage ({connectors.length})
             </button>
           </div>
 
-          <div className="rounded-3xl border border-white/[0.08] bg-[#090912]/80 backdrop-blur-xl p-5 space-y-4">
+          <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-4">
             <div className="space-y-3.5">
               {platformActivity.map((plat) => (
                 <div key={plat.platformId} className="space-y-1.5">
@@ -366,7 +372,7 @@ export function OverviewView() {
                     <div className="flex items-center gap-2">
                       <PlatformIcon
                         platformId={plat.platformId}
-                        className="w-3.5 h-3.5 text-white"
+                        className="w-3.5 h-3.5 text-neutral-100"
                       />
                       <span className="font-semibold text-neutral-200">{plat.name}</span>
                     </div>
@@ -374,7 +380,7 @@ export function OverviewView() {
                       {plat.publishedCount} posts ({plat.activityPercent}%)
                     </span>
                   </div>
-                  <div className="w-full h-1.5 rounded-full bg-white/5 overflow-hidden">
+                  <div className="w-full h-1.5 rounded-full bg-neutral-800 overflow-hidden">
                     <div
                       className={`h-full rounded-full ${plat.color} transition-all duration-500`}
                       style={{ width: `${plat.activityPercent}%` }}
@@ -385,13 +391,13 @@ export function OverviewView() {
             </div>
 
             {/* Quick Automation Highlight Banner */}
-            <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between gap-3">
+            <div className="pt-3 border-t border-neutral-800 flex items-center justify-between gap-3">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
                   <Zap className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-white">3 Rules Active</div>
+                  <div className="text-xs font-bold text-neutral-100">3 Rules Active</div>
                   <div className="text-[10px] text-neutral-400">
                     Cross-posting to Reddit &amp; Telegram
                   </div>
@@ -400,7 +406,7 @@ export function OverviewView() {
               <button
                 type="button"
                 onClick={() => setCurrentSection("automations")}
-                className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-[11px] font-semibold text-neutral-300 hover:text-white border border-white/10 transition-colors cursor-pointer"
+                className="px-2.5 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-[11px] font-semibold text-neutral-300 hover:text-neutral-100 border border-neutral-700 transition-colors cursor-pointer"
               >
                 Configure
               </button>

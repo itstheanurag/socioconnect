@@ -60,13 +60,13 @@ export function AnalyticsView() {
   return (
     <div className="space-y-8 animate-in fade-in duration-300 pb-16">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/[0.06]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-neutral-800">
         <div>
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold tracking-wider text-rose-300 bg-rose-500/10 border border-rose-500/20 mb-2">
             <Sparkles className="w-3 h-3" />
             Publishing Intelligence
           </div>
-          <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-white">
+          <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-neutral-100">
             Analytics &amp; Network Reach
           </h1>
           <p className="text-xs sm:text-sm text-neutral-400 mt-1">
@@ -76,7 +76,7 @@ export function AnalyticsView() {
         </div>
 
         {/* Time Range Filter */}
-        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-white/[0.03] border border-white/6">
+        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-neutral-900 border border-neutral-800">
           {(["7d", "30d", "90d"] as const).map((r) => (
             <button
               key={r}
@@ -84,8 +84,8 @@ export function AnalyticsView() {
               onClick={() => setTimeRange(r)}
               className={`px-3 py-1 rounded-lg text-xs font-mono font-medium uppercase transition-all cursor-pointer ${
                 timeRange === r
-                  ? "bg-rose-500/20 text-white font-semibold border border-rose-500/30"
-                  : "text-neutral-400 hover:text-white"
+                  ? "bg-rose-500/20 text-neutral-100 font-semibold border border-rose-500/30"
+                  : "text-neutral-400 hover:text-neutral-200"
               }`}
             >
               Last {r}
@@ -96,59 +96,59 @@ export function AnalyticsView() {
 
       {/* Top High-level Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="rounded-2xl border border-white/[0.08] bg-[#090912]/80 backdrop-blur-xl p-5 space-y-2 shadow-xl">
+        <div className="rounded-2xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-2 shadow-xl">
           <div className="flex items-center justify-between text-xs text-neutral-400">
             <span>Total Impressions</span>
             <Eye className="w-4 h-4 text-sky-400" />
           </div>
-          <div className="text-3xl font-bold font-display text-white">706.9k</div>
+          <div className="text-3xl font-bold font-display text-neutral-100">706.9k</div>
           <div className="text-[11px] font-mono text-emerald-400 flex items-center gap-1">
             <TrendingUp className="w-3 h-3" /> +22.4% vs previous period
           </div>
         </div>
 
-        <div className="rounded-2xl border border-white/[0.08] bg-[#090912]/80 backdrop-blur-xl p-5 space-y-2 shadow-xl">
+        <div className="rounded-2xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-2 shadow-xl">
           <div className="flex items-center justify-between text-xs text-neutral-400">
             <span>Cross-Network Engagement</span>
             <Heart className="w-4 h-4 text-rose-400" />
           </div>
-          <div className="text-3xl font-bold font-display text-white">6.2%</div>
+          <div className="text-3xl font-bold font-display text-neutral-100">6.2%</div>
           <div className="text-[11px] font-mono text-emerald-400 flex items-center gap-1">
             <TrendingUp className="w-3 h-3" /> +1.8% benchmark
           </div>
         </div>
 
-        <div className="rounded-2xl border border-white/[0.08] bg-[#090912]/80 backdrop-blur-xl p-5 space-y-2 shadow-xl">
+        <div className="rounded-2xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-2 shadow-xl">
           <div className="flex items-center justify-between text-xs text-neutral-400">
             <span>Dispatched Shares &amp; Reposts</span>
             <Share2 className="w-4 h-4 text-amber-400" />
           </div>
-          <div className="text-3xl font-bold font-display text-white">18.4k</div>
+          <div className="text-3xl font-bold font-display text-neutral-100">18.4k</div>
           <div className="text-[11px] font-mono text-emerald-400 flex items-center gap-1">
             <TrendingUp className="w-3 h-3" /> +34% virality
           </div>
         </div>
 
-        <div className="rounded-2xl border border-white/[0.08] bg-[#090912]/80 backdrop-blur-xl p-5 space-y-2 shadow-xl">
+        <div className="rounded-2xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-2 shadow-xl">
           <div className="flex items-center justify-between text-xs text-neutral-400">
             <span>Telegram Bot Broadcasts</span>
             <Sparkles className="w-4 h-4 text-cyan-400" />
           </div>
-          <div className="text-3xl font-bold font-display text-white">100%</div>
+          <div className="text-3xl font-bold font-display text-neutral-100">100%</div>
           <div className="text-[11px] font-mono text-cyan-400">Zero dropped webhooks</div>
         </div>
       </div>
 
       {/* Platform Breakdown Table */}
-      <div className="rounded-3xl border border-white/[0.08] bg-[#090912]/80 backdrop-blur-xl p-6 shadow-2xl space-y-4">
-        <h3 className="font-display text-base font-bold text-white">
+      <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-6 shadow-2xl space-y-4">
+        <h3 className="font-display text-base font-bold text-neutral-100">
           Platform Performance &amp; Conversion
         </h3>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-white/[0.06] text-neutral-400 font-mono uppercase text-[10px]">
+              <tr className="border-b border-neutral-800 text-neutral-400 font-mono uppercase text-[10px]">
                 <th className="pb-3 font-semibold">Network</th>
                 <th className="pb-3 font-semibold">Impressions</th>
                 <th className="pb-3 font-semibold">Engagement Rate</th>
@@ -156,17 +156,17 @@ export function AnalyticsView() {
                 <th className="pb-3 font-semibold text-right">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/[0.04]">
+            <tbody className="divide-y divide-neutral-800/60">
               {platformPerformance.map((item) => (
-                <tr key={item.platformId} className="group hover:bg-white/[0.02]">
+                <tr key={item.platformId} className="group hover:bg-neutral-800/40">
                   <td className="py-3.5 flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
+                    <div className="w-7 h-7 rounded-lg bg-neutral-800 border border-neutral-700 flex items-center justify-center">
                       <PlatformIcon
                         platformId={item.platformId}
-                        className="w-3.5 h-3.5 text-white"
+                        className="w-3.5 h-3.5 text-neutral-100"
                       />
                     </div>
-                    <span className="font-semibold text-white">{item.name}</span>
+                    <span className="font-semibold text-neutral-100">{item.name}</span>
                   </td>
                   <td className="py-3.5 font-mono text-neutral-300">{item.impressions}</td>
                   <td className="py-3.5 font-mono text-rose-300 font-semibold">
@@ -186,10 +186,10 @@ export function AnalyticsView() {
       </div>
 
       {/* Best Posting Times Heatmap */}
-      <div className="rounded-3xl border border-white/[0.08] bg-[#090912]/80 backdrop-blur-xl p-6 shadow-2xl space-y-4">
+      <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-6 shadow-2xl space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-display text-base font-bold text-white">
+            <h3 className="font-display text-base font-bold text-neutral-100">
               Optimal Publishing Windows
             </h3>
             <p className="text-xs text-neutral-400 mt-0.5">
@@ -207,8 +207,8 @@ export function AnalyticsView() {
               key={day}
               className={`p-3 rounded-2xl border text-center space-y-1.5 ${
                 idx === 1 || idx === 3
-                  ? "bg-rose-500/15 border-rose-500/30 text-white"
-                  : "bg-white/[0.02] border-white/5 text-neutral-400"
+                  ? "bg-rose-500/15 border-rose-500/30 text-neutral-100"
+                  : "bg-neutral-950/40 border-neutral-800 text-neutral-400"
               }`}
             >
               <div className="font-mono text-xs font-bold uppercase">{day}</div>

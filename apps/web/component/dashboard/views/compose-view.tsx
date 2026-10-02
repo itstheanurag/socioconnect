@@ -1,211 +1,182 @@
 "use client";
 
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import {
+  Send,
+  Calendar,
   Sparkles,
+  Layers,
   Image as ImageIcon,
   Video,
-  Layers,
   Music,
-  CheckCircle2,
-  AlertTriangle,
-  X,
-  Calendar,
-  Send,
-  Eye,
-  Hash,
   Smile,
+  Hash,
+  X,
+  AlertTriangle,
+  CheckCircle2,
   Info,
+  Eye,
 } from "lucide-react";
 import { useDashboard } from "../context/dashboard-context";
 import { useComposeStore, SAMPLE_MEDIA_LIBRARY } from "../store/use-compose-store";
-import { PlatformIcon, getPlatformBrandColor } from "../ui/platform-icon";
-import { PlatformId, PostMedia } from "../types";
-import {
-  analyzePlatformCompatibility,
-  getPlatformDisplayName,
-  getRecommendedPlatforms,
-} from "../utils/compatibility-engine";
+import { useNotification } from "@/context/notification-context";
+import { PlatformIcon, getPlatformBrandColor, getPlatformDisplayName } from "../ui/platform-icon";
+import { PlatformId, PostMedia, PlatformOverride, PostItem } from "../types";
+import { analyzePlatformCompatibility } from "../utils/compatibility-engine";
 
-const AVAILABLE_PLATFORMS: PlatformId[] = [
-  "instagram",
+const ALL_PLATFORMS: PlatformId[] = [
   "twitter",
   "linkedin",
-  "reddit",
+  "instagram",
   "telegram",
+  "reddit",
   "threads",
 ];
 
 export function ComposeView() {
   const {
+    setCurrentSection,
     createPost,
+    communities,
     openContextualPanel,
     composeDraft,
     setComposeDraft,
-    communities,
-    setCurrentSection,
   } = useDashboard();
 
-  // Zustand Compose Store
   const {
     title,
-    baseContent,
-    mediaList,
-    hasAudio,
-    isAutoSelectPlatforms,
-    selectedPlatforms,
-    activeOverrideTab,
-    platformOverrides,
-    selectedCommunityIds,
-    isScheduling,
-    scheduleDateIso,
     setTitle,
+    baseContent,
     setBaseContent,
+    mediaList,
     addMedia,
     removeMedia,
+    hasAudio,
     setHasAudio,
+    isAutoSelectPlatforms,
     setIsAutoSelectPlatforms,
+    selectedPlatforms,
     setSelectedPlatforms,
     togglePlatform,
+    activeOverrideTab,
     setActiveOverrideTab,
+    platformOverrides,
     setPlatformOverride,
+    selectedCommunityIds,
     setSelectedCommunityIds,
+    isScheduling,
     setIsScheduling,
+    scheduleDateIso,
     setScheduleDateIso,
     applyDraft,
     resetComposer,
   } = useComposeStore();
 
-  // Consume incoming draft once
+  const { toast } = useNotification();
+
+  // Apply draft if navigated with draft parameters
   useEffect(() => {
     if (composeDraft) {
-      applyDraft({
-        title: composeDraft.title,
-        baseContent: composeDraft.baseContent,
-        media: composeDraft.media,
-        hasAudio: composeDraft.hasAudio,
-        targetPlatforms: composeDraft.targetPlatforms,
-        communityIds: composeDraft.communityIds,
-        scheduledFor: composeDraft.scheduledFor,
-        platformOverrides: composeDraft.platformOverrides,
-      });
+      applyDraft(composeDraft);
       setComposeDraft(null);
     }
-  }, [composeDraft, setComposeDraft, applyDraft]);
+  }, [composeDraft, applyDraft, setComposeDraft]);
 
-  // Compute live compatibility with memoization
-  const currentContentPayload = useMemo(
-    () => ({
-      text: baseContent,
-      media: mediaList,
-      hasAudio,
-    }),
-    [baseContent, mediaList, hasAudio],
+  // Compatibility analysis
+  const contentInput = {
+    text: baseContent,
+    media: mediaList,
+    hasAudio,
+  };
+
+  const compatibilityMap = ALL_PLATFORMS.map((pid) =>
+    analyzePlatformCompatibility(pid, contentInput),
   );
 
-  const compatibilityMap = useMemo(
-    () => AVAILABLE_PLATFORMS.map((p) => analyzePlatformCompatibility(p, currentContentPayload)),
-    [currentContentPayload],
-  );
-
-  const recommendation = useMemo(
-    () => getRecommendedPlatforms(currentContentPayload, AVAILABLE_PLATFORMS),
-    [currentContentPayload],
-  );
-
-  // Safely sync selected platforms when auto-select is active
-  const recommendedKey = useMemo(
-    () =>
-      [...recommendation.recommended, ...recommendation.compatibleWithModifications]
-        .sort()
-        .join(","),
-    [recommendation],
-  );
-
+  // Auto platform selection based on compatibility
   useEffect(() => {
     if (isAutoSelectPlatforms) {
-      const newSelected = [
-        ...recommendation.recommended,
-        ...recommendation.compatibleWithModifications,
-      ];
-      setSelectedPlatforms((prev) => {
-        if (
-          prev.length === newSelected.length &&
-          prev.every((item) => newSelected.includes(item))
-        ) {
-          return prev;
-        }
-        return newSelected;
-      });
+      const compatible = compatibilityMap
+        .filter(
+          (c) => c.status === "fully_compatible" || c.status === "compatible_with_modifications",
+        )
+        .map((c) => c.platformId);
+      if (compatible.length > 0) {
+        setSelectedPlatforms(compatible);
+      }
     }
-  }, [isAutoSelectPlatforms, recommendedKey, recommendation, setSelectedPlatforms]);
-
-  const togglePlatformManual = (platformId: PlatformId) => {
-    setIsAutoSelectPlatforms(false);
-    togglePlatform(platformId);
-  };
-
-  const handleOpenPreview = () => {
-    openContextualPanel("post_preview", {
-      id: "preview-temp",
-      title: title || "Untitled Post",
-      baseContent,
-      media: mediaList,
-      hasAudio,
-      targetPlatforms: selectedPlatforms,
-      communityIds: selectedCommunityIds,
-      platformOverrides,
-      status: isScheduling ? "scheduled" : "published",
-      scheduledFor: isScheduling ? new Date(scheduleDateIso).toISOString() : undefined,
-      createdAt: new Date().toISOString(),
-      author: { name: "Gaurav" },
-    });
-  };
+  }, [baseContent, mediaList.length, hasAudio, isAutoSelectPlatforms]);
 
   const handlePublishOrSchedule = () => {
-    const success = createPost({
-      title: title || baseContent.slice(0, 40) + "...",
+    if (!title.trim()) {
+      toast.error("Title Required", "Please specify a campaign title for internal organization.");
+      return;
+    }
+    if (!baseContent.trim()) {
+      toast.error("Content Empty", "Please write master content to broadcast.");
+      return;
+    }
+    if (selectedPlatforms.length === 0) {
+      toast.error("No Platforms Selected", "Select at least one destination network.");
+      return;
+    }
+
+    const ok = createPost({
+      title,
       baseContent,
-      media: mediaList,
-      hasAudio,
+      author: {
+        name: "Admin User",
+      },
       targetPlatforms: selectedPlatforms,
       communityIds: selectedCommunityIds,
-      platformOverrides,
+      media: mediaList,
+      hasAudio,
       status: isScheduling ? "scheduled" : "published",
-      scheduledFor: isScheduling ? new Date(scheduleDateIso).toISOString() : undefined,
-      publishedAt: !isScheduling ? new Date().toISOString() : undefined,
-      author: { name: "Gaurav" },
+      scheduledFor: isScheduling ? scheduleDateIso : undefined,
+      platformOverrides,
     });
 
-    if (success) {
+    if (ok) {
       resetComposer();
       setCurrentSection("posts");
     }
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-300 pb-16">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/[0.06]">
+    <div className="space-y-6 animate-in fade-in duration-300 pb-16">
+      {/* Top Action Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-neutral-800">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold tracking-wider text-rose-300 bg-rose-500/10 border border-rose-500/20 mb-2">
-            <Sparkles className="w-3 h-3" />
-            Intelligent Composer
-          </div>
-          <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-white">
-            Create Post
+          <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-neutral-100">
+            Universal Omnichannel Composer
           </h1>
           <p className="text-xs sm:text-sm text-neutral-400 mt-1">
-            Write your core message once. SocioConnect automatically adapts formatting, attachments,
-            and length constraints per platform.
+            Craft your message once, tune dialect per network, and dispatch in real-time.
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 self-start sm:self-auto">
           <button
             type="button"
-            onClick={handleOpenPreview}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-neutral-200 hover:text-white text-xs font-semibold border border-white/10 transition-all cursor-pointer"
+            onClick={() => {
+              const previewItem: PostItem = {
+                id: "preview-temp",
+                title: title || "Untitled Post",
+                baseContent,
+                author: {
+                  name: "Admin User",
+                },
+                targetPlatforms: selectedPlatforms,
+                communityIds: selectedCommunityIds,
+                media: mediaList,
+                hasAudio,
+                status: "draft",
+                platformOverrides,
+                createdAt: new Date().toISOString(),
+              };
+              openContextualPanel("post_preview", previewItem);
+            }}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-neutral-200 text-xs font-semibold border border-neutral-800 transition-colors cursor-pointer"
           >
             <Eye className="w-3.5 h-3.5 text-rose-400" />
             <span>Live Preview</span>
@@ -214,7 +185,7 @@ export function ComposeView() {
           <button
             type="button"
             onClick={handlePublishOrSchedule}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-semibold shadow-lg shadow-red-600/25 transition-all cursor-pointer active:scale-95"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-neutral-100 text-xs font-semibold shadow-lg shadow-red-600/25 transition-all cursor-pointer active:scale-95"
           >
             {!isScheduling ? (
               <>
@@ -245,21 +216,21 @@ export function ComposeView() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. SocioConnect 2.0 Engine Launch Announcement"
-              className="w-full px-4 py-2.5 rounded-2xl bg-white/[0.03] border border-white/10 text-sm text-white placeholder:text-neutral-500 focus:outline-hidden focus:border-rose-500/50 transition-colors"
+              className="w-full px-4 py-2.5 rounded-2xl bg-neutral-900 border border-neutral-800 text-sm text-neutral-100 placeholder:text-neutral-500 focus:outline-hidden focus:border-rose-500/50 transition-colors"
             />
           </div>
 
           {/* Platform Tabs: Base + Specific Overrides */}
-          <div className="rounded-3xl border border-white/[0.08] bg-[#090912]/80 backdrop-blur-xl p-5 space-y-4 shadow-xl">
-            <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
+          <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-4 shadow-xl">
+            <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
               <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-1">
                 <button
                   type="button"
                   onClick={() => setActiveOverrideTab("base")}
                   className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                     activeOverrideTab === "base"
-                      ? "bg-rose-500/15 text-white border border-rose-500/30"
-                      : "text-neutral-400 hover:text-white hover:bg-white/5"
+                      ? "bg-rose-500/15 text-neutral-100 border border-rose-500/30"
+                      : "text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800/60"
                   }`}
                 >
                   All Platforms (Base)
@@ -276,7 +247,7 @@ export function ComposeView() {
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                         activeOverrideTab === p
                           ? `${brand.bg} ${brand.text} ${brand.border} border`
-                          : "text-neutral-400 hover:text-white hover:bg-white/5"
+                          : "text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800/60"
                       }`}
                     >
                       <PlatformIcon platformId={p} className="w-3.5 h-3.5" />
@@ -303,7 +274,7 @@ export function ComposeView() {
                     value={baseContent}
                     onChange={(e) => setBaseContent(e.target.value)}
                     placeholder="What do you want to share across your network? Write once here..."
-                    className="w-full p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] text-sm text-white placeholder:text-neutral-500 focus:outline-hidden focus:border-rose-500/40 resize-y leading-relaxed font-sans"
+                    className="w-full p-4 rounded-2xl bg-neutral-950/60 border border-neutral-800 text-sm text-neutral-200 placeholder:text-neutral-500 focus:outline-hidden focus:border-rose-500/40 resize-y leading-relaxed font-sans"
                   />
                 </div>
 
@@ -315,7 +286,7 @@ export function ComposeView() {
                       onClick={() =>
                         setBaseContent(baseContent + " #SocioConnect #DevTools #Automation")
                       }
-                      className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 hover:text-white border border-white/5 transition-colors cursor-pointer"
+                      className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 hover:text-neutral-100 border border-neutral-700/60 transition-colors cursor-pointer"
                     >
                       <Hash className="w-3 h-3 text-rose-400" />
                       <span>Hashtags</span>
@@ -323,7 +294,7 @@ export function ComposeView() {
                     <button
                       type="button"
                       onClick={() => setBaseContent(baseContent + " 🚀✨")}
-                      className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 hover:text-white border border-white/5 transition-colors cursor-pointer"
+                      className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 hover:text-neutral-100 border border-neutral-700/60 transition-colors cursor-pointer"
                     >
                       <Smile className="w-3 h-3 text-amber-400" />
                       <span>Emoji</span>
@@ -376,7 +347,7 @@ export function ComposeView() {
                       })
                     }
                     placeholder="Write an engaging title suited for developers/community..."
-                    className="w-full px-3.5 py-2 rounded-xl bg-white/[0.03] border border-white/10 text-xs text-white placeholder:text-neutral-500 focus:outline-hidden focus:border-orange-500/50"
+                    className="w-full px-3.5 py-2 rounded-xl bg-neutral-950/60 border border-neutral-800 text-xs text-neutral-100 placeholder:text-neutral-500 focus:outline-hidden focus:border-orange-500/50"
                   />
                 </div>
 
@@ -391,7 +362,7 @@ export function ComposeView() {
                           enabled: true,
                         })
                       }
-                      className="w-full px-3.5 py-2 rounded-xl bg-[#0e0e18] border border-white/10 text-xs text-white focus:outline-hidden cursor-pointer"
+                      className="w-full px-3.5 py-2 rounded-xl bg-neutral-900 border border-neutral-800 text-xs text-neutral-200 focus:outline-hidden cursor-pointer"
                     >
                       <option value="r/programming">r/programming (5.8M devs)</option>
                       <option value="r/webdev">r/webdev (2.1M devs)</option>
@@ -412,7 +383,7 @@ export function ComposeView() {
                         })
                       }
                       placeholder="e.g. Showcase, Tutorial, Project"
-                      className="w-full px-3.5 py-2 rounded-xl bg-white/[0.03] border border-white/10 text-xs text-white placeholder:text-neutral-500 focus:outline-hidden"
+                      className="w-full px-3.5 py-2 rounded-xl bg-neutral-950/60 border border-neutral-800 text-xs text-neutral-100 placeholder:text-neutral-500 focus:outline-hidden"
                     />
                   </div>
                 </div>
@@ -422,7 +393,7 @@ export function ComposeView() {
             {/* X / TWITTER OVERRIDE TAB */}
             {activeOverrideTab === "twitter" && (
               <div className="space-y-4 animate-in fade-in duration-200">
-                <div className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10 text-xs">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-neutral-950/60 border border-neutral-800 text-xs">
                   <div className="flex items-center gap-2 text-neutral-200">
                     <PlatformIcon platformId="twitter" className="w-4 h-4" />
                     <span>X (Twitter) 280-char Threading &amp; Dialect</span>
@@ -442,7 +413,7 @@ export function ComposeView() {
                         enabled: true,
                       })
                     }
-                    className="w-full p-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs text-white placeholder:text-neutral-500 focus:outline-hidden leading-relaxed"
+                    className="w-full p-3.5 rounded-xl bg-neutral-950/60 border border-neutral-800 text-xs text-neutral-200 placeholder:text-neutral-500 focus:outline-hidden leading-relaxed"
                   />
                 </div>
               </div>
@@ -485,7 +456,7 @@ export function ComposeView() {
                         enabled: true,
                       })
                     }
-                    className="w-full p-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs text-white placeholder:text-neutral-500 focus:outline-hidden leading-relaxed font-mono"
+                    className="w-full p-3.5 rounded-xl bg-neutral-950/60 border border-neutral-800 text-xs text-neutral-200 placeholder:text-neutral-500 focus:outline-hidden leading-relaxed font-mono"
                   />
                 </div>
               </div>
@@ -496,7 +467,7 @@ export function ComposeView() {
               activeOverrideTab === "linkedin" ||
               activeOverrideTab === "threads") && (
               <div className="space-y-4 animate-in fade-in duration-200">
-                <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-xs flex items-center justify-between">
+                <div className="p-3 rounded-xl bg-neutral-950/60 border border-neutral-800 text-xs flex items-center justify-between">
                   <span className="text-neutral-300 font-medium">
                     Customize caption specifically for {getPlatformDisplayName(activeOverrideTab)}
                   </span>
@@ -510,18 +481,18 @@ export function ComposeView() {
                       enabled: true,
                     })
                   }
-                  className="w-full p-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-xs text-white focus:outline-hidden leading-relaxed"
+                  className="w-full p-3.5 rounded-xl bg-neutral-950/60 border border-neutral-800 text-xs text-neutral-200 placeholder:text-neutral-500 focus:outline-hidden leading-relaxed"
                 />
               </div>
             )}
           </div>
 
           {/* Media Attachments Manager */}
-          <div className="rounded-3xl border border-white/[0.08] bg-[#090912]/80 backdrop-blur-xl p-5 space-y-4 shadow-xl">
-            <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
+          <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-4 shadow-xl">
+            <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
               <div className="flex items-center gap-2">
                 <Layers className="w-4 h-4 text-rose-400" />
-                <h3 className="font-display text-sm font-semibold text-white">
+                <h3 className="font-display text-sm font-semibold text-neutral-100">
                   Media &amp; Soundtrack Attachments
                 </h3>
               </div>
@@ -535,28 +506,28 @@ export function ComposeView() {
               {mediaList.map((m) => (
                 <div
                   key={m.id}
-                  className="relative group rounded-2xl overflow-hidden border border-white/10 aspect-4/3 bg-black/40"
+                  className="relative group rounded-2xl overflow-hidden border border-neutral-800 aspect-4/3 bg-neutral-950"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={m.url} alt={m.name} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 p-2">
+                  <div className="absolute inset-0 bg-neutral-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 p-2">
                     <button
                       type="button"
                       onClick={() => removeMedia(m.id)}
-                      className="p-1.5 rounded-lg bg-rose-600/90 text-white hover:bg-rose-600 transition-colors cursor-pointer"
+                      className="p-1.5 rounded-lg bg-rose-600/90 text-neutral-100 hover:bg-rose-600 transition-colors cursor-pointer"
                       title="Remove image"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
                   </div>
-                  <div className="absolute bottom-1 left-1.5 right-1.5 text-[9px] font-mono text-neutral-300 truncate bg-black/60 px-1.5 py-0.5 rounded backdrop-blur-xs">
+                  <div className="absolute bottom-1 left-1.5 right-1.5 text-[9px] font-mono text-neutral-300 truncate bg-neutral-900/80 px-1.5 py-0.5 rounded backdrop-blur-xs border border-neutral-800">
                     {m.name}
                   </div>
                 </div>
               ))}
 
               {/* Add Media Slot */}
-              <div className="border-2 border-dashed border-white/10 hover:border-white/20 rounded-2xl aspect-4/3 flex flex-col items-center justify-center p-3 text-center transition-colors">
+              <div className="border-2 border-dashed border-neutral-800 hover:border-neutral-700 rounded-2xl aspect-4/3 flex flex-col items-center justify-center p-3 text-center transition-colors">
                 <div className="flex items-center gap-1.5 mb-1.5 text-neutral-400">
                   <ImageIcon className="w-4 h-4 text-rose-400" />
                   <Video className="w-4 h-4 text-sky-400" />
@@ -568,7 +539,7 @@ export function ComposeView() {
                       key={sample.id}
                       type="button"
                       onClick={() => addMedia(sample)}
-                      className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/15 text-neutral-300 border border-white/10 transition-colors cursor-pointer"
+                      className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-300 border border-neutral-700 transition-colors cursor-pointer"
                     >
                       + {sample.name.split("_")[0]}
                     </button>
@@ -578,13 +549,13 @@ export function ComposeView() {
             </div>
 
             {/* Audio / Soundtrack Toggle */}
-            <div className="flex items-center justify-between p-3 rounded-2xl bg-white/[0.02] border border-white/6">
+            <div className="flex items-center justify-between p-3 rounded-2xl bg-neutral-950/40 border border-neutral-800">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-pink-400">
                   <Music className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-semibold text-white">
+                  <div className="text-xs font-semibold text-neutral-100">
                     Background Audio Soundtrack
                   </div>
                   <div className="text-[10px] text-neutral-400">
@@ -601,7 +572,7 @@ export function ComposeView() {
                   onChange={(e) => setHasAudio(e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-9 h-5 bg-neutral-800 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-rose-600" />
+                <div className="w-9 h-5 bg-neutral-800 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-neutral-200 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-neutral-200 after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-rose-600" />
               </label>
             </div>
           </div>
@@ -610,19 +581,17 @@ export function ComposeView() {
         {/* Right Column (4 cols): Intelligent Platform Compatibility Engine & Scheduling */}
         <div className="lg:col-span-4 space-y-6">
           {/* Compatibility Engine Card */}
-          <div className="rounded-3xl border border-white/[0.08] bg-[#090912]/80 backdrop-blur-xl p-5 space-y-4 shadow-xl">
-            <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
+          <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-4 shadow-xl">
+            <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-rose-400" />
-                <h3 className="font-display text-sm font-semibold text-white">
+                <h3 className="font-display text-sm font-semibold text-neutral-100">
                   Platform Compatibility
                 </h3>
               </div>
               <button
                 type="button"
-                onClick={() =>
-                  openContextualPanel("compatibility_breakdown", currentContentPayload)
-                }
+                onClick={() => openContextualPanel("compatibility_breakdown", compatibilityMap)}
                 className="text-[11px] font-mono text-rose-400 hover:text-rose-300 flex items-center gap-1 cursor-pointer"
               >
                 <span>Full Spec</span>
@@ -631,14 +600,14 @@ export function ComposeView() {
             </div>
 
             {/* Mode Switch: Auto-Select vs Choose Manually */}
-            <div className="grid grid-cols-2 p-1 rounded-xl bg-white/[0.03] border border-white/6 text-xs">
+            <div className="grid grid-cols-2 p-1 rounded-xl bg-neutral-950/60 border border-neutral-800 text-xs">
               <button
                 type="button"
                 onClick={() => setIsAutoSelectPlatforms(true)}
                 className={`py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
                   isAutoSelectPlatforms
-                    ? "bg-rose-500/20 text-white shadow-xs"
-                    : "text-neutral-400 hover:text-white"
+                    ? "bg-rose-500/20 text-rose-300 shadow-xs"
+                    : "text-neutral-400 hover:text-neutral-200"
                 }`}
               >
                 Auto-Select
@@ -648,8 +617,8 @@ export function ComposeView() {
                 onClick={() => setIsAutoSelectPlatforms(false)}
                 className={`py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
                   !isAutoSelectPlatforms
-                    ? "bg-white/10 text-white shadow-xs"
-                    : "text-neutral-400 hover:text-white"
+                    ? "bg-neutral-800 text-neutral-100 shadow-xs"
+                    : "text-neutral-400 hover:text-neutral-200"
                 }`}
               >
                 Manual Override
@@ -666,11 +635,14 @@ export function ComposeView() {
                 return (
                   <div
                     key={pid}
-                    onClick={() => togglePlatformManual(pid)}
+                    onClick={() => {
+                      setIsAutoSelectPlatforms(false);
+                      togglePlatform(pid);
+                    }}
                     className={`p-3 rounded-2xl border transition-all cursor-pointer ${
                       isSelected
-                        ? "bg-white/[0.04] border-white/15"
-                        : "bg-white/[0.01] border-white/5 opacity-60 hover:opacity-100"
+                        ? "bg-neutral-800/80 border-neutral-700 shadow-xs"
+                        : "bg-neutral-950/40 border-neutral-800/80 opacity-60 hover:opacity-100"
                     }`}
                   >
                     <div className="flex items-center justify-between">
@@ -681,7 +653,7 @@ export function ComposeView() {
                           <PlatformIcon platformId={pid} className="w-3.5 h-3.5" />
                         </div>
                         <div>
-                          <div className="text-xs font-semibold text-white">
+                          <div className="text-xs font-semibold text-neutral-100">
                             {getPlatformDisplayName(pid)}
                           </div>
                           <div className="text-[10px] text-neutral-400">
@@ -709,7 +681,7 @@ export function ComposeView() {
                     {analysis.modificationsSummary &&
                       analysis.modificationsSummary.length > 0 &&
                       isSelected && (
-                        <p className="mt-2 text-[10px] text-amber-300/80 bg-amber-500/5 p-2 rounded-lg border border-amber-500/10 leading-snug">
+                        <p className="mt-2 text-[10px] text-amber-300/80 bg-amber-500/10 p-2 rounded-lg border border-amber-500/20 leading-snug">
                           {analysis.modificationsSummary[0]}
                         </p>
                       )}
@@ -720,8 +692,8 @@ export function ComposeView() {
           </div>
 
           {/* Communities & Scheduling Card */}
-          <div className="rounded-3xl border border-white/[0.08] bg-[#090912]/80 backdrop-blur-xl p-5 space-y-4 shadow-xl">
-            <h3 className="font-display text-sm font-semibold text-white border-b border-white/[0.06] pb-3">
+          <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-4 shadow-xl">
+            <h3 className="font-display text-sm font-semibold text-neutral-100 border-b border-neutral-800 pb-3">
               Distribution &amp; Timing
             </h3>
 
@@ -731,7 +703,7 @@ export function ComposeView() {
               <select
                 value={selectedCommunityIds[0] || ""}
                 onChange={(e) => setSelectedCommunityIds([e.target.value])}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-[#0e0e18] border border-white/10 text-xs text-white focus:outline-hidden cursor-pointer"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-xs text-neutral-200 focus:outline-hidden cursor-pointer"
               >
                 {communities.map((c) => (
                   <option key={c.id} value={c.id}>
@@ -750,7 +722,7 @@ export function ComposeView() {
                   className={`py-2 rounded-xl border text-center font-medium transition-all cursor-pointer ${
                     !isScheduling
                       ? "bg-rose-500/20 text-rose-300 border-rose-500/30 font-semibold"
-                      : "bg-white/[0.02] text-neutral-400 border-white/5 hover:text-white"
+                      : "bg-neutral-950/60 text-neutral-400 border-neutral-800 hover:text-neutral-200"
                   }`}
                 >
                   Publish Now
@@ -761,7 +733,7 @@ export function ComposeView() {
                   className={`py-2 rounded-xl border text-center font-medium transition-all cursor-pointer ${
                     isScheduling
                       ? "bg-rose-500/20 text-rose-300 border-rose-500/30 font-semibold"
-                      : "bg-white/[0.02] text-neutral-400 border-white/5 hover:text-white"
+                      : "bg-neutral-950/60 text-neutral-400 border-neutral-800 hover:text-neutral-200"
                   }`}
                 >
                   Schedule Slot
@@ -777,7 +749,7 @@ export function ComposeView() {
                     type="datetime-local"
                     value={scheduleDateIso}
                     onChange={(e) => setScheduleDateIso(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl bg-white/[0.03] border border-white/10 text-xs text-white focus:outline-hidden font-mono"
+                    className="w-full px-3.5 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-xs text-neutral-200 focus:outline-hidden font-mono"
                   />
                   <div className="text-[10px] text-emerald-400 flex items-center gap-1 mt-1 font-mono">
                     <Sparkles className="w-3 h-3" />

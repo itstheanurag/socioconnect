@@ -31,20 +31,21 @@ export function SettingsView() {
   return (
     <div className="space-y-8 animate-in fade-in duration-300 pb-16 max-w-4xl">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-white/[0.06]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-neutral-800">
         <div>
-          <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-white">
+          <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-neutral-100">
             Workspace Settings
           </h1>
           <p className="text-xs sm:text-sm text-neutral-400 mt-1">
-            Configure default publishing behaviors, network timezones, and webhook reliability policies.
+            Configure default publishing behaviors, network timezones, and webhook reliability
+            policies.
           </p>
         </div>
 
         <button
           type="button"
           onClick={handleSave}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-semibold shadow-lg shadow-red-600/25 transition-all cursor-pointer active:scale-95"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-neutral-100 text-xs font-semibold shadow-lg shadow-red-600/25 transition-all cursor-pointer active:scale-95"
         >
           <Save className="w-4 h-4" />
           <span>Save Preferences</span>
@@ -52,8 +53,8 @@ export function SettingsView() {
       </div>
 
       {/* Workspace Info Card */}
-      <div className="rounded-3xl border border-white/[0.08] bg-[#090912]/80 backdrop-blur-xl p-6 shadow-xl space-y-4">
-        <h3 className="font-display text-sm font-semibold text-white flex items-center gap-2">
+      <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-6 shadow-xl space-y-4">
+        <h3 className="font-display text-sm font-semibold text-neutral-100 flex items-center gap-2">
           <Globe className="w-4 h-4 text-rose-400" />
           <span>Workspace Environment</span>
         </h3>
@@ -65,7 +66,7 @@ export function SettingsView() {
               type="text"
               readOnly
               value={activeWorkspace.name}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-white/[0.02] border border-white/10 text-white font-medium focus:outline-hidden"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-neutral-100 font-medium focus:outline-hidden"
             />
           </div>
 
@@ -74,7 +75,7 @@ export function SettingsView() {
             <select
               value={timezone}
               onChange={(e) => setTimezone(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-[#0e0e18] border border-white/10 text-white focus:outline-hidden cursor-pointer"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-neutral-200 focus:outline-hidden cursor-pointer"
             >
               <option value="Asia/Kolkata (GMT+5:30)">Asia/Kolkata (GMT+5:30)</option>
               <option value="UTC (GMT+0)">UTC (GMT+0)</option>
@@ -87,18 +88,19 @@ export function SettingsView() {
       </div>
 
       {/* Publishing Intelligence Policies */}
-      <div className="rounded-3xl border border-white/[0.08] bg-[#090912]/80 backdrop-blur-xl p-6 shadow-xl space-y-4">
-        <h3 className="font-display text-sm font-semibold text-white flex items-center gap-2">
+      <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-6 shadow-xl space-y-4">
+        <h3 className="font-display text-sm font-semibold text-neutral-100 flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-amber-400" />
           <span>Automation &amp; Formatting Intelligence</span>
         </h3>
 
         <div className="space-y-3 text-xs">
-          <div className="flex items-center justify-between p-3 rounded-2xl bg-white/[0.02] border border-white/6">
+          <div className="flex items-center justify-between p-3 rounded-2xl bg-neutral-950/40 border border-neutral-800">
             <div>
-              <div className="font-semibold text-white">Auto-Split Character Overflow</div>
+              <div className="font-semibold text-neutral-100">Auto-Split Character Overflow</div>
               <div className="text-[11px] text-neutral-400">
-                Automatically split posts longer than 280 chars into numbered threads on X and Threads.
+                Automatically split posts longer than 280 chars into numbered threads on X and
+                Threads.
               </div>
             </div>
             <input
@@ -109,11 +111,14 @@ export function SettingsView() {
             />
           </div>
 
-          <div className="flex items-center justify-between p-3 rounded-2xl bg-white/[0.02] border border-white/6">
+          <div className="flex items-center justify-between p-3 rounded-2xl bg-neutral-950/40 border border-neutral-800">
             <div>
-              <div className="font-semibold text-white">Non-Destructive Media Adaptations</div>
+              <div className="font-semibold text-neutral-100">
+                Non-Destructive Media Adaptations
+              </div>
               <div className="text-[11px] text-neutral-400">
-                Fallback to primary carousel image when destination lacks multi-image support (e.g. Reddit link format).
+                Fallback to primary carousel image when destination lacks multi-image support (e.g.
+                Reddit link format).
               </div>
             </div>
             <input
@@ -124,11 +129,12 @@ export function SettingsView() {
             />
           </div>
 
-          <div className="flex items-center justify-between p-3 rounded-2xl bg-white/[0.02] border border-white/6">
+          <div className="flex items-center justify-between p-3 rounded-2xl bg-neutral-950/40 border border-neutral-800">
             <div>
-              <div className="font-semibold text-white">Instant Failure Telegram Alert</div>
+              <div className="font-semibold text-neutral-100">Instant Failure Telegram Alert</div>
               <div className="text-[11px] text-neutral-400">
-                Send emergency ping to admin bot when an OAuth token expires during scheduled publish.
+                Send emergency ping to admin bot when an OAuth token expires during scheduled
+                publish.
               </div>
             </div>
             <input
