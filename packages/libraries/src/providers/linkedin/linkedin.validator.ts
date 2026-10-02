@@ -8,7 +8,7 @@ import { countCodeUnits } from "@/utils/text-counter";
 export const LINKEDIN_LIMITS: PlatformLimits = {
   maxCharacters: 3000,
   maxTitleCharacters: 200,
-  maxMediaCount: 9,
+  maxMediaCount: 1,
   maxImageSizeBytes: 10 * 1024 * 1024,
   maxVideoSizeBytes: 200 * 1024 * 1024,
   allowedImageMimeTypes: ["image/jpeg", "image/png", "image/gif"],
@@ -21,14 +21,21 @@ export const linkedinPostSchema = universalPostSchema
     media: createMediaValidator({
       maxCount: LINKEDIN_LIMITS.maxMediaCount,
       allowedImageMimes: LINKEDIN_LIMITS.allowedImageMimeTypes,
-      allowedVideoMimes: LINKEDIN_LIMITS.allowedVideoMimeTypes,
+      allowedVideoMimes: [],
       maxImageSizeBytes: LINKEDIN_LIMITS.maxImageSizeBytes,
       maxVideoSizeBytes: LINKEDIN_LIMITS.maxVideoSizeBytes,
       platformName: "LinkedIn",
     }),
   })
   .superRefine(
-    (data: { content?: string; media?: unknown[]; linkUrl?: string }, ctx: z.RefinementCtx) => {
+    (
+      data: {
+        content?: string;
+        media?: Array<{ type: "image" | "video" | "gif" }>;
+        linkUrl?: string;
+      },
+      ctx: z.RefinementCtx,
+    ) => {
       const text = data.content || "";
       const media = data.media || [];
       const link = data.linkUrl || "";
@@ -47,6 +54,20 @@ export const linkedinPostSchema = universalPostSchema
           code: z.ZodIssueCode.custom,
           message: `LinkedIn post exceeds maximum limit of ${LINKEDIN_LIMITS.maxCharacters} characters.`,
           path: ["content"],
+        });
+      }
+      if (media.some((item) => item.type !== "image")) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "LinkedIn publishing currently supports a single image attachment.",
+          path: ["media"],
+        });
+      }
+      if (media.length > 0 && link) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "LinkedIn publishing accepts either an image or a link in one post.",
+          path: ["media"],
         });
       }
     },

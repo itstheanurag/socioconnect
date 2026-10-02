@@ -27,6 +27,19 @@ export interface TikTokPublishResponse {
   };
 }
 
+export interface TikTokPublishStatusResponse {
+  data: {
+    status: string;
+    fail_reason?: string;
+    publicaly_available_post_id?: Array<string | number>;
+  };
+  error: {
+    code: string;
+    message: string;
+    log_id: string;
+  };
+}
+
 export interface TikTokTokenResponse {
   open_id: string;
   scope: string;

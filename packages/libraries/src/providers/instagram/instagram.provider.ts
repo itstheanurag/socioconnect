@@ -166,7 +166,8 @@ export class InstagramProvider extends BaseSocialProvider {
     credentials: AuthCredentials,
   ): Promise<PublishResult> {
     const igUserId = credentials.accountId || (await this.verifyCredentials(credentials)).id;
-    const primaryMedia = payload.media?.[0];
+    const media = payload.media || [];
+    const primaryMedia = media[0];
 
     let caption = payload.content;
     if (payload.tags && payload.tags.length > 0) {
@@ -179,27 +180,83 @@ export class InstagramProvider extends BaseSocialProvider {
       }
     }
 
-    const containerParams: Record<string, string> = {
-      caption,
-    };
+    const requestedType = payload.platformOptions?.mediaType;
+    let creationId: string;
 
-    if (primaryMedia?.type === "video") {
-      containerParams.media_type = "REELS";
-      containerParams.video_url = primaryMedia.url;
+    if (media.length > 1 || requestedType === "CAROUSEL") {
+      const children = await Promise.all(
+        media.map(async (item) => {
+          const child = await this.http.request<InstagramMediaContainerResponse>(
+            `${this.apiBaseUrl}/${igUserId}/media`,
+            {
+              method: "POST",
+              bearerToken: credentials.accessToken,
+              params: {
+                is_carousel_item: "true",
+                ...(item.type === "video"
+                  ? { media_type: "VIDEO", video_url: item.url }
+                  : { image_url: item.url }),
+              },
+            },
+          );
+          return child.data.id;
+        }),
+      );
+      const carousel = await this.http.request<InstagramMediaContainerResponse>(
+        `${this.apiBaseUrl}/${igUserId}/media`,
+        {
+          method: "POST",
+          bearerToken: credentials.accessToken,
+          params: {
+            media_type: "CAROUSEL",
+            children: children.join(","),
+            caption,
+          },
+        },
+      );
+      creationId = carousel.data.id;
     } else {
-      containerParams.image_url = primaryMedia?.url || "";
+      const containerParams: Record<string, string> = { caption };
+      if (requestedType === "STORIES") {
+        containerParams.media_type = "STORIES";
+        if (primaryMedia?.type === "video") containerParams.video_url = primaryMedia.url;
+        else containerParams.image_url = primaryMedia?.url || "";
+      } else if (primaryMedia?.type === "video") {
+        containerParams.media_type = requestedType === "VIDEO" ? "VIDEO" : "REELS";
+        containerParams.video_url = primaryMedia.url;
+      } else {
+        containerParams.image_url = primaryMedia?.url || "";
+      }
+
+      const containerRes = await this.http.request<InstagramMediaContainerResponse>(
+        `${this.apiBaseUrl}/${igUserId}/media`,
+        {
+          method: "POST",
+          bearerToken: credentials.accessToken,
+          params: containerParams,
+        },
+      );
+      creationId = containerRes.data.id;
     }
 
-    const containerRes = await this.http.request<InstagramMediaContainerResponse>(
-      `${this.apiBaseUrl}/${igUserId}/media`,
-      {
-        method: "POST",
-        bearerToken: credentials.accessToken,
-        params: containerParams,
-      },
-    );
-
-    const creationId = containerRes.data.id;
+    if (media.some((item) => item.type === "video")) {
+      for (let attempt = 0; attempt < 30; attempt += 1) {
+        const status = await this.http.request<{ status_code: string }>(
+          `${this.apiBaseUrl}/${creationId}`,
+          {
+            method: "GET",
+            bearerToken: credentials.accessToken,
+            params: { fields: "status_code" },
+          },
+        );
+        if (status.data.status_code === "FINISHED") break;
+        if (["ERROR", "EXPIRED"].includes(status.data.status_code)) {
+          throw new Error(`Instagram media processing failed (${status.data.status_code})`);
+        }
+        if (attempt === 29) throw new Error("Instagram media processing is still pending");
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      }
+    }
 
     const publishRes = await this.http.request<InstagramPublishResponse>(
       `${this.apiBaseUrl}/${igUserId}/media_publish`,

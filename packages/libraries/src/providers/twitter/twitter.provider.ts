@@ -56,7 +56,8 @@ export class TwitterProvider extends BaseSocialProvider {
   };
 
   public getAuthUrl(options: AuthUrlOptions): string {
-    const codeChallenge = options.codeChallenge || options.codeVerifier || "challenge";
+    const codeChallenge = options.codeChallenge;
+    if (!codeChallenge) throw new Error("Twitter OAuth requires a PKCE code challenge");
     const params = new URLSearchParams({
       response_type: "code",
       client_id: this.clientId || options.additionalParams?.clientId || "",
@@ -64,7 +65,7 @@ export class TwitterProvider extends BaseSocialProvider {
       scope: (options.scopes || this.metadata.defaultScopes).join(" "),
       state: options.state,
       code_challenge: codeChallenge,
-      code_challenge_method: "plain",
+      code_challenge_method: "S256",
     });
     return (
       `https://twitter.com/i/oauth2/authorize?${params.toString()}` +
@@ -78,7 +79,7 @@ export class TwitterProvider extends BaseSocialProvider {
       code: options.code,
       grant_type: "authorization_code",
       redirect_uri: options.redirectUri,
-      code_verifier: options.codeVerifier || "challenge",
+      code_verifier: options.codeVerifier || "",
     });
 
     const headers: Record<string, string> = {

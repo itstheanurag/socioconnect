@@ -6,7 +6,12 @@ import type {
   AuthUrlOptions,
   ExchangeCodeOptions,
 } from "@/types/auth.types";
-import type { UniversalPostPayload, ValidationResult, PublishResult } from "@/types/post.types";
+import type {
+  UniversalPostPayload,
+  ValidationResult,
+  PublishResult,
+  PublishStatusResult,
+} from "@/types/post.types";
 import type { NeedsReconnectError, TransientProviderError } from "@/types/errors.types";
 import { HttpClient } from "./http-client";
 
@@ -64,6 +69,25 @@ export abstract class BaseSocialProvider {
     payload: UniversalPostPayload,
     credentials: AuthCredentials,
   ): Promise<PublishResult>;
+
+  protected async executeCheckPublishStatus(
+    _operationId: string,
+    _credentials: AuthCredentials,
+  ): Promise<PublishStatusResult> {
+    throw new Error(`[${this.platform.toUpperCase()}] Publish status polling is not supported`);
+  }
+
+  public async checkPublishStatus(
+    operationId: string,
+    credentials: AuthCredentials,
+    onTokenRefreshed?: (newTokens: TokenRefreshResult) => Promise<void>,
+  ): Promise<PublishStatusResult> {
+    return this.executeWithSilentReconnect(
+      credentials,
+      (creds) => this.executeCheckPublishStatus(operationId, creds),
+      onTokenRefreshed,
+    );
+  }
 
   /**
    * High-level publish method with automated silent reconnect & credential validation
@@ -142,21 +166,9 @@ export abstract class BaseSocialProvider {
         (error instanceof Error && error.message.toLowerCase().includes("token expired"));
 
       if (isAuthError && credentials.refreshToken) {
+        let refreshed: TokenRefreshResult;
         try {
-          const refreshed = await this.refreshToken(credentials.refreshToken, credentials);
-          const updatedCreds: AuthCredentials = {
-            ...credentials,
-            accessToken: refreshed.accessToken,
-            refreshToken: refreshed.refreshToken || credentials.refreshToken,
-            expiresAt: refreshed.expiresAt,
-          };
-
-          if (onTokenRefreshed) {
-            await onTokenRefreshed(refreshed);
-          }
-
-          // Retry operation once with fresh token
-          return await operation(updatedCreds);
+          refreshed = await this.refreshToken(credentials.refreshToken, credentials);
         } catch (refreshErr) {
           throw new Error(
             `[${this.platform.toUpperCase()}] Token expired and silent refresh attempt failed: ${
@@ -164,6 +176,20 @@ export abstract class BaseSocialProvider {
             }`,
           );
         }
+
+        const updatedCreds: AuthCredentials = {
+          ...credentials,
+          accessToken: refreshed.accessToken,
+          refreshToken: refreshed.refreshToken || credentials.refreshToken,
+          expiresAt: refreshed.expiresAt,
+        };
+
+        if (onTokenRefreshed) {
+          await onTokenRefreshed(refreshed);
+        }
+
+        // A failed retry is a publish failure, not a refresh failure.
+        return operation(updatedCreds);
       }
       throw error;
     }

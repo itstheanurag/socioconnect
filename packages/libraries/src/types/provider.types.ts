@@ -13,7 +13,8 @@ export type SocialPlatform =
   | "reddit"
   | "linkedin"
   | "pinterest"
-  | "facebook";
+  | "facebook"
+  | "x";
 
 export interface PlatformCapabilities {
   supportsText: boolean;

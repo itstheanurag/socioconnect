@@ -26,3 +26,8 @@ export interface TelegramMessageResponse {
     caption?: string;
   };
 }
+
+export interface TelegramMediaGroupResponse {
+  ok: boolean;
+  result: TelegramMessageResponse["result"][];
+}

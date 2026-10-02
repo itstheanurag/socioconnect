@@ -9,7 +9,11 @@ import type {
 } from "@/types/auth.types";
 import type { UniversalPostPayload, ValidationResult, PublishResult } from "@/types/post.types";
 import { TELEGRAM_LIMITS, validateTelegramPost } from "./telegram.validator";
-import type { TelegramMessageResponse, TelegramUserResponse } from "./telegram.types";
+import type {
+  TelegramMediaGroupResponse,
+  TelegramMessageResponse,
+  TelegramUserResponse,
+} from "./telegram.types";
 
 export class TelegramProvider extends BaseSocialProvider {
   private botToken?: string;
@@ -120,11 +124,13 @@ export class TelegramProvider extends BaseSocialProvider {
     const isSilent = payload.platformOptions?.silent || false;
     const disableWebPreview = payload.platformOptions?.disableWebPagePreview || false;
 
-    let res: { data: TelegramMessageResponse };
+    let messageId: string;
+    let chatUsername: string | undefined;
+    let rawResponse: TelegramMessageResponse | TelegramMediaGroupResponse;
 
     // 1. Single Image
     if (payload.media && payload.media.length === 1 && payload.media[0]?.type === "image") {
-      res = await this.http.request<TelegramMessageResponse>(
+      const res = await this.http.request<TelegramMessageResponse>(
         `https://api.telegram.org/bot${token}/sendPhoto`,
         {
           method: "POST",
@@ -137,10 +143,13 @@ export class TelegramProvider extends BaseSocialProvider {
           },
         },
       );
+      rawResponse = res.data;
+      messageId = String(res.data.result.message_id);
+      chatUsername = res.data.result.chat.username;
     }
     // 2. Single Video
     else if (payload.media && payload.media.length === 1 && payload.media[0]?.type === "video") {
-      res = await this.http.request<TelegramMessageResponse>(
+      const res = await this.http.request<TelegramMessageResponse>(
         `https://api.telegram.org/bot${token}/sendVideo`,
         {
           method: "POST",
@@ -153,6 +162,28 @@ export class TelegramProvider extends BaseSocialProvider {
           },
         },
       );
+      rawResponse = res.data;
+      messageId = String(res.data.result.message_id);
+      chatUsername = res.data.result.chat.username;
+    } else if (payload.media && payload.media.length > 1) {
+      const media = payload.media.map((item, index) => ({
+        type: item.type === "video" ? "video" : "photo",
+        media: item.url,
+        ...(index === 0 && payload.content
+          ? { caption: payload.content, parse_mode: parseMode }
+          : {}),
+      }));
+      const res = await this.http.request<TelegramMediaGroupResponse>(
+        `https://api.telegram.org/bot${token}/sendMediaGroup`,
+        {
+          method: "POST",
+          body: { chat_id: chatId, media, disable_notification: isSilent },
+        },
+      );
+      rawResponse = res.data;
+      const firstMessage = res.data.result[0];
+      messageId = String(firstMessage.message_id);
+      chatUsername = firstMessage.chat.username;
     }
     // 3. Text message
     else {
@@ -161,7 +192,7 @@ export class TelegramProvider extends BaseSocialProvider {
         messageText = `${messageText}\n\n${payload.linkUrl}`.trim();
       }
 
-      res = await this.http.request<TelegramMessageResponse>(
+      const res = await this.http.request<TelegramMessageResponse>(
         `https://api.telegram.org/bot${token}/sendMessage`,
         {
           method: "POST",
@@ -174,10 +205,17 @@ export class TelegramProvider extends BaseSocialProvider {
           },
         },
       );
+      rawResponse = res.data;
+      messageId = String(res.data.result.message_id);
+      chatUsername = res.data.result.chat.username;
     }
 
-    const messageId = String(res.data.result.message_id);
-    const chatUsername = res.data.result.chat.username;
+    if (payload.platformOptions?.pinMessage) {
+      await this.http.request(`https://api.telegram.org/bot${token}/pinChatMessage`, {
+        method: "POST",
+        body: { chat_id: chatId, message_id: messageId, disable_notification: isSilent },
+      });
+    }
     const postUrl = chatUsername ? `https://t.me/${chatUsername}/${messageId}` : undefined;
 
     return {
@@ -185,7 +223,7 @@ export class TelegramProvider extends BaseSocialProvider {
       externalPostId: messageId,
       externalPostUrl: postUrl,
       publishedAt: new Date(),
-      rawResponse: res.data,
+      rawResponse,
     };
   }
 }

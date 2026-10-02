@@ -27,7 +27,16 @@ export const instagramPostSchema = universalPostSchema
       platformName: "Instagram",
     }),
   })
-  .superRefine((data: { content?: string; tags?: string[] }, ctx: z.RefinementCtx) => {
+  .superRefine(
+    (
+      data: {
+        content?: string;
+        tags?: string[];
+        media?: Array<{ type: "image" | "video" | "gif" }>;
+        platformOptions?: { mediaType?: string };
+      },
+      ctx: z.RefinementCtx,
+    ) => {
     const text = data.content || "";
     const charCount = countCodeUnits(text);
 
@@ -49,7 +58,32 @@ export const instagramPostSchema = universalPostSchema
         path: ["tags"],
       });
     }
-  });
+
+      const media = data.media || [];
+      const videoCount = media.filter((item) => item.type === "video").length;
+      if (videoCount > 0 && videoCount !== media.length) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Instagram carousel posts cannot mix videos with images in this publisher.",
+          path: ["media"],
+        });
+      }
+      if (media.some((item) => item.type === "gif")) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Instagram publishing does not support GIF attachments.",
+          path: ["media"],
+        });
+      }
+      if (data.platformOptions?.mediaType === "STORIES" && media.length > 1) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Instagram Stories publishing accepts one media item.",
+          path: ["media"],
+        });
+      }
+    },
+  );
 
 export function validateInstagramPost(payload: UniversalPostPayload): ValidationResult {
   return buildZodValidationResult(instagramPostSchema, payload, INSTAGRAM_LIMITS, "codeUnits");

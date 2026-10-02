@@ -48,6 +48,14 @@ export const telegramPostSchema = z
       });
     }
 
+    if (data.media?.some((item) => item.type === "gif")) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["media"],
+        message: "Telegram publishing currently supports photos and videos, not GIF attachments.",
+      });
+    }
+
     // If media is present, caption cannot exceed 1024 chars
     if (hasMedia && data.content && data.content.length > 1024) {
       ctx.addIssue({

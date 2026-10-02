@@ -37,16 +37,16 @@ export class LinkedInProvider extends BaseSocialProvider {
       requiresTitle: false,
       supportsImages: true,
       requiresImage: false,
-      maxImages: 9,
-      supportsVideos: true,
+      maxImages: 1,
+      supportsVideos: false,
       requiresVideo: false,
-      maxVideos: 1,
+      maxVideos: 0,
       supportsLinks: true,
       supportsTags: true,
       maxTags: 20,
       supportsScheduling: true,
       supportsDrafts: false,
-      supportsPolls: true,
+      supportsPolls: false,
       supportsThreads: false,
     },
     limits: LINKEDIN_LIMITS,
@@ -157,8 +157,37 @@ export class LinkedInProvider extends BaseSocialProvider {
 
     let shareMediaCategory = "NONE";
     const mediaList: Array<Record<string, unknown>> = [];
+    const image = payload.media?.[0];
 
-    if (payload.linkUrl) {
+    if (image) {
+      const imageBytes = await fetch(image.url).then(async (response) => {
+        if (!response.ok) throw new Error(`Could not retrieve LinkedIn image (${response.status})`);
+        return response.arrayBuffer();
+      });
+      const registered = await this.http.request<{
+        value: { uploadUrl: string; image: string };
+      }>(`${this.apiBaseUrl}/rest/images?action=initializeUpload`, {
+        method: "POST",
+        bearerToken: credentials.accessToken,
+        headers: { "Linkedin-Version": "202610", "X-Restli-Protocol-Version": "2.0.0" },
+        body: { initializeUploadRequest: { owner: authorUrn } },
+      });
+      const upload = await fetch(registered.data.value.uploadUrl, {
+        method: "PUT",
+        headers: { "Content-Type": image.mimeType },
+        body: imageBytes,
+      });
+      if (!upload.ok) throw new Error(`LinkedIn image upload failed (${upload.status})`);
+      shareMediaCategory = "IMAGE";
+      mediaList.push({
+        status: "READY",
+        media: registered.data.value.image,
+        description: { text: payload.content.slice(0, 200) },
+        title: { text: payload.title || "" },
+      });
+    }
+
+    if (payload.linkUrl && !image) {
       shareMediaCategory = "ARTICLE";
       mediaList.push({
         status: "READY",
