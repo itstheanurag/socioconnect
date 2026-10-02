@@ -22,7 +22,7 @@ export default function Cta() {
       whileInView="visible"
       viewport={{ once: true, margin: "-80px" }}
       variants={fadeInUp}
-      className="mt-28 sm:mt-36 relative rounded-3xl border border-white/1 bg-linear-to-b from-[#0c0c14] to-[#07070d] p-8 sm:p-14 text-center overflow-hidden shadow-2xl"
+      className="mt-28 sm:mt-36 relative rounded-3xl border border-neutral-800 bg-neutral-900 p-8 sm:p-14 text-center overflow-hidden shadow-2xl"
     >
       {/* Subtle Ambient Radial Glow Behind CTA */}
       <div
@@ -31,7 +31,7 @@ export default function Cta() {
       />
 
       <div className="relative z-10 max-w-3xl mx-auto flex flex-col items-center">
-        <h2 className="font-display text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight">
+        <h2 className="font-display text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-neutral-100 leading-tight">
           You already have something to say.{" "}
           <span className="font-serif italic font-normal text-rose-300">
             Make sure it gets heard.
@@ -49,7 +49,7 @@ export default function Cta() {
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.96 }}
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
-            className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full font-semibold text-white bg-red-600 hover:bg-red-500 shadow-[0_0_25px_rgba(220,38,38,0.4)] hover:shadow-[0_0_35px_rgba(220,38,38,0.6)] transition-all duration-300 cursor-pointer"
+            className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full font-semibold text-neutral-100 bg-red-600 hover:bg-red-500 shadow-[0_0_25px_rgba(220,38,38,0.4)] hover:shadow-[0_0_35px_rgba(220,38,38,0.6)] transition-all duration-300 cursor-pointer"
           >
             <span>Start publishing</span>
             <ArrowRight className="w-4 h-4" />
@@ -60,7 +60,7 @@ export default function Cta() {
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.96 }}
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-medium text-neutral-200 bg-white/5 hover:bg-white/10 border border-white/10 backdrop-blur-md transition-all duration-200 hover:text-white"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-medium text-neutral-200 bg-neutral-800/80 hover:bg-neutral-800 border border-neutral-700 backdrop-blur-md transition-all duration-200 hover:text-neutral-100"
           >
             <span>See how it works</span>
           </motion.a>

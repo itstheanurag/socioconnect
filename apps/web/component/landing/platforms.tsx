@@ -40,7 +40,7 @@ export default function Platforms() {
   return (
     <section
       id="platforms"
-      className="relative w-full py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#050508] text-white overflow-hidden border-t border-white/6"
+      className="relative w-full py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-neutral-950 text-neutral-200 overflow-hidden border-t border-neutral-800"
     >
       {/* Background ambient lighting */}
       <div
@@ -58,14 +58,14 @@ export default function Platforms() {
           className="max-w-3xl mx-auto text-center mb-12 sm:mb-16"
         >
           {/* Section Pill */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/4 border border-white/10 backdrop-blur-md mb-6">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-neutral-900 border border-neutral-800 backdrop-blur-md mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
             <span className="text-xs font-medium uppercase tracking-wider text-neutral-300">
               Native Distribution Matrix
             </span>
           </div>
 
-          <h2 className="font-display text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.15]">
+          <h2 className="font-display text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-neutral-100 leading-[1.15]">
             Every platform where your audience gathers.{" "}
             <span className="font-serif italic font-normal text-rose-300">Synchronized.</span>
           </h2>
@@ -87,8 +87,8 @@ export default function Platforms() {
                 onClick={() => setSelectedCategory(cat.id)}
                 className={`group flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer ${
                   isSelected
-                    ? "text-white bg-white/10 border border-white/20 shadow-md shadow-black/40"
-                    : "text-neutral-400 hover:text-neutral-200 bg-white/[0.02] border border-white/6 hover:border-white/10"
+                    ? "text-neutral-100 bg-neutral-800 border border-neutral-700 shadow-md"
+                    : "text-neutral-400 hover:text-neutral-200 bg-neutral-900/60 border border-neutral-800 hover:border-neutral-700"
                 }`}
               >
                 <span>{cat.label}</span>
@@ -96,7 +96,7 @@ export default function Platforms() {
                   className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono ${
                     isSelected
                       ? "bg-rose-500/20 text-rose-300"
-                      : "bg-white/5 text-neutral-500 group-hover:text-neutral-400"
+                      : "bg-neutral-800 text-neutral-500 group-hover:text-neutral-400"
                   }`}
                 >
                   {cat.count}
@@ -117,30 +117,20 @@ export default function Platforms() {
 
         {/* Platform Hover Information Card */}
         <div className="mt-8 min-h-[44px] flex items-center justify-center">
-          {hoveredPlatform ? (
+          {hoveredPlatform && (
             <motion.div
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-3 px-4 py-2 rounded-xl bg-white/[0.06] border border-white/12 backdrop-blur-xl shadow-xl"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-neutral-900 border border-neutral-800 text-xs text-neutral-300"
             >
-              <div
-                className="w-2.5 h-2.5 rounded-full"
-                style={{ backgroundColor: hoveredPlatform.color }}
-              />
-              <span className="text-sm font-semibold text-white tracking-tight">
-                {hoveredPlatform.name}
-              </span>
-              <span className="text-neutral-500 font-mono text-xs">•</span>
-              <span className="text-xs font-mono text-emerald-400 flex items-center gap-1">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                Native API Connected
+              <span className="font-semibold text-neutral-100">{hoveredPlatform.name}</span>
+              <span className="text-neutral-500">•</span>
+              <span className="capitalize">{hoveredPlatform.category}</span>
+              <span className="text-neutral-500">•</span>
+              <span className="text-emerald-400 flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3" /> Fully Supported
               </span>
             </motion.div>
-          ) : (
-            <div className="inline-flex items-center gap-2 font-mono text-xs text-neutral-500">
-              <Sparkles className="w-3.5 h-3.5 text-rose-400" />
-              <span>Hover over any platform card to inspect native connection status</span>
-            </div>
           )}
         </div>
       </div>

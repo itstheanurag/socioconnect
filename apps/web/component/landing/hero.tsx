@@ -10,7 +10,7 @@ export default function Hero() {
   const { openAuthModal } = useAuth();
 
   return (
-    <section className="relative min-h-screen w-full flex flex-col justify-center items-center pt-32 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden bg-[#050508]">
+    <section className="relative min-h-screen w-full flex flex-col justify-center items-center pt-32 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden bg-neutral-950">
       {/* Background Auralis Shader Layer - strictly decorative & non-interactive */}
       <div
         className="pointer-events-none absolute inset-0 z-0 select-none overflow-hidden"
@@ -23,7 +23,7 @@ export default function Hero() {
           className="w-full h-full"
         />
         {/* Subtle Vignette overlays for soft depth */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#050508]/50 via-transparent to-[#050508]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-neutral-950/50 via-transparent to-neutral-950" />
       </div>
 
       {/* Main Hero Foreground Content */}
@@ -33,7 +33,7 @@ export default function Hero() {
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
           onClick={openAuthModal}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.05] border border-white/10 backdrop-blur-md shadow-sm mb-6 hover:bg-white/[0.08] transition-all cursor-pointer group"
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-neutral-900/80 border border-neutral-800 backdrop-blur-md shadow-sm mb-6 hover:bg-neutral-800 transition-all cursor-pointer group"
         >
           <span className="flex h-2 w-2 rounded-full bg-rose-500 animate-pulse" />
           <span className="text-xs font-medium text-neutral-300">
@@ -45,7 +45,7 @@ export default function Hero() {
         </motion.div>
 
         {/* Headline with editorial Serif Italic + Space Grotesk blend */}
-        <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.12] max-w-4xl">
+        <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-neutral-100 leading-[1.12] max-w-4xl">
           One Post.{" "}
           <span className="font-serif italic font-normal text-rose-300">Every Platform.</span>{" "}
           Scheduled in{" "}
@@ -57,7 +57,9 @@ export default function Hero() {
         {/* Subtitle */}
         <p className="mt-6 text-base sm:text-xl text-neutral-300 max-w-2xl font-light leading-relaxed">
           Draft once, customize for your audience, and{" "}
-          <span className="font-serif italic font-normal text-white">automatically broadcast</span>{" "}
+          <span className="font-serif italic font-normal text-neutral-100">
+            automatically broadcast
+          </span>{" "}
           across all major social networks simultaneously.
         </p>
 
@@ -69,7 +71,7 @@ export default function Hero() {
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.96 }}
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
-            className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full font-semibold text-white bg-red-600 hover:bg-red-500 shadow-[0_0_25px_rgba(220,38,38,0.4)] hover:shadow-[0_0_35px_rgba(220,38,38,0.6)] transition-all duration-300 cursor-pointer"
+            className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full font-semibold text-neutral-100 bg-red-600 hover:bg-red-500 shadow-[0_0_25px_rgba(220,38,38,0.4)] hover:shadow-[0_0_35px_rgba(220,38,38,0.6)] transition-all duration-300 cursor-pointer"
           >
             <span>Start Free Trial</span>
             <ArrowRight className="w-4 h-4" />
@@ -80,9 +82,9 @@ export default function Hero() {
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.96 }}
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-medium text-neutral-200 bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 backdrop-blur-md transition-all duration-200 hover:text-white"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-medium text-neutral-200 bg-neutral-900/80 hover:bg-neutral-800 border border-neutral-800 backdrop-blur-md transition-all duration-200 hover:text-neutral-100"
           >
-            <Play className="w-4 h-4 fill-white/80 text-white/80" />
+            <Play className="w-4 h-4 fill-neutral-200 text-neutral-200" />
             <span>Watch 2-min Demo</span>
           </motion.a>
         </div>
