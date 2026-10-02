@@ -136,6 +136,7 @@ export namespace PostsRepository {
             eq(postDispatchesTable.status, DispatchStatusEnum.RATE_LIMITED),
           ),
           lte(postDispatchesTable.scheduledFor, now),
+          or(isNull(postDispatchesTable.nextRetryAt), lte(postDispatchesTable.nextRetryAt, now)),
         ),
         limit,
         with: {
@@ -231,11 +232,11 @@ export namespace PostsRepository {
     dispatchId: string,
     result: {
       status: DispatchStatusEnum;
-      externalPostId?: string;
+      externalPostId?: string | null;
       externalPostUrl?: string;
       errorDetails?: Record<string, unknown>;
       retryCount?: number;
-      nextRetryAt?: Date;
+      nextRetryAt?: Date | null;
     },
     options?: { tx?: DBTransaction },
   ): Promise<PostDispatch> {

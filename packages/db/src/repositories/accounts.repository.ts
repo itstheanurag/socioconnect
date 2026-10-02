@@ -162,6 +162,20 @@ export namespace AccountsRepository {
     return updated;
   }
 
+  export async function updateMetadata(
+    id: string,
+    metadata: Record<string, unknown>,
+    options?: { tx?: DBTransaction },
+  ): Promise<ConnectedAccount> {
+    const queryClient = options?.tx || db;
+    const [updated] = await queryClient
+      .update(connectedAccountsTable)
+      .set({ metadata, updatedAt: new Date() })
+      .where(eq(connectedAccountsTable.id, id))
+      .returning();
+    return updated;
+  }
+
   /**
    * Updates health check status
    */

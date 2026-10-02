@@ -5,6 +5,7 @@ import { accountsSchema } from "./index";
 import { usersTable } from "@/schema/users/users.db";
 
 export enum SocialPlatformEnum {
+  TELEGRAM = "telegram",
   YOUTUBE = "youtube",
   TWITCH = "twitch",
   INSTAGRAM = "instagram",

@@ -103,6 +103,7 @@ export interface ValidationResult {
 
 export interface PublishResult {
   success: boolean;
+  pending?: boolean;
   externalPostId: string;
   externalPostUrl?: string;
   publishedAt: Date;
@@ -113,4 +114,12 @@ export interface PublishResult {
     refreshToken?: string;
     expiresAt?: Date;
   };
+}
+
+export interface PublishStatusResult {
+  status: "pending" | "published" | "failed";
+  externalPostId?: string;
+  externalPostUrl?: string;
+  errorMessage?: string;
+  rawResponse?: unknown;
 }

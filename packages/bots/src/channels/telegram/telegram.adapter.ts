@@ -26,6 +26,7 @@ export class TelegramBotAdapter {
           displayName: cb.from.first_name,
         },
         text: cb.data || "",
+        chatId: cb.message ? String(cb.message.chat.id) : undefined,
         replyToMessageId: cb.message ? String(cb.message.message_id) : undefined,
         timestamp: new Date(),
         rawPayload: update,
@@ -46,6 +47,7 @@ export class TelegramBotAdapter {
           displayName: msg.from?.first_name,
         },
         text,
+        chatId: String(msg.chat.id),
         timestamp: new Date(msg.date * 1000),
         rawPayload: update,
       };

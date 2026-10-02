@@ -75,8 +75,14 @@ export class HttpClient {
 
     let requestBody: BodyInit | undefined;
     if (body) {
-      if (body instanceof FormData || body instanceof URLSearchParams) {
-        requestBody = body;
+      if (
+        body instanceof FormData ||
+        body instanceof URLSearchParams ||
+        body instanceof ArrayBuffer ||
+        ArrayBuffer.isView(body) ||
+        (typeof Blob !== "undefined" && body instanceof Blob)
+      ) {
+        requestBody = body as BodyInit;
       } else if (typeof body === "string") {
         requestBody = body;
       } else {

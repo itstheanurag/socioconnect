@@ -2,6 +2,8 @@ import { createRoute, z } from "@hono/zod-openapi";
 import { enforceUserMiddleware } from "@/middlewares/enforce-user.middleware";
 import {
   PostsRepository,
+  AccountsRepository,
+  MediaRepository,
   NotificationsRepository,
   DispatchStatusEnum,
   TransactionOutcomeEnum,
@@ -9,10 +11,21 @@ import {
   NotificationPriorityEnum,
   SocialPlatformEnum,
 } from "@repo/db";
-import { errorResponseSchemas, logger } from "@repo/shared";
+import { decrypt, encrypt, errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
+import type {
+  AuthCredentials,
+  PublishResult,
+  SocialPlatform,
+  TokenRefreshResult,
+  UniversalPostPayload,
+} from "@repo/libraries";
+import { createSocialProviderRegistry, providerIdForPlatform } from "@/modules/provider-registry";
+import { env } from "@/env";
+
+const providerRegistry = createSocialProviderRegistry();
 
 // Error classification helper
 interface ExecutionError {
@@ -23,14 +36,16 @@ interface ExecutionError {
   isRateLimit: boolean;
   rawResponse?: Record<string, unknown>;
   stack?: string;
+  retryAfterSeconds?: number;
 }
 
 function classifyPlatformError(err: unknown, platform: string): ExecutionError {
   const errorObj = err as any;
   const message = errorObj?.message || String(err);
-  const statusCode = errorObj?.statusCode || errorObj?.status || 500;
+  const statusCode = errorObj?.statusCode || errorObj?.status || 0;
   const stack = errorObj?.stack || "";
-  const rawResponse = errorObj?.response?.data || errorObj?.data || undefined;
+  const rawResponse = errorObj?.response?.data || errorObj?.rawResponse || errorObj?.rawError || errorObj?.data;
+  const classification = errorObj?.classification;
 
   // Rate Limiting (429)
   if (
@@ -44,6 +59,7 @@ function classifyPlatformError(err: unknown, platform: string): ExecutionError {
       code: "RATE_LIMITED",
       isRetryable: true,
       isRateLimit: true,
+      retryAfterSeconds: errorObj?.retryAfterSeconds,
       rawResponse,
       stack,
     };
@@ -53,6 +69,7 @@ function classifyPlatformError(err: unknown, platform: string): ExecutionError {
   if (
     statusCode === 401 ||
     statusCode === 403 ||
+    classification === "NEEDS_RECONNECT" ||
     message.toLowerCase().includes("token expired") ||
     message.toLowerCase().includes("unauthorized")
   ) {
@@ -68,7 +85,12 @@ function classifyPlatformError(err: unknown, platform: string): ExecutionError {
   }
 
   // Bad Request / Content Validation (400) - Permanent error in formatting/media
-  if (statusCode === 400 || statusCode === 422) {
+  if (
+    statusCode === 400 ||
+    statusCode === 422 ||
+    classification === "VALIDATION_FAILED" ||
+    classification === "PERMANENT_REJECTION"
+  ) {
     return {
       message: `Content rejected by ${platform} API: ${message}`,
       statusCode,
@@ -81,11 +103,12 @@ function classifyPlatformError(err: unknown, platform: string): ExecutionError {
   }
 
   // Server errors (500, 502, 503, 504) or network timeouts - Transient retryable
+  const isRetryable = statusCode >= 500 || classification === "TRANSIENT_NETWORK";
   return {
-    message: `Transient error from ${platform}: ${message}`,
+    message: `${isRetryable ? "Transient error" : "Provider error"} from ${platform}: ${message}`,
     statusCode,
-    code: "TRANSIENT_SERVER_ERROR",
-    isRetryable: true,
+    code: isRetryable ? "TRANSIENT_SERVER_ERROR" : "PROVIDER_ERROR",
+    isRetryable,
     isRateLimit: false,
     rawResponse,
     stack,
@@ -93,8 +116,12 @@ function classifyPlatformError(err: unknown, platform: string): ExecutionError {
 }
 
 // Compute exponential backoff with jitter
-function calculateNextRetryTime(attemptNumber: number, isRateLimit: boolean): Date {
-  const baseDelaySeconds = isRateLimit ? 120 : 30; // 2 mins for rate limit, 30s for server error
+function calculateNextRetryTime(
+  attemptNumber: number,
+  isRateLimit: boolean,
+  retryAfterSeconds?: number,
+): Date {
+  const baseDelaySeconds = retryAfterSeconds || (isRateLimit ? 120 : 30);
   const exponentialSeconds = Math.min(baseDelaySeconds * Math.pow(2, attemptNumber), 3600 * 4); // max 4 hours
   const jitterSeconds = Math.floor(Math.random() * 15);
   const delayMs = (exponentialSeconds + jitterSeconds) * 1000;
@@ -178,27 +205,183 @@ export const processDueDispatchesHandler: AppRouteHandler<ProcessDueDispatchesRo
       };
 
       try {
-        // Platform Dispatch Simulation / API Call
-        // If simulated failure condition (e.g. testing platform specific quirks)
-        const isSimulatedLinkedInTokenExpiry =
-          dispatch.platform === SocialPlatformEnum.LINKEDIN &&
-          dispatch.post.content.toLowerCase().includes("sim_fail_linkedin");
-
-        if (isSimulatedLinkedInTokenExpiry) {
-          const error: any = new Error("LinkedIn OAuth token has been revoked or expired");
-          error.statusCode = 401;
-          throw error;
+        if (dispatch.account.status !== "active") {
+          throw new Error(`Connected ${dispatch.platform} account is ${dispatch.account.status}`);
         }
-
-        const externalPostId = `ext_${dispatch.platform}_${Date.now().toString(36)}`;
-        const externalPostUrl = `https://${dispatch.platform}.com/post/${externalPostId}`;
+        if (dispatch.account.userId !== dispatch.post.userId) {
+          throw new Error("Connected account does not belong to the post owner");
+        }
+        if (
+          dispatch.destination &&
+          (dispatch.destination.accountId !== dispatch.accountId ||
+            dispatch.destination.platform !== dispatch.platform)
+        ) {
+          throw new Error("Selected destination does not belong to the target account");
+        }
+        const provider = providerRegistry.get(
+          providerIdForPlatform(dispatch.platform) as SocialPlatform,
+        );
+        const mediaFromVault = await Promise.all(
+          (dispatch.post.mediaIds || []).map(async (mediaId) => {
+            const asset = await MediaRepository.findById(mediaId);
+            if (!asset || asset.userId !== dispatch.post.userId) {
+              throw new Error(
+                `Media asset ${mediaId} is missing or does not belong to the post owner`,
+              );
+            }
+            if (asset.type === "audio") {
+              throw new Error(
+                `Media asset ${mediaId} is audio and cannot be attached to a social post`,
+              );
+            }
+            return {
+              id: asset.id,
+              url: asset.url,
+              type: asset.type,
+              mimeType: asset.mimeType,
+              sizeBytes: asset.sizeBytes || undefined,
+              width: asset.width || undefined,
+              height: asset.height || undefined,
+              durationSeconds: asset.durationSeconds || undefined,
+              thumbnailUrl: asset.thumbnailUrl || undefined,
+              altText: asset.altText || undefined,
+            };
+          }),
+        );
+        const providerMedia = Array.isArray(dispatch.post.metadata?.providerMedia)
+          ? (dispatch.post.metadata.providerMedia as UniversalPostPayload["media"])
+          : [];
+        const media = [...mediaFromVault, ...(providerMedia || [])];
+        const credentials: AuthCredentials = {
+          accessToken: decrypt(
+            dispatch.account.accessToken,
+            dispatch.account.accessTokenIv,
+            dispatch.account.accessTokenTag,
+            env.ENCRYPTION_KEY,
+          ),
+          refreshToken:
+            dispatch.account.refreshToken &&
+            dispatch.account.refreshTokenIv &&
+            dispatch.account.refreshTokenTag
+              ? decrypt(
+                  dispatch.account.refreshToken,
+                  dispatch.account.refreshTokenIv,
+                  dispatch.account.refreshTokenTag,
+                  env.ENCRYPTION_KEY,
+                )
+              : undefined,
+          expiresAt: dispatch.account.accessTokenExpiresAt || undefined,
+          accountId: dispatch.account.platformAccountId,
+          accountHandle: dispatch.account.username,
+          accountName: dispatch.account.displayName || undefined,
+          avatarUrl: dispatch.account.avatarUrl || undefined,
+          extra: {
+            ...(dispatch.account.metadata || {}),
+            ...(typeof dispatch.account.metadata?.telegramChatId === "string"
+              ? { chatId: dispatch.account.metadata.telegramChatId }
+              : {}),
+            ...(dispatch.destination ? { chatId: dispatch.destination.externalId } : {}),
+          },
+        };
+        const payload: UniversalPostPayload = {
+          title: requestPayload.title || undefined,
+          content: requestPayload.content,
+          media,
+          tags: dispatch.post.tags,
+          linkUrl: dispatch.post.linkUrl || undefined,
+          platformOptions: {
+            ...dispatch.platformOptions,
+            ...(dispatch.platform === SocialPlatformEnum.TELEGRAM && dispatch.destination
+              ? { chatId: dispatch.destination.externalId }
+              : {}),
+          } as UniversalPostPayload["platformOptions"],
+          idempotencyKey: dispatch.id,
+        };
+        const onTokenRefreshed = async (tokens: TokenRefreshResult) => {
+          const access = encrypt(tokens.accessToken, env.ENCRYPTION_KEY);
+          const refresh = tokens.refreshToken
+            ? encrypt(tokens.refreshToken, env.ENCRYPTION_KEY)
+            : undefined;
+          await AccountsRepository.updateTokens(dispatch.accountId, {
+            accessToken: access.data,
+            accessTokenIv: access.iv,
+            accessTokenTag: access.tag,
+            accessTokenExpiresAt: tokens.expiresAt,
+            ...(refresh
+              ? {
+                  refreshToken: refresh.data,
+                  refreshTokenIv: refresh.iv,
+                  refreshTokenTag: refresh.tag,
+                }
+              : {}),
+          });
+        };
+        let result: PublishResult;
+        if (dispatch.platform === SocialPlatformEnum.TIKTOK && dispatch.externalPostId) {
+          const status = await provider.checkPublishStatus(
+            dispatch.externalPostId,
+            credentials,
+            onTokenRefreshed,
+          );
+          if (status.status === "pending") {
+            const nextCheckAt = new Date(Date.now() + 30_000);
+            await PostsRepository.updateDispatchResult(dispatch.id, {
+              status: DispatchStatusEnum.PENDING,
+              nextRetryAt: nextCheckAt,
+              errorDetails: { code: "PUBLISH_PROCESSING", message: "TikTok is processing the post" },
+            });
+            return {
+              dispatchId: dispatch.id,
+              platform: dispatch.platform,
+              outcome: "processing",
+              externalPostUrl: null,
+              errorMessage: null,
+            };
+          }
+          if (status.status === "failed") {
+            const error = new Error(status.errorMessage || "TikTok could not publish the post");
+            (error as Error & { statusCode: number }).statusCode = 400;
+            throw error;
+          }
+          result = {
+            success: true,
+            externalPostId: status.externalPostId || dispatch.externalPostId,
+            externalPostUrl: status.externalPostUrl,
+            publishedAt: new Date(),
+            rawResponse: status.rawResponse,
+          };
+        } else {
+          result = await provider.publishPost(payload, credentials, onTokenRefreshed);
+        }
+        if (result.pending) {
+          const nextCheckAt = new Date(Date.now() + 30_000);
+          await PostsRepository.updateDispatchResult(dispatch.id, {
+            status: DispatchStatusEnum.PENDING,
+            externalPostId: result.externalPostId,
+            nextRetryAt: nextCheckAt,
+            errorDetails: { code: "PUBLISH_PROCESSING", message: "TikTok is processing the post" },
+          });
+          return {
+            dispatchId: dispatch.id,
+            platform: dispatch.platform,
+            outcome: "processing",
+            externalPostUrl: null,
+            errorMessage: null,
+          };
+        }
+        const externalPostId = result.externalPostId;
+        const externalPostUrl = result.externalPostUrl || null;
         const latencyMs = Date.now() - startTime;
+        const responsePayload =
+          result.rawResponse && typeof result.rawResponse === "object" && !Array.isArray(result.rawResponse)
+            ? (result.rawResponse as Record<string, unknown>)
+            : { status: "OK", id: externalPostId, raw: result.rawResponse };
 
         // Mark dispatch SUCCESS
         await PostsRepository.updateDispatchResult(dispatch.id, {
           status: DispatchStatusEnum.SUCCESS,
           externalPostId,
-          externalPostUrl,
+          externalPostUrl: externalPostUrl || undefined,
           retryCount: currentAttempt,
         });
 
@@ -214,7 +397,7 @@ export const processDueDispatchesHandler: AppRouteHandler<ProcessDueDispatchesRo
           externalPostId,
           externalPostUrl,
           requestPayload,
-          responsePayload: { status: "OK", id: externalPostId },
+          responsePayload,
           latencyMs,
         });
 
@@ -230,7 +413,11 @@ export const processDueDispatchesHandler: AppRouteHandler<ProcessDueDispatchesRo
         const classified = classifyPlatformError(err, dispatch.platform);
         const willRetry = classified.isRetryable && currentAttempt < dispatch.maxRetries;
         const nextRetryAt = willRetry
-          ? calculateNextRetryTime(currentAttempt, classified.isRateLimit)
+          ? calculateNextRetryTime(
+              currentAttempt,
+              classified.isRateLimit,
+              classified.retryAfterSeconds,
+            )
           : undefined;
 
         const nextStatus = classified.isRateLimit
@@ -248,8 +435,11 @@ export const processDueDispatchesHandler: AppRouteHandler<ProcessDueDispatchesRo
         // Update dispatch outcome without affecting other platforms
         await PostsRepository.updateDispatchResult(dispatch.id, {
           status: nextStatus,
+          ...(dispatch.platform === SocialPlatformEnum.TIKTOK && dispatch.externalPostId
+            ? { externalPostId: null }
+            : {}),
           retryCount: currentAttempt,
-          nextRetryAt,
+          nextRetryAt: nextRetryAt || null,
           errorDetails: {
             message: classified.message,
             statusCode: classified.statusCode,
@@ -393,6 +583,8 @@ export const retryDispatchHandler: AppRouteHandler<RetryDispatchRoute> = async (
   try {
     const updated = await PostsRepository.updateDispatchResult(id, {
       status: DispatchStatusEnum.PENDING,
+      externalPostId: null,
+      nextRetryAt: null,
       errorDetails: {},
     });
 

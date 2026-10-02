@@ -51,13 +51,17 @@ export interface ProviderRegistryConfig {
 export class ProviderRegistry {
   private providers = new Map<SocialPlatform, BaseSocialProvider>();
 
+  private normalizePlatform(platform: SocialPlatform): SocialPlatform {
+    return platform === "x" ? "twitter" : platform;
+  }
+
   public register(provider: BaseSocialProvider): this {
     this.providers.set(provider.platform, provider);
     return this;
   }
 
   public get(platform: SocialPlatform): BaseSocialProvider {
-    const provider = this.providers.get(platform);
+    const provider = this.providers.get(this.normalizePlatform(platform));
     if (!provider) {
       throw new Error(`Provider for platform '${platform}' is not registered in ProviderRegistry.`);
     }
@@ -65,7 +69,7 @@ export class ProviderRegistry {
   }
 
   public has(platform: SocialPlatform): boolean {
-    return this.providers.has(platform);
+    return this.providers.has(this.normalizePlatform(platform));
   }
 
   public getAll(): BaseSocialProvider[] {
@@ -77,7 +81,7 @@ export class ProviderRegistry {
   }
 
   /**
-   * Validates a universal post against multiple target platforms simultaneously
+   * Validates a universal post against every requested platform.
    */
   public async validateMultiPlatform(
     payload: UniversalPostPayload,
@@ -94,12 +98,30 @@ export class ProviderRegistry {
     for (const platform of platforms) {
       if (this.has(platform)) {
         const provider = this.get(platform);
-        const res = await provider.validatePost(payload);
+        const res = provider.validatePost(payload);
         results[platform] = res;
         if (!res.valid) {
           allValid = false;
           criticalErrorsCount += res.errors.filter((e: ValidationError) => e.critical).length;
         }
+      } else {
+        results[platform] = {
+          valid: false,
+          errors: [
+            {
+              field: "platform",
+              message: `Provider for ${platform} is not registered.`,
+              code: "PROVIDER_NOT_REGISTERED",
+              critical: true,
+            },
+          ],
+          warnings: [],
+          characterCount: payload.content.length,
+          maxCharacters: 0,
+          remainingCharacters: 0,
+        };
+        allValid = false;
+        criticalErrorsCount += 1;
       }
     }
 

@@ -17,6 +17,8 @@ export interface BotInboundMessage {
   sender: BotUserIdentity;
   text: string;
   mediaUrls?: string[];
+  chatId?: string;
+  botAccountId?: string;
   replyToMessageId?: string;
   timestamp: Date;
   rawPayload?: unknown;

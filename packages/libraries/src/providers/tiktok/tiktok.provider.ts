@@ -7,10 +7,16 @@ import type {
   AuthUrlOptions,
   ExchangeCodeOptions,
 } from "@/types/auth.types";
-import type { UniversalPostPayload, ValidationResult, PublishResult } from "@/types/post.types";
+import type {
+  UniversalPostPayload,
+  ValidationResult,
+  PublishResult,
+  PublishStatusResult,
+} from "@/types/post.types";
 import { TIKTOK_LIMITS, validateTikTokPost } from "./tiktok.validator";
 import type {
   TikTokPublishResponse,
+  TikTokPublishStatusResponse,
   TikTokTokenResponse,
   TikTokUserResponse,
 } from "./tiktok.types";
@@ -149,6 +155,46 @@ export class TikTokProvider extends BaseSocialProvider {
     return validateTikTokPost(payload);
   }
 
+  protected async executeCheckPublishStatus(
+    operationId: string,
+    credentials: AuthCredentials,
+  ): Promise<PublishStatusResult> {
+    const res = await this.http.request<TikTokPublishStatusResponse>(
+      `${this.apiBaseUrl}/post/publish/status/fetch/`,
+      {
+        method: "POST",
+        bearerToken: credentials.accessToken,
+        headers: { "Content-Type": "application/json; charset=UTF-8" },
+        body: { publish_id: operationId },
+      },
+    );
+    if (res.data.error.code && res.data.error.code !== "ok") {
+      const error = new Error(res.data.error.message || res.data.error.code);
+      (error as Error & { statusCode: number }).statusCode = 400;
+      throw error;
+    }
+    const { status, fail_reason: failReason, publicaly_available_post_id: postIds } = res.data.data;
+    if (status === "PUBLISH_COMPLETE") {
+      const postId = postIds?.[0] ? String(postIds[0]) : undefined;
+      return {
+        status: "published",
+        externalPostId: postId,
+        externalPostUrl: postId
+          ? `https://www.tiktok.com/@${credentials.accountHandle || ""}/video/${postId}`
+          : undefined,
+        rawResponse: res.data,
+      };
+    }
+    if (status === "FAILED") {
+      return {
+        status: "failed",
+        errorMessage: failReason || "TikTok rejected the post",
+        rawResponse: res.data,
+      };
+    }
+    return { status: "pending", rawResponse: res.data };
+  }
+
   protected async executePublish(
     payload: UniversalPostPayload,
     credentials: AuthCredentials,
@@ -192,6 +238,7 @@ export class TikTokProvider extends BaseSocialProvider {
       const publishId = res.data.data.publish_id;
       return {
         success: true,
+        pending: true,
         externalPostId: publishId,
         publishedAt: new Date(),
         rawResponse: res.data,
@@ -230,6 +277,7 @@ export class TikTokProvider extends BaseSocialProvider {
     const publishId = res.data.data.publish_id;
     return {
       success: true,
+      pending: true,
       externalPostId: publishId,
       publishedAt: new Date(),
       rawResponse: res.data,

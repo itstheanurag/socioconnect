@@ -37,6 +37,7 @@ export {
   type NewConnectedDestination,
   type UpdateConnectedDestination,
 } from "./accounts/destinations.db";
+export { telegramBotSessionsTable } from "./accounts/telegram-bot-sessions.db";
 
 // Posts & Dispatches Schema
 export { postsSchema } from "./posts";
