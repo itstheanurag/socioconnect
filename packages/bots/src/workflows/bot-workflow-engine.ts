@@ -23,6 +23,9 @@ export interface BotWorkflowConfig {
     payload: UniversalPostPayload;
     targetPlatforms: SocialPlatform[];
     scheduledAt?: Date;
+    originChannel: BotInboundMessage["channel"];
+    originChatId?: string;
+    botAccountId?: string;
   }) => Promise<{ success: boolean; message: string; trackingId?: string }>;
 }
 
@@ -109,6 +112,9 @@ export class BotWorkflowEngine {
                 payload: action.payload,
                 targetPlatforms: action.targetPlatforms,
                 scheduledAt: action.scheduledAt,
+                originChannel: channel,
+                originChatId: message.chatId,
+                botAccountId: message.botAccountId,
               });
 
               replyText = execRes.success
@@ -223,7 +229,7 @@ export class BotWorkflowEngine {
 
     return {
       channel,
-      recipientId: sender.channelUserId,
+      recipientId: message.chatId || sender.channelUserId,
       text: replyText,
       buttons,
       replyToMessageId: message.id,

@@ -34,6 +34,10 @@ const aiIntentOutputSchema = z.object({
 });
 
 const VALID_PLATFORMS: SocialPlatform[] = [
+  "x",
+  "twitter",
+  "telegram",
+  "tiktok",
   "bluesky",
   "dribbble",
   "devto",

@@ -8,6 +8,7 @@ export * from "./schema";
 export { UsersRepository, UsersService } from "./repositories/users.repository";
 export { SessionRepository, SessionService } from "./repositories/session.repository";
 export { AccountsRepository, AccountsService } from "./repositories/accounts.repository";
+export { TelegramBotSessionsRepository } from "./repositories/telegram-bot-sessions.repository";
 export {
   DestinationsRepository,
   DestinationsService,
