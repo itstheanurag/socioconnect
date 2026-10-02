@@ -56,7 +56,7 @@ export const getOauthProviderRoute = createRoute({
               example: "google OAuth link generated successfully",
             }),
             payload: z.object({
-              link: z.string().url().openapi({
+              link: z.url().openapi({
                 description: "OAuth authorization URL to redirect the user to",
                 example: "https://accounts.google.com/o/oauth2/v2/auth?...",
               }),

@@ -23,7 +23,7 @@ export const getPresignedUrlRoute = createRoute({
             filename: z.string().min(1).openapi({ example: "launch_teaser.mp4" }),
             mimeType: z.string().min(1).openapi({ example: "video/mp4" }),
             sizeBytes: z.number().positive().openapi({ example: 45000000 }),
-            type: z.nativeEnum(MediaTypeEnum).default(MediaTypeEnum.IMAGE),
+            type: z.enum(MediaTypeEnum).default(MediaTypeEnum.IMAGE),
           }),
         },
       },
@@ -102,10 +102,10 @@ export const confirmMediaUploadRoute = createRoute({
         "application/json": {
           schema: z.object({
             storageKey: z.string(),
-            url: z.string().url(),
-            thumbnailUrl: z.string().url().optional(),
+            url: z.url(),
+            thumbnailUrl: z.url().optional(),
             mimeType: z.string(),
-            type: z.nativeEnum(MediaTypeEnum),
+            type: z.enum(MediaTypeEnum),
             sizeBytes: z.number().positive(),
             width: z.number().optional(),
             height: z.number().optional(),
@@ -124,9 +124,9 @@ export const confirmMediaUploadRoute = createRoute({
           schema: z.object({
             message: z.string(),
             payload: z.object({
-              mediaId: z.string().uuid(),
+              mediaId: z.uuid(),
               url: z.string(),
-              type: z.nativeEnum(MediaTypeEnum),
+              type: z.enum(MediaTypeEnum),
               sizeBytes: z.number().nullable(),
             }),
           }),

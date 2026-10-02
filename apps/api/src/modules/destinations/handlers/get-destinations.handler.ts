@@ -22,7 +22,7 @@ export const getAccountDestinationsRoute = createRoute({
     "Retrieves all subreddits, Discord channels, Facebook groups/pages, LinkedIn organizations, or Pinterest boards",
   request: {
     params: z.object({
-      accountId: z.string().uuid().openapi({ example: "123e4567-e89b-12d3-a456-426614174000" }),
+      accountId: z.uuid().openapi({ example: "123e4567-e89b-12d3-a456-426614174000" }),
     }),
   },
   responses: {
@@ -37,8 +37,8 @@ export const getAccountDestinationsRoute = createRoute({
                 z.object({
                   id: z.string().openapi({ example: "dest_uuid_123" }),
                   externalId: z.string().openapi({ example: "r/webdev" }),
-                  platform: z.nativeEnum(SocialPlatformEnum),
-                  type: z.nativeEnum(DestinationTypeEnum),
+                  platform: z.enum(SocialPlatformEnum),
+                  type: z.enum(DestinationTypeEnum),
                   name: z.string().openapi({ example: "r/webdev" }),
                   description: z.string().nullable(),
                   avatarUrl: z.string().nullable(),
@@ -132,8 +132,8 @@ export const getAllUserDestinationsRoute = createRoute({
                   id: z.string(),
                   accountId: z.string(),
                   externalId: z.string(),
-                  platform: z.nativeEnum(SocialPlatformEnum),
-                  type: z.nativeEnum(DestinationTypeEnum),
+                  platform: z.enum(SocialPlatformEnum),
+                  type: z.enum(DestinationTypeEnum),
                   name: z.string(),
                   parentContainerName: z.string().nullable(),
                   canPost: z.boolean(),

@@ -14,7 +14,6 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
-  Sparkles,
 } from "lucide-react";
 import { motion } from "motion/react";
 import { useDashboard } from "@/component/dashboard/context/dashboard-context";

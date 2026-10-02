@@ -21,7 +21,7 @@ export const syncDestinationsRoute = createRoute({
     "Queries external social media API to discover newly joined subreddits, Discord channels, or Facebook groups",
   request: {
     params: z.object({
-      accountId: z.string().uuid().openapi({ example: "123e4567-e89b-12d3-a456-426614174000" }),
+      accountId: z.uuid().openapi({ example: "123e4567-e89b-12d3-a456-426614174000" }),
     }),
   },
   responses: {

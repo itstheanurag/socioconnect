@@ -363,7 +363,7 @@ export const retryDispatchRoute = createRoute({
     "Reschedules a single platform dispatch for immediate re-execution without modifying sibling channels",
   request: {
     params: z.object({
-      id: z.string().uuid().openapi({ example: "123e4567-e89b-12d3-a456-426614174000" }),
+      id: z.uuid().openapi({ example: "123e4567-e89b-12d3-a456-426614174000" }),
     }),
   },
   responses: {
@@ -374,8 +374,8 @@ export const retryDispatchRoute = createRoute({
           schema: z.object({
             message: z.string(),
             payload: z.object({
-              dispatchId: z.string().uuid(),
-              status: z.nativeEnum(DispatchStatusEnum),
+              dispatchId: z.uuid(),
+              status: z.enum(DispatchStatusEnum),
             }),
           }),
         },
@@ -430,7 +430,7 @@ export const getDispatchTransactionsRoute = createRoute({
     "Retrieves complete immutable attempt logs, HTTP responses, error diagnostics, and latencies",
   request: {
     params: z.object({
-      id: z.string().uuid(),
+      id: z.uuid(),
     }),
   },
   responses: {
@@ -443,9 +443,9 @@ export const getDispatchTransactionsRoute = createRoute({
             payload: z.object({
               transactions: z.array(
                 z.object({
-                  id: z.string().uuid(),
+                  id: z.uuid(),
                   attemptNumber: z.number(),
-                  outcome: z.nativeEnum(TransactionOutcomeEnum),
+                  outcome: z.enum(TransactionOutcomeEnum),
                   httpStatusCode: z.number().nullable(),
                   externalPostId: z.string().nullable(),
                   externalPostUrl: z.string().nullable(),

@@ -19,7 +19,7 @@ export const adaptPostRoute = createRoute({
         "application/json": {
           schema: z.object({
             content: z.string().min(1),
-            targetPlatform: z.nativeEnum(SocialPlatformEnum),
+            targetPlatform: z.enum(SocialPlatformEnum),
             tone: z
               .enum(["editorial", "punchy", "professional", "storyteller"])
               .optional()

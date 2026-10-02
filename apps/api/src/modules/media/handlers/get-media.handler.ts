@@ -16,7 +16,7 @@ export const getMediaRoute = createRoute({
   description: "Retrieves uploaded media vault images, videos, and thumbnails",
   request: {
     query: z.object({
-      type: z.nativeEnum(MediaTypeEnum).optional(),
+      type: z.enum(MediaTypeEnum).optional(),
       page: z.coerce.number().optional().default(1),
       limit: z.coerce.number().optional().default(24),
     }),
@@ -31,7 +31,7 @@ export const getMediaRoute = createRoute({
             payload: z.object({
               media: z.array(
                 z.object({
-                  id: z.string().uuid(),
+                  id: z.uuid(),
                   storageKey: z.string(),
                   url: z.string(),
                   thumbnailUrl: z.string().nullable(),
@@ -109,7 +109,7 @@ export const deleteMediaRoute = createRoute({
   description: "Removes asset from creator vault and reclaims storage quota",
   request: {
     params: z.object({
-      id: z.string().uuid().openapi({ example: "123e4567-e89b-12d3-a456-426614174000" }),
+      id: z.uuid().openapi({ example: "123e4567-e89b-12d3-a456-426614174000" }),
     }),
   },
   responses: {

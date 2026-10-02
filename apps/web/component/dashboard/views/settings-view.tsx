@@ -1,17 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  Settings,
-  ShieldCheck,
-  Globe,
-  Bell,
-  Sparkles,
-  Key,
-  Users,
-  CheckCircle2,
-  Save,
-} from "lucide-react";
+import { Globe, Sparkles, Save } from "lucide-react";
 import { useNotification } from "@/context/notification-context";
 import { useDashboard } from "@/component/dashboard/context/dashboard-context";
 
@@ -45,18 +35,18 @@ export function SettingsView() {
         <button
           type="button"
           onClick={handleSave}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-neutral-100 text-xs font-semibold shadow-lg shadow-red-600/25 transition-all cursor-pointer active:scale-95"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-neutral-100 font-semibold text-xs shadow-lg shadow-red-600/25 transition-all cursor-pointer"
         >
           <Save className="w-4 h-4" />
-          <span>Save Preferences</span>
+          <span>Save Changes</span>
         </button>
       </div>
 
-      {/* Workspace Info Card */}
+      {/* General Settings */}
       <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-6 shadow-xl space-y-4">
         <h3 className="font-display text-sm font-semibold text-neutral-100 flex items-center gap-2">
           <Globe className="w-4 h-4 text-rose-400" />
-          <span>Workspace Environment</span>
+          <span>General Workspace Profile</span>
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
@@ -99,49 +89,45 @@ export function SettingsView() {
             <div>
               <div className="font-semibold text-neutral-100">Auto-Split Character Overflow</div>
               <div className="text-[11px] text-neutral-400">
-                Automatically split posts longer than 280 chars into numbered threads on X and
-                Threads.
+                Automatically chunk long updates into threaded tweets or split posts when limits
+                exceed.
               </div>
             </div>
             <input
               type="checkbox"
               checked={autoThreadSplit}
               onChange={(e) => setAutoThreadSplit(e.target.checked)}
-              className="rounded accent-rose-500 w-4 h-4 cursor-pointer"
+              className="w-4 h-4 accent-rose-500 rounded cursor-pointer"
             />
           </div>
 
           <div className="flex items-center justify-between p-3 rounded-2xl bg-neutral-950/40 border border-neutral-800">
             <div>
-              <div className="font-semibold text-neutral-100">
-                Non-Destructive Media Adaptations
-              </div>
+              <div className="font-semibold text-neutral-100">Intelligent Rate Limit Backoff</div>
               <div className="text-[11px] text-neutral-400">
-                Fallback to primary carousel image when destination lacks multi-image support (e.g.
-                Reddit link format).
+                Automatically retry failed webhook and REST dispatches with exponential backoff.
               </div>
             </div>
             <input
               type="checkbox"
               checked={autoRetry}
               onChange={(e) => setAutoRetry(e.target.checked)}
-              className="rounded accent-rose-500 w-4 h-4 cursor-pointer"
+              className="w-4 h-4 accent-rose-500 rounded cursor-pointer"
             />
           </div>
 
           <div className="flex items-center justify-between p-3 rounded-2xl bg-neutral-950/40 border border-neutral-800">
             <div>
-              <div className="font-semibold text-neutral-100">Instant Failure Telegram Alert</div>
+              <div className="font-semibold text-neutral-100">Notification Alerts on Failure</div>
               <div className="text-[11px] text-neutral-400">
-                Send emergency ping to admin bot when an OAuth token expires during scheduled
-                publish.
+                Trigger toast, email, or bot alerts whenever a scheduled post fails to publish.
               </div>
             </div>
             <input
               type="checkbox"
               checked={notifyOnFailure}
               onChange={(e) => setNotifyOnFailure(e.target.checked)}
-              className="rounded accent-rose-500 w-4 h-4 cursor-pointer"
+              className="w-4 h-4 accent-rose-500 rounded cursor-pointer"
             />
           </div>
         </div>

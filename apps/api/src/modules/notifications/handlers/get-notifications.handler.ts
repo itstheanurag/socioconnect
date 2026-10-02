@@ -34,8 +34,8 @@ export const getNotificationsRoute = createRoute({
               notifications: z.array(
                 z.object({
                   id: z.string(),
-                  type: z.nativeEnum(NotificationTypeEnum),
-                  priority: z.nativeEnum(NotificationPriorityEnum),
+                  type: z.enum(NotificationTypeEnum),
+                  priority: z.enum(NotificationPriorityEnum),
                   title: z.string(),
                   message: z.string(),
                   linkUrl: z.string().nullable(),

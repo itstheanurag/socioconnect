@@ -1,10 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { enforceUserMiddleware } from "@/middlewares/enforce-user.middleware";
-import {
-  SubscriptionsRepository,
-  SubscriptionTierEnum,
-  BillingIntervalEnum,
-} from "@repo/db";
+import { SubscriptionsRepository, SubscriptionTierEnum, BillingIntervalEnum } from "@repo/db";
 import { errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
@@ -16,16 +12,17 @@ export const checkoutSubscriptionRoute = createRoute({
   path: "/v1/subscriptions/checkout",
   tags: ["Subscriptions"],
   summary: "Upgrade or buy subscription",
-  description: "Creates a checkout session or directly upgrades subscription tier and allocates updated limits",
+  description:
+    "Creates a checkout session or directly upgrades subscription tier and allocates updated limits",
   request: {
     body: {
       content: {
         "application/json": {
           schema: z.object({
-            tier: z.nativeEnum(SubscriptionTierEnum),
-            interval: z.nativeEnum(BillingIntervalEnum).default(BillingIntervalEnum.MONTHLY),
-            successUrl: z.string().url().optional(),
-            cancelUrl: z.string().url().optional(),
+            tier: z.enum(SubscriptionTierEnum),
+            interval: z.enum(BillingIntervalEnum).default(BillingIntervalEnum.MONTHLY),
+            successUrl: z.url().optional(),
+            cancelUrl: z.url().optional(),
           }),
         },
       },
@@ -39,9 +36,9 @@ export const checkoutSubscriptionRoute = createRoute({
           schema: z.object({
             message: z.string(),
             payload: z.object({
-              subscriptionId: z.string().uuid(),
-              tier: z.nativeEnum(SubscriptionTierEnum),
-              interval: z.nativeEnum(BillingIntervalEnum),
+              subscriptionId: z.uuid(),
+              tier: z.enum(SubscriptionTierEnum),
+              interval: z.enum(BillingIntervalEnum),
               checkoutUrl: z.string().nullable(),
             }),
           }),
@@ -54,7 +51,9 @@ export const checkoutSubscriptionRoute = createRoute({
 
 export type CheckoutSubscriptionRoute = typeof checkoutSubscriptionRoute;
 
-export const checkoutSubscriptionHandler: AppRouteHandler<CheckoutSubscriptionRoute> = async (c) => {
+export const checkoutSubscriptionHandler: AppRouteHandler<CheckoutSubscriptionRoute> = async (
+  c,
+) => {
   const { tier, interval, successUrl } = c.req.valid("json");
   const user = c.get("user");
 
@@ -65,7 +64,8 @@ export const checkoutSubscriptionHandler: AppRouteHandler<CheckoutSubscriptionRo
       subscriptionId: `sub_${Date.now()}`,
     });
 
-    const checkoutUrl = successUrl || `https://socioconnect.app/app/usage?upgraded=true&tier=${tier}`;
+    const checkoutUrl =
+      successUrl || `https://socioconnect.app/app/usage?upgraded=true&tier=${tier}`;
 
     return c.json({
       message: `Successfully upgraded to ${tier} tier`,
@@ -86,7 +86,10 @@ export const checkoutSubscriptionHandler: AppRouteHandler<CheckoutSubscriptionRo
     });
 
     throw new HTTPException(StatusCodes.HTTP_500_INTERNAL_SERVER_ERROR, {
-      res: c.json({ message: "Failed to process upgrade" }, StatusCodes.HTTP_500_INTERNAL_SERVER_ERROR),
+      res: c.json(
+        { message: "Failed to process upgrade" },
+        StatusCodes.HTTP_500_INTERNAL_SERVER_ERROR,
+      ),
     });
   }
 };

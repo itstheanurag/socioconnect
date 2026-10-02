@@ -1,37 +1,74 @@
 "use client";
 
-import React, { useState } from "react";
-import {
-  FileText,
-  Search,
-  Plus,
-  Filter,
-  Calendar,
-  MoreVertical,
-  CheckCircle2,
-  Clock,
-  AlertTriangle,
-  FileEdit,
-  Trash2,
-  Copy,
-  Eye,
-  SlidersHorizontal,
-} from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import { useState } from "react";
+import { FileText, Clock, Plus, Search, ChevronRight, Eye } from "lucide-react";
+import { motion } from "motion/react";
 import { useDashboard } from "@/component/dashboard/context/dashboard-context";
-import { PlatformIcon, getPlatformBrandColor } from "@/component/dashboard/ui/platform-icon";
-import { PostItem, PostStatus, PlatformId } from "@/component/dashboard/types";
+import {
+  PlatformIcon,
+  getPlatformBrandColor,
+  getPlatformDisplayName,
+} from "@/component/dashboard/ui/platform-icon";
+import { CustomSelect, CustomSelectOption } from "@/component/dashboard/ui/custom-select";
+import { PlatformId } from "@/component/dashboard/types";
+
+type ViewTabId = "all" | "draft" | "scheduled" | "published" | "failed";
 
 export function PostsView() {
-  const { posts, openContextualPanel, navigateToCompose, deletePost, duplicatePost } =
-    useDashboard();
-
-  const [activeTab, setActiveTab] = useState<"all" | PostStatus>("all");
-  const [searchFilter, setSearchFilter] = useState("");
+  const { posts, openContextualPanel, navigateToCompose } = useDashboard();
+  const [activeTab, setActiveTab] = useState<ViewTabId>("all");
   const [platformFilter, setPlatformFilter] = useState<PlatformId | "all">("all");
-  const [actionMenuPostId, setActionMenuPostId] = useState<string | null>(null);
+  const [searchFilter, setSearchFilter] = useState("");
 
-  const statusCounts = {
+  const platformOptions: CustomSelectOption[] = [
+    { value: "all", label: "All Networks" },
+    {
+      value: "instagram",
+      label: "Instagram",
+      icon: <PlatformIcon platformId="instagram" className="w-3.5 h-3.5" />,
+    },
+    {
+      value: "twitter",
+      label: "X (Twitter)",
+      icon: <PlatformIcon platformId="twitter" className="w-3.5 h-3.5" />,
+    },
+    {
+      value: "linkedin",
+      label: "LinkedIn",
+      icon: <PlatformIcon platformId="linkedin" className="w-3.5 h-3.5" />,
+    },
+    {
+      value: "reddit",
+      label: "Reddit",
+      icon: <PlatformIcon platformId="reddit" className="w-3.5 h-3.5" />,
+    },
+    {
+      value: "telegram",
+      label: "Telegram",
+      icon: <PlatformIcon platformId="telegram" className="w-3.5 h-3.5" />,
+    },
+    {
+      value: "threads",
+      label: "Threads",
+      icon: <PlatformIcon platformId="threads" className="w-3.5 h-3.5" />,
+    },
+  ];
+
+  // Filtering
+  const filteredPosts = posts.filter((p) => {
+    if (activeTab !== "all" && p.status !== activeTab) return false;
+    if (platformFilter !== "all" && !p.targetPlatforms.includes(platformFilter)) return false;
+    if (
+      searchFilter &&
+      !p.title.toLowerCase().includes(searchFilter.toLowerCase()) &&
+      !p.baseContent.toLowerCase().includes(searchFilter.toLowerCase())
+    ) {
+      return false;
+    }
+    return true;
+  });
+
+  const statusCounts: Record<ViewTabId, number> = {
     all: posts.length,
     draft: posts.filter((p) => p.status === "draft").length,
     scheduled: posts.filter((p) => p.status === "scheduled").length,
@@ -39,61 +76,48 @@ export function PostsView() {
     failed: posts.filter((p) => p.status === "failed").length,
   };
 
-  const filteredPosts = posts.filter((post) => {
-    if (activeTab !== "all" && post.status !== activeTab) return false;
-    if (platformFilter !== "all" && !post.targetPlatforms.includes(platformFilter)) return false;
-    if (searchFilter) {
-      const q = searchFilter.toLowerCase();
-      return post.title.toLowerCase().includes(q) || post.baseContent.toLowerCase().includes(q);
-    }
-    return true;
-  });
+  const tabs: { id: ViewTabId; label: string }[] = [
+    { id: "all", label: "All Posts" },
+    { id: "draft", label: "Drafts" },
+    { id: "scheduled", label: "Scheduled" },
+    { id: "published", label: "Published" },
+    { id: "failed", label: "Failed" },
+  ];
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-300 pb-16">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-neutral-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-neutral-100">
-            Content Library &amp; Posts
-          </h1>
-          <p className="text-xs sm:text-sm text-neutral-400 mt-1">
-            Manage your drafts, review scheduled dispatches, and inspect analytics for published
-            posts.
+          <h2 className="font-display text-2xl font-bold text-neutral-100">Broadcasts & Posts</h2>
+          <p className="text-xs text-neutral-400 mt-1">
+            Omnichannel content delivery log, schedules, and native channel previews.
           </p>
         </div>
 
         <button
           type="button"
           onClick={() => navigateToCompose()}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-neutral-100 text-xs font-semibold shadow-lg shadow-red-600/25 transition-all cursor-pointer active:scale-95 self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-neutral-100 font-semibold text-xs shadow-lg shadow-red-600/25 transition-all cursor-pointer"
         >
           <Plus className="w-4 h-4" />
-          <span>Compose Post</span>
+          <span>New Omnichannel Post</span>
         </button>
       </div>
 
-      {/* Filter and Search Bar */}
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+      {/* Filter and Tab Bar */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-2 border-b border-neutral-800">
         {/* Status Tabs */}
-        <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-neutral-900 border border-neutral-800 overflow-x-auto scrollbar-none">
-          {(
-            [
-              { id: "all", label: "All Posts" },
-              { id: "scheduled", label: "Scheduled" },
-              { id: "published", label: "Published" },
-              { id: "draft", label: "Drafts" },
-              { id: "failed", label: "Failed" },
-            ] as const
-          ).map((tab) => (
+        <div className="flex items-center gap-1 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
+          {tabs.map((tab) => (
             <button
               key={tab.id}
               type="button"
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer whitespace-nowrap ${
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all shrink-0 cursor-pointer ${
                 activeTab === tab.id
-                  ? "bg-rose-500/20 text-neutral-100 font-semibold border border-rose-500/30"
-                  : "text-neutral-400 hover:text-neutral-200 hover:bg-neutral-800/60"
+                  ? "bg-rose-500/15 text-rose-300 border border-rose-500/30"
+                  : "text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900"
               }`}
             >
               <span>{tab.label}</span>
@@ -117,19 +141,12 @@ export function PostsView() {
             />
           </div>
 
-          <select
+          <CustomSelect
             value={platformFilter}
-            onChange={(e) => setPlatformFilter(e.target.value as any)}
-            className="px-3 py-1.5 rounded-xl bg-neutral-900 border border-neutral-800 text-xs text-neutral-300 focus:outline-hidden cursor-pointer"
-          >
-            <option value="all">All Networks</option>
-            <option value="instagram">Instagram</option>
-            <option value="twitter">X (Twitter)</option>
-            <option value="linkedin">LinkedIn</option>
-            <option value="reddit">Reddit</option>
-            <option value="telegram">Telegram</option>
-            <option value="threads">Threads</option>
-          </select>
+            onChange={(val) => setPlatformFilter(val as any)}
+            options={platformOptions}
+            buttonClassName="py-1.5 text-xs"
+          />
         </div>
       </div>
 
@@ -149,136 +166,79 @@ export function PostsView() {
           filteredPosts.map((post) => (
             <motion.div
               key={post.id}
-              whileHover={{ y: -1 }}
-              className="group rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl hover:border-neutral-700 transition-all"
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="group p-4 sm:p-5 rounded-2xl bg-neutral-900/70 hover:bg-neutral-900 border border-neutral-800 hover:border-neutral-700 transition-all shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4"
             >
-              {/* Left: Thumbnail & Title & Excerpt */}
-              <div className="flex items-start gap-4 flex-1 min-w-0">
-                {post.media.length > 0 ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={post.media[0].url}
-                    alt={post.title}
-                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border border-neutral-800 shrink-0"
-                  />
-                ) : (
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-neutral-950 border border-neutral-800 flex items-center justify-center text-neutral-500 shrink-0">
-                    <FileText className="w-6 h-6 text-neutral-400" />
-                  </div>
-                )}
-
-                <div className="space-y-1.5 min-w-0 flex-1">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span
-                      className={`text-[10px] font-mono uppercase font-semibold px-2 py-0.5 rounded-full border ${
-                        post.status === "scheduled"
-                          ? "bg-sky-500/10 text-sky-400 border-sky-500/20"
-                          : post.status === "published"
-                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                            : post.status === "draft"
-                              ? "bg-neutral-800 text-neutral-400 border-neutral-700"
-                              : "bg-rose-500/10 text-rose-400 border-rose-500/20"
-                      }`}
-                    >
-                      {post.status}
-                    </span>
-
-                    {post.scheduledFor && (
-                      <span className="text-[11px] font-mono text-neutral-400 flex items-center gap-1">
-                        <Clock className="w-3 h-3 text-neutral-500" />
-                        {new Date(post.scheduledFor).toLocaleString([], {
-                          month: "short",
-                          day: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </span>
-                    )}
-
-                    {post.publishedAt && (
-                      <span className="text-[11px] font-mono text-neutral-400 flex items-center gap-1">
-                        <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                        Published {new Date(post.publishedAt).toLocaleDateString()}
-                      </span>
-                    )}
-                  </div>
-
-                  <h3
-                    onClick={() => openContextualPanel("post_details", post)}
-                    className="font-display text-sm sm:text-base font-bold text-neutral-100 hover:text-rose-300 transition-colors cursor-pointer truncate"
+              {/* Post Details */}
+              <div className="space-y-2 flex-1 min-w-0">
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <span
+                    className={`text-[10px] font-mono uppercase font-semibold px-2 py-0.5 rounded-full border ${
+                      post.status === "scheduled"
+                        ? "bg-sky-500/10 text-sky-400 border-sky-500/20"
+                        : post.status === "published"
+                          ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                          : post.status === "draft"
+                            ? "bg-neutral-800 text-neutral-400 border-neutral-700"
+                            : "bg-rose-500/10 text-rose-400 border-rose-500/20"
+                    }`}
                   >
-                    {post.title}
-                  </h3>
+                    {post.status}
+                  </span>
 
-                  <p className="text-xs text-neutral-400 line-clamp-1 leading-relaxed">
-                    {post.baseContent}
-                  </p>
-
-                  {post.failureReason && (
-                    <div className="text-[11px] text-rose-400 flex items-center gap-1 font-mono pt-1">
-                      <AlertTriangle className="w-3 h-3" />
-                      <span>{post.failureReason}</span>
-                    </div>
+                  {post.scheduledFor && (
+                    <span className="text-[11px] font-mono text-neutral-400 flex items-center gap-1">
+                      <Clock className="w-3 h-3 text-sky-400" />
+                      {new Date(post.scheduledFor).toLocaleString()}
+                    </span>
                   )}
                 </div>
-              </div>
 
-              {/* Right: Platform Badges & Actions */}
-              <div className="flex items-center justify-between md:justify-end gap-3 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-neutral-800">
-                {/* Platform Icons */}
-                <div className="flex items-center gap-1">
-                  {post.targetPlatforms.map((p) => {
-                    const brand = getPlatformBrandColor(p);
+                <h3 className="font-display font-bold text-sm text-neutral-100 truncate">
+                  {post.title}
+                </h3>
+
+                <p className="text-xs text-neutral-400 line-clamp-2 leading-relaxed">
+                  {post.baseContent}
+                </p>
+
+                {/* Platforms */}
+                <div className="flex items-center gap-1.5 pt-1 flex-wrap">
+                  {post.targetPlatforms.map((pid) => {
+                    const brand = getPlatformBrandColor(pid);
                     return (
-                      <div
-                        key={p}
-                        className={`p-1.5 rounded-lg border ${brand.bg} ${brand.border} ${brand.text}`}
-                        title={p}
+                      <span
+                        key={pid}
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[10px] ${brand.bg} ${brand.border} ${brand.text}`}
                       >
-                        <PlatformIcon platformId={p} className="w-3 h-3" />
-                      </div>
+                        <PlatformIcon platformId={pid} className="w-3.5 h-3.5" />
+                        <span className="capitalize">{getPlatformDisplayName(pid)}</span>
+                      </span>
                     );
                   })}
                 </div>
+              </div>
 
-                {/* Action Buttons */}
-                <div className="flex items-center gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => openContextualPanel("post_preview", post)}
-                    className="p-2 rounded-xl text-neutral-400 hover:text-neutral-100 bg-neutral-950/40 hover:bg-neutral-800 border border-neutral-800 transition-colors cursor-pointer"
-                    title="Live Preview"
-                  >
-                    <Eye className="w-3.5 h-3.5" />
-                  </button>
+              {/* Action Buttons */}
+              <div className="flex items-center gap-2 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-neutral-800">
+                <button
+                  type="button"
+                  onClick={() => openContextualPanel("post_preview", post)}
+                  className="px-3 py-1.5 rounded-xl bg-neutral-950 border border-neutral-800 hover:border-neutral-700 text-neutral-300 hover:text-neutral-100 text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <Eye className="w-3.5 h-3.5 text-neutral-400" />
+                  <span>Preview</span>
+                </button>
 
-                  <button
-                    type="button"
-                    onClick={() => navigateToCompose(post)}
-                    className="p-2 rounded-xl text-neutral-400 hover:text-neutral-100 bg-neutral-950/40 hover:bg-neutral-800 border border-neutral-800 transition-colors cursor-pointer"
-                    title="Edit in Composer"
-                  >
-                    <SlidersHorizontal className="w-3.5 h-3.5 text-rose-400" />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => duplicatePost(post.id)}
-                    className="p-2 rounded-xl text-neutral-400 hover:text-neutral-100 bg-neutral-950/40 hover:bg-neutral-800 border border-neutral-800 transition-colors cursor-pointer"
-                    title="Duplicate Post"
-                  >
-                    <Copy className="w-3.5 h-3.5" />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => deletePost(post.id)}
-                    className="p-2 rounded-xl text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition-colors cursor-pointer"
-                    title="Delete Post"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => openContextualPanel("post_details", post)}
+                  className="px-3 py-1.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-xs font-medium flex items-center gap-1 transition-colors cursor-pointer"
+                >
+                  <span>Inspect</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-neutral-400" />
+                </button>
               </div>
             </motion.div>
           ))

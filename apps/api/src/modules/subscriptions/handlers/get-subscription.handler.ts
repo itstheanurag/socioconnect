@@ -19,7 +19,8 @@ export const getCurrentSubscriptionRoute = createRoute({
   path: "/v1/subscriptions/current",
   tags: ["Subscriptions"],
   summary: "Get current subscription & usage",
-  description: "Retrieves active plan tier, limits, real-time usage meters, and billing cycle status",
+  description:
+    "Retrieves active plan tier, limits, real-time usage meters, and billing cycle status",
   responses: {
     200: {
       description: "Subscription retrieved successfully",
@@ -28,10 +29,10 @@ export const getCurrentSubscriptionRoute = createRoute({
           schema: z.object({
             message: z.string(),
             payload: z.object({
-              id: z.string().uuid(),
-              tier: z.nativeEnum(SubscriptionTierEnum),
-              status: z.nativeEnum(SubscriptionStatusEnum),
-              billingInterval: z.nativeEnum(BillingIntervalEnum),
+              id: z.uuid(),
+              tier: z.enum(SubscriptionTierEnum),
+              status: z.enum(SubscriptionStatusEnum),
+              billingInterval: z.enum(BillingIntervalEnum),
               currentPeriodStart: z.string(),
               currentPeriodEnd: z.string(),
               cancelAtPeriodEnd: z.boolean(),
@@ -70,16 +71,30 @@ export const getCurrentSubscriptionRoute = createRoute({
 
 export type GetCurrentSubscriptionRoute = typeof getCurrentSubscriptionRoute;
 
-export const getCurrentSubscriptionHandler: AppRouteHandler<GetCurrentSubscriptionRoute> = async (c) => {
+export const getCurrentSubscriptionHandler: AppRouteHandler<GetCurrentSubscriptionRoute> = async (
+  c,
+) => {
   const user = c.get("user");
 
   try {
     const sub = await SubscriptionsRepository.getOrCreate(user.id);
 
-    const channelPct = Math.min(100, Math.round((sub.usage.channelsUsed / sub.limits.maxChannels) * 100));
-    const dropsPct = Math.min(100, Math.round((sub.usage.monthlyDropsUsed / sub.limits.maxMonthlyDrops) * 100));
-    const aiPct = Math.min(100, Math.round((sub.usage.aiCreditsUsed / sub.limits.maxAiCredits) * 100));
-    const storagePct = Math.min(100, Math.round((sub.usage.cdnStorageUsedBytes / sub.limits.maxCdnStorageBytes) * 100));
+    const channelPct = Math.min(
+      100,
+      Math.round((sub.usage.channelsUsed / sub.limits.maxChannels) * 100),
+    );
+    const dropsPct = Math.min(
+      100,
+      Math.round((sub.usage.monthlyDropsUsed / sub.limits.maxMonthlyDrops) * 100),
+    );
+    const aiPct = Math.min(
+      100,
+      Math.round((sub.usage.aiCreditsUsed / sub.limits.maxAiCredits) * 100),
+    );
+    const storagePct = Math.min(
+      100,
+      Math.round((sub.usage.cdnStorageUsedBytes / sub.limits.maxCdnStorageBytes) * 100),
+    );
 
     return c.json({
       message: "Subscription retrieved successfully",
@@ -123,7 +138,8 @@ export const getPlansCatalogRoute = createRoute({
   path: "/v1/subscriptions/plans",
   tags: ["Subscriptions"],
   summary: "List all subscription plans & pricing",
-  description: "Returns the available subscription tiers, feature comparison matrix, and pricing options",
+  description:
+    "Returns the available subscription tiers, feature comparison matrix, and pricing options",
   responses: {
     200: {
       description: "Plans catalog retrieved successfully",
@@ -134,7 +150,7 @@ export const getPlansCatalogRoute = createRoute({
             payload: z.object({
               plans: z.array(
                 z.object({
-                  tier: z.nativeEnum(SubscriptionTierEnum),
+                  tier: z.enum(SubscriptionTierEnum),
                   name: z.string(),
                   description: z.string(),
                   popular: z.boolean().optional(),

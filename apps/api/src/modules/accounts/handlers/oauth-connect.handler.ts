@@ -17,7 +17,7 @@ export const getOAuthUrlRoute = createRoute({
   description: "Generates a secure PKCE authorization URL for the selected social media platform",
   request: {
     params: z.object({
-      platform: z.nativeEnum(SocialPlatformEnum).openapi({ example: SocialPlatformEnum.YOUTUBE }),
+      platform: z.enum(SocialPlatformEnum).openapi({ example: SocialPlatformEnum.YOUTUBE }),
     }),
     body: {
       content: {
@@ -104,19 +104,19 @@ export const postOAuthCallbackRoute = createRoute({
     "Exchanges authorization code for credentials and securely stores encrypted tokens in the token vault",
   request: {
     params: z.object({
-      platform: z.nativeEnum(SocialPlatformEnum).openapi({ example: SocialPlatformEnum.YOUTUBE }),
+      platform: z.enum(SocialPlatformEnum).openapi({ example: SocialPlatformEnum.YOUTUBE }),
     }),
     body: {
       content: {
         "application/json": {
           schema: z.object({
             code: z.string().openapi({ example: "4/0AeanS0..." }),
-            redirectUri: z.string().url(),
+            redirectUri: z.url(),
             platformAccountId: z.string().optional(),
             username: z.string().optional(),
             displayName: z.string().optional(),
-            avatarUrl: z.string().url().optional(),
-            profileUrl: z.string().url().optional(),
+            avatarUrl: z.url().optional(),
+            profileUrl: z.url().optional(),
           }),
         },
       },
@@ -131,9 +131,9 @@ export const postOAuthCallbackRoute = createRoute({
             message: z.string().openapi({ example: "Account connected successfully" }),
             payload: z.object({
               accountId: z.string().openapi({ example: "123e4567-e89b-12d3-a456-426614174000" }),
-              platform: z.nativeEnum(SocialPlatformEnum),
+              platform: z.enum(SocialPlatformEnum),
               username: z.string(),
-              status: z.nativeEnum(ConnectedAccountStatus),
+              status: z.enum(ConnectedAccountStatus),
             }),
           }),
         },

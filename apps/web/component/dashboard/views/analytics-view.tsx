@@ -1,19 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  BarChart3,
-  TrendingUp,
-  Eye,
-  Heart,
-  Share2,
-  Calendar,
-  Sparkles,
-  ArrowUpRight,
-  Filter,
-} from "lucide-react";
-import { motion } from "motion/react";
-import { PlatformIcon, getPlatformBrandColor } from "@/component/dashboard/ui/platform-icon";
+import { TrendingUp, Eye, Heart, Share2, Sparkles } from "lucide-react";
+import { PlatformIcon } from "@/component/dashboard/ui/platform-icon";
 import { PlatformId } from "@/component/dashboard/types";
 
 export function AnalyticsView() {
@@ -120,100 +109,56 @@ export function AnalyticsView() {
 
         <div className="rounded-2xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-2 shadow-xl">
           <div className="flex items-center justify-between text-xs text-neutral-400">
-            <span>Dispatched Shares &amp; Reposts</span>
-            <Share2 className="w-4 h-4 text-amber-400" />
+            <span>Dispatched Campaigns</span>
+            <Share2 className="w-4 h-4 text-emerald-400" />
           </div>
-          <div className="text-3xl font-bold font-display text-neutral-100">18.4k</div>
-          <div className="text-[11px] font-mono text-emerald-400 flex items-center gap-1">
-            <TrendingUp className="w-3 h-3" /> +34% virality
-          </div>
+          <div className="text-3xl font-bold font-display text-neutral-100">38</div>
+          <div className="text-[11px] font-mono text-neutral-400">100% broadcast delivery</div>
         </div>
 
         <div className="rounded-2xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-2 shadow-xl">
           <div className="flex items-center justify-between text-xs text-neutral-400">
-            <span>Telegram Bot Broadcasts</span>
-            <Sparkles className="w-4 h-4 text-cyan-400" />
+            <span>Peak Broadcast Hour</span>
+            <Sparkles className="w-4 h-4 text-amber-400" />
           </div>
-          <div className="text-3xl font-bold font-display text-neutral-100">100%</div>
-          <div className="text-[11px] font-mono text-cyan-400">Zero dropped webhooks</div>
+          <div className="text-3xl font-bold font-display text-neutral-100">14:00</div>
+          <div className="text-[11px] font-mono text-amber-400">Best global intersection</div>
         </div>
       </div>
 
-      {/* Platform Breakdown Table */}
-      <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-6 shadow-2xl space-y-4">
-        <h3 className="font-display text-base font-bold text-neutral-100">
-          Platform Performance &amp; Conversion
+      {/* Platform Level Breakdown Table */}
+      <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-6 shadow-xl space-y-4">
+        <h3 className="font-display text-lg font-bold text-neutral-100">
+          Channel Velocity Breakdown
         </h3>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead>
-              <tr className="border-b border-neutral-800 text-neutral-400 font-mono uppercase text-[10px]">
-                <th className="pb-3 font-semibold">Network</th>
-                <th className="pb-3 font-semibold">Impressions</th>
-                <th className="pb-3 font-semibold">Engagement Rate</th>
-                <th className="pb-3 font-semibold">Audience Growth</th>
-                <th className="pb-3 font-semibold text-right">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-neutral-800/60">
-              {platformPerformance.map((item) => (
-                <tr key={item.platformId} className="group hover:bg-neutral-800/40">
-                  <td className="py-3.5 flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-lg bg-neutral-800 border border-neutral-700 flex items-center justify-center">
-                      <PlatformIcon
-                        platformId={item.platformId}
-                        className="w-3.5 h-3.5 text-neutral-100"
-                      />
-                    </div>
-                    <span className="font-semibold text-neutral-100">{item.name}</span>
-                  </td>
-                  <td className="py-3.5 font-mono text-neutral-300">{item.impressions}</td>
-                  <td className="py-3.5 font-mono text-rose-300 font-semibold">
-                    {item.engagement}
-                  </td>
-                  <td className="py-3.5 font-mono text-emerald-400">{item.growth}</td>
-                  <td className="py-3.5 text-right">
-                    <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                      Optimal
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Best Posting Times Heatmap */}
-      <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-6 shadow-2xl space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="font-display text-base font-bold text-neutral-100">
-              Optimal Publishing Windows
-            </h3>
-            <p className="text-xs text-neutral-400 mt-0.5">
-              Based on historical engagement rates across your audience timezones.
-            </p>
-          </div>
-          <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
-            Peak: Tue &amp; Thu @ 10:00 - 14:00
-          </span>
-        </div>
-
-        <div className="grid grid-cols-7 gap-2 pt-2">
-          {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, idx) => (
+        <div className="divide-y divide-neutral-800/80">
+          {platformPerformance.map((p) => (
             <div
-              key={day}
-              className={`p-3 rounded-2xl border text-center space-y-1.5 ${
-                idx === 1 || idx === 3
-                  ? "bg-rose-500/15 border-rose-500/30 text-neutral-100"
-                  : "bg-neutral-950/40 border-neutral-800 text-neutral-400"
-              }`}
+              key={p.platformId}
+              className="py-3.5 flex items-center justify-between gap-4 text-xs"
             >
-              <div className="font-mono text-xs font-bold uppercase">{day}</div>
-              <div className="text-[10px] font-mono opacity-80">
-                {idx === 1 || idx === 3 ? "🔥 10:30 AM" : "09:00 AM"}
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-neutral-800 border border-neutral-700 flex items-center justify-center">
+                  <PlatformIcon platformId={p.platformId} className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="font-semibold text-neutral-100">{p.name}</div>
+                  <div className="text-[10px] font-mono text-neutral-400">
+                    {p.growth} monthly growth
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-8 text-right">
+                <div>
+                  <div className="font-mono text-neutral-200 font-semibold">{p.impressions}</div>
+                  <div className="text-[10px] text-neutral-500">Impressions</div>
+                </div>
+                <div>
+                  <div className="font-mono text-emerald-400 font-semibold">{p.engagement}</div>
+                  <div className="text-[10px] text-neutral-500">Engagement</div>
+                </div>
               </div>
             </div>
           ))}

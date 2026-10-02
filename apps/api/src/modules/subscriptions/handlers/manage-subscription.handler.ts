@@ -46,7 +46,9 @@ export const cancelSubscriptionHandler: AppRouteHandler<CancelSubscriptionRoute>
       message: "Subscription scheduled for cancellation at the end of the current billing cycle",
       payload: {
         cancelAtPeriodEnd: updated.cancelAtPeriodEnd,
-        canceledAt: updated.canceledAt ? updated.canceledAt.toISOString() : new Date().toISOString(),
+        canceledAt: updated.canceledAt
+          ? updated.canceledAt.toISOString()
+          : new Date().toISOString(),
         currentPeriodEnd: updated.currentPeriodEnd.toISOString(),
       },
     });
@@ -60,7 +62,10 @@ export const cancelSubscriptionHandler: AppRouteHandler<CancelSubscriptionRoute>
     });
 
     throw new HTTPException(StatusCodes.HTTP_500_INTERNAL_SERVER_ERROR, {
-      res: c.json({ message: "Failed to cancel subscription" }, StatusCodes.HTTP_500_INTERNAL_SERVER_ERROR),
+      res: c.json(
+        { message: "Failed to cancel subscription" },
+        StatusCodes.HTTP_500_INTERNAL_SERVER_ERROR,
+      ),
     });
   }
 };
@@ -72,7 +77,8 @@ export const resumeSubscriptionRoute = createRoute({
   path: "/v1/subscriptions/resume",
   tags: ["Subscriptions"],
   summary: "Resume canceled subscription",
-  description: "Reactivates a subscription that was scheduled to cancel at the end of the billing period",
+  description:
+    "Reactivates a subscription that was scheduled to cancel at the end of the billing period",
   responses: {
     200: {
       description: "Subscription resumed successfully",
@@ -81,7 +87,7 @@ export const resumeSubscriptionRoute = createRoute({
           schema: z.object({
             message: z.string(),
             payload: z.object({
-              status: z.nativeEnum(SubscriptionStatusEnum),
+              status: z.enum(SubscriptionStatusEnum),
               cancelAtPeriodEnd: z.boolean(),
             }),
           }),
@@ -117,7 +123,10 @@ export const resumeSubscriptionHandler: AppRouteHandler<ResumeSubscriptionRoute>
     });
 
     throw new HTTPException(StatusCodes.HTTP_500_INTERNAL_SERVER_ERROR, {
-      res: c.json({ message: "Failed to resume subscription" }, StatusCodes.HTTP_500_INTERNAL_SERVER_ERROR),
+      res: c.json(
+        { message: "Failed to resume subscription" },
+        StatusCodes.HTTP_500_INTERNAL_SERVER_ERROR,
+      ),
     });
   }
 };

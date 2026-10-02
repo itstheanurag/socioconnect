@@ -23,12 +23,12 @@ export const getInvoicesRoute = createRoute({
             payload: z.object({
               invoices: z.array(
                 z.object({
-                  id: z.string().uuid(),
+                  id: z.uuid(),
                   invoiceNumber: z.string(),
                   amountDueDollars: z.number(),
                   amountPaidDollars: z.number(),
                   currency: z.string(),
-                  status: z.nativeEnum(InvoiceStatusEnum),
+                  status: z.enum(InvoiceStatusEnum),
                   hostedInvoiceUrl: z.string().nullable(),
                   invoicePdfUrl: z.string().nullable(),
                   periodStart: z.string(),

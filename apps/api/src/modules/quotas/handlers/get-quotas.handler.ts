@@ -22,7 +22,7 @@ export const getQuotasSummaryRoute = createRoute({
           schema: z.object({
             message: z.string(),
             payload: z.object({
-              tier: z.nativeEnum(PlanTierEnum),
+              tier: z.enum(PlanTierEnum),
               channels: z.object({
                 connected: z.number().openapi({ example: 6 }),
                 max: z.number().openapi({ example: 10 }),

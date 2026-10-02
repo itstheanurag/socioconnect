@@ -34,17 +34,17 @@ export const getAutomationsRoute = createRoute({
             payload: z.object({
               automations: z.array(
                 z.object({
-                  id: z.string().uuid(),
-                  groupId: z.string().uuid(),
+                  id: z.uuid(),
+                  groupId: z.uuid(),
                   groupName: z.string(),
-                  platform: z.nativeEnum(SocialPlatformEnum),
+                  platform: z.enum(SocialPlatformEnum),
                   title: z.string(),
-                  scheduleType: z.nativeEnum(AutomationScheduleTypeEnum),
+                  scheduleType: z.enum(AutomationScheduleTypeEnum),
                   cronSchedule: z.string(),
                   contentTemplate: z.string(),
                   topicPool: z.array(z.string()),
                   autoAdaptTone: z.boolean(),
-                  status: z.nativeEnum(AutomationStatusEnum),
+                  status: z.enum(AutomationStatusEnum),
                   totalRuns: z.number(),
                   lastRunAt: z.string().nullable(),
                   nextRunAt: z.string().nullable(),
@@ -114,7 +114,7 @@ export const createAutomationRoute = createRoute({
     "Defines automated periodic posting cadence, rotational topic pool, and tone adaptation for a community group",
   request: {
     params: z.object({
-      groupId: z.string().uuid(),
+      groupId: z.uuid(),
     }),
     body: {
       content: {
@@ -145,9 +145,9 @@ export const createAutomationRoute = createRoute({
             message: z.string(),
             payload: z.object({
               automation: z.object({
-                id: z.string().uuid(),
+                id: z.uuid(),
                 title: z.string(),
-                status: z.nativeEnum(AutomationStatusEnum),
+                status: z.enum(AutomationStatusEnum),
               }),
             }),
           }),
@@ -231,7 +231,7 @@ export const triggerAutomationNowRoute = createRoute({
     "Instantly schedules staggered post dispatches across all group destinations based on current rotation topic or template",
   request: {
     params: z.object({
-      id: z.string().uuid(),
+      id: z.uuid(),
     }),
   },
   responses: {
@@ -242,7 +242,7 @@ export const triggerAutomationNowRoute = createRoute({
           schema: z.object({
             message: z.string(),
             payload: z.object({
-              postId: z.string().uuid(),
+              postId: z.uuid(),
               dispatchesScheduled: z.number(),
               nextTopicIndex: z.number(),
             }),

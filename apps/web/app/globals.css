@@ -82,6 +82,76 @@ body {
   overflow-x: hidden;
 }
 
+/* Custom Sleek Scrollbar for entire site and all scrollable areas */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(225, 29, 72, 0.4) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(115, 115, 115, 0.35);
+  border-radius: 9999px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(225, 29, 72, 0.75);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Consistent Theme-Aligned Form Elements and Dropdowns */
+select,
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="datetime-local"],
+textarea {
+  background-color: var(--color-neutral-900, #171717);
+  border: 1px solid var(--color-neutral-800, #262626);
+  color: var(--color-neutral-100, #f5f5f5);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+select:hover,
+input[type="text"]:hover,
+input[type="password"]:hover,
+input[type="email"]:hover,
+textarea:hover {
+  border-color: var(--color-neutral-700, #404040);
+}
+
+select:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="datetime-local"]:focus,
+textarea:focus {
+  outline: none;
+  border-color: rgba(225, 29, 72, 0.5);
+  box-shadow: 0 0 0 1px rgba(225, 29, 72, 0.2);
+}
+
+select option {
+  background-color: #171717;
+  color: #f5f5f5;
+  padding: 8px 12px;
+}
+
 .font-serif {
   font-family: var(--font-serif), Georgia, serif;
 }

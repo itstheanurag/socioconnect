@@ -35,8 +35,8 @@ export const createPostRoute = createRoute({
               .min(1)
               .openapi({ example: "Here is everything you need to know about Next.js 15..." }),
             tags: z.array(z.string()).optional().default([]),
-            linkUrl: z.string().url().optional(),
-            mediaIds: z.array(z.string().uuid()).optional().default([]),
+            linkUrl: z.url().optional(),
+            mediaIds: z.array(z.uuid()).optional().default([]),
             timingStrategy: z
               .nativeEnum(TimingStrategyEnum)
               .optional()
@@ -45,9 +45,9 @@ export const createPostRoute = createRoute({
             targets: z
               .array(
                 z.object({
-                  accountId: z.string().uuid(),
-                  platform: z.nativeEnum(SocialPlatformEnum),
-                  destinationId: z.string().uuid().optional(), // Optional specific subreddit/channel/page
+                  accountId: z.uuid(),
+                  platform: z.enum(SocialPlatformEnum),
+                  destinationId: z.uuid().optional(), // Optional specific subreddit/channel/page
                   scheduledFor: z.string().datetime().optional(), // Specific staggered peak timing
                   customContent: z.string().optional(),
                   customTitle: z.string().optional(),
@@ -68,8 +68,8 @@ export const createPostRoute = createRoute({
           schema: z.object({
             message: z.string().openapi({ example: "Post created successfully" }),
             payload: z.object({
-              postId: z.string().uuid(),
-              status: z.nativeEnum(PostStatusEnum),
+              postId: z.uuid(),
+              status: z.enum(PostStatusEnum),
               scheduledAt: z.string().nullable(),
               dispatchesCount: z.number(),
             }),

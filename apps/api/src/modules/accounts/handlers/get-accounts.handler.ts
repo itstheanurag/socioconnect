@@ -24,15 +24,30 @@ export const getAccountsRoute = createRoute({
               accounts: z.array(
                 z.object({
                   id: z.string().openapi({ example: "123e4567-e89b-12d3-a456-426614174000" }),
-                  platform: z.nativeEnum(SocialPlatformEnum).openapi({ example: SocialPlatformEnum.YOUTUBE }),
+                  platform: z
+                    .enum(SocialPlatformEnum)
+                    .openapi({ example: SocialPlatformEnum.YOUTUBE }),
                   platformAccountId: z.string().openapi({ example: "UC_x5XG1OV2P6uZZ5FSM9Ttw" }),
                   username: z.string().openapi({ example: "@creators_studio" }),
                   displayName: z.string().nullable().openapi({ example: "Creator Studio" }),
-                  avatarUrl: z.string().nullable().openapi({ example: "https://example.com/avatar.jpg" }),
-                  profileUrl: z.string().nullable().openapi({ example: "https://youtube.com/@creators_studio" }),
-                  status: z.nativeEnum(ConnectedAccountStatus).openapi({ example: ConnectedAccountStatus.ACTIVE }),
-                  scopes: z.array(z.string()).openapi({ example: ["https://www.googleapis.com/auth/youtube.upload"] }),
-                  lastHealthCheckAt: z.string().nullable().openapi({ example: "2026-09-21T12:00:00.000Z" }),
+                  avatarUrl: z
+                    .string()
+                    .nullable()
+                    .openapi({ example: "https://example.com/avatar.jpg" }),
+                  profileUrl: z
+                    .string()
+                    .nullable()
+                    .openapi({ example: "https://youtube.com/@creators_studio" }),
+                  status: z
+                    .enum(ConnectedAccountStatus)
+                    .openapi({ example: ConnectedAccountStatus.ACTIVE }),
+                  scopes: z
+                    .array(z.string())
+                    .openapi({ example: ["https://www.googleapis.com/auth/youtube.upload"] }),
+                  lastHealthCheckAt: z
+                    .string()
+                    .nullable()
+                    .openapi({ example: "2026-09-21T12:00:00.000Z" }),
                   lastHealthStatus: z.string().nullable().openapi({ example: "200_OK" }),
                   createdAt: z.string().openapi({ example: "2026-09-21T10:00:00.000Z" }),
                 }),

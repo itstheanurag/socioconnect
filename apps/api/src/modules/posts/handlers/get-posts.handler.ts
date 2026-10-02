@@ -23,7 +23,7 @@ export const getPostsRoute = createRoute({
     "Retrieves creator's post history, scheduled queue, and multi-channel publication statuses",
   request: {
     query: z.object({
-      status: z.nativeEnum(PostStatusEnum).optional(),
+      status: z.enum(PostStatusEnum).optional(),
       page: z.coerce.number().optional().default(1),
       limit: z.coerce.number().optional().default(20),
     }),
@@ -38,21 +38,21 @@ export const getPostsRoute = createRoute({
             payload: z.object({
               posts: z.array(
                 z.object({
-                  id: z.string().uuid(),
+                  id: z.uuid(),
                   title: z.string().nullable(),
                   content: z.string(),
                   tags: z.array(z.string()),
                   linkUrl: z.string().nullable(),
-                  status: z.nativeEnum(PostStatusEnum),
-                  timingStrategy: z.nativeEnum(TimingStrategyEnum),
+                  status: z.enum(PostStatusEnum),
+                  timingStrategy: z.enum(TimingStrategyEnum),
                   scheduledAt: z.string().nullable(),
                   publishedAt: z.string().nullable(),
                   createdAt: z.string(),
                   dispatches: z.array(
                     z.object({
-                      id: z.string().uuid(),
-                      platform: z.nativeEnum(SocialPlatformEnum),
-                      status: z.nativeEnum(DispatchStatusEnum),
+                      id: z.uuid(),
+                      platform: z.enum(SocialPlatformEnum),
+                      status: z.enum(DispatchStatusEnum),
                       scheduledFor: z.string(),
                       externalPostId: z.string().nullable(),
                       externalPostUrl: z.string().nullable(),
@@ -135,7 +135,7 @@ export const getPostByIdRoute = createRoute({
     "Retrieves complete post details, attached media, and per-destination dispatch audit logs",
   request: {
     params: z.object({
-      id: z.string().uuid().openapi({ example: "123e4567-e89b-12d3-a456-426614174000" }),
+      id: z.uuid().openapi({ example: "123e4567-e89b-12d3-a456-426614174000" }),
     }),
   },
   responses: {
@@ -147,13 +147,13 @@ export const getPostByIdRoute = createRoute({
             message: z.string(),
             payload: z.object({
               post: z.object({
-                id: z.string().uuid(),
+                id: z.uuid(),
                 title: z.string().nullable(),
                 content: z.string(),
                 tags: z.array(z.string()),
                 linkUrl: z.string().nullable(),
-                status: z.nativeEnum(PostStatusEnum),
-                timingStrategy: z.nativeEnum(TimingStrategyEnum),
+                status: z.enum(PostStatusEnum),
+                timingStrategy: z.enum(TimingStrategyEnum),
                 scheduledAt: z.string().nullable(),
                 publishedAt: z.string().nullable(),
                 dispatches: z.array(z.record(z.string(), z.unknown())),

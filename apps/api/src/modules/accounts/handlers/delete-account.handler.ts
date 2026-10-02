@@ -15,7 +15,7 @@ export const deleteAccountRoute = createRoute({
   description: "Revokes and disconnects a social media account",
   request: {
     params: z.object({
-      id: z.string().uuid().openapi({ example: "123e4567-e89b-12d3-a456-426614174000" }),
+      id: z.uuid().openapi({ example: "123e4567-e89b-12d3-a456-426614174000" }),
     }),
   },
   responses: {

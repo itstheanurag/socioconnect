@@ -1,10 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { enforceUserMiddleware } from "@/middlewares/enforce-user.middleware";
-import {
-  CommunitiesRepository,
-  SocialPlatformEnum,
-  type NewCommunityGroup,
-} from "@repo/db";
+import { CommunitiesRepository, SocialPlatformEnum, type NewCommunityGroup } from "@repo/db";
 import { errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
@@ -17,7 +13,8 @@ export const getCommunityGroupsRoute = createRoute({
   path: "/v1/communities/groups",
   tags: ["Communities"],
   summary: "List user community groups",
-  description: "Retrieves clustered subreddits, discord channels, or platform groups with linked automation status",
+  description:
+    "Retrieves clustered subreddits, discord channels, or platform groups with linked automation status",
   responses: {
     200: {
       description: "Community groups retrieved successfully",
@@ -28,9 +25,9 @@ export const getCommunityGroupsRoute = createRoute({
             payload: z.object({
               groups: z.array(
                 z.object({
-                  id: z.string().uuid(),
-                  accountId: z.string().uuid(),
-                  platform: z.nativeEnum(SocialPlatformEnum),
+                  id: z.uuid(),
+                  accountId: z.uuid(),
+                  platform: z.enum(SocialPlatformEnum),
                   name: z.string(),
                   description: z.string().nullable(),
                   tags: z.array(z.string()),
@@ -96,18 +93,19 @@ export const createCommunityGroupRoute = createRoute({
   path: "/v1/communities/groups",
   tags: ["Communities"],
   summary: "Create a community cluster group",
-  description: "Clusters multiple subreddits, Discord channels, or platform destinations under an anti-spam staggered syndication rule",
+  description:
+    "Clusters multiple subreddits, Discord channels, or platform destinations under an anti-spam staggered syndication rule",
   request: {
     body: {
       content: {
         "application/json": {
           schema: z.object({
-            accountId: z.string().uuid(),
-            platform: z.nativeEnum(SocialPlatformEnum),
+            accountId: z.uuid(),
+            platform: z.enum(SocialPlatformEnum),
             name: z.string().min(2).max(100),
             description: z.string().max(500).optional(),
             tags: z.array(z.string()).default([]),
-            destinationIds: z.array(z.string().uuid()).min(1),
+            destinationIds: z.array(z.uuid()).min(1),
             staggerMinutes: z.number().min(0).max(120).default(5),
           }),
         },
@@ -123,9 +121,9 @@ export const createCommunityGroupRoute = createRoute({
             message: z.string(),
             payload: z.object({
               group: z.object({
-                id: z.string().uuid(),
+                id: z.uuid(),
                 name: z.string(),
-                platform: z.nativeEnum(SocialPlatformEnum),
+                platform: z.enum(SocialPlatformEnum),
                 destinationIds: z.array(z.string()),
                 staggerMinutes: z.number(),
               }),
@@ -140,7 +138,9 @@ export const createCommunityGroupRoute = createRoute({
 
 export type CreateCommunityGroupRoute = typeof createCommunityGroupRoute;
 
-export const createCommunityGroupHandler: AppRouteHandler<CreateCommunityGroupRoute> = async (c) => {
+export const createCommunityGroupHandler: AppRouteHandler<CreateCommunityGroupRoute> = async (
+  c,
+) => {
   const user = c.get("user");
   const body = c.req.valid("json");
 
@@ -180,7 +180,10 @@ export const createCommunityGroupHandler: AppRouteHandler<CreateCommunityGroupRo
     });
 
     throw new HTTPException(StatusCodes.HTTP_500_INTERNAL_SERVER_ERROR, {
-      res: c.json({ message: "Failed to create community group" }, StatusCodes.HTTP_500_INTERNAL_SERVER_ERROR),
+      res: c.json(
+        { message: "Failed to create community group" },
+        StatusCodes.HTTP_500_INTERNAL_SERVER_ERROR,
+      ),
     });
   }
 };
@@ -195,7 +198,7 @@ export const deleteCommunityGroupRoute = createRoute({
   description: "Soft deletes a community group and stops active automation schedules",
   request: {
     params: z.object({
-      id: z.string().uuid(),
+      id: z.uuid(),
     }),
   },
   responses: {
@@ -215,7 +218,9 @@ export const deleteCommunityGroupRoute = createRoute({
 
 export type DeleteCommunityGroupRoute = typeof deleteCommunityGroupRoute;
 
-export const deleteCommunityGroupHandler: AppRouteHandler<DeleteCommunityGroupRoute> = async (c) => {
+export const deleteCommunityGroupHandler: AppRouteHandler<DeleteCommunityGroupRoute> = async (
+  c,
+) => {
   const { id } = c.req.valid("param");
   const user = c.get("user");
 

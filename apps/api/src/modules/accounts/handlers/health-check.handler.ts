@@ -15,7 +15,7 @@ export const healthCheckAccountRoute = createRoute({
   description: "Runs an active verification probe against the social platform API",
   request: {
     params: z.object({
-      id: z.string().uuid().openapi({ example: "123e4567-e89b-12d3-a456-426614174000" }),
+      id: z.uuid().openapi({ example: "123e4567-e89b-12d3-a456-426614174000" }),
     }),
   },
   responses: {
@@ -26,7 +26,7 @@ export const healthCheckAccountRoute = createRoute({
           schema: z.object({
             message: z.string().openapi({ example: "Account token is active and valid" }),
             payload: z.object({
-              status: z.nativeEnum(ConnectedAccountStatus),
+              status: z.enum(ConnectedAccountStatus),
               pingLatencyMs: z.number().openapi({ example: 84 }),
               lastCheckedAt: z.string().openapi({ example: "2026-09-21T12:00:00.000Z" }),
             }),

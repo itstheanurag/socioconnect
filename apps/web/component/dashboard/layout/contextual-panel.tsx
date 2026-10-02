@@ -1,19 +1,7 @@
 "use client";
 
-import React from "react";
-import {
-  X,
-  FileText,
-  Bot,
-  Radio,
-  SlidersHorizontal,
-  CheckCircle2,
-  AlertTriangle,
-  Clock,
-  Send,
-  Sparkles,
-  ExternalLink,
-} from "lucide-react";
+import React, { useEffect } from "react";
+import { X, FileText, Bot, Radio, SlidersHorizontal, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useDashboard } from "@/component/dashboard/context/dashboard-context";
 import {
@@ -30,78 +18,121 @@ export function ContextualPanel() {
   const panelType = contextualPanel.type;
   const panelData = contextualPanel.data;
 
+  // Handle Escape key to close modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        closeContextualPanel();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, closeContextualPanel]);
+
   return (
     <AnimatePresence>
       {isOpen && (
-        <React.Fragment key="contextual-panel-wrapper">
+        <motion.div
+          key="item-preview-backdrop"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={closeContextualPanel}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 backdrop-blur-md bg-neutral-950/75"
+        >
           <motion.div
-            key="contextual-panel-backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={closeContextualPanel}
-            className="fixed inset-0 bg-neutral-950/70 backdrop-blur-xs z-40 lg:hidden"
-          />
-
-          <motion.aside
-            key="contextual-panel-aside"
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "spring", stiffness: 350, damping: 32 }}
-            className="fixed top-0 right-0 h-full w-full sm:w-96 md:w-[420px] bg-neutral-900 border-l border-neutral-800 z-50 flex flex-col shadow-2xl overflow-hidden"
+            key="item-preview-dialog"
+            initial={{ opacity: 0, scale: 0.96, y: 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: 8 }}
+            transition={{ type: "spring", stiffness: 380, damping: 30 }}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-2xl max-h-[85vh] rounded-3xl bg-neutral-900 border border-neutral-800 shadow-2xl overflow-hidden flex flex-col text-neutral-200"
           >
-            {/* Panel Header */}
-            <div className="p-4 border-b border-neutral-800 flex items-center justify-between bg-neutral-950/40">
-              <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-neutral-400">
+            {/* Modal Header */}
+            <div className="p-4 sm:p-5 border-b border-neutral-800 flex items-center justify-between bg-neutral-950/50">
+              <div className="flex items-center gap-2.5 text-xs font-mono uppercase tracking-wider text-neutral-400">
                 {panelType === "post_details" && (
                   <>
-                    <FileText className="w-4 h-4 text-rose-400" />
-                    <span className="font-semibold text-neutral-200">Post Inspection</span>
+                    <div className="w-7 h-7 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400">
+                      <FileText className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <span className="font-semibold text-neutral-200 block text-sm normal-case font-sans">
+                        Post Details
+                      </span>
+                      <span className="text-[10px] text-neutral-500">Inspection & Metrics</span>
+                    </div>
                   </>
                 )}
                 {panelType === "post_preview" && (
                   <>
-                    <Sparkles className="w-4 h-4 text-amber-400" />
-                    <span className="font-semibold text-neutral-200">
-                      Live Destination Previews
-                    </span>
+                    <div className="w-7 h-7 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                      <Sparkles className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <span className="font-semibold text-neutral-200 block text-sm normal-case font-sans">
+                        Destination Previews
+                      </span>
+                      <span className="text-[10px] text-neutral-500">Native Simulated Feed</span>
+                    </div>
                   </>
                 )}
                 {panelType === "compatibility_breakdown" && (
                   <>
-                    <SlidersHorizontal className="w-4 h-4 text-emerald-400" />
-                    <span className="font-semibold text-neutral-200">
-                      Compatibility Diagnostics
-                    </span>
+                    <div className="w-7 h-7 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                      <SlidersHorizontal className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <span className="font-semibold text-neutral-200 block text-sm normal-case font-sans">
+                        Compatibility Report
+                      </span>
+                      <span className="text-[10px] text-neutral-500">Validation Diagnostics</span>
+                    </div>
                   </>
                 )}
                 {panelType === "bot_info" && (
                   <>
-                    <Bot className="w-4 h-4 text-cyan-400" />
-                    <span className="font-semibold text-neutral-200">Telegram Bot State</span>
+                    <div className="w-7 h-7 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                      <Bot className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <span className="font-semibold text-neutral-200 block text-sm normal-case font-sans">
+                        Telegram Bot State
+                      </span>
+                      <span className="text-[10px] text-neutral-500">Telemetry & Status</span>
+                    </div>
                   </>
                 )}
                 {panelType === "connector_info" && (
                   <>
-                    <Radio className="w-4 h-4 text-rose-400" />
-                    <span className="font-semibold text-neutral-200">Account Credentials</span>
+                    <div className="w-7 h-7 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400">
+                      <Radio className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <span className="font-semibold text-neutral-200 block text-sm normal-case font-sans">
+                        Account Connection
+                      </span>
+                      <span className="text-[10px] text-neutral-500">Credentials & Scopes</span>
+                    </div>
                   </>
                 )}
               </div>
 
-              <button
-                type="button"
-                onClick={closeContextualPanel}
-                className="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 transition-colors cursor-pointer"
-                aria-label="Close panel"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={closeContextualPanel}
+                  className="p-1.5 rounded-xl text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 transition-colors cursor-pointer"
+                  aria-label="Close modal"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
-            {/* Panel Content Body */}
-            <div className="flex-1 overflow-y-auto p-5 space-y-6">
+            {/* Modal Body */}
+            <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6">
               {panelType === "post_details" && (
                 <PostDetailsInspector
                   post={panelData as PostItem}
@@ -136,8 +167,8 @@ export function ContextualPanel() {
                 <ConnectorInspector connector={panelData as ConnectorAccount} />
               )}
             </div>
-          </motion.aside>
-        </React.Fragment>
+          </motion.div>
+        </motion.div>
       )}
     </AnimatePresence>
   );
@@ -240,7 +271,7 @@ function PostPreviewGallery({ post }: { post: PostItem }) {
   if (!post) return null;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {post.targetPlatforms.map((pid) => {
         const brand = getPlatformBrandColor(pid);
         const overrideText = post.platformOverrides?.[pid]?.caption || post.baseContent;
