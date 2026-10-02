@@ -1,7 +1,7 @@
-import { type NewUser, type UpdateUser, usersTable } from "../schema";
+import { type NewUser, type UpdateUser, usersTable } from "@/schema";
 import { count, eq } from "drizzle-orm";
-import { type DBTransaction, db } from "../connection";
-import { withMetrics } from "../utils/metrics-wrapper";
+import { type DBTransaction, db } from "@/connection";
+import { withMetrics } from "@/utils/metrics-wrapper";
 import { logger } from "@repo/shared";
 
 export namespace UsersRepository {

@@ -1,13 +1,13 @@
-import type { SocialPlatform, ProviderMetadata } from "../types/provider.types";
+import type { SocialPlatform, ProviderMetadata } from "@/types/provider.types";
 import type {
   AuthCredentials,
   TokenRefreshResult,
   UserProfile,
   AuthUrlOptions,
   ExchangeCodeOptions,
-} from "../types/auth.types";
-import type { UniversalPostPayload, ValidationResult, PublishResult } from "../types/post.types";
-import type { NeedsReconnectError, TransientProviderError } from "../types/errors.types";
+} from "@/types/auth.types";
+import type { UniversalPostPayload, ValidationResult, PublishResult } from "@/types/post.types";
+import type { NeedsReconnectError, TransientProviderError } from "@/types/errors.types";
 import { HttpClient } from "./http-client";
 
 export abstract class BaseSocialProvider {

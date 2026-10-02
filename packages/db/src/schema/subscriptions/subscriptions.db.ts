@@ -2,7 +2,7 @@ import { boolean, index, jsonb, pgEnum, text, timestamp, uniqueIndex, uuid } fro
 import { relations } from "drizzle-orm";
 import { enumToPgEnum } from "@repo/shared";
 import { subscriptionsSchema } from "./index";
-import { usersTable } from "../users/users.db";
+import { usersTable } from "@/schema/users/users.db";
 import { invoicesTable } from "./invoices.db";
 
 export enum SubscriptionTierEnum {

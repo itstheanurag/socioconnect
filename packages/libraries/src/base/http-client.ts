@@ -5,7 +5,7 @@ import {
   InvalidPayloadError,
   PermanentProviderError,
   TransientProviderError,
-} from "../types/errors.types";
+} from "@/types/errors.types";
 
 export interface HttpRequestOptions {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";

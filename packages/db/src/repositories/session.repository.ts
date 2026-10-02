@@ -1,7 +1,7 @@
-import { sessionsTable, type NewSession, type UpdateSession } from "../schema";
-import { db, type DBTransaction } from "../connection";
+import { sessionsTable, type NewSession, type UpdateSession } from "@/schema";
+import { db, type DBTransaction } from "@/connection";
 import { eq } from "drizzle-orm";
-import { withMetrics } from "../utils/metrics-wrapper";
+import { withMetrics } from "@/utils/metrics-wrapper";
 import { logger } from "@repo/shared";
 
 export namespace SessionRepository {

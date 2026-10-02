@@ -1,13 +1,13 @@
 import { and, desc, eq } from "drizzle-orm";
-import { type DBTransaction, db } from "../connection";
+import { type DBTransaction, db } from "@/connection";
 import {
   notificationsTable,
   type Notification,
   type NewNotification,
   NotificationTypeEnum,
   NotificationPriorityEnum,
-} from "../schema";
-import { withMetrics } from "../utils/metrics-wrapper";
+} from "@/schema";
+import { withMetrics } from "@/utils/metrics-wrapper";
 import { logger } from "@repo/shared";
 
 export namespace NotificationsRepository {

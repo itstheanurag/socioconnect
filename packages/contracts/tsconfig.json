@@ -5,13 +5,16 @@
     "moduleResolution": "bundler",
     "strict": true,
     "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+    },
     "outDir": "./dist",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist"],
 }

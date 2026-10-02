@@ -2,7 +2,7 @@ import { index, jsonb, pgEnum, text, timestamp, uniqueIndex, uuid } from "drizzl
 import { relations } from "drizzle-orm";
 import { enumToPgEnum } from "@repo/shared";
 import { accountsSchema } from "./index";
-import { usersTable } from "../users/users.db";
+import { usersTable } from "@/schema/users/users.db";
 
 export enum SocialPlatformEnum {
   YOUTUBE = "youtube",

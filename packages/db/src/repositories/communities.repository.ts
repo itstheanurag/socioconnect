@@ -1,5 +1,5 @@
 import { and, desc, eq, inArray, isNull, lte } from "drizzle-orm";
-import { type DBTransaction, db } from "../connection";
+import { type DBTransaction, db } from "@/connection";
 import {
   communityGroupsTable,
   communityAutomationsTable,
@@ -10,8 +10,8 @@ import {
   type NewCommunityAutomation,
   type UpdateCommunityAutomation,
   AutomationStatusEnum,
-} from "../schema";
-import { withMetrics } from "../utils/metrics-wrapper";
+} from "@/schema";
+import { withMetrics } from "@/utils/metrics-wrapper";
 import { logger } from "@repo/shared";
 
 export namespace CommunitiesRepository {

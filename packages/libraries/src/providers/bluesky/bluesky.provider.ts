@@ -1,14 +1,14 @@
-import { BaseSocialProvider } from "../../base/base.provider";
-import type { ProviderMetadata } from "../../types/provider.types";
+import { BaseSocialProvider } from "@/base/base.provider";
+import type { ProviderMetadata } from "@/types/provider.types";
 import type {
   AuthCredentials,
   TokenRefreshResult,
   UserProfile,
   AuthUrlOptions,
   ExchangeCodeOptions,
-} from "../../types/auth.types";
-import type { UniversalPostPayload, ValidationResult, PublishResult } from "../../types/post.types";
-import { countBytes } from "../../utils/text-counter";
+} from "@/types/auth.types";
+import type { UniversalPostPayload, ValidationResult, PublishResult } from "@/types/post.types";
+import { countBytes } from "@/utils/text-counter";
 import { BLUESKY_LIMITS, validateBlueskyPost } from "./bluesky.validator";
 import type {
   BlueskyCreateSessionResponse,

@@ -2,7 +2,7 @@ import { bigint, index, integer, pgEnum, timestamp, uniqueIndex, uuid } from "dr
 import { relations } from "drizzle-orm";
 import { enumToPgEnum } from "@repo/shared";
 import { quotasSchema } from "./index";
-import { usersTable } from "../users/users.db";
+import { usersTable } from "@/schema/users/users.db";
 
 export enum PlanTierEnum {
   SOLO = "solo",

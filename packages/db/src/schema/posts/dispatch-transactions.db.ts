@@ -4,7 +4,7 @@ import { enumToPgEnum } from "@repo/shared";
 import { postsSchema } from "./index";
 import { postsTable } from "./posts.db";
 import { postDispatchesTable } from "./post-dispatches.db";
-import { connectedAccountsTable, socialPlatformPgEnum } from "../accounts/accounts.db";
+import { connectedAccountsTable, socialPlatformPgEnum } from "@/schema/accounts/accounts.db";
 
 export enum TransactionOutcomeEnum {
   SUCCESS = "success",

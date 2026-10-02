@@ -1,5 +1,5 @@
 import { and, desc, eq, gte, lte, sql } from "drizzle-orm";
-import { type DBTransaction, db } from "../connection";
+import { type DBTransaction, db } from "@/connection";
 import {
   postAnalyticsTable,
   accountAnalyticsDailyTable,
@@ -8,8 +8,8 @@ import {
   type AccountAnalyticsDaily,
   type NewAccountAnalyticsDaily,
   SocialPlatformEnum,
-} from "../schema";
-import { withMetrics } from "../utils/metrics-wrapper";
+} from "@/schema";
+import { withMetrics } from "@/utils/metrics-wrapper";
 import { logger } from "@repo/shared";
 
 export namespace AnalyticsRepository {

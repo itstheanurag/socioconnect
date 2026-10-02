@@ -1,8 +1,8 @@
 import { z } from "zod";
-import type { UniversalPostPayload, ValidationResult } from "../../types/post.types";
-import type { PlatformLimits } from "../../types/provider.types";
-import { buildZodValidationResult, universalPostSchema } from "../../schemas/post.schema";
-import { countCodeUnits } from "../../utils/text-counter";
+import type { UniversalPostPayload, ValidationResult } from "@/types/post.types";
+import type { PlatformLimits } from "@/types/provider.types";
+import { buildZodValidationResult, universalPostSchema } from "@/schemas/post.schema";
+import { countCodeUnits } from "@/utils/text-counter";
 
 export const MEDIUM_LIMITS: PlatformLimits = {
   maxCharacters: 100000,

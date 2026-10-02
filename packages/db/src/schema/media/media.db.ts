@@ -2,7 +2,7 @@ import { index, integer, pgEnum, text, timestamp, uuid } from "drizzle-orm/pg-co
 import { relations } from "drizzle-orm";
 import { enumToPgEnum } from "@repo/shared";
 import { mediaSchema } from "./index";
-import { usersTable } from "../users/users.db";
+import { usersTable } from "@/schema/users/users.db";
 
 export enum MediaTypeEnum {
   IMAGE = "image",

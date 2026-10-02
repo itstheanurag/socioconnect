@@ -1,9 +1,9 @@
 import { z } from "zod";
-import type { UniversalPostPayload, ValidationResult } from "../../types/post.types";
-import type { PlatformLimits } from "../../types/provider.types";
-import { countGraphemes } from "../../utils/text-counter";
-import { createMediaValidator } from "../../schemas/media.schema";
-import { buildZodValidationResult, universalPostSchema } from "../../schemas/post.schema";
+import type { UniversalPostPayload, ValidationResult } from "@/types/post.types";
+import type { PlatformLimits } from "@/types/provider.types";
+import { countGraphemes } from "@/utils/text-counter";
+import { createMediaValidator } from "@/schemas/media.schema";
+import { buildZodValidationResult, universalPostSchema } from "@/schemas/post.schema";
 
 export const BLUESKY_LIMITS: PlatformLimits = {
   maxCharacters: 300,

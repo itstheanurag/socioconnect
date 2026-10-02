@@ -1,12 +1,12 @@
 import { and, eq, isNull } from "drizzle-orm";
-import { type DBTransaction, db } from "../connection";
+import { type DBTransaction, db } from "@/connection";
 import {
   connectedAccountsTable,
   type ConnectedAccount,
   type NewConnectedAccount,
   ConnectedAccountStatus,
-} from "../schema";
-import { withMetrics } from "../utils/metrics-wrapper";
+} from "@/schema";
+import { withMetrics } from "@/utils/metrics-wrapper";
 import { logger } from "@repo/shared";
 
 export namespace AccountsRepository {

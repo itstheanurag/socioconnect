@@ -1,5 +1,5 @@
-import type { MediaItem, ValidationError } from "../types/post.types";
-import type { PlatformLimits } from "../types/provider.types";
+import type { MediaItem, ValidationError } from "@/types/post.types";
+import type { PlatformLimits } from "@/types/provider.types";
 
 export function validateMediaItems(
   media: MediaItem[] | undefined,

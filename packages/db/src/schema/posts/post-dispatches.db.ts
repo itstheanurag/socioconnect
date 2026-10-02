@@ -3,8 +3,8 @@ import { relations } from "drizzle-orm";
 import { enumToPgEnum } from "@repo/shared";
 import { postsSchema } from "./index";
 import { postsTable } from "./posts.db";
-import { connectedAccountsTable, socialPlatformPgEnum } from "../accounts/accounts.db";
-import { connectedDestinationsTable } from "../accounts/destinations.db";
+import { connectedAccountsTable, socialPlatformPgEnum } from "@/schema/accounts/accounts.db";
+import { connectedDestinationsTable } from "@/schema/accounts/destinations.db";
 
 export enum DispatchStatusEnum {
   PENDING = "pending",

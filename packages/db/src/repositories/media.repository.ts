@@ -1,7 +1,7 @@
 import { and, desc, eq, isNull } from "drizzle-orm";
-import { type DBTransaction, db } from "../connection";
-import { mediaAssetsTable, type MediaAsset, type NewMediaAsset, MediaTypeEnum } from "../schema";
-import { withMetrics } from "../utils/metrics-wrapper";
+import { type DBTransaction, db } from "@/connection";
+import { mediaAssetsTable, type MediaAsset, type NewMediaAsset, MediaTypeEnum } from "@/schema";
+import { withMetrics } from "@/utils/metrics-wrapper";
 import { logger } from "@repo/shared";
 
 export namespace MediaRepository {

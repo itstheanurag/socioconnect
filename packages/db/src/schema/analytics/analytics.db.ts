@@ -10,14 +10,14 @@ import {
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { analyticsSchema } from "./index";
-import { usersTable } from "../users/users.db";
-import { postsTable } from "../posts/posts.db";
-import { postDispatchesTable } from "../posts/post-dispatches.db";
+import { usersTable } from "@/schema/users/users.db";
+import { postsTable } from "@/schema/posts/posts.db";
+import { postDispatchesTable } from "@/schema/posts/post-dispatches.db";
 import {
   connectedAccountsTable,
   socialPlatformPgEnum,
   SocialPlatformEnum,
-} from "../accounts/accounts.db";
+} from "@/schema/accounts/accounts.db";
 
 export const postAnalyticsTable = analyticsSchema.table(
   "post_analytics",

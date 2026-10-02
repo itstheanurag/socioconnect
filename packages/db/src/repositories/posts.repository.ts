@@ -1,5 +1,5 @@
 import { and, desc, eq, inArray, isNull, lte, or } from "drizzle-orm";
-import { type DBTransaction, db } from "../connection";
+import { type DBTransaction, db } from "@/connection";
 import {
   postsTable,
   postDispatchesTable,
@@ -13,8 +13,8 @@ import {
   PostStatusEnum,
   DispatchStatusEnum,
   TransactionOutcomeEnum,
-} from "../schema";
-import { withMetrics } from "../utils/metrics-wrapper";
+} from "@/schema";
+import { withMetrics } from "@/utils/metrics-wrapper";
 import { logger } from "@repo/shared";
 
 export interface CreatePostInput {

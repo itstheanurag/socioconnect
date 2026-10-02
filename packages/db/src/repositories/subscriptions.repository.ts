@@ -1,5 +1,5 @@
 import { desc, eq, isNull } from "drizzle-orm";
-import { type DBTransaction, db } from "../connection";
+import { type DBTransaction, db } from "@/connection";
 import {
   subscriptionsTable,
   invoicesTable,
@@ -12,8 +12,8 @@ import {
   SubscriptionTierEnum,
   SubscriptionStatusEnum,
   BillingIntervalEnum,
-} from "../schema";
-import { withMetrics } from "../utils/metrics-wrapper";
+} from "@/schema";
+import { withMetrics } from "@/utils/metrics-wrapper";
 import { logger } from "@repo/shared";
 
 export const DEFAULT_PLAN_LIMITS: Record<SubscriptionTierEnum, SubscriptionLimits> = {

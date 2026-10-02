@@ -2,7 +2,7 @@ import { boolean, index, jsonb, pgEnum, text, timestamp, uuid } from "drizzle-or
 import { relations } from "drizzle-orm";
 import { enumToPgEnum } from "@repo/shared";
 import { notificationsSchema } from "./index";
-import { usersTable } from "../users/users.db";
+import { usersTable } from "@/schema/users/users.db";
 
 export enum NotificationTypeEnum {
   DISPATCH_SUCCESS = "dispatch_success",

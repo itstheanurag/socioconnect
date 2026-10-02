@@ -1,7 +1,7 @@
 import { eq, sql } from "drizzle-orm";
-import { type DBTransaction, db } from "../connection";
-import { userQuotasTable, type UserQuota, PlanTierEnum } from "../schema";
-import { withMetrics } from "../utils/metrics-wrapper";
+import { type DBTransaction, db } from "@/connection";
+import { userQuotasTable, type UserQuota, PlanTierEnum } from "@/schema";
+import { withMetrics } from "@/utils/metrics-wrapper";
 import { logger } from "@repo/shared";
 
 export namespace QuotasRepository {

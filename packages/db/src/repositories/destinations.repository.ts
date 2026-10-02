@@ -1,12 +1,12 @@
 import { and, eq, inArray } from "drizzle-orm";
-import { type DBTransaction, db } from "../connection";
+import { type DBTransaction, db } from "@/connection";
 import {
   connectedDestinationsTable,
   connectedAccountsTable,
   type ConnectedDestination,
   type NewConnectedDestination,
-} from "../schema";
-import { withMetrics } from "../utils/metrics-wrapper";
+} from "@/schema";
+import { withMetrics } from "@/utils/metrics-wrapper";
 import { logger } from "@repo/shared";
 
 export namespace DestinationsRepository {

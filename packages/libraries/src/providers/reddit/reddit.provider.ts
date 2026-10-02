@@ -1,13 +1,13 @@
-import { BaseSocialProvider } from "../../base/base.provider";
-import type { ProviderMetadata } from "../../types/provider.types";
+import { BaseSocialProvider } from "@/base/base.provider";
+import type { ProviderMetadata } from "@/types/provider.types";
 import type {
   AuthCredentials,
   TokenRefreshResult,
   UserProfile,
   AuthUrlOptions,
   ExchangeCodeOptions,
-} from "../../types/auth.types";
-import type { UniversalPostPayload, ValidationResult, PublishResult } from "../../types/post.types";
+} from "@/types/auth.types";
+import type { UniversalPostPayload, ValidationResult, PublishResult } from "@/types/post.types";
 import { REDDIT_LIMITS, validateRedditPost } from "./reddit.validator";
 import type { RedditSubmitResponse, RedditUserResponse } from "./reddit.types";
 
