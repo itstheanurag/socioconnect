@@ -1,4 +1,8 @@
 export type SocialPlatform =
+  | "twitter"
+  | "telegram"
+  | "threads"
+  | "tiktok"
   | "bluesky"
   | "dribbble"
   | "devto"

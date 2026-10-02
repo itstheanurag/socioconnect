@@ -1,28 +1,69 @@
 import { z } from "zod";
-import { countGraphemes, countCodeUnits } from "../utils/text-counter";
+import { countGraphemes, countCodeUnits } from "@/utils/text-counter";
 import { mediaItemSchema } from "./media.schema";
-import type { ValidationResult, ValidationError, UniversalPostPayload } from "../types/post.types";
-import type { PlatformLimits } from "../types/provider.types";
+import type { ValidationResult, ValidationError, UniversalPostPayload } from "@/types/post.types";
+import type { PlatformLimits } from "@/types/provider.types";
 
 export const platformOptionsSchema = z.object({
+  // Twitter / X
+  replyToTweetId: z.string().optional(),
+  quoteTweetId: z.string().optional(),
+  pollOptions: z.array(z.string()).optional(),
+  pollDurationMinutes: z.number().min(5).max(10080).optional(),
+
+  // Telegram
+  chatId: z.string().optional(),
+  parseMode: z.enum(["MarkdownV2", "HTML", "Markdown"]).optional(),
+  disableWebPagePreview: z.boolean().optional(),
+  silent: z.boolean().optional(),
+  pinMessage: z.boolean().optional(),
+
+  // Threads
+  topicTag: z.string().optional(),
+  replyToPostId: z.string().optional(),
+
+  // TikTok
+  privacyLevel: z.enum(["PUBLIC_TO_EVERYONE", "MUTUAL_FOLLOW_FRIENDS", "SELF_ONLY"]).optional(),
+  disableComments: z.boolean().optional(),
+  disableDuet: z.boolean().optional(),
+  disableStitch: z.boolean().optional(),
+  autoAddMusic: z.boolean().optional(),
+
+  // Reddit
   subreddit: z.string().optional(),
   flairId: z.string().optional(),
   isNsfw: z.boolean().optional(),
   isSpoiler: z.boolean().optional(),
+
+  // Pinterest
   boardId: z.string().optional(),
   pinLink: z.string().url().optional(),
+
+  // Dev.to / Medium
   canonicalUrl: z.string().url().optional(),
   series: z.string().optional(),
   publishStatus: z.enum(["public", "draft", "unlisted"]).optional(),
+
+  // Discord
   channelId: z.string().optional(),
   webhookUrl: z.string().url().optional(),
+
+  // YouTube
   privacyStatus: z.enum(["public", "private", "unlisted"]).optional(),
   madeForKids: z.boolean().optional(),
+
+  // Dribbble
   teamId: z.string().optional(),
+
+  // Instagram / Facebook
   mediaType: z.enum(["IMAGE", "VIDEO", "CAROUSEL", "REELS", "STORIES"]).optional(),
-  langs: z.array(z.string()).optional(),
-  visibility: z.enum(["PUBLIC", "CONNECTIONS"]).optional(),
   pageId: z.string().optional(),
+
+  // Bluesky
+  langs: z.array(z.string()).optional(),
+
+  // LinkedIn
+  visibility: z.enum(["PUBLIC", "CONNECTIONS"]).optional(),
 });
 
 export const universalPostSchema = z.object({

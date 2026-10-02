@@ -12,6 +12,30 @@ export interface MediaItem {
 }
 
 export interface PostPlatformOptions {
+  // Twitter / X specific
+  replyToTweetId?: string;
+  quoteTweetId?: string;
+  pollOptions?: string[];
+  pollDurationMinutes?: number;
+
+  // Telegram specific
+  chatId?: string;
+  parseMode?: "MarkdownV2" | "HTML" | "Markdown";
+  disableWebPagePreview?: boolean;
+  silent?: boolean;
+  pinMessage?: boolean;
+
+  // Threads specific
+  topicTag?: string;
+  replyToPostId?: string;
+
+  // TikTok specific
+  privacyLevel?: "PUBLIC_TO_EVERYONE" | "MUTUAL_FOLLOW_FRIENDS" | "SELF_ONLY";
+  disableComments?: boolean;
+  disableDuet?: boolean;
+  disableStitch?: boolean;
+  autoAddMusic?: boolean;
+
   // Reddit specific
   subreddit?: string;
   flairId?: string;

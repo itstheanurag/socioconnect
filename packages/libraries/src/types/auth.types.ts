@@ -35,6 +35,8 @@ export interface AuthUrlOptions {
   state: string;
   redirectUri: string;
   scopes?: string[];
+  codeVerifier?: string;
+  codeChallenge?: string;
   additionalParams?: Record<string, string>;
 }
 

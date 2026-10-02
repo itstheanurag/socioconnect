@@ -1,19 +1,31 @@
-import type { BaseSocialProvider } from "../base/base.provider";
-import type { SocialPlatform, ProviderMetadata } from "../types/provider.types";
-import type { UniversalPostPayload, ValidationResult, ValidationError } from "../types/post.types";
-import { BlueskyProvider } from "../providers/bluesky/bluesky.provider";
-import { DribbbleProvider } from "../providers/dribbble/dribbble.provider";
-import { DevToProvider } from "../providers/devto/devto.provider";
-import { MediumProvider } from "../providers/medium/medium.provider";
-import { YouTubeProvider } from "../providers/youtube/youtube.provider";
-import { InstagramProvider } from "../providers/instagram/instagram.provider";
-import { DiscordProvider } from "../providers/discord/discord.provider";
-import { RedditProvider } from "../providers/reddit/reddit.provider";
-import { LinkedInProvider } from "../providers/linkedin/linkedin.provider";
-import { PinterestProvider } from "../providers/pinterest/pinterest.provider";
-import { FacebookProvider } from "../providers/facebook/facebook.provider";
+import type { BaseSocialProvider } from "@/base/base.provider";
+import type { SocialPlatform, ProviderMetadata } from "@/types/provider.types";
+import type { UniversalPostPayload, ValidationResult, ValidationError } from "@/types/post.types";
+import { TwitterProvider } from "@/providers/twitter/twitter.provider";
+import { TelegramProvider } from "@/providers/telegram/telegram.provider";
+import { ThreadsProvider } from "@/providers/threads/threads.provider";
+import { TikTokProvider } from "@/providers/tiktok/tiktok.provider";
+import { BlueskyProvider } from "@/providers/bluesky/bluesky.provider";
+import { DribbbleProvider } from "@/providers/dribbble/dribbble.provider";
+import { DevToProvider } from "@/providers/devto/devto.provider";
+import { MediumProvider } from "@/providers/medium/medium.provider";
+import { YouTubeProvider } from "@/providers/youtube/youtube.provider";
+import { InstagramProvider } from "@/providers/instagram/instagram.provider";
+import { DiscordProvider } from "@/providers/discord/discord.provider";
+import { RedditProvider } from "@/providers/reddit/reddit.provider";
+import { LinkedInProvider } from "@/providers/linkedin/linkedin.provider";
+import { PinterestProvider } from "@/providers/pinterest/pinterest.provider";
+import { FacebookProvider } from "@/providers/facebook/facebook.provider";
 
 export interface ProviderRegistryConfig {
+  twitterClientId?: string;
+  twitterClientSecret?: string;
+  telegramBotToken?: string;
+  telegramDefaultChatId?: string;
+  threadsAppId?: string;
+  threadsAppSecret?: string;
+  tiktokClientKey?: string;
+  tiktokClientSecret?: string;
   blueskyPdsUrl?: string;
   dribbbleClientId?: string;
   dribbbleClientSecret?: string;
@@ -99,11 +111,15 @@ export class ProviderRegistry {
   }
 
   /**
-   * Creates a default registry with all 11 social providers instantiated
+   * Creates a default registry with all 15 social providers instantiated
    */
   public static createDefault(config: ProviderRegistryConfig = {}): ProviderRegistry {
     const registry = new ProviderRegistry();
 
+    registry.register(new TwitterProvider(config.twitterClientId, config.twitterClientSecret));
+    registry.register(new TelegramProvider(config.telegramBotToken, config.telegramDefaultChatId));
+    registry.register(new ThreadsProvider(config.threadsAppId, config.threadsAppSecret));
+    registry.register(new TikTokProvider(config.tiktokClientKey, config.tiktokClientSecret));
     registry.register(new BlueskyProvider(config.blueskyPdsUrl));
     registry.register(new DribbbleProvider(config.dribbbleClientId, config.dribbbleClientSecret));
     registry.register(new DevToProvider());
