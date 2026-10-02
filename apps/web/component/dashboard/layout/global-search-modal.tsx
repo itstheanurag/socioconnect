@@ -1,17 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import {
-  Search,
-  X,
-  FileText,
-  Users,
-  Bot,
-  Radio,
-  PenTool,
-  Calendar,
-  ArrowRight,
-} from "lucide-react";
+import { Search, X, FileText, Bot, Radio, Users, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useDashboard } from "../context/dashboard-context";
 import { PlatformIcon } from "../ui/platform-icon";
@@ -21,22 +11,18 @@ export function GlobalSearchModal() {
     isGlobalSearchOpen,
     setIsGlobalSearchOpen,
     posts,
-    communities,
     bots,
+    communities,
     connectors,
     setCurrentSection,
     openContextualPanel,
-    navigateToCompose,
   } = useDashboard();
 
   const [query, setQuery] = useState("");
 
+  // Handle Escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        setIsGlobalSearchOpen(!isGlobalSearchOpen);
-      }
       if (e.key === "Escape" && isGlobalSearchOpen) {
         setIsGlobalSearchOpen(false);
       }
@@ -53,16 +39,16 @@ export function GlobalSearchModal() {
       p.baseContent.toLowerCase().includes(query.toLowerCase()),
   );
 
-  const filteredCommunities = communities.filter(
-    (c) =>
-      c.name.toLowerCase().includes(query.toLowerCase()) ||
-      c.description.toLowerCase().includes(query.toLowerCase()),
-  );
-
   const filteredBots = bots.filter(
     (b) =>
       b.name.toLowerCase().includes(query.toLowerCase()) ||
       b.username.toLowerCase().includes(query.toLowerCase()),
+  );
+
+  const filteredCommunities = communities.filter(
+    (c) =>
+      c.name.toLowerCase().includes(query.toLowerCase()) ||
+      c.description.toLowerCase().includes(query.toLowerCase()),
   );
 
   const filteredConnectors = connectors.filter(
@@ -73,232 +59,192 @@ export function GlobalSearchModal() {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 p-4 sm:p-6 backdrop-blur-md bg-black/60">
+      <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 p-4 sm:p-6 backdrop-blur-md bg-neutral-950/70">
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: -10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: -10 }}
-          className="w-full max-w-2xl rounded-3xl border border-white/12 bg-[#090912] shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
+          className="w-full max-w-2xl rounded-3xl border border-neutral-800 bg-neutral-900 shadow-2xl overflow-hidden flex flex-col max-h-[80vh] text-neutral-200"
         >
           {/* Search Header */}
-          <div className="flex items-center gap-3 px-4 py-3.5 border-b border-white/10 bg-white/[0.02]">
+          <div className="flex items-center gap-3 px-4 py-3.5 border-b border-neutral-800 bg-neutral-950/40">
             <Search className="w-5 h-5 text-rose-400 shrink-0" />
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search across posts, bots, communities, connectors, schedules..."
+              className="flex-1 bg-transparent text-sm text-neutral-100 placeholder:text-neutral-500 focus:outline-hidden"
               autoFocus
-              className="flex-1 bg-transparent text-sm text-white placeholder:text-neutral-500 focus:outline-hidden"
             />
+            {query && (
+              <button
+                type="button"
+                onClick={() => setQuery("")}
+                className="p-1 rounded-lg text-neutral-400 hover:text-neutral-200"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
             <button
               type="button"
               onClick={() => setIsGlobalSearchOpen(false)}
-              className="p-1 rounded-lg text-neutral-400 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+              className="px-2 py-1 rounded-lg bg-neutral-800 text-[10px] font-mono text-neutral-400 border border-neutral-700 hover:text-neutral-200 cursor-pointer"
             >
-              <X className="w-4 h-4" />
+              ESC
             </button>
           </div>
 
-          {/* Quick Actions Bar */}
-          {!query && (
-            <div className="p-4 border-b border-white/[0.06] bg-white/[0.01]">
-              <div className="text-[10px] font-mono uppercase tracking-wider text-neutral-400 mb-2 font-semibold">
-                Quick Shortcuts
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsGlobalSearchOpen(false);
-                    navigateToCompose();
-                  }}
-                  className="flex items-center gap-2 p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.06] text-left text-xs text-white transition-all cursor-pointer"
-                >
-                  <PenTool className="w-3.5 h-3.5 text-rose-400" />
-                  <span>Compose Post</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsGlobalSearchOpen(false);
-                    setCurrentSection("calendar");
-                  }}
-                  className="flex items-center gap-2 p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.06] text-left text-xs text-white transition-all cursor-pointer"
-                >
-                  <Calendar className="w-3.5 h-3.5 text-sky-400" />
-                  <span>Calendar View</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsGlobalSearchOpen(false);
-                    setCurrentSection("bots");
-                  }}
-                  className="flex items-center gap-2 p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.06] text-left text-xs text-white transition-all cursor-pointer"
-                >
-                  <Bot className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Manage Bots</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsGlobalSearchOpen(false);
-                    setCurrentSection("connectors");
-                  }}
-                  className="flex items-center gap-2 p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.06] text-left text-xs text-white transition-all cursor-pointer"
-                >
-                  <Radio className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Connectors</span>
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Results List */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {/* Results Area */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-6">
             {/* Posts */}
             {filteredPosts.length > 0 && (
-              <div className="space-y-1.5">
-                <div className="text-[10px] font-mono uppercase tracking-wider text-neutral-400 flex items-center gap-1.5 font-semibold">
-                  <FileText className="w-3 h-3 text-rose-400" />
+              <div className="space-y-2">
+                <div className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <FileText className="w-3.5 h-3.5 text-rose-400" />
                   <span>Posts ({filteredPosts.length})</span>
                 </div>
-                {filteredPosts.slice(0, 4).map((post) => (
-                  <button
-                    key={post.id}
-                    type="button"
-                    onClick={() => {
-                      setIsGlobalSearchOpen(false);
-                      openContextualPanel("post_details", post);
-                    }}
-                    className="w-full flex items-center justify-between p-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.05] text-left transition-all cursor-pointer group"
-                  >
-                    <div className="space-y-0.5 truncate mr-3">
-                      <div className="text-xs font-semibold text-white group-hover:text-rose-300 transition-colors truncate">
-                        {post.title}
+                <div className="space-y-1">
+                  {filteredPosts.slice(0, 4).map((p) => (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => {
+                        setIsGlobalSearchOpen(false);
+                        openContextualPanel("post_details", p);
+                      }}
+                      className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-neutral-800/60 transition-colors text-left group cursor-pointer border border-transparent hover:border-neutral-800"
+                    >
+                      <div className="min-w-0 pr-3">
+                        <div className="text-xs font-semibold text-neutral-200 group-hover:text-rose-300 truncate">
+                          {p.title}
+                        </div>
+                        <div className="text-[11px] text-neutral-400 truncate mt-0.5">
+                          {p.baseContent}
+                        </div>
                       </div>
-                      <div className="text-[11px] text-neutral-400 truncate">
-                        {post.baseContent}
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-neutral-800 text-neutral-400">
+                          {p.status}
+                        </span>
+                        <ArrowRight className="w-3.5 h-3.5 text-neutral-500 group-hover:text-neutral-200 transition-colors" />
                       </div>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <div className="flex items-center -space-x-1">
-                        {post.targetPlatforms.map((p) => (
-                          <div
-                            key={p}
-                            className="w-4 h-4 rounded-full bg-[#121222] border border-white/10 flex items-center justify-center p-0.5"
-                          >
-                            <PlatformIcon platformId={p} className="w-2.5 h-2.5 text-white" />
-                          </div>
-                        ))}
-                      </div>
-                      <ArrowRight className="w-3.5 h-3.5 text-neutral-500 group-hover:text-white transition-colors" />
-                    </div>
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {/* Communities */}
-            {filteredCommunities.length > 0 && (
-              <div className="space-y-1.5">
-                <div className="text-[10px] font-mono uppercase tracking-wider text-neutral-400 flex items-center gap-1.5 font-semibold">
-                  <Users className="w-3 h-3 text-sky-400" />
-                  <span>Communities ({filteredCommunities.length})</span>
+                    </button>
+                  ))}
                 </div>
-                {filteredCommunities.map((comm) => (
-                  <button
-                    key={comm.id}
-                    type="button"
-                    onClick={() => {
-                      setIsGlobalSearchOpen(false);
-                      setCurrentSection("communities");
-                    }}
-                    className="w-full flex items-center justify-between p-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.05] text-left transition-all cursor-pointer group"
-                  >
-                    <div>
-                      <div className="text-xs font-semibold text-white">{comm.name}</div>
-                      <div className="text-[11px] text-neutral-400 truncate max-w-md">
-                        {comm.description}
-                      </div>
-                    </div>
-                    <span className="text-[10px] font-mono text-neutral-500">
-                      {comm.destinations.length} channels
-                    </span>
-                  </button>
-                ))}
               </div>
             )}
 
             {/* Bots */}
             {filteredBots.length > 0 && (
-              <div className="space-y-1.5">
-                <div className="text-[10px] font-mono uppercase tracking-wider text-neutral-400 flex items-center gap-1.5 font-semibold">
-                  <Bot className="w-3 h-3 text-emerald-400" />
-                  <span>Bots ({filteredBots.length})</span>
+              <div className="space-y-2">
+                <div className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <Bot className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>Telegram Dispatchers ({filteredBots.length})</span>
                 </div>
-                {filteredBots.map((bot) => (
-                  <button
-                    key={bot.id}
-                    type="button"
-                    onClick={() => {
-                      setIsGlobalSearchOpen(false);
-                      setCurrentSection("bots");
-                    }}
-                    className="w-full flex items-center justify-between p-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.05] text-left transition-all cursor-pointer group"
-                  >
-                    <div>
-                      <div className="text-xs font-semibold text-white">{bot.name}</div>
-                      <div className="text-[11px] font-mono text-emerald-400">{bot.username}</div>
-                    </div>
-                    <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-                      ● Active
-                    </span>
-                  </button>
-                ))}
+                <div className="space-y-1">
+                  {filteredBots.map((b) => (
+                    <button
+                      key={b.id}
+                      type="button"
+                      onClick={() => {
+                        setIsGlobalSearchOpen(false);
+                        setCurrentSection("bots");
+                        openContextualPanel("bot_info", b);
+                      }}
+                      className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-neutral-800/60 transition-colors text-left group cursor-pointer border border-transparent hover:border-neutral-800"
+                    >
+                      <div>
+                        <div className="text-xs font-semibold text-neutral-200 group-hover:text-cyan-300">
+                          {b.name}
+                        </div>
+                        <div className="text-[11px] font-mono text-neutral-400">{b.username}</div>
+                      </div>
+                      <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-neutral-800 text-neutral-400">
+                        {b.status}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Communities */}
+            {filteredCommunities.length > 0 && (
+              <div className="space-y-2">
+                <div className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <Users className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Communities ({filteredCommunities.length})</span>
+                </div>
+                <div className="space-y-1">
+                  {filteredCommunities.map((c) => (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => {
+                        setIsGlobalSearchOpen(false);
+                        setCurrentSection("communities");
+                      }}
+                      className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-neutral-800/60 transition-colors text-left group cursor-pointer border border-transparent hover:border-neutral-800"
+                    >
+                      <div>
+                        <div className="text-xs font-semibold text-neutral-200 group-hover:text-amber-300">
+                          {c.name}
+                        </div>
+                        <div className="text-[11px] text-neutral-400">{c.description}</div>
+                      </div>
+                      <span className="text-[10px] font-mono text-neutral-400">
+                        {c.destinations.length} destinations
+                      </span>
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
 
             {/* Connectors */}
             {filteredConnectors.length > 0 && (
-              <div className="space-y-1.5">
-                <div className="text-[10px] font-mono uppercase tracking-wider text-neutral-400 flex items-center gap-1.5 font-semibold">
-                  <Radio className="w-3 h-3 text-amber-400" />
-                  <span>Connectors ({filteredConnectors.length})</span>
+              <div className="space-y-2">
+                <div className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <Radio className="w-3.5 h-3.5 text-rose-400" />
+                  <span>Connected Channels ({filteredConnectors.length})</span>
                 </div>
-                {filteredConnectors.map((c) => (
-                  <button
-                    key={c.id}
-                    type="button"
-                    onClick={() => {
-                      setIsGlobalSearchOpen(false);
-                      setCurrentSection("connectors");
-                    }}
-                    className="w-full flex items-center justify-between p-2.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.05] text-left transition-all cursor-pointer group"
-                  >
-                    <div className="flex items-center gap-2">
-                      <PlatformIcon platformId={c.platformId} className="w-4 h-4 text-white" />
-                      <div>
-                        <div className="text-xs font-semibold text-white">{c.platformName}</div>
-                        <div className="text-[11px] font-mono text-neutral-400">
-                          {c.accountHandle}
+                <div className="space-y-1">
+                  {filteredConnectors.map((c) => (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => {
+                        setIsGlobalSearchOpen(false);
+                        setCurrentSection("connectors");
+                        openContextualPanel("connector_info", c);
+                      }}
+                      className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-neutral-800/60 transition-colors text-left group cursor-pointer border border-transparent hover:border-neutral-800"
+                    >
+                      <div className="flex items-center gap-2">
+                        <PlatformIcon platformId={c.platformId} className="w-4 h-4" />
+                        <div>
+                          <div className="text-xs font-semibold text-neutral-200 group-hover:text-rose-300">
+                            {c.platformName}
+                          </div>
+                          <div className="text-[11px] font-mono text-neutral-400">
+                            {c.accountHandle}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <span className="text-[10px] font-mono text-emerald-400">Connected ✓</span>
-                  </button>
-                ))}
+                      <span className="text-[10px] font-mono text-emerald-400">Active</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
 
-            {query &&
-              filteredPosts.length === 0 &&
-              filteredCommunities.length === 0 &&
+            {filteredPosts.length === 0 &&
               filteredBots.length === 0 &&
+              filteredCommunities.length === 0 &&
               filteredConnectors.length === 0 && (
-                <div className="p-8 text-center text-neutral-500 text-xs">
-                  No matching items found for &ldquo;{query}&rdquo;
+                <div className="py-12 text-center text-xs text-neutral-500">
+                  No matching entities found for &quot;{query}&quot;
                 </div>
               )}
           </div>

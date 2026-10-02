@@ -12,18 +12,19 @@ import {
   Radio,
   BarChart3,
   Settings,
-  PanelLeftClose,
-  PanelLeftOpen,
+  ChevronLeft,
+  ChevronRight,
+  Sparkles,
 } from "lucide-react";
 import { motion } from "motion/react";
-import { DashboardSection } from "../types";
 import { useDashboard } from "../context/dashboard-context";
+import { DashboardSection } from "../types";
 
 interface NavItem {
   id: DashboardSection;
   label: string;
-  icon: React.ElementType;
-  badge?: string | number;
+  icon: React.ComponentType<{ className?: string }>;
+  badge?: number | string;
   highlight?: boolean;
 }
 
@@ -140,23 +141,22 @@ export function Sidebar() {
         width: isSidebarCollapsed ? 68 : 240,
       }}
       transition={{ type: "spring", stiffness: 350, damping: 30 }}
-      className="hidden md:flex flex-col h-full border-r border-white/[0.08] bg-[#07070d]/95 backdrop-blur-xl shrink-0 select-none z-20 overflow-hidden relative"
+      className="hidden md:flex flex-col h-full border-r border-neutral-800 bg-neutral-950/95 backdrop-blur-xl shrink-0 select-none z-20 overflow-hidden relative"
     >
-      {/* Sidebar Top: Prominent Collapse / Expand Toggle Bar */}
-      <div className="h-12 border-b border-white/[0.05] px-3 flex items-center justify-between shrink-0">
+      {/* Sidebar Top: Collapse / Expand Toggle Bar */}
+      <div className="h-12 border-b border-neutral-800/80 px-3 flex items-center justify-between shrink-0">
         {!isSidebarCollapsed ? (
           <div className="flex items-center justify-between w-full">
             <span className="text-[11px] font-mono uppercase tracking-wider text-neutral-400 font-semibold pl-1">
-              Menu
+              Workspace
             </span>
             <button
               type="button"
               onClick={toggleSidebar}
-              className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
-              title="Collapse Sidebar"
-              aria-label="Collapse Sidebar"
+              className="p-1 rounded-lg hover:bg-neutral-900 text-neutral-400 hover:text-neutral-200 transition-colors cursor-pointer"
+              title="Collapse sidebar (Ctrl+B)"
             >
-              <PanelLeftClose className="w-4 h-4" />
+              <ChevronLeft className="w-4 h-4" />
             </button>
           </div>
         ) : (
@@ -164,115 +164,95 @@ export function Sidebar() {
             <button
               type="button"
               onClick={toggleSidebar}
-              className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
-              title="Expand Sidebar"
-              aria-label="Expand Sidebar"
+              className="p-1.5 rounded-lg hover:bg-neutral-900 text-neutral-400 hover:text-neutral-200 transition-colors cursor-pointer"
+              title="Expand sidebar (Ctrl+B)"
             >
-              <PanelLeftOpen className="w-4 h-4" />
+              <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         )}
       </div>
 
-      {/* Navigation list with strict overflow-x-hidden */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden px-2.5 py-3 space-y-4 scrollbar-thin scrollbar-thumb-white/10 w-full">
+      {/* Navigation Group Items */}
+      <div className="flex-1 overflow-y-auto py-3 px-2 space-y-4 scrollbar-none">
         {navGroups.map((group, groupIdx) => (
-          <div key={groupIdx} className="space-y-1 w-full overflow-hidden">
+          <div key={groupIdx} className="space-y-0.5">
             {group.groupLabel && !isSidebarCollapsed && (
-              <div className="px-3 pb-1 text-[10px] font-mono uppercase tracking-wider text-neutral-400 font-semibold truncate">
+              <div className="px-2.5 py-1 text-[10px] font-mono font-semibold tracking-wider text-neutral-500 uppercase">
                 {group.groupLabel}
               </div>
             )}
-            {group.groupLabel && isSidebarCollapsed && (
-              <div className="w-6 h-px bg-white/8 mx-auto my-2" />
-            )}
 
-            <div className="space-y-0.5 w-full">
-              {group.items.map((item) => {
-                const Icon = item.icon;
-                const isActive = currentSection === item.id;
+            {group.items.map((item) => {
+              const Icon = item.icon;
+              const isActive = currentSection === item.id;
 
-                return (
-                  <div key={item.id} className="relative group/nav w-full">
-                    <button
-                      type="button"
-                      onClick={() => setCurrentSection(item.id)}
-                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all duration-150 cursor-pointer overflow-hidden ${
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setCurrentSection(item.id)}
+                  title={isSidebarCollapsed ? item.label : undefined}
+                  className={`group relative w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all duration-150 cursor-pointer ${
+                    isActive
+                      ? item.highlight
+                        ? "bg-red-600 text-neutral-100 shadow-md shadow-red-600/25 font-semibold"
+                        : "bg-neutral-900 text-neutral-100 font-semibold border border-neutral-800 shadow-xs"
+                      : item.highlight
+                        ? "bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 border border-rose-500/20"
+                        : "text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900/60"
+                  } ${isSidebarCollapsed ? "justify-center px-2" : ""}`}
+                >
+                  <Icon
+                    className={`w-4 h-4 shrink-0 transition-transform ${
+                      isActive
+                        ? "scale-105"
+                        : "group-hover:scale-105 text-neutral-400 group-hover:text-neutral-200"
+                    } ${item.highlight && !isActive ? "text-rose-400" : ""}`}
+                  />
+
+                  {!isSidebarCollapsed && (
+                    <span className="truncate flex-1 text-left">{item.label}</span>
+                  )}
+
+                  {!isSidebarCollapsed && item.badge !== undefined && (
+                    <span
+                      className={`text-[10px] font-mono font-semibold px-1.5 py-0.2 rounded-full shrink-0 ${
                         isActive
-                          ? item.highlight
-                            ? "bg-red-600 text-white font-semibold shadow-md shadow-red-600/25"
-                            : "bg-white/[0.08] text-white font-semibold border border-white/10 shadow-xs"
-                          : item.highlight
-                            ? "text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 font-semibold"
-                            : "text-neutral-400 hover:text-neutral-200 hover:bg-white/[0.04]"
-                      } ${isSidebarCollapsed ? "justify-center px-0" : ""}`}
+                          ? "bg-neutral-800 text-neutral-200"
+                          : "bg-neutral-800/80 text-neutral-400"
+                      }`}
                     >
-                      <Icon
-                        className={`w-4 h-4 shrink-0 transition-transform ${
-                          isActive
-                            ? "text-current scale-105"
-                            : item.highlight
-                              ? "text-rose-400"
-                              : "text-neutral-400 group-hover/nav:text-neutral-200"
-                        }`}
-                      />
+                      {item.badge}
+                    </span>
+                  )}
 
-                      {!isSidebarCollapsed && (
-                        <div className="flex-1 min-w-0 flex items-center justify-between truncate">
-                          <span className="truncate">{item.label}</span>
-                          {item.badge !== undefined && (
-                            <span
-                              className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full shrink-0 ml-1.5 ${
-                                isActive
-                                  ? "bg-white/20 text-white"
-                                  : "bg-white/5 text-neutral-400 border border-white/8"
-                              }`}
-                            >
-                              {item.badge}
-                            </span>
-                          )}
-                        </div>
-                      )}
-                    </button>
-
-                    {/* Collapsed Hover Tooltip */}
-                    {isSidebarCollapsed && (
-                      <div className="fixed left-[76px] px-2.5 py-1 rounded-lg bg-[#0f0f1c] border border-white/15 text-white text-xs whitespace-nowrap shadow-xl opacity-0 pointer-events-none group-hover/nav:opacity-100 transition-opacity z-50 flex items-center gap-2">
-                        <span>{item.label}</span>
-                        {item.badge !== undefined && (
-                          <span className="text-[10px] font-mono px-1.5 py-0.2 bg-white/10 text-rose-300 rounded">
-                            {item.badge}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+                  {/* Collapsed Active Indicator Dot */}
+                  {isSidebarCollapsed && isActive && (
+                    <span className="absolute right-1.5 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-rose-500" />
+                  )}
+                </button>
+              );
+            })}
           </div>
         ))}
       </div>
 
-      {/* Sidebar Footer */}
-      <div className="p-2.5 border-t border-white/[0.06] shrink-0 w-full overflow-hidden">
-        <button
-          type="button"
-          onClick={toggleSidebar}
-          className={`w-full flex items-center gap-2 p-2 rounded-xl text-neutral-400 hover:text-white hover:bg-white/[0.05] transition-all cursor-pointer text-xs font-medium ${
-            isSidebarCollapsed ? "justify-center px-0" : "px-3"
-          }`}
-          title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
-          {isSidebarCollapsed ? (
-            <PanelLeftOpen className="w-4 h-4 text-rose-400" />
-          ) : (
-            <>
-              <PanelLeftClose className="w-4 h-4 text-neutral-400" />
-              <span className="text-neutral-400 truncate">Collapse</span>
-            </>
-          )}
-        </button>
+      {/* Sidebar Footer: Quick status pill */}
+      <div className="p-3 border-t border-neutral-800/80 bg-neutral-950/80 shrink-0">
+        {!isSidebarCollapsed ? (
+          <div className="flex items-center justify-between p-2 rounded-xl bg-neutral-900 border border-neutral-800 text-[11px]">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="font-mono text-neutral-300">Gateway Live</span>
+            </div>
+            <span className="text-[10px] font-mono text-neutral-400">99.98%</span>
+          </div>
+        ) : (
+          <div className="flex justify-center" title="Gateway Online (99.98%)">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          </div>
+        )}
       </div>
     </motion.aside>
   );

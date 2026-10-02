@@ -43,6 +43,31 @@ export function PlatformIcon({ platformId, className = "" }: PlatformIconProps) 
   }
 }
 
+export function getPlatformDisplayName(platformId: PlatformId): string {
+  switch (platformId) {
+    case "twitter":
+      return "X (Twitter)";
+    case "linkedin":
+      return "LinkedIn";
+    case "instagram":
+      return "Instagram";
+    case "telegram":
+      return "Telegram";
+    case "reddit":
+      return "Reddit";
+    case "threads":
+      return "Threads";
+    case "facebook":
+      return "Facebook";
+    case "tiktok":
+      return "TikTok";
+    case "youtube":
+      return "YouTube";
+    default:
+      return platformId;
+  }
+}
+
 export function getPlatformBrandColor(platformId: PlatformId): {
   bg: string;
   text: string;
@@ -59,10 +84,10 @@ export function getPlatformBrandColor(platformId: PlatformId): {
       };
     case "twitter":
       return {
-        bg: "bg-white/10 hover:bg-white/15",
-        text: "text-white",
-        border: "border-white/20",
-        glow: "shadow-white/20",
+        bg: "bg-neutral-800/80 hover:bg-neutral-800",
+        text: "text-neutral-200",
+        border: "border-neutral-700",
+        glow: "shadow-neutral-500/20",
       };
     case "linkedin":
       return {
@@ -115,9 +140,9 @@ export function getPlatformBrandColor(platformId: PlatformId): {
       };
     default:
       return {
-        bg: "bg-white/5",
+        bg: "bg-neutral-800",
         text: "text-neutral-400",
-        border: "border-white/10",
+        border: "border-neutral-700",
         glow: "shadow-none",
       };
   }

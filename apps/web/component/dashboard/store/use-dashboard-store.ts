@@ -106,14 +106,20 @@ export interface DashboardState {
 
   // Community Actions (Zod-validated)
   createCommunity: (comm: Omit<Community, "id" | "createdAt" | "postCount">) => boolean;
+  addCommunity: (comm: Omit<Community, "id" | "createdAt" | "postCount">) => boolean;
+  deleteCommunity: (id: string) => void;
 
   // Telegram Bot Actions (Zod-validated)
   createBot: (bot: Omit<TelegramBot, "id" | "scheduledQueueCount" | "lastActive">) => boolean;
+  addBot: (bot: Omit<TelegramBot, "id">) => boolean;
+  deleteBot: (id: string) => void;
   toggleBotStatus: (id: string) => void;
 
   // Automation Actions (Zod-validated)
   createAutomation: (rule: Omit<AutomationRule, "id" | "executionsCount">) => boolean;
+  toggleAutomation: (id: string) => void;
   toggleAutomationStatus: (id: string) => void;
+  deleteAutomation: (id: string) => void;
 
   // Connector Actions
   toggleConnectorSync: (id: string) => void;
@@ -299,6 +305,17 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
     return true;
   },
 
+  addCommunity: (commInput) => {
+    return get().createCommunity(commInput);
+  },
+
+  deleteCommunity: (id) => {
+    set((state) => ({
+      communities: state.communities.filter((c) => c.id !== id),
+    }));
+    globalNotifier.info?.("Community Removed", "Community group was deleted.");
+  },
+
   // Telegram Bot Actions
   createBot: (botInput) => {
     const validation = CreateTelegramBotInputSchema.safeParse(botInput);
@@ -311,7 +328,13 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
     }
 
     const newBot: TelegramBot = {
-      ...botInput,
+      name: botInput.name,
+      username: botInput.username,
+      tokenMasked: botInput.tokenMasked || "bot_tok_***",
+      status: botInput.status || "active",
+      communityIds: botInput.communityIds || [],
+      commandsCount: botInput.commandsCount || 4,
+      webhookStatus: botInput.webhookStatus || "healthy",
       id: `bot-${Date.now()}`,
       scheduledQueueCount: 0,
       lastActive: "Just now",
@@ -325,6 +348,36 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
       `${newBot.name} (${newBot.username}) is active.`,
     );
     return true;
+  },
+
+  addBot: (botInput) => {
+    const newBot: TelegramBot = {
+      id: `bot-${Date.now()}`,
+      name: botInput.name,
+      username: botInput.username,
+      tokenMasked: botInput.tokenMasked || "bot_tok_***",
+      status: botInput.status || "active",
+      communityIds: botInput.communityIds || [],
+      commandsCount: botInput.commandsCount || 4,
+      webhookStatus: botInput.webhookStatus || "healthy",
+      scheduledQueueCount: botInput.scheduledQueueCount || 0,
+      lastActive: botInput.lastActive || "Just now",
+    };
+    set((state) => ({
+      bots: [...state.bots, newBot],
+    }));
+    globalNotifier.success?.(
+      "Telegram Bot Connected",
+      `${newBot.name} (${newBot.username}) is active.`,
+    );
+    return true;
+  },
+
+  deleteBot: (id) => {
+    set((state) => ({
+      bots: state.bots.filter((b) => b.id !== id),
+    }));
+    globalNotifier.info?.("Bot Removed", "Telegram bot credentials were removed.");
   },
 
   toggleBotStatus: (id) => {
@@ -352,8 +405,17 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
     }
 
     const fullRule: AutomationRule = {
-      ...ruleInput,
       id: `auto-${Date.now()}`,
+      name: ruleInput.name,
+      description: ruleInput.description || "",
+      sourceType: ruleInput.sourceType,
+      sourcePlatform: ruleInput.sourcePlatform,
+      sourceTarget: ruleInput.sourceTarget,
+      actionType: ruleInput.actionType,
+      targetPlatform: ruleInput.targetPlatform,
+      targetDestination: ruleInput.targetDestination,
+      status: ruleInput.status || "active",
+      lastExecutedAt: ruleInput.lastExecutedAt,
       executionsCount: 0,
     };
 
@@ -378,6 +440,17 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
         return a;
       }),
     }));
+  },
+
+  toggleAutomation: (id) => {
+    get().toggleAutomationStatus(id);
+  },
+
+  deleteAutomation: (id) => {
+    set((state) => ({
+      automations: state.automations.filter((a) => a.id !== id),
+    }));
+    globalNotifier.info?.("Rule Removed", "Automation rule has been deleted.");
   },
 
   // Connector Actions
