@@ -23,106 +23,104 @@ const TOAST_STYLES: Record<
 > = {
   error: {
     border: "border-rose-500/30",
-    bg: "bg-[#0f090e]/95",
+    bg: "bg-neutral-900/95",
     iconBg: "bg-rose-500/15 border border-rose-500/30",
     glow: "shadow-[0_8px_32px_rgba(244,63,94,0.18)]",
     barColor: "bg-rose-500",
   },
   success: {
     border: "border-emerald-500/30",
-    bg: "bg-[#090f0c]/95",
+    bg: "bg-neutral-900/95",
     iconBg: "bg-emerald-500/15 border border-emerald-500/30",
     glow: "shadow-[0_8px_32px_rgba(16,185,129,0.18)]",
     barColor: "bg-emerald-500",
   },
   warning: {
     border: "border-amber-500/30",
-    bg: "bg-[#0f0e09]/95",
+    bg: "bg-neutral-900/95",
     iconBg: "bg-amber-500/15 border border-amber-500/30",
     glow: "shadow-[0_8px_32px_rgba(245,158,11,0.18)]",
     barColor: "bg-amber-500",
   },
   info: {
     border: "border-sky-500/30",
-    bg: "bg-[#090c0f]/95",
+    bg: "bg-neutral-900/95",
     iconBg: "bg-sky-500/15 border border-sky-500/30",
     glow: "shadow-[0_8px_32px_rgba(14,165,233,0.18)]",
     barColor: "bg-sky-500",
   },
 };
 
-function ToastCard({ toast }: { toast: ToastItem }) {
-  const { dismissToast } = useNotification();
+function ToastMessage({ toast, onDismiss }: { toast: ToastItem; onDismiss: () => void }) {
   const style = TOAST_STYLES[toast.type];
-  const icon = TOAST_ICONS[toast.type];
 
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: -16, scale: 0.92, filter: "blur(4px)" }}
-      animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
-      exit={{ opacity: 0, scale: 0.9, x: 20, filter: "blur(4px)" }}
-      transition={{ type: "spring", stiffness: 420, damping: 28 }}
-      className={`pointer-events-auto relative w-full overflow-hidden rounded-2xl border ${style.border} ${style.bg} ${style.glow} backdrop-blur-2xl p-4 text-white`}
+      initial={{ opacity: 0, y: 16, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.9, y: 8, transition: { duration: 0.2 } }}
+      transition={{ type: "spring", stiffness: 450, damping: 30 }}
+      className={`pointer-events-auto relative w-full max-w-sm overflow-hidden rounded-2xl border ${style.border} ${style.bg} ${style.glow} p-4 backdrop-blur-2xl`}
+      role="alert"
     >
-      {/* Top subtle highlight */}
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-
       <div className="flex items-start gap-3">
-        {/* Type Icon Badge */}
-        <div className={`p-2 rounded-xl ${style.iconBg} flex items-center justify-center shrink-0`}>
-          {icon}
+        {/* Icon */}
+        <div
+          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${style.iconBg}`}
+        >
+          {TOAST_ICONS[toast.type]}
         </div>
 
         {/* Content */}
-        <div className="flex-1 min-w-0 pr-2">
-          <h4 className="text-sm font-semibold tracking-tight text-white leading-snug">
-            {toast.title}
-          </h4>
+        <div className="min-w-0 flex-1 pt-0.5">
+          <h4 className="text-xs font-semibold text-neutral-100 leading-snug">{toast.title}</h4>
           {toast.message && (
-            <p className="mt-1 text-xs text-neutral-300 font-light leading-relaxed break-words">
+            <p className="mt-1 text-[11px] text-neutral-400 leading-relaxed break-words">
               {toast.message}
             </p>
           )}
         </div>
 
-        {/* Dismiss Button */}
+        {/* Dismiss */}
         <button
           type="button"
-          onClick={() => dismissToast(toast.id)}
-          className="p-1 rounded-lg text-neutral-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer shrink-0"
-          aria-label="Dismiss notification"
+          onClick={onDismiss}
+          className="shrink-0 p-1 rounded-lg text-neutral-500 hover:text-neutral-300 hover:bg-neutral-800/60 transition-colors cursor-pointer"
+          aria-label="Close notification"
         >
-          <X className="w-4 h-4" />
+          <X className="w-3.5 h-3.5" />
         </button>
       </div>
 
-      {/* Progress countdown bar */}
+      {/* Progress Duration Bar */}
       {toast.duration && toast.duration > 0 && (
         <motion.div
           initial={{ width: "100%" }}
           animate={{ width: "0%" }}
           transition={{ duration: toast.duration / 1000, ease: "linear" }}
-          className={`absolute bottom-0 left-0 h-0.5 ${style.barColor} opacity-70`}
+          className={`absolute bottom-0 left-0 h-0.5 ${style.barColor}`}
         />
       )}
     </motion.div>
   );
 }
 
-export function NotificationToasts() {
-  const { toasts } = useNotification();
+export function NotificationToastContainer() {
+  const { toasts, dismissToast } = useNotification();
 
   return (
     <div
-      aria-live="assertive"
-      className="fixed top-5 right-4 sm:top-6 sm:right-6 z-50 flex flex-col gap-2.5 max-w-sm w-full pointer-events-none"
+      aria-live="polite"
+      className="pointer-events-none fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 max-w-sm w-full"
     >
       <AnimatePresence mode="popLayout">
-        {toasts.map((toast) => (
-          <ToastCard key={toast.id} toast={toast} />
+        {toasts.map((t) => (
+          <ToastMessage key={t.id} toast={t} onDismiss={() => dismissToast(t.id)} />
         ))}
       </AnimatePresence>
     </div>
   );
 }
+
+export const NotificationToasts = NotificationToastContainer;
