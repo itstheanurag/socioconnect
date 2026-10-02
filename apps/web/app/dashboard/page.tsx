@@ -19,10 +19,10 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#050508] flex items-center justify-center p-6">
+      <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-6">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-linear-to-tr from-rose-500 to-red-600 flex items-center justify-center shadow-lg shadow-rose-500/20 animate-pulse">
-            <Share2 className="w-6 h-6 text-white animate-spin" />
+            <Share2 className="w-6 h-6 text-neutral-100 animate-spin" />
           </div>
           <p className="text-sm font-mono text-neutral-400">Loading your command center...</p>
         </div>

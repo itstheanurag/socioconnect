@@ -1,31 +1,32 @@
 @import "tailwindcss";
 
 :root {
-  --background: oklch(0.08 0.01 260);
-  --foreground: oklch(0.985 0 0);
+  /* Softer warm neutral dark palette */
+  --background: oklch(0.13 0 0);
+  --foreground: oklch(0.93 0 0);
 
-  --card: oklch(0.12 0.015 260);
-  --card-foreground: oklch(0.985 0 0);
+  --card: oklch(0.2 0 0);
+  --card-foreground: oklch(0.93 0 0);
 
-  --popover: oklch(0.12 0.015 260);
-  --popover-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.2 0 0);
+  --popover-foreground: oklch(0.93 0 0);
 
   --primary: oklch(0.65 0.24 25);
-  --primary-foreground: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.97 0 0);
 
-  --secondary: oklch(0.2 0.02 260);
-  --secondary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.25 0 0);
+  --secondary-foreground: oklch(0.93 0 0);
 
-  --muted: oklch(0.2 0.02 260);
-  --muted-foreground: oklch(0.7 0.01 260);
+  --muted: oklch(0.25 0 0);
+  --muted-foreground: oklch(0.68 0 0);
 
-  --accent: oklch(0.25 0.03 260);
-  --accent-foreground: oklch(0.985 0 0);
+  --accent: oklch(0.25 0 0);
+  --accent-foreground: oklch(0.97 0 0);
 
   --destructive: oklch(0.577 0.245 27.325);
 
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
+  --border: oklch(0.25 0 0);
+  --input: oklch(0.25 0 0);
   --ring: oklch(0.65 0.24 25);
 
   --radius: 0.75rem;
@@ -75,7 +76,7 @@
 }
 
 body {
-  background: #050508;
+  background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), sans-serif;
   overflow-x: hidden;

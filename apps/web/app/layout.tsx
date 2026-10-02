@@ -45,7 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <body
         suppressHydrationWarning
-        className="min-h-full flex flex-col bg-[#050508] text-neutral-100 font-sans"
+        className="min-h-full flex flex-col bg-neutral-950 text-neutral-200 font-sans"
       >
         <NotificationProvider>
           <AuthProvider>
