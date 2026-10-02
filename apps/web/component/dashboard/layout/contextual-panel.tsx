@@ -16,113 +16,129 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useDashboard } from "@/component/dashboard/context/dashboard-context";
-import { PlatformIcon, getPlatformBrandColor, getPlatformDisplayName } from "@/component/dashboard/ui/platform-icon";
+import {
+  PlatformIcon,
+  getPlatformBrandColor,
+  getPlatformDisplayName,
+} from "@/component/dashboard/ui/platform-icon";
 import { PostItem, TelegramBot, ConnectorAccount, PlatformId } from "@/component/dashboard/types";
 
 export function ContextualPanel() {
   const { contextualPanel, closeContextualPanel, navigateToCompose } = useDashboard();
 
-  if (!contextualPanel.isOpen || !contextualPanel.type) return null;
-
+  const isOpen = contextualPanel.isOpen && Boolean(contextualPanel.type);
   const panelType = contextualPanel.type;
   const panelData = contextualPanel.data;
 
   return (
     <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={closeContextualPanel}
-        className="fixed inset-0 bg-neutral-950/70 backdrop-blur-xs z-40 lg:hidden"
-      />
-
-      <motion.aside
-        initial={{ x: "100%" }}
-        animate={{ x: 0 }}
-        exit={{ x: "100%" }}
-        transition={{ type: "spring", stiffness: 350, damping: 32 }}
-        className="fixed top-0 right-0 h-full w-full sm:w-96 md:w-[420px] bg-neutral-900 border-l border-neutral-800 z-50 flex flex-col shadow-2xl overflow-hidden"
-      >
-        {/* Panel Header */}
-        <div className="p-4 border-b border-neutral-800 flex items-center justify-between bg-neutral-950/40">
-          <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-neutral-400">
-            {panelType === "post_details" && (
-              <>
-                <FileText className="w-4 h-4 text-rose-400" />
-                <span className="font-semibold text-neutral-200">Post Inspection</span>
-              </>
-            )}
-            {panelType === "post_preview" && (
-              <>
-                <Sparkles className="w-4 h-4 text-amber-400" />
-                <span className="font-semibold text-neutral-200">Live Destination Previews</span>
-              </>
-            )}
-            {panelType === "compatibility_breakdown" && (
-              <>
-                <SlidersHorizontal className="w-4 h-4 text-emerald-400" />
-                <span className="font-semibold text-neutral-200">Compatibility Diagnostics</span>
-              </>
-            )}
-            {panelType === "bot_info" && (
-              <>
-                <Bot className="w-4 h-4 text-cyan-400" />
-                <span className="font-semibold text-neutral-200">Telegram Bot State</span>
-              </>
-            )}
-            {panelType === "connector_info" && (
-              <>
-                <Radio className="w-4 h-4 text-rose-400" />
-                <span className="font-semibold text-neutral-200">Account Credentials</span>
-              </>
-            )}
-          </div>
-
-          <button
-            type="button"
+      {isOpen && (
+        <React.Fragment key="contextual-panel-wrapper">
+          <motion.div
+            key="contextual-panel-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             onClick={closeContextualPanel}
-            className="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 transition-colors cursor-pointer"
-            aria-label="Close panel"
+            className="fixed inset-0 bg-neutral-950/70 backdrop-blur-xs z-40 lg:hidden"
+          />
+
+          <motion.aside
+            key="contextual-panel-aside"
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", stiffness: 350, damping: 32 }}
+            className="fixed top-0 right-0 h-full w-full sm:w-96 md:w-[420px] bg-neutral-900 border-l border-neutral-800 z-50 flex flex-col shadow-2xl overflow-hidden"
           >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
+            {/* Panel Header */}
+            <div className="p-4 border-b border-neutral-800 flex items-center justify-between bg-neutral-950/40">
+              <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-neutral-400">
+                {panelType === "post_details" && (
+                  <>
+                    <FileText className="w-4 h-4 text-rose-400" />
+                    <span className="font-semibold text-neutral-200">Post Inspection</span>
+                  </>
+                )}
+                {panelType === "post_preview" && (
+                  <>
+                    <Sparkles className="w-4 h-4 text-amber-400" />
+                    <span className="font-semibold text-neutral-200">
+                      Live Destination Previews
+                    </span>
+                  </>
+                )}
+                {panelType === "compatibility_breakdown" && (
+                  <>
+                    <SlidersHorizontal className="w-4 h-4 text-emerald-400" />
+                    <span className="font-semibold text-neutral-200">
+                      Compatibility Diagnostics
+                    </span>
+                  </>
+                )}
+                {panelType === "bot_info" && (
+                  <>
+                    <Bot className="w-4 h-4 text-cyan-400" />
+                    <span className="font-semibold text-neutral-200">Telegram Bot State</span>
+                  </>
+                )}
+                {panelType === "connector_info" && (
+                  <>
+                    <Radio className="w-4 h-4 text-rose-400" />
+                    <span className="font-semibold text-neutral-200">Account Credentials</span>
+                  </>
+                )}
+              </div>
 
-        {/* Panel Content Body */}
-        <div className="flex-1 overflow-y-auto p-5 space-y-6">
-          {panelType === "post_details" && (
-            <PostDetailsInspector
-              post={panelData as PostItem}
-              onEdit={() => {
-                navigateToCompose({
-                  initialText: (panelData as PostItem)?.baseContent,
-                  targetPlatforms: (panelData as PostItem)?.targetPlatforms,
-                  communityIds: (panelData as PostItem)?.communityIds,
-                  scheduledFor: (panelData as PostItem)?.scheduledFor,
-                });
-                closeContextualPanel();
-              }}
-            />
-          )}
+              <button
+                type="button"
+                onClick={closeContextualPanel}
+                className="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800 transition-colors cursor-pointer"
+                aria-label="Close panel"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
 
-          {panelType === "post_preview" && <PostPreviewGallery post={panelData as PostItem} />}
+            {/* Panel Content Body */}
+            <div className="flex-1 overflow-y-auto p-5 space-y-6">
+              {panelType === "post_details" && (
+                <PostDetailsInspector
+                  post={panelData as PostItem}
+                  onEdit={() => {
+                    navigateToCompose({
+                      initialText: (panelData as PostItem)?.baseContent,
+                      targetPlatforms: (panelData as PostItem)?.targetPlatforms,
+                      communityIds: (panelData as PostItem)?.communityIds,
+                      scheduledFor: (panelData as PostItem)?.scheduledFor,
+                    });
+                    closeContextualPanel();
+                  }}
+                />
+              )}
 
-          {panelType === "compatibility_breakdown" && (
-            <CompatibilityReportView
-              compatibilityMap={
-                panelData as Record<PlatformId, import("../types").CompatibilityAnalysis>
-              }
-            />
-          )}
+              {panelType === "post_preview" && <PostPreviewGallery post={panelData as PostItem} />}
 
-          {panelType === "bot_info" && <BotInspector bot={panelData as TelegramBot} />}
+              {panelType === "compatibility_breakdown" && (
+                <CompatibilityReportView
+                  compatibilityMap={
+                    panelData as Record<
+                      PlatformId,
+                      import("@/component/dashboard/types").CompatibilityAnalysis
+                    >
+                  }
+                />
+              )}
 
-          {panelType === "connector_info" && (
-            <ConnectorInspector connector={panelData as ConnectorAccount} />
-          )}
-        </div>
-      </motion.aside>
+              {panelType === "bot_info" && <BotInspector bot={panelData as TelegramBot} />}
+
+              {panelType === "connector_info" && (
+                <ConnectorInspector connector={panelData as ConnectorAccount} />
+              )}
+            </div>
+          </motion.aside>
+        </React.Fragment>
+      )}
     </AnimatePresence>
   );
 }
@@ -294,7 +310,7 @@ function PostPreviewGallery({ post }: { post: PostItem }) {
 function CompatibilityReportView({
   compatibilityMap,
 }: {
-  compatibilityMap: Record<PlatformId, import("../types").CompatibilityAnalysis>;
+  compatibilityMap: Record<PlatformId, import("@/component/dashboard/types").CompatibilityAnalysis>;
 }) {
   if (!compatibilityMap) return null;
 
@@ -321,33 +337,29 @@ function CompatibilityReportView({
                     {getPlatformDisplayName(pid)}
                   </span>
                 </div>
-                {analysis.status === "fully_compatible" && (
-                  <span className="inline-flex items-center gap-1 text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                    <CheckCircle2 className="w-3 h-3" /> Compatible
-                  </span>
-                )}
-                {analysis.status === "compatible_with_modifications" && (
-                  <span className="inline-flex items-center gap-1 text-[10px] font-mono text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
-                    <AlertTriangle className="w-3 h-3" /> Auto-Adapted
-                  </span>
-                )}
-                {analysis.status === "incompatible" && (
-                  <span className="inline-flex items-center gap-1 text-[10px] font-mono text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded-full border border-rose-500/20">
-                    <X className="w-3 h-3" /> Incompatible
-                  </span>
-                )}
+                <span
+                  className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
+                    analysis.status === "fully_compatible"
+                      ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                      : analysis.status === "compatible_with_modifications"
+                        ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                        : "bg-rose-500/10 text-rose-400 border-rose-500/20"
+                  }`}
+                >
+                  {analysis.status === "fully_compatible"
+                    ? "Pass"
+                    : analysis.status === "compatible_with_modifications"
+                      ? "Needs Adjustments"
+                      : "Rejected"}
+                </span>
               </div>
 
-              {analysis.modificationsSummary && analysis.modificationsSummary.length > 0 && (
-                <div className="text-[11px] text-amber-300/90 bg-amber-500/10 p-2 rounded-lg border border-amber-500/20">
-                  {analysis.modificationsSummary[0]}
-                </div>
-              )}
-
-              {analysis.reasons && analysis.reasons.length > 0 && (
-                <div className="text-[11px] text-rose-300/90 bg-rose-500/10 p-2 rounded-lg border border-rose-500/20">
-                  {analysis.reasons[0]}
-                </div>
+              {analysis.reasons.length > 0 && (
+                <ul className="text-[11px] text-neutral-400 space-y-1 pl-1 list-disc list-inside">
+                  {analysis.reasons.map((r, idx) => (
+                    <li key={idx}>{r}</li>
+                  ))}
+                </ul>
               )}
             </div>
           );
@@ -357,96 +369,110 @@ function CompatibilityReportView({
   );
 }
 
-// Sub-component: Bot Inspector
+// Sub-component: Bot State Inspector
 function BotInspector({ bot }: { bot: TelegramBot }) {
-  const { toggleBotStatus } = useDashboard();
   if (!bot) return null;
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-3 p-4 rounded-2xl bg-cyan-950/20 border border-cyan-500/20">
-        <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+    <div className="space-y-4 text-xs text-neutral-300">
+      <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-neutral-950 border border-neutral-800">
+        <div className="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold">
           <Bot className="w-5 h-5" />
         </div>
         <div>
-          <h4 className="text-sm font-bold text-neutral-100">{bot.name}</h4>
-          <span className="text-xs font-mono text-cyan-400">{bot.username}</span>
+          <h4 className="font-bold text-neutral-100 text-sm">{bot.name}</h4>
+          <p className="text-[11px] text-neutral-400 font-mono">@{bot.username}</p>
         </div>
       </div>
 
-      <div className="space-y-2 text-xs">
-        <div className="flex items-center justify-between p-3 rounded-xl bg-neutral-900/60 border border-neutral-800">
-          <span className="text-neutral-400">Webhook Status</span>
-          <span className="text-emerald-400 font-mono flex items-center gap-1">
-            <CheckCircle2 className="w-3 h-3" /> Healthy (200 OK)
-          </span>
-        </div>
-        <div className="flex items-center justify-between p-3 rounded-xl bg-neutral-900/60 border border-neutral-800">
-          <span className="text-neutral-400">Encrypted Token</span>
-          <span className="text-neutral-300 font-mono text-[11px]">{bot.tokenMasked}</span>
-        </div>
-        <div className="flex items-center justify-between p-3 rounded-xl bg-neutral-900/60 border border-neutral-800">
-          <span className="text-neutral-400">Queued Messages</span>
-          <span className="text-neutral-100 font-bold">{bot.scheduledQueueCount}</span>
-        </div>
-        <div className="flex items-center justify-between p-3 rounded-xl bg-neutral-900/60 border border-neutral-800">
-          <span className="text-neutral-400">Last Telemetry</span>
-          <span className="text-neutral-400 font-mono">{bot.lastActive}</span>
+      <div className="space-y-2">
+        <label className="text-[11px] font-mono text-neutral-400 uppercase">
+          Operational Status
+        </label>
+        <div className="p-3 rounded-xl bg-neutral-950 border border-neutral-800 flex items-center justify-between">
+          <span className="capitalize">{bot.status}</span>
+          <span
+            className={`w-2 h-2 rounded-full ${
+              bot.status === "active"
+                ? "bg-emerald-400"
+                : bot.status === "paused"
+                  ? "bg-amber-400"
+                  : "bg-rose-400"
+            }`}
+          />
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={() => toggleBotStatus(bot.id)}
-        className="w-full py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-100 text-xs font-semibold border border-neutral-700 transition-colors cursor-pointer"
-      >
-        {bot.status === "active" ? "Pause Bot Dispatch" : "Resume Bot Dispatch"}
-      </button>
+      <div className="space-y-2">
+        <label className="text-[11px] font-mono text-neutral-400 uppercase">Webhook & Queues</label>
+        <div className="grid grid-cols-2 gap-2">
+          <div className="p-3 rounded-xl bg-neutral-950 border border-neutral-800">
+            <span className="text-[10px] text-neutral-400 font-mono block">Webhook</span>
+            <span className="text-sm font-bold text-neutral-100 capitalize">
+              {bot.webhookStatus}
+            </span>
+          </div>
+          <div className="p-3 rounded-xl bg-neutral-950 border border-neutral-800">
+            <span className="text-[10px] text-neutral-400 font-mono block">Queue Count</span>
+            <span className="text-sm font-bold text-neutral-100">
+              {bot.scheduledQueueCount.toLocaleString()}
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
-// Sub-component: Connector Inspector
+// Sub-component: Connector Credentials Inspector
 function ConnectorInspector({ connector }: { connector: ConnectorAccount }) {
-  const { toggleConnectorSync } = useDashboard();
   if (!connector) return null;
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-3 p-4 rounded-2xl bg-neutral-900 border border-neutral-800">
-        <div className="w-10 h-10 rounded-xl bg-neutral-800 border border-neutral-700 flex items-center justify-center">
-          <PlatformIcon platformId={connector.platformId} className="w-5 h-5 text-neutral-100" />
+    <div className="space-y-4 text-xs text-neutral-300">
+      <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-neutral-950 border border-neutral-800">
+        <div className="w-10 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center">
+          <PlatformIcon platformId={connector.platformId} className="w-5 h-5" />
         </div>
         <div>
-          <h4 className="text-sm font-bold text-neutral-100">{connector.platformName}</h4>
-          <span className="text-xs font-mono text-neutral-400">{connector.accountHandle}</span>
+          <h4 className="font-bold text-neutral-100 text-sm">{connector.accountHandle}</h4>
+          <p className="text-[11px] text-neutral-400 font-mono capitalize">
+            {connector.platformName} Connector
+          </p>
         </div>
       </div>
 
-      <div className="space-y-2 text-xs">
-        <div className="flex items-center justify-between p-3 rounded-xl bg-neutral-900/60 border border-neutral-800">
-          <span className="text-neutral-400">Connection State</span>
-          <span className="text-emerald-400 font-mono">Connected ✓</span>
-        </div>
-        <div className="flex items-center justify-between p-3 rounded-xl bg-neutral-900/60 border border-neutral-800">
-          <span className="text-neutral-400">Last Synced</span>
-          <span className="text-neutral-300 font-mono">{connector.lastSyncAt}</span>
-        </div>
-        <div className="flex items-center justify-between p-3 rounded-xl bg-neutral-900/60 border border-neutral-800">
-          <span className="text-neutral-400">Max Text Limit</span>
-          <span className="text-neutral-100 font-mono">
-            {connector.capabilities.maxTextLength} chars
-          </span>
+      <div className="space-y-2">
+        <label className="text-[11px] font-mono text-neutral-400 uppercase">Sync State</label>
+        <div className="p-3 rounded-xl bg-neutral-950 border border-neutral-800 space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="text-neutral-400">Last Sync:</span>
+            <span className="font-mono text-neutral-200">
+              {new Date(connector.lastSyncAt).toLocaleDateString()}
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-neutral-400">Health State:</span>
+            <span className="font-mono text-emerald-400 capitalize">{connector.status}</span>
+          </div>
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={() => toggleConnectorSync(connector.id)}
-        className="w-full py-2.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 text-xs font-semibold border border-rose-500/20 transition-colors cursor-pointer"
-      >
-        Trigger Force Sync
-      </button>
+      <div className="space-y-2">
+        <label className="text-[11px] font-mono text-neutral-400 uppercase">Capabilities</label>
+        <div className="flex flex-wrap gap-1.5">
+          {Object.entries(connector.capabilities)
+            .filter(([_, val]) => Boolean(val))
+            .map(([cap]) => (
+              <span
+                key={cap}
+                className="px-2 py-0.5 rounded-md bg-neutral-950 border border-neutral-800 font-mono text-[10px] text-neutral-400"
+              >
+                {cap}
+              </span>
+            ))}
+        </div>
+      </div>
     </div>
   );
 }

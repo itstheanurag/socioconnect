@@ -31,8 +31,6 @@ export function GlobalSearchModal() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isGlobalSearchOpen, setIsGlobalSearchOpen]);
 
-  if (!isGlobalSearchOpen) return null;
-
   const filteredPosts = posts.filter(
     (p) =>
       p.title.toLowerCase().includes(query.toLowerCase()) ||
@@ -59,197 +57,213 @@ export function GlobalSearchModal() {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 p-4 sm:p-6 backdrop-blur-md bg-neutral-950/70">
+      {isGlobalSearchOpen && (
         <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: -10 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: -10 }}
-          className="w-full max-w-2xl rounded-3xl border border-neutral-800 bg-neutral-900 shadow-2xl overflow-hidden flex flex-col max-h-[80vh] text-neutral-200"
+          key="global-search-backdrop"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-start justify-center pt-20 p-4 sm:p-6 backdrop-blur-md bg-neutral-950/70"
+          onClick={() => setIsGlobalSearchOpen(false)}
         >
-          {/* Search Header */}
-          <div className="flex items-center gap-3 px-4 py-3.5 border-b border-neutral-800 bg-neutral-950/40">
-            <Search className="w-5 h-5 text-rose-400 shrink-0" />
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search across posts, bots, communities, connectors, schedules..."
-              className="flex-1 bg-transparent text-sm text-neutral-100 placeholder:text-neutral-500 focus:outline-hidden"
-              autoFocus
-            />
-            {query && (
+          <motion.div
+            key="global-search-modal-body"
+            initial={{ opacity: 0, scale: 0.95, y: -10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -10 }}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-2xl rounded-3xl border border-neutral-800 bg-neutral-900 shadow-2xl overflow-hidden flex flex-col max-h-[80vh] text-neutral-200"
+          >
+            {/* Search Header */}
+            <div className="flex items-center gap-3 px-4 py-3.5 border-b border-neutral-800 bg-neutral-950/40">
+              <Search className="w-5 h-5 text-rose-400 shrink-0" />
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search across posts, bots, communities, connectors, schedules..."
+                className="flex-1 bg-transparent text-sm text-neutral-100 placeholder:text-neutral-500 focus:outline-hidden"
+                autoFocus
+              />
+              {query && (
+                <button
+                  type="button"
+                  onClick={() => setQuery("")}
+                  className="p-1 rounded-lg text-neutral-400 hover:text-neutral-200"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
               <button
                 type="button"
-                onClick={() => setQuery("")}
-                className="p-1 rounded-lg text-neutral-400 hover:text-neutral-200"
+                onClick={() => setIsGlobalSearchOpen(false)}
+                className="px-2 py-1 rounded-lg bg-neutral-800 text-[10px] font-mono text-neutral-400 border border-neutral-700 hover:text-neutral-200 cursor-pointer"
               >
-                <X className="w-4 h-4" />
+                ESC
               </button>
-            )}
-            <button
-              type="button"
-              onClick={() => setIsGlobalSearchOpen(false)}
-              className="px-2 py-1 rounded-lg bg-neutral-800 text-[10px] font-mono text-neutral-400 border border-neutral-700 hover:text-neutral-200 cursor-pointer"
-            >
-              ESC
-            </button>
-          </div>
+            </div>
 
-          {/* Results Area */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-6">
-            {/* Posts */}
-            {filteredPosts.length > 0 && (
-              <div className="space-y-2">
-                <div className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider flex items-center gap-1.5">
-                  <FileText className="w-3.5 h-3.5 text-rose-400" />
-                  <span>Posts ({filteredPosts.length})</span>
-                </div>
-                <div className="space-y-1">
-                  {filteredPosts.slice(0, 4).map((p) => (
-                    <button
-                      key={p.id}
-                      type="button"
-                      onClick={() => {
-                        setIsGlobalSearchOpen(false);
-                        openContextualPanel("post_details", p);
-                      }}
-                      className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-neutral-800/60 transition-colors text-left group cursor-pointer border border-transparent hover:border-neutral-800"
-                    >
-                      <div className="min-w-0 pr-3">
-                        <div className="text-xs font-semibold text-neutral-200 group-hover:text-rose-300 truncate">
-                          {p.title}
+            {/* Results Area */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-6">
+              {/* Posts */}
+              {filteredPosts.length > 0 && (
+                <div className="space-y-2">
+                  <span className="text-[11px] font-mono uppercase tracking-wider text-neutral-400 font-semibold flex items-center gap-1.5">
+                    <FileText className="w-3.5 h-3.5 text-rose-400" />
+                    Posts ({filteredPosts.length})
+                  </span>
+                  <div className="space-y-1.5">
+                    {filteredPosts.map((p) => (
+                      <div
+                        key={p.id}
+                        onClick={() => {
+                          openContextualPanel("post_details", p);
+                          setIsGlobalSearchOpen(false);
+                        }}
+                        className="p-3 rounded-2xl bg-neutral-950/60 hover:bg-neutral-800/80 border border-neutral-800 hover:border-neutral-700 transition-all cursor-pointer flex items-center justify-between group"
+                      >
+                        <div className="space-y-0.5">
+                          <p className="text-xs font-semibold text-neutral-200 group-hover:text-neutral-100">
+                            {p.title}
+                          </p>
+                          <p className="text-[11px] text-neutral-400 truncate max-w-md font-sans">
+                            {p.baseContent}
+                          </p>
                         </div>
-                        <div className="text-[11px] text-neutral-400 truncate mt-0.5">
-                          {p.baseContent}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-neutral-800 text-neutral-400">
-                          {p.status}
-                        </span>
-                        <ArrowRight className="w-3.5 h-3.5 text-neutral-500 group-hover:text-neutral-200 transition-colors" />
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Bots */}
-            {filteredBots.length > 0 && (
-              <div className="space-y-2">
-                <div className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider flex items-center gap-1.5">
-                  <Bot className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>Telegram Dispatchers ({filteredBots.length})</span>
-                </div>
-                <div className="space-y-1">
-                  {filteredBots.map((b) => (
-                    <button
-                      key={b.id}
-                      type="button"
-                      onClick={() => {
-                        setIsGlobalSearchOpen(false);
-                        setCurrentSection("bots");
-                        openContextualPanel("bot_info", b);
-                      }}
-                      className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-neutral-800/60 transition-colors text-left group cursor-pointer border border-transparent hover:border-neutral-800"
-                    >
-                      <div>
-                        <div className="text-xs font-semibold text-neutral-200 group-hover:text-cyan-300">
-                          {b.name}
-                        </div>
-                        <div className="text-[11px] font-mono text-neutral-400">{b.username}</div>
-                      </div>
-                      <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-neutral-800 text-neutral-400">
-                        {b.status}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Communities */}
-            {filteredCommunities.length > 0 && (
-              <div className="space-y-2">
-                <div className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider flex items-center gap-1.5">
-                  <Users className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Communities ({filteredCommunities.length})</span>
-                </div>
-                <div className="space-y-1">
-                  {filteredCommunities.map((c) => (
-                    <button
-                      key={c.id}
-                      type="button"
-                      onClick={() => {
-                        setIsGlobalSearchOpen(false);
-                        setCurrentSection("communities");
-                      }}
-                      className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-neutral-800/60 transition-colors text-left group cursor-pointer border border-transparent hover:border-neutral-800"
-                    >
-                      <div>
-                        <div className="text-xs font-semibold text-neutral-200 group-hover:text-amber-300">
-                          {c.name}
-                        </div>
-                        <div className="text-[11px] text-neutral-400">{c.description}</div>
-                      </div>
-                      <span className="text-[10px] font-mono text-neutral-400">
-                        {c.destinations.length} destinations
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Connectors */}
-            {filteredConnectors.length > 0 && (
-              <div className="space-y-2">
-                <div className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider flex items-center gap-1.5">
-                  <Radio className="w-3.5 h-3.5 text-rose-400" />
-                  <span>Connected Channels ({filteredConnectors.length})</span>
-                </div>
-                <div className="space-y-1">
-                  {filteredConnectors.map((c) => (
-                    <button
-                      key={c.id}
-                      type="button"
-                      onClick={() => {
-                        setIsGlobalSearchOpen(false);
-                        setCurrentSection("connectors");
-                        openContextualPanel("connector_info", c);
-                      }}
-                      className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-neutral-800/60 transition-colors text-left group cursor-pointer border border-transparent hover:border-neutral-800"
-                    >
-                      <div className="flex items-center gap-2">
-                        <PlatformIcon platformId={c.platformId} className="w-4 h-4" />
-                        <div>
-                          <div className="text-xs font-semibold text-neutral-200 group-hover:text-rose-300">
-                            {c.platformName}
-                          </div>
-                          <div className="text-[11px] font-mono text-neutral-400">
-                            {c.accountHandle}
-                          </div>
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded-full border ${
+                              p.status === "published"
+                                ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                                : "bg-neutral-800 text-neutral-400 border-neutral-700"
+                            }`}
+                          >
+                            {p.status}
+                          </span>
+                          <ArrowRight className="w-3.5 h-3.5 text-neutral-500 group-hover:text-neutral-300 group-hover:translate-x-0.5 transition-all" />
                         </div>
                       </div>
-                      <span className="text-[10px] font-mono text-emerald-400">Active</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {filteredPosts.length === 0 &&
-              filteredBots.length === 0 &&
-              filteredCommunities.length === 0 &&
-              filteredConnectors.length === 0 && (
-                <div className="py-12 text-center text-xs text-neutral-500">
-                  No matching entities found for &quot;{query}&quot;
+                    ))}
+                  </div>
                 </div>
               )}
-          </div>
+
+              {/* Bots */}
+              {filteredBots.length > 0 && (
+                <div className="space-y-2">
+                  <span className="text-[11px] font-mono uppercase tracking-wider text-neutral-400 font-semibold flex items-center gap-1.5">
+                    <Bot className="w-3.5 h-3.5 text-cyan-400" />
+                    Telegram Bots ({filteredBots.length})
+                  </span>
+                  <div className="space-y-1.5">
+                    {filteredBots.map((b) => (
+                      <div
+                        key={b.id}
+                        onClick={() => {
+                          setCurrentSection("bots");
+                          setIsGlobalSearchOpen(false);
+                        }}
+                        className="p-3 rounded-2xl bg-neutral-950/60 hover:bg-neutral-800/80 border border-neutral-800 hover:border-neutral-700 transition-all cursor-pointer flex items-center justify-between group"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-6 h-6 rounded-lg bg-cyan-500/15 flex items-center justify-center text-cyan-400">
+                            <Bot className="w-3.5 h-3.5" />
+                          </div>
+                          <div>
+                            <p className="text-xs font-semibold text-neutral-200">{b.name}</p>
+                            <p className="text-[10px] font-mono text-neutral-400">@{b.username}</p>
+                          </div>
+                        </div>
+                        <span className="text-[10px] font-mono text-emerald-400 capitalize">
+                          {b.webhookStatus}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Communities */}
+              {filteredCommunities.length > 0 && (
+                <div className="space-y-2">
+                  <span className="text-[11px] font-mono uppercase tracking-wider text-neutral-400 font-semibold flex items-center gap-1.5">
+                    <Users className="w-3.5 h-3.5 text-purple-400" />
+                    Communities ({filteredCommunities.length})
+                  </span>
+                  <div className="space-y-1.5">
+                    {filteredCommunities.map((c) => (
+                      <div
+                        key={c.id}
+                        onClick={() => {
+                          setCurrentSection("communities");
+                          setIsGlobalSearchOpen(false);
+                        }}
+                        className="p-3 rounded-2xl bg-neutral-950/60 hover:bg-neutral-800/80 border border-neutral-800 hover:border-neutral-700 transition-all cursor-pointer flex items-center justify-between group"
+                      >
+                        <div>
+                          <p className="text-xs font-semibold text-neutral-200">{c.name}</p>
+                          <p className="text-[11px] text-neutral-400 truncate max-w-md">
+                            {c.description}
+                          </p>
+                        </div>
+                        <span className="text-[10px] font-mono text-neutral-400">
+                          {c.destinations.length} destinations
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Connectors */}
+              {filteredConnectors.length > 0 && (
+                <div className="space-y-2">
+                  <span className="text-[11px] font-mono uppercase tracking-wider text-neutral-400 font-semibold flex items-center gap-1.5">
+                    <Radio className="w-3.5 h-3.5 text-rose-400" />
+                    Connected Accounts ({filteredConnectors.length})
+                  </span>
+                  <div className="space-y-1.5">
+                    {filteredConnectors.map((cn) => (
+                      <div
+                        key={cn.id}
+                        onClick={() => {
+                          openContextualPanel("connector_info", cn);
+                          setIsGlobalSearchOpen(false);
+                        }}
+                        className="p-3 rounded-2xl bg-neutral-950/60 hover:bg-neutral-800/80 border border-neutral-800 hover:border-neutral-700 transition-all cursor-pointer flex items-center justify-between group"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <PlatformIcon platformId={cn.platformId} className="w-4 h-4" />
+                          <div>
+                            <p className="text-xs font-semibold text-neutral-200">
+                              {cn.accountHandle}
+                            </p>
+                            <p className="text-[10px] font-mono text-neutral-400 capitalize">
+                              {cn.platformName}
+                            </p>
+                          </div>
+                        </div>
+                        <span className="text-[10px] font-mono text-emerald-400 capitalize">
+                          {cn.status}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {filteredPosts.length === 0 &&
+                filteredBots.length === 0 &&
+                filteredCommunities.length === 0 &&
+                filteredConnectors.length === 0 && (
+                  <div className="py-12 text-center text-xs text-neutral-400 font-mono">
+                    No matching items found for &quot;{query}&quot;
+                  </div>
+                )}
+            </div>
+          </motion.div>
         </motion.div>
-      </div>
+      )}
     </AnimatePresence>
   );
 }
