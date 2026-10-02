@@ -24,29 +24,29 @@ const TOAST_STYLES: Record<
   error: {
     border: "border-rose-500/30",
     bg: "bg-neutral-900/95",
-    iconBg: "bg-rose-500/15 border border-rose-500/30",
-    glow: "shadow-[0_8px_32px_rgba(244,63,94,0.18)]",
+    iconBg: "bg-rose-500/10 border border-rose-500/20",
+    glow: "shadow-2xl shadow-rose-950/40",
     barColor: "bg-rose-500",
   },
   success: {
     border: "border-emerald-500/30",
     bg: "bg-neutral-900/95",
-    iconBg: "bg-emerald-500/15 border border-emerald-500/30",
-    glow: "shadow-[0_8px_32px_rgba(16,185,129,0.18)]",
+    iconBg: "bg-emerald-500/10 border border-emerald-500/20",
+    glow: "shadow-2xl shadow-emerald-950/40",
     barColor: "bg-emerald-500",
   },
   warning: {
     border: "border-amber-500/30",
     bg: "bg-neutral-900/95",
-    iconBg: "bg-amber-500/15 border border-amber-500/30",
-    glow: "shadow-[0_8px_32px_rgba(245,158,11,0.18)]",
+    iconBg: "bg-amber-500/10 border border-amber-500/20",
+    glow: "shadow-2xl shadow-amber-950/40",
     barColor: "bg-amber-500",
   },
   info: {
     border: "border-sky-500/30",
     bg: "bg-neutral-900/95",
-    iconBg: "bg-sky-500/15 border border-sky-500/30",
-    glow: "shadow-[0_8px_32px_rgba(14,165,233,0.18)]",
+    iconBg: "bg-sky-500/10 border border-sky-500/20",
+    glow: "shadow-2xl shadow-sky-950/40",
     barColor: "bg-sky-500",
   },
 };
@@ -57,24 +57,26 @@ function ToastMessage({ toast, onDismiss }: { toast: ToastItem; onDismiss: () =>
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: 16, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9, y: 8, transition: { duration: 0.2 } }}
+      initial={{ opacity: 0, y: 20, x: 20, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, x: 0, scale: 1 }}
+      exit={{ opacity: 0, x: 24, scale: 0.92, transition: { duration: 0.2 } }}
       transition={{ type: "spring", stiffness: 450, damping: 30 }}
-      className={`pointer-events-auto relative w-full max-w-sm overflow-hidden rounded-2xl border ${style.border} ${style.bg} ${style.glow} p-4 backdrop-blur-2xl`}
+      className={`pointer-events-auto relative w-full overflow-hidden rounded-2xl border ${style.border} ${style.bg} ${style.glow} p-4 backdrop-blur-2xl`}
       role="alert"
     >
-      <div className="flex items-start gap-3">
-        {/* Icon */}
+      <div className="flex items-start gap-3.5">
+        {/* Symmetrical Icon Badge */}
         <div
           className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${style.iconBg}`}
         >
           {TOAST_ICONS[toast.type]}
         </div>
 
-        {/* Content */}
+        {/* Text Content */}
         <div className="min-w-0 flex-1 pt-0.5">
-          <h4 className="text-xs font-semibold text-neutral-100 leading-snug">{toast.title}</h4>
+          <h4 className="text-xs font-semibold text-neutral-100 leading-snug tracking-tight">
+            {toast.title}
+          </h4>
           {toast.message && (
             <p className="mt-1 text-[11px] text-neutral-400 leading-relaxed break-words">
               {toast.message}
@@ -82,18 +84,18 @@ function ToastMessage({ toast, onDismiss }: { toast: ToastItem; onDismiss: () =>
           )}
         </div>
 
-        {/* Dismiss */}
+        {/* Symmetrical Dismiss Button */}
         <button
           type="button"
           onClick={onDismiss}
-          className="shrink-0 p-1 rounded-lg text-neutral-500 hover:text-neutral-300 hover:bg-neutral-800/60 transition-colors cursor-pointer"
+          className="shrink-0 flex items-center justify-center w-7 h-7 rounded-lg text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800/80 transition-colors cursor-pointer"
           aria-label="Close notification"
         >
           <X className="w-3.5 h-3.5" />
         </button>
       </div>
 
-      {/* Progress Duration Bar */}
+      {/* Symmetrical Progress Bar */}
       {toast.duration && toast.duration > 0 && (
         <motion.div
           initial={{ width: "100%" }}
@@ -112,7 +114,7 @@ export function NotificationToastContainer() {
   return (
     <div
       aria-live="polite"
-      className="pointer-events-none fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 max-w-sm w-full"
+      className="pointer-events-none fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 max-w-sm sm:max-w-md w-full px-4 sm:px-0"
     >
       <AnimatePresence mode="popLayout">
         {toasts.map((t) => (
