@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { useNotification } from "@/context/notification-context";
-import { useDashboardStore, setDashboardStoreNotifier } from "../store/use-dashboard-store";
+import { useDashboardStore, setDashboardStoreNotifier } from "@/component/dashboard/store/use-dashboard-store";
 
 export function DashboardProvider({ children }: { children: React.ReactNode }) {
   const { toast } = useNotification();

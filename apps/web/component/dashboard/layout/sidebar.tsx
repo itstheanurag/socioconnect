@@ -17,8 +17,8 @@ import {
   Sparkles,
 } from "lucide-react";
 import { motion } from "motion/react";
-import { useDashboard } from "../context/dashboard-context";
-import { DashboardSection } from "../types";
+import { useDashboard } from "@/component/dashboard/context/dashboard-context";
+import { DashboardSection } from "@/component/dashboard/types";
 
 interface NavItem {
   id: DashboardSection;

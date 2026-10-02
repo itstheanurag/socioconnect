@@ -16,9 +16,9 @@ import {
   X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { useDashboard } from "../context/dashboard-context";
+import { useDashboard } from "@/component/dashboard/context/dashboard-context";
 import { useNotification } from "@/context/notification-context";
-import { TelegramBot } from "../types";
+import { TelegramBot } from "@/component/dashboard/types";
 
 export function BotsView() {
   const { bots, addBot, toggleBotStatus, deleteBot, openContextualPanel } = useDashboard();

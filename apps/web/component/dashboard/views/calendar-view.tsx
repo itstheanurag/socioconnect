@@ -3,8 +3,8 @@
 import React, { useState } from "react";
 import { ChevronLeft, ChevronRight, Plus, Clock, Sparkles } from "lucide-react";
 import { motion } from "motion/react";
-import { useDashboard } from "../context/dashboard-context";
-import { PlatformIcon, getPlatformBrandColor } from "../ui/platform-icon";
+import { useDashboard } from "@/component/dashboard/context/dashboard-context";
+import { PlatformIcon, getPlatformBrandColor } from "@/component/dashboard/ui/platform-icon";
 
 export function CalendarView() {
   const { posts, openContextualPanel, navigateToCompose } = useDashboard();

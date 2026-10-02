@@ -15,9 +15,9 @@ import {
   X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { useDashboard } from "../context/dashboard-context";
-import { PlatformIcon, getPlatformBrandColor, getPlatformDisplayName } from "../ui/platform-icon";
-import { ConnectorAccount, PlatformId } from "../types";
+import { useDashboard } from "@/component/dashboard/context/dashboard-context";
+import { PlatformIcon, getPlatformBrandColor, getPlatformDisplayName } from "@/component/dashboard/ui/platform-icon";
+import { ConnectorAccount, PlatformId } from "@/component/dashboard/types";
 
 const ALL_AVAILABLE_PLATFORMS: { id: PlatformId; name: string; authType: string }[] = [
   { id: "twitter", name: "X (Twitter)", authType: "OAuth 2.0 PKCE" },

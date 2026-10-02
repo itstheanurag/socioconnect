@@ -13,8 +13,8 @@ import {
   Filter,
 } from "lucide-react";
 import { motion } from "motion/react";
-import { PlatformIcon, getPlatformBrandColor } from "../ui/platform-icon";
-import { PlatformId } from "../types";
+import { PlatformIcon, getPlatformBrandColor } from "@/component/dashboard/ui/platform-icon";
+import { PlatformId } from "@/component/dashboard/types";
 
 export function AnalyticsView() {
   const [timeRange, setTimeRange] = useState<"7d" | "30d" | "90d">("30d");

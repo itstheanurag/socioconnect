@@ -17,12 +17,12 @@ import {
   Info,
   Eye,
 } from "lucide-react";
-import { useDashboard } from "../context/dashboard-context";
-import { useComposeStore, SAMPLE_MEDIA_LIBRARY } from "../store/use-compose-store";
+import { useDashboard } from "@/component/dashboard/context/dashboard-context";
+import { useComposeStore, SAMPLE_MEDIA_LIBRARY } from "@/component/dashboard/store/use-compose-store";
 import { useNotification } from "@/context/notification-context";
-import { PlatformIcon, getPlatformBrandColor, getPlatformDisplayName } from "../ui/platform-icon";
-import { PlatformId, PostMedia, PlatformOverride, PostItem } from "../types";
-import { analyzePlatformCompatibility } from "../utils/compatibility-engine";
+import { PlatformIcon, getPlatformBrandColor, getPlatformDisplayName } from "@/component/dashboard/ui/platform-icon";
+import { PlatformId, PostMedia, PlatformOverride, PostItem } from "@/component/dashboard/types";
+import { analyzePlatformCompatibility } from "@/component/dashboard/utils/compatibility-engine";
 
 const ALL_PLATFORMS: PlatformId[] = [
   "twitter",

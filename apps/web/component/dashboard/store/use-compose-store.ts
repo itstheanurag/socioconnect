@@ -1,7 +1,7 @@
 "use client";
 
 import { create } from "zustand";
-import { PlatformId, PostMedia, PlatformOverride } from "../types";
+import { PlatformId, PostMedia, PlatformOverride } from "@/component/dashboard/types";
 
 export const SAMPLE_MEDIA_LIBRARY: PostMedia[] = [
   {

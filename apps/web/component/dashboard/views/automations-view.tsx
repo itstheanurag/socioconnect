@@ -16,9 +16,9 @@ import {
   X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { useDashboard } from "../context/dashboard-context";
-import { PlatformIcon, getPlatformBrandColor, getPlatformDisplayName } from "../ui/platform-icon";
-import { AutomationRule, PlatformId } from "../types";
+import { useDashboard } from "@/component/dashboard/context/dashboard-context";
+import { PlatformIcon, getPlatformBrandColor, getPlatformDisplayName } from "@/component/dashboard/ui/platform-icon";
+import { AutomationRule, PlatformId } from "@/component/dashboard/types";
 
 export function AutomationsView() {
   const { automations, toggleAutomation } = useDashboard();

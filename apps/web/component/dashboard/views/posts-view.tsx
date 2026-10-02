@@ -18,9 +18,9 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { useDashboard } from "../context/dashboard-context";
-import { PlatformIcon, getPlatformBrandColor } from "../ui/platform-icon";
-import { PostItem, PostStatus, PlatformId } from "../types";
+import { useDashboard } from "@/component/dashboard/context/dashboard-context";
+import { PlatformIcon, getPlatformBrandColor } from "@/component/dashboard/ui/platform-icon";
+import { PostItem, PostStatus, PlatformId } from "@/component/dashboard/types";
 
 export function PostsView() {
   const { posts, openContextualPanel, navigateToCompose, deletePost, duplicatePost } =

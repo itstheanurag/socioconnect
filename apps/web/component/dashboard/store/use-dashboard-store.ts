@@ -10,21 +10,21 @@ import {
   TelegramBot,
   AutomationRule,
   PlatformId,
-} from "../types";
+} from "@/component/dashboard/types";
 import {
   DashboardSectionSchema,
   CreatePostInputSchema,
   CreateCommunityInputSchema,
   CreateTelegramBotInputSchema,
   CreateAutomationRuleInputSchema,
-} from "../schemas";
+} from "@/component/dashboard/schemas";
 import {
   INITIAL_POSTS,
   INITIAL_CONNECTORS,
   INITIAL_COMMUNITIES,
   INITIAL_BOTS,
   INITIAL_AUTOMATIONS,
-} from "../data/mock-data";
+} from "@/component/dashboard/data/mock-data";
 
 interface NotificationHandler {
   success?: (title: string, message?: string) => void;

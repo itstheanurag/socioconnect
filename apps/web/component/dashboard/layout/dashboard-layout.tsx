@@ -5,23 +5,23 @@ import { TopBar } from "./top-bar";
 import { Sidebar } from "./sidebar";
 import { ContextualPanel } from "./contextual-panel";
 import { GlobalSearchModal } from "./global-search-modal";
-import { useDashboard } from "../context/dashboard-context";
+import { useDashboard } from "@/component/dashboard/context/dashboard-context";
 
 // Views
-import { OverviewView } from "../views/overview-view";
-import { ComposeView } from "../views/compose-view";
-import { PostsView } from "../views/posts-view";
-import { CalendarView } from "../views/calendar-view";
-import { BotsView } from "../views/bots-view";
-import { AutomationsView } from "../views/automations-view";
-import { CommunitiesView } from "../views/communities-view";
-import { ConnectorsView } from "../views/connectors-view";
-import { AnalyticsView } from "../views/analytics-view";
-import { SettingsView } from "../views/settings-view";
+import { OverviewView } from "@/component/dashboard/views/overview-view";
+import { ComposeView } from "@/component/dashboard/views/compose-view";
+import { PostsView } from "@/component/dashboard/views/posts-view";
+import { CalendarView } from "@/component/dashboard/views/calendar-view";
+import { BotsView } from "@/component/dashboard/views/bots-view";
+import { AutomationsView } from "@/component/dashboard/views/automations-view";
+import { CommunitiesView } from "@/component/dashboard/views/communities-view";
+import { ConnectorsView } from "@/component/dashboard/views/connectors-view";
+import { AnalyticsView } from "@/component/dashboard/views/analytics-view";
+import { SettingsView } from "@/component/dashboard/views/settings-view";
 
 // Mobile Bottom Navigation
 import { LayoutDashboard, PenTool, CalendarDays, Bot, FileText } from "lucide-react";
-import { DashboardSection } from "../types";
+import { DashboardSection } from "@/component/dashboard/types";
 
 export function DashboardLayout() {
   const { currentSection, setCurrentSection } = useDashboard();

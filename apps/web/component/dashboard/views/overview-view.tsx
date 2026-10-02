@@ -16,9 +16,9 @@ import {
 } from "lucide-react";
 import { motion } from "motion/react";
 import { useAuth } from "@/context/auth-context";
-import { useDashboard } from "../context/dashboard-context";
-import { PlatformIcon, getPlatformBrandColor } from "../ui/platform-icon";
-import { PlatformId } from "../types";
+import { useDashboard } from "@/component/dashboard/context/dashboard-context";
+import { PlatformIcon, getPlatformBrandColor } from "@/component/dashboard/ui/platform-icon";
+import { PlatformId } from "@/component/dashboard/types";
 
 export function OverviewView() {
   const { user } = useAuth();

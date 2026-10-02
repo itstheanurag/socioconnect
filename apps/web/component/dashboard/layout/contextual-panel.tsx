@@ -15,9 +15,9 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { useDashboard } from "../context/dashboard-context";
-import { PlatformIcon, getPlatformBrandColor, getPlatformDisplayName } from "../ui/platform-icon";
-import { PostItem, TelegramBot, ConnectorAccount, PlatformId } from "../types";
+import { useDashboard } from "@/component/dashboard/context/dashboard-context";
+import { PlatformIcon, getPlatformBrandColor, getPlatformDisplayName } from "@/component/dashboard/ui/platform-icon";
+import { PostItem, TelegramBot, ConnectorAccount, PlatformId } from "@/component/dashboard/types";
 
 export function ContextualPanel() {
   const { contextualPanel, closeContextualPanel, navigateToCompose } = useDashboard();

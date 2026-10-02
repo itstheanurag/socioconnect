@@ -13,7 +13,7 @@ import {
   Save,
 } from "lucide-react";
 import { useNotification } from "@/context/notification-context";
-import { useDashboard } from "../context/dashboard-context";
+import { useDashboard } from "@/component/dashboard/context/dashboard-context";
 
 export function SettingsView() {
   const { activeWorkspace } = useDashboard();

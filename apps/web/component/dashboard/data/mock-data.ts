@@ -6,7 +6,7 @@ import {
   AutomationRule,
   PlatformId,
   PlatformCapability,
-} from "../types";
+} from "@/component/dashboard/types";
 
 export const PLATFORM_CAPABILITIES: Record<PlatformId, PlatformCapability> = {
   instagram: {

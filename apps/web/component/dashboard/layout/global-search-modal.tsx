@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { Search, X, FileText, Bot, Radio, Users, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { useDashboard } from "../context/dashboard-context";
-import { PlatformIcon } from "../ui/platform-icon";
+import { useDashboard } from "@/component/dashboard/context/dashboard-context";
+import { PlatformIcon } from "@/component/dashboard/ui/platform-icon";
 
 export function GlobalSearchModal() {
   const {

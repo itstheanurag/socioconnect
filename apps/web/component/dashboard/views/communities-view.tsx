@@ -14,10 +14,10 @@ import {
   X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { useDashboard } from "../context/dashboard-context";
+import { useDashboard } from "@/component/dashboard/context/dashboard-context";
 import { useNotification } from "@/context/notification-context";
-import { PlatformIcon, getPlatformBrandColor, getPlatformDisplayName } from "../ui/platform-icon";
-import { PlatformId } from "../types";
+import { PlatformIcon, getPlatformBrandColor, getPlatformDisplayName } from "@/component/dashboard/ui/platform-icon";
+import { PlatformId } from "@/component/dashboard/types";
 
 export function CommunitiesView() {
   const { communities, addCommunity, deleteCommunity } = useDashboard();

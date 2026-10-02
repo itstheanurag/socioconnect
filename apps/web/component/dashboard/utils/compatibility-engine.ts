@@ -1,5 +1,5 @@
-import { CompatibilityAnalysis, PlatformId, PostMedia } from "../types";
-import { PLATFORM_CAPABILITIES } from "../data/mock-data";
+import { CompatibilityAnalysis, PlatformId, PostMedia } from "@/component/dashboard/types";
+import { PLATFORM_CAPABILITIES } from "@/component/dashboard/data/mock-data";
 
 export interface ContentAnalysisInput {
   text: string;

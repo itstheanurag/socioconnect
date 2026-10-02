@@ -10,7 +10,7 @@ import {
   YouTubeIcon,
   ThreadsIcon,
 } from "@/component/icons/social-icons";
-import { PlatformId } from "../types";
+import { PlatformId } from "@/component/dashboard/types";
 
 interface PlatformIconProps {
   platformId: PlatformId;
