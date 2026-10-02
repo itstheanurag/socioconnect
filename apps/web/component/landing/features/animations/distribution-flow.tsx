@@ -16,7 +16,7 @@ const platforms = [
     name: "X",
     type: "Thread",
     icon: XIcon,
-    color: "#FFFFFF",
+    color: "#e5e5e5",
     className: "right-[5%] top-[4%]",
   },
   {
@@ -121,7 +121,7 @@ export default function DistributionFlow() {
             <motion.path
               id={`${path.id}-route`}
               d={path.d}
-              stroke="rgba(255,255,255,0.11)"
+              stroke="rgba(115,115,115,0.3)"
               strokeWidth="1"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -181,7 +181,7 @@ export default function DistributionFlow() {
           duration: 0.45,
           ease: [0.16, 1, 0.3, 1],
         }}
-        className="absolute left-1/2 top-1/2 z-20 flex h-[76px] w-[124px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-2xl border border-white/[0.12] bg-[#101018]/95 shadow-[0_0_45px_rgba(244,63,94,0.08)] backdrop-blur-xl"
+        className="absolute left-1/2 top-1/2 z-20 flex h-[76px] w-[124px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-2xl border border-neutral-800 bg-neutral-900/95 shadow-[0_0_45px_rgba(244,63,94,0.08)] backdrop-blur-xl"
       >
         <motion.div
           animate={{
@@ -232,7 +232,7 @@ function PlatformCard({ name, type, icon: Icon, color, className, delay }: Platf
       whileHover={{
         scale: 1.04,
       }}
-      className={`absolute z-10 w-[112px] rounded-xl border border-white/[0.07] bg-[#0d0d15]/90 p-2.5 backdrop-blur-xl ${className}`}
+      className={`absolute z-10 w-[112px] rounded-xl border border-neutral-800 bg-neutral-900/90 p-2.5 backdrop-blur-xl ${className}`}
     >
       <div className="flex items-center gap-2">
         <div

@@ -69,7 +69,7 @@ function CommunityItem({
       }}
       className={[
         "group relative flex items-center gap-2.5 overflow-hidden rounded-lg border px-2.5 py-2",
-        selected ? "border-[#FF4500]/20 bg-[#FF4500]/5.5" : "border-white/5 bg-white/1.5",
+        selected ? "border-[#FF4500]/20 bg-[#FF4500]/5.5" : "border-neutral-800 bg-neutral-900/60",
       ].join(" ")}
     >
       {/* Evaluation sweep */}
@@ -107,7 +107,7 @@ function CommunityItem({
         }}
         className={[
           "relative flex h-6 w-6 shrink-0 items-center justify-center rounded-md",
-          selected ? "bg-[#FF4500]/10 text-[#FF4500]" : "bg-white/3 text-neutral-600",
+          selected ? "bg-[#FF4500]/10 text-[#FF4500]" : "bg-neutral-800 text-neutral-500",
         ].join(" ")}
       >
         {selected ? (
@@ -272,7 +272,7 @@ export default function RedditCommunityFlow() {
           duration: 0.45,
           ease: [0.16, 1, 0.3, 1],
         }}
-        className="relative z-10 mx-auto flex max-w-[230px] items-center gap-2 rounded-xl border border-white/9 bg-[#101018]/90 px-3 py-2.5 backdrop-blur-xl"
+        className="relative z-10 mx-auto flex max-w-[230px] items-center gap-2 rounded-xl border border-neutral-800 bg-neutral-900/90 px-3 py-2.5 backdrop-blur-xl"
       >
         {/* Target icon */}
         <motion.div
@@ -316,13 +316,13 @@ export default function RedditCommunityFlow() {
             ease: "easeInOut",
           }}
         >
-          <Search className="h-3.5 w-3.5 text-neutral-600" />
+          <Search className="h-3.5 w-3.5 text-neutral-500" />
         </motion.div>
       </motion.div>
 
       {/* Search connector */}
       <div className="relative mx-auto h-7 w-px overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-orange-400/20" />
+        <div className="absolute inset-0 bg-gradient-to-b from-neutral-700/40 to-orange-400/20" />
 
         {/* Search packet */}
         <motion.div

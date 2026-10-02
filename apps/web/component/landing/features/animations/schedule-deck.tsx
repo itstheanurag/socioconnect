@@ -45,7 +45,7 @@ const DISPATCHES: Dispatch[] = [
     content: "Thread scheduled",
     time: "02:30 PM",
     icon: XIcon,
-    color: "#FFFFFF",
+    color: "#e5e5e5",
   },
   {
     id: "reddit",
@@ -61,7 +61,7 @@ const DISPATCHES: Dispatch[] = [
     content: "Post scheduled",
     time: "11:30 AM",
     icon: ThreadsIcon,
-    color: "#F5F5F7",
+    color: "#e5e5e5",
   },
   {
     id: "youtube",
@@ -117,7 +117,7 @@ export default function ScheduleDeck() {
   }, [started, dispatchIndex]);
 
   return (
-    <div className="relative mt-3 flex min-h-90 w-full items-center justify-center overflow-hidden rounded-xl  px-5 py-8">
+    <div className="relative mt-3 flex min-h-90 w-full items-center justify-center overflow-hidden rounded-xl px-5 py-8">
       {/* Ambient glow */}
       <div className="pointer-events-none absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-rose-500/6 blur-3xl" />
 
@@ -147,7 +147,7 @@ export default function ScheduleDeck() {
               whileTap={{
                 scale: 0.96,
               }}
-              className="group relative flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/6 px-6 py-3.5 text-sm font-medium text-white shadow-2xl backdrop-blur-xl transition-colors hover:bg-white/9"
+              className="group relative flex items-center gap-2.5 rounded-xl border border-neutral-700 bg-neutral-900 px-6 py-3.5 text-sm font-medium text-neutral-100 shadow-2xl backdrop-blur-xl transition-colors hover:bg-neutral-800 cursor-pointer"
             >
               {/* Button glow */}
               <span className="absolute inset-0 -z-10 rounded-xl bg-rose-500/10 opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-100" />
@@ -177,7 +177,7 @@ export default function ScheduleDeck() {
             className="relative h-67.5 w-full max-w-110"
           >
             {/* Small status */}
-            <div className="absolute top-4 left-1/2 z-30 flex -translate-x-1/2 -translate-y-full items-center gap-2 rounded-full border border-white/8 bg-white/4 px-3 py-1.5 backdrop-blur-md">
+            <div className="absolute top-4 left-1/2 z-30 flex -translate-x-1/2 -translate-y-full items-center gap-2 rounded-full border border-neutral-800 bg-neutral-900/80 px-3 py-1.5 backdrop-blur-md">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
@@ -222,7 +222,7 @@ export default function ScheduleDeck() {
                       className="absolute w-full max-w-100"
                     >
                       <div
-                        className="relative overflow-hidden rounded-2xl border border-white/8 bg-[#0c0c14]/95 p-4 shadow-2xl backdrop-blur-xl"
+                        className="relative overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/95 p-4 shadow-2xl backdrop-blur-xl"
                         style={{
                           boxShadow:
                             index === 0 ? `0 20px 50px -20px ${dispatch.color}30` : undefined,
@@ -252,7 +252,7 @@ export default function ScheduleDeck() {
                           {/* Content */}
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-2">
-                              <span className="text-sm font-medium text-white">
+                              <span className="text-sm font-medium text-neutral-100">
                                 {dispatch.platform}
                               </span>
 
@@ -292,7 +292,7 @@ export default function ScheduleDeck() {
             >
               <span className="text-[10px] text-neutral-600">One post</span>
 
-              <span className="h-px w-5 bg-white/8" />
+              <span className="h-px w-5 bg-neutral-800" />
 
               <span className="text-[10px] text-neutral-500">everywhere</span>
             </motion.div>

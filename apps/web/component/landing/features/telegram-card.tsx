@@ -25,7 +25,7 @@ export default function TelegramCard() {
       whileInView="visible"
       viewport={{ once: true, margin: "-60px" }}
       variants={fadeInUp}
-      className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0c0c14]/90 p-6 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-white/20 sm:p-7 md:col-span-6 lg:col-span-4"
+      className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/90 p-6 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-neutral-700 sm:p-7 md:col-span-6 lg:col-span-4"
     >
       {/* Ambient glow */}
       <div className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full bg-[#24A1DE]/8 blur-3xl transition-all duration-700 group-hover:bg-[#24A1DE]/15" />
@@ -41,7 +41,7 @@ export default function TelegramCard() {
         }
         title={
           <>
-            Publish from {" "}
+            Publish from{" "}
             <span className="font-serif font-normal italic text-rose-300">telegram.</span>
           </>
         }

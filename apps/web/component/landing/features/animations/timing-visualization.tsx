@@ -68,7 +68,7 @@ export default function TimingVisualization() {
           {/* Vertical grid */}
           <div className="pointer-events-none absolute inset-0 grid grid-cols-6">
             {hours.map((hour) => (
-              <div key={hour} className="border-l border-white/[0.035] last:border-r" />
+              <div key={hour} className="border-l border-neutral-800/60 last:border-r" />
             ))}
           </div>
 
@@ -119,7 +119,7 @@ export default function TimingVisualization() {
                   {/* Activity lane */}
                   <div className="relative h-8">
                     {/* Base line */}
-                    <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-white/6" />
+                    <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-neutral-800" />
 
                     {/* Active window */}
                     <motion.div
@@ -192,7 +192,7 @@ export default function TimingVisualization() {
           transition={{ delay: 0.8 }}
           className="mt-8 flex items-center justify-center gap-2"
         >
-          <span className="h-px w-8 bg-white/6" />
+          <span className="h-px w-8 bg-neutral-800" />
 
           <span className="text-[10px] text-neutral-600">audience active</span>
 
@@ -200,7 +200,7 @@ export default function TimingVisualization() {
 
           <span className="text-[10px] text-neutral-300">best moment</span>
 
-          <span className="h-px w-8 bg-white/6" />
+          <span className="h-px w-8 bg-neutral-800" />
         </motion.div>
       </div>
     </div>

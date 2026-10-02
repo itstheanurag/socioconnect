@@ -21,7 +21,7 @@ export default function FeaturesHeader() {
       className="max-w-3xl mx-auto text-center mb-16 sm:mb-24"
     >
       {/* Section Pill */}
-      <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/4 border border-white/10 backdrop-blur-md mb-6">
+      <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-neutral-900 border border-neutral-800 backdrop-blur-md mb-6">
         <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
 
         <span className="text-xs font-medium uppercase tracking-wider text-neutral-300">
@@ -30,7 +30,7 @@ export default function FeaturesHeader() {
       </div>
 
       {/* Core Philosophy Headline */}
-      <h2 className="font-display text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.15]">
+      <h2 className="font-display text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-neutral-100 leading-[1.15]">
         What you say <span className="font-serif italic font-normal text-rose-300">matters.</span>
         <br />
         <span className="font-serif italic font-normal text-rose-300">

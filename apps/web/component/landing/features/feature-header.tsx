@@ -31,7 +31,7 @@ export default function FeatureCardHeader({
       </div>
 
       {/* Title */}
-      <h3 className="font-display text-2xl font-bold leading-[1.15] tracking-tight text-white sm:text-3xl">
+      <h3 className="font-display text-2xl font-bold leading-[1.15] tracking-tight text-neutral-100 sm:text-3xl">
         {title}
       </h3>
 

@@ -12,7 +12,7 @@ export default function Features() {
   return (
     <section
       id="features"
-      className="relative w-full py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#050508] text-white overflow-hidden"
+      className="relative w-full py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-neutral-950 text-neutral-200 overflow-hidden"
     >
       {/* Subtle Background Glow Accent */}
       <div

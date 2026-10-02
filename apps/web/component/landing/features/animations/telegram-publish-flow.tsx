@@ -67,7 +67,7 @@ export default function TelegramPublishFlow() {
         }}
         className="relative z-10 flex justify-start"
       >
-        <div className="w-[90%] rounded-2xl rounded-tl-sm border border-white/[0.07] bg-white/[0.035] p-3">
+        <div className="w-[90%] rounded-2xl rounded-tl-sm border border-neutral-800 bg-neutral-950/60 p-3">
           <div className="flex items-center gap-1.5">
             <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#24A1DE]/10 text-[#24A1DE]">
               <Bot className="h-3 w-3" />

@@ -32,7 +32,7 @@ export default function ScheduleCard() {
         margin: "-60px",
       }}
       variants={fadeInUp}
-      className="group relative md:col-span-12 lg:col-span-7 overflow-hidden rounded-2xl border border-white/8 bg-[#0c0c14]/90 p-6 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-white/20 sm:p-8"
+      className="group relative md:col-span-12 lg:col-span-7 overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/90 p-6 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-neutral-700 sm:p-8"
     >
       {/* Ambient glow */}
       <div className="pointer-events-none absolute -right-32 -top-32 h-80 w-80 rounded-full bg-red-600/8 blur-3xl transition-all duration-700 group-hover:bg-red-600/12" />

@@ -32,10 +32,10 @@ export default function TimingCard() {
         margin: "-60px",
       }}
       variants={fadeInUp}
-      className="group relative flex overflow-hidden rounded-2xl border border-white/8 bg-[#0c0c14]/90 p-6 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-white/20 sm:p-8 md:col-span-12 lg:col-span-5"
+      className="group relative flex overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/90 p-6 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-neutral-700 sm:p-8 md:col-span-12 lg:col-span-5"
     >
       {/* Ambient glow */}
-      <div className="pointer-events-none absolute -right-32 -top-32 h-72 w-72 rounded-full bg-rose-500/6 blur-3xl transition-all duration-500 group-hover:bg-rose-500/[9" />
+      <div className="pointer-events-none absolute -right-32 -top-32 h-72 w-72 rounded-full bg-rose-500/6 blur-3xl transition-all duration-500 group-hover:bg-rose-500/10" />
 
       <div className="relative flex w-full flex-col">
         <FeatureCardHeader
