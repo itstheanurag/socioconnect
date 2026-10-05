@@ -1,294 +1,166 @@
-# Server Template
+<div align="center">
 
-Production-ready **Bun + Hono + TypeScript + PostgreSQL + Drizzle ORM** monorepo with built-in observability.
+# SocioConnect
 
-## Features
+**The Next-Generation Omnichannel Content Orchestration & Automation Engine**
 
-- **Monorepo**: Turborepo with Bun workspaces
-- **API Framework**: Hono with OpenAPI/Scalar docs
-- **Database**: PostgreSQL with Drizzle ORM
-- **Auth**: OAuth 2.0 (Google, Apple, extensible)
-- **Observability**: Prometheus + Grafana + Loki
-- **Security**: JWT, encryption, rate limiting, CSRF protection
-- **Type Safety**: Full TypeScript with Zod validation
+_One Post. Every Platform. Scheduled in Seconds._
 
-## Quick Start
+[![Next.js](https://img.shields.io/badge/Next.js-16.3.7-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![Bun](https://img.shields.io/badge/Bun-1.3+-FBF0DF?style=for-the-badge&logo=bun&logoColor=black)](https://bun.sh/)
+[![Hono](https://img.shields.io/badge/Hono-API-E36002?style=for-the-badge&logo=hono&logoColor=white)](https://hono.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Drizzle ORM](https://img.shields.io/badge/Drizzle-ORM-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black)](https://orm.drizzle.team/)
+[![Turborepo](https://img.shields.io/badge/Turborepo-Monorepo-EF4444?style=for-the-badge&logo=turborepo&logoColor=white)](https://turbo.build/)
+
+<br />
+
+<p align="center">
+  <img src="assets/screenshots/landing_hero.png" width="90%" alt="SocioConnect Landing Page" />
+</p>
+
+</div>
+
+---
+
+## 🌟 Overview
+
+**SocioConnect** is a unified, high-performance content orchestration platform designed to broadcast, automate, and synchronize content across **40+ destinations** simultaneously.
+
+From short-form microblogs (X, Threads, Bluesky) to developer communities (Reddit, Discord, GitHub), video channels (YouTube, TikTok, Twitch), and long-form publishing platforms (Medium, Substack, Dev.to, Hashnode), SocioConnect handles character limits, media encoding, archetype-specific formatting, and rate-limit backoffs automatically.
+
+---
+
+## ✨ Key Features
+
+- **🌐 40+ Native Platform Integrations**:
+  - **Social & Microblogs**: X (Twitter), Threads, Bluesky, Mastodon, Warpcast, Nostr, VK, MeWe, LinkedIn, Facebook.
+  - **Publishing & Long-Form**: Medium, Dev.to, Hashnode, WordPress, Ghost, Substack, Beehiiv, Tumblr, Listmonk.
+  - **Video & Clips**: YouTube, TikTok, Twitch, Kick.
+  - **Developer & Products**: GitHub, GitLab, Product Hunt, Notion.
+  - **Community & Messaging**: Reddit, Telegram, WhatsApp, Discord, Slack, Lemmy, Skool, Whop, Hacker News.
+  - **Visual & Audio**: Pinterest, Dribbble, Behance, Spotify.
+
+- **✍️ Universal Omnichannel Composer**:
+  - Write once with a single master draft, then fine-tune dialect, hashtags, and formatting per platform tab.
+  - Archetype-specific controls (Article titles, canonical SEO links, YouTube visibility & kids flags, Subreddit pickers, Telegram silent broadcast).
+  - Real-time **Intelligent Platform Compatibility Engine** warning of constraint violations before dispatch.
+
+- **☁️ Direct-to-Cloudflare R2 Media Storage**:
+  - Secure presigned PUT uploads direct from browser to Cloudflare R2 for instant upload speeds.
+  - Automated MIME classification and format validation using `@repo/storage`.
+
+- **⚡ Autonomous Workflows & Pipelines**:
+  - Automatically convert RSS updates, GitHub release tags, and Substack newsletters into multi-network broadcast chains.
+
+- **🎨 Obsidian Dark UI Experience**:
+  - Crafted with Next.js 16, Tailwind CSS, Framer Motion, and custom animated platform components.
+
+---
+
+## 🏛️ Monorepo Architecture
+
+```text
+socioconnect/
+├── apps/
+│   ├── web/                    # Next.js 16 (Turbopack) Obsidian Web Application
+│   │   ├── app/                # App Router (Landing, Dashboard, Sitemap, Robots)
+│   │   ├── component/          # Landing & Dashboard UI (Composer, Connectors, Automations)
+│   │   └── context/            # Authentication, Theme & Toast notification state
+│   └── api/                    # Bun + Hono REST API & Dispatch Orchestrator
+│       ├── src/modules/        # Auth, OAuth, Posts, Connectors, Providers
+│       └── src/routes/         # OpenAPI routes & Swagger/Scalar docs
+│
+├── packages/
+│   ├── storage/                # Cloudflare R2 Presigned S3 client & MIME normalization
+│   ├── libraries/              # 28+ Modular Platform Providers & Validation Rules
+│   ├── contracts/              # Shared Zod Schemas & DTO contracts
+│   ├── db/                     # PostgreSQL schemas & Drizzle ORM migrations
+│   ├── shared/                 # Logging (Pino + Loki), encryption, rate limiting
+│   └── config/                 # Environment schemas & constants
+│
+├── assets/
+│   └── screenshots/            # High-DPI UI preview captures
+│
+└── infra/
+    └── monitoring/             # Prometheus, Grafana, and Loki configs
+```
+
+---
+
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- [Bun](https://bun.sh/) v1.3.1+
-- [Docker](https://www.docker.com/)
+- [Bun](https://bun.sh/) v1.3+
+- [Docker](https://www.docker.com/) & Docker Compose
+- [Node.js](https://nodejs.org/) v20+
 
-### Setup
+### Installation
 
 ```bash
-# Clone and install
-git clone <repo-url> my-project
-cd my-project
+# 1. Clone repository
+git clone https://github.com/itstheanurag/socioconnect.git
+cd socioconnect
+
+# 2. Install dependencies across workspaces
 bun install
 
-# Configure environment
+# 3. Setup environment variables
 cp apps/api/.env.example apps/api/.env
-# Edit .env with your values
+cp apps/web/.env.example apps/web/.env.local
 
-# Start services (PostgreSQL + Prometheus + Grafana + Loki)
+# 4. Start backing services (PostgreSQL + Observability)
 docker compose -f docker-compose.dev.yml up -d
 
-# Run migrations
+# 5. Run database migrations
 bun run db:migrate
 
-# Start development
+# 6. Start development server
 bun run dev
 ```
 
 ### Access Points
 
-| Service    | URL                        | Credentials   |
-| ---------- | -------------------------- | ------------- |
-| API        | http://localhost:8000      | -             |
-| API Docs   | http://localhost:8000/docs | -             |
-| Grafana    | http://localhost:8001      | admin / admin |
-| Prometheus | http://localhost:9090      | -             |
-| Loki       | http://localhost:3100      | -             |
-
-## Project Structure
-
-```
-├── apps/
-│   └── api/                    # Main API service
-│       ├── src/
-│       │   ├── modules/        # Feature modules
-│       │   │   └── auth/       # Authentication (OAuth)
-│       │   └── index.ts        # Entry point
-│       └── drizzle/            # Migrations
-│
-├── packages/
-│   ├── config/                 # Environment & constants
-│   ├── db/                     # Database schemas & services
-│   └── shared/                 # Utilities, logging, middleware
-│
-├── infra/
-│   └── monitoring/             # Prometheus, Grafana, Loki configs
-│
-├── docs/                       # Documentation
-│   ├── ARCHITECTURE.md         # System design
-│   ├── AUTHENTICATION.md       # OAuth setup
-│   ├── DATABASE.md             # Schema & queries
-│   ├── LOGGING.md              # Structured logging
-│   └── MONITORING.md           # Metrics & observability
-│
-└── docker-compose.dev.yml      # Local development services
-```
-
-## Development
-
-### Commands
-
-```bash
-# Development
-bun run dev                     # Start all services
-bun run dev --filter=@repo/api  # Start API only
-
-# Database
-bun run db:generate             # Generate migrations
-bun run db:migrate              # Apply migrations
-
-# Docker
-docker compose -f docker-compose.dev.yml up -d    # Start services
-docker compose -f docker-compose.dev.yml down     # Stop services
-docker compose -f docker-compose.dev.yml logs -f  # View logs
-
-# Quality
-bun run typecheck               # Type checking
-bun run lint                    # Linting
-```
-
-### Adding Features
-
-#### New API Module
-
-```bash
-mkdir -p apps/api/src/modules/myfeature/{handlers,services}
-```
-
-```typescript
-// apps/api/src/modules/myfeature/handlers/get-items.handler.ts
-import { createRoute, z } from "@hono/zod-openapi";
-import type { RouteHandler } from "@hono/zod-openapi";
-import { StatusCodes, errorResponseSchemas } from "@repo/config";
-
-export const getItemsRoute = createRoute({
-  method: "get",
-  path: "/items",
-  tags: ["Items"],
-  responses: {
-    [StatusCodes.HTTP_200_OK]: {
-      content: { "application/json": { schema: z.object({ items: z.array(z.any()) }) } },
-      description: "Success",
-    },
-    ...errorResponseSchemas,
-  },
-});
-
-export const getItemsHandler: RouteHandler<typeof getItemsRoute> = async (c) => {
-  return c.json({ items: [] }, StatusCodes.HTTP_200_OK);
-};
-```
-
-#### New Database Table
-
-```typescript
-// packages/db/src/schema/items/items.db.ts
-import { pgTable, uuid, text, timestamp } from "drizzle-orm/pg-core";
-
-export const itemsTable = pgTable("items", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  name: text("name").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
-  deletedAt: timestamp("deleted_at", { withTimezone: true }),
-});
-```
-
-```bash
-bun run db:generate && bun run db:migrate
-```
-
-## Environment Variables
-
-```bash
-# Database
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/backend-template
-
-# Server
-PORT=8000
-NODE_ENV=development
-API_URL=http://localhost:8000
-CORS_ORIGIN=http://localhost:3000
-
-# Security
-JWT_SECRET=your-jwt-secret-min-32-chars
-ENCRYPTION_KEY=your-64-char-hex-encryption-key
-
-# OAuth - Google
-GOOGLE_CLIENT_ID=your-client-id
-GOOGLE_CLIENT_SECRET=your-client-secret
-GOOGLE_REDIRECT_URI=http://localhost:8000/v1/oauth/google/callback
-
-# OAuth - Apple (see docs/AUTHENTICATION.md — requires a public HTTPS URL for local dev)
-APPLE_CLIENT_ID=your-apple-services-id
-APPLE_TEAM_ID=your-apple-team-id
-APPLE_KEY_ID=your-apple-key-id
-APPLE_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
-APPLE_REDIRECT_URI=https://your-tunnel.ngrok-free.app/v1/oauth/apple/callback
-
-# Observability
-LOG_LEVEL=info
-LOKI_HOST=http://localhost:3100
-```
-
-Generate secrets:
-
-```bash
-# JWT Secret
-openssl rand -base64 32
-
-# Encryption Key
-openssl rand -hex 32
-```
-
-## Key Patterns
-
-### Handler Pattern
-
-```typescript
-// Route + handler colocated with OpenAPI schema
-export const myRoute = createRoute({
-  /* OpenAPI spec */
-});
-export const myHandler: RouteHandler<typeof myRoute> = async (c) => {
-  /* impl */
-};
-```
-
-### Service Pattern
-
-```typescript
-// Namespace with optional logger and transaction support
-export namespace UsersService {
-  export async function create(
-    payload: NewUser,
-    logger?: Logger,
-    options?: { tx?: DBTransaction },
-  ) {
-    /* impl */
-  }
-}
-```
-
-### Logging Pattern
-
-```typescript
-import { logger } from "@repo/shared";
-
-logger.info("Operation completed", {
-  module: "auth", // Required: db | auth | users | system | session | security | http
-  action: "oauth:callback", // Required: context:operation
-  userId: user.id, // Additional context
-});
-```
-
-## Documentation
-
-| Document                                    | Description                   |
-| ------------------------------------------- | ----------------------------- |
-| [ARCHITECTURE.md](docs/ARCHITECTURE.md)     | System design & patterns      |
-| [AUTHENTICATION.md](docs/AUTHENTICATION.md) | OAuth flow & adding providers |
-| [DATABASE.md](docs/DATABASE.md)             | Schemas, migrations, queries  |
-| [LOGGING.md](docs/LOGGING.md)               | Structured logging guide      |
-| [MONITORING.md](docs/MONITORING.md)         | Metrics, Grafana, Loki setup  |
-
-## Tech Stack
-
-| Category      | Technology                                                                   |
-| ------------- | ---------------------------------------------------------------------------- |
-| Runtime       | [Bun](https://bun.sh/)                                                       |
-| Framework     | [Hono](https://hono.dev/)                                                    |
-| Database      | [PostgreSQL](https://postgresql.org/) + [Drizzle](https://orm.drizzle.team/) |
-| Validation    | [Zod](https://zod.dev/)                                                      |
-| Documentation | [Scalar](https://scalar.com/)                                                |
-| Logging       | [Pino](https://getpino.io/) + [Loki](https://grafana.com/oss/loki/)          |
-| Metrics       | [Prometheus](https://prometheus.io/) + [Grafana](https://grafana.com/)       |
-| Monorepo      | [Turborepo](https://turbo.build/)                                            |
-
-## Troubleshooting
-
-### Port in use
-
-```bash
-lsof -ti:8000 | xargs kill -9
-```
-
-### Database connection failed
-
-```bash
-docker compose -f docker-compose.dev.yml ps
-docker compose -f docker-compose.dev.yml restart postgres
-```
-
-### Module not found
-
-```bash
-rm -rf node_modules apps/*/node_modules packages/*/node_modules
-bun install
-```
-
-### Grafana shows no data
-
-1. Check Prometheus targets: http://localhost:9090/targets
-2. Verify API metrics: http://localhost:8000/metrics
-3. Check time range in Grafana (last 5-15 minutes)
+| Service                  | URL                                                      | Description                  |
+| :----------------------- | :------------------------------------------------------- | :--------------------------- |
+| **Frontend Web App**     | [http://localhost:3000](http://localhost:3000)           | Next.js Landing & Dashboard  |
+| **Backend REST API**     | [http://localhost:8000](http://localhost:8000)           | Hono API Gateway             |
+| **Interactive API Docs** | [http://localhost:8000/docs](http://localhost:8000/docs) | Scalar OpenAPI Documentation |
+| **Grafana Dashboard**    | [http://localhost:8001](http://localhost:8001)           | Metrics & Loki Telemetry     |
+| **Prometheus**           | [http://localhost:9090](http://localhost:9090)           | System & Dispatch Metrics    |
 
 ---
 
-**Happy Building! 🚀**
+## 🛠️ CLI Commands
+
+```bash
+# Development
+bun run dev                     # Start all workspace services concurrently
+bun run dev --filter=web        # Start web frontend only
+bun run dev --filter=@repo/api  # Start backend API only
+
+# Build & Quality
+bun run build                   # Full monorepo production build
+bun run typecheck               # TypeScript verification across all packages
+bun run lint                    # ESLint verification
+
+# Database
+bun run db:generate             # Generate Drizzle schema migrations
+bun run db:migrate              # Apply migrations to database
+```
+
+---
+
+## 🔒 Security & Reliability
+
+- **PKCE OAuth 2.0 Flow**: Google & multi-provider OAuth with `HttpOnly`, `SameSite=Lax` cookie sessions.
+- **AES-256-GCM Encryption**: Platform access tokens and client secrets encrypted at rest in PostgreSQL.
+- **Resilient Rate Limiting**: Exponential backoff and token bucket dispatch queues per destination platform.
+- **Direct Presigned Uploads**: Zero media bytes touch backend servers; uploads stream directly to Cloudflare R2.
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License.
