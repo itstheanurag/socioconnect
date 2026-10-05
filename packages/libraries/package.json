@@ -15,9 +15,11 @@
   },
   "dependencies": {
     "@repo/config": "*",
+    "mime-types": "^2.1.35",
     "zod": "^4.1.12"
   },
   "devDependencies": {
+    "@types/mime-types": "^2.1.4",
     "@types/node": "^20.11.24",
     "typescript": "^5.7.3"
   }

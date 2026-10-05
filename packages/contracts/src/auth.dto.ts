@@ -5,7 +5,7 @@ export type AuthProvider = z.infer<typeof AuthProviderSchema>;
 
 export const AuthUserDtoSchema = z.object({
   id: z.string(),
-  email: z.string().email(),
+  email: z.email(),
   firstName: z.string(),
   lastName: z.string().nullable().optional(),
   avatar: z.string().nullable().optional(),
@@ -21,7 +21,7 @@ export const OAuthUrlQuerySchema = z.object({
 export type OAuthUrlQuery = z.infer<typeof OAuthUrlQuerySchema>;
 
 export const OAuthUrlResponseSchema = z.object({
-  link: z.string().url(),
+  link: z.url(),
 });
 
 export type OAuthUrlResponse = z.infer<typeof OAuthUrlResponseSchema>;

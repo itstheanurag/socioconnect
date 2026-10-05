@@ -1,4 +1,5 @@
 import { z } from "zod";
+import mime from "mime-types";
 
 export const ImageMimeTypeEnum = z.enum([
   "image/jpeg",
@@ -27,6 +28,25 @@ export type VideoMimeType = z.infer<typeof VideoMimeTypeEnum>;
 
 export const AnyMediaMimeTypeEnum = z.union([ImageMimeTypeEnum, VideoMimeTypeEnum]);
 
+/**
+ * Returns MIME type using the official mime-types database.
+ */
+export function lookupMimeType(
+  fileNameOrExt: string,
+  fallback = "application/octet-stream",
+): string {
+  const result = mime.lookup(fileNameOrExt);
+  return typeof result === "string" ? result : fallback;
+}
+
+/**
+ * Returns standard file extension for a MIME type using the mime-types database.
+ */
+export function lookupExtension(mimeType: string): string | null {
+  const result = mime.extension(mimeType);
+  return typeof result === "string" ? result : null;
+}
+
 export const mediaItemSchema = z.object({
   id: z.string().optional(),
   url: z.string().url("Media must have a valid HTTP/HTTPS URL"),
@@ -36,7 +56,7 @@ export const mediaItemSchema = z.object({
   width: z.number().int().positive().optional(),
   height: z.number().int().positive().optional(),
   altText: z.string().max(1000).optional(),
-  thumbnailUrl: z.string().url().optional(),
+  thumbnailUrl: z.url().optional(),
   durationSeconds: z.number().positive().optional(),
 });
 
@@ -93,10 +113,13 @@ export function createMediaValidator(options: {
       }
 
       mediaList.forEach((item, idx) => {
-        const mime = item.mimeType.toLowerCase();
+        const mimeType = (item.mimeType || lookupMimeType(item.url)).toLowerCase();
 
         if (item.type === "image" || item.type === "gif") {
-          if (options.allowedImageMimes.length > 0 && !options.allowedImageMimes.includes(mime)) {
+          if (
+            options.allowedImageMimes.length > 0 &&
+            !options.allowedImageMimes.includes(mimeType)
+          ) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               message: `Image format '${item.mimeType}' is not supported by ${options.platformName}. Allowed: ${options.allowedImageMimes.join(", ")}`,
@@ -117,7 +140,7 @@ export function createMediaValidator(options: {
           if (
             options.allowedVideoMimes &&
             options.allowedVideoMimes.length > 0 &&
-            !options.allowedVideoMimes.includes(mime)
+            !options.allowedVideoMimes.includes(mimeType)
           ) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,

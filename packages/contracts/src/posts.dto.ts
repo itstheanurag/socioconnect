@@ -29,7 +29,7 @@ export type TimingStrategy = z.infer<typeof TimingStrategySchema>;
 export const PostMediaSchema = z.object({
   id: z.string(),
   type: z.enum(["image", "video", "audio"]),
-  url: z.string().url(),
+  url: z.string(),
   name: z.string(),
   sizeMb: z.number(),
   aspectRatio: z.string().optional(),
@@ -46,6 +46,14 @@ export const PlatformOverrideSchema = z.object({
   flair: z.string().optional(),
   firstComment: z.string().optional(),
   silentBroadcast: z.boolean().optional(),
+  canonicalUrl: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  privacyStatus: z.enum(["public", "unlisted", "private"]).optional(),
+  boardId: z.string().optional(),
+  category: z.string().optional(),
+  slug: z.string().optional(),
+  series: z.string().optional(),
+  madeForKids: z.boolean().optional(),
 });
 export type PlatformOverride = z.infer<typeof PlatformOverrideSchema>;
 
@@ -58,10 +66,10 @@ export const PostItemSchema = z.object({
   targetPlatforms: z.array(PlatformIdSchema).min(1, "Select at least one destination platform"),
   communityIds: z.array(z.string()).default([]),
   platformOverrides: z.record(z.string(), PlatformOverrideSchema).optional().default({}),
-  status: z.enum(["draft", "scheduled", "published", "failed"]).default("draft"),
+  status: PostStatusSchema.default("draft"),
   scheduledFor: z.string().optional(),
   publishedAt: z.string().optional(),
-  createdAt: z.string(),
+  createdAt: z.string().default(() => new Date().toISOString()),
   author: z.object({
     name: z.string(),
     avatar: z.string().optional(),
@@ -78,65 +86,8 @@ export const PostItemSchema = z.object({
 });
 export type PostItem = z.infer<typeof PostItemSchema>;
 
-export const CreatePostInputSchema = z.object({
-  id: z.string().optional(),
-  title: z.string(),
-  baseContent: z.string(),
-  media: z.array(PostMediaSchema).default([]),
-  hasAudio: z.boolean().default(false),
-  targetPlatforms: z.array(PlatformIdSchema).min(1, "Select at least one destination platform"),
-  communityIds: z.array(z.string()).default([]),
-  platformOverrides: z.record(z.string(), PlatformOverrideSchema).optional(),
-  status: z.enum(["draft", "scheduled", "published", "failed"]).default("draft"),
-  scheduledFor: z.string().optional(),
-  publishedAt: z.string().optional(),
-  author: z.object({
-    name: z.string(),
-    avatar: z.string().optional(),
-  }),
+export const CreatePostInputSchema = PostItemSchema.omit({
+  id: true,
+  createdAt: true,
 });
 export type CreatePostInput = z.infer<typeof CreatePostInputSchema>;
-
-export const CreateDispatchItemSchema = z.object({
-  accountId: z.string().uuid().or(z.string()),
-  destinationId: z.string().uuid().or(z.string()).optional(),
-  platform: z.string(),
-  customTitle: z.string().optional(),
-  customContent: z.string().optional(),
-  scheduledFor: z.string().datetime().or(z.string()).optional(),
-});
-export type CreateDispatchItem = z.infer<typeof CreateDispatchItemSchema>;
-
-export const CreatePostRequestSchema = z.object({
-  title: z.string().optional(),
-  content: z.string().min(1, "Post content cannot be empty"),
-  mediaUrls: z.array(z.string().url()).optional(),
-  tags: z.array(z.string()).optional(),
-  timingStrategy: TimingStrategySchema.optional(),
-  scheduledAt: z.string().datetime().or(z.string()).optional(),
-  dispatches: z.array(CreateDispatchItemSchema).min(1, "Select at least one channel destination"),
-});
-export type CreatePostRequest = z.infer<typeof CreatePostRequestSchema>;
-
-export const PostDispatchSummarySchema = z.object({
-  id: z.string(),
-  platform: z.string(),
-  status: DispatchStatusSchema,
-  scheduledFor: z.string().nullable(),
-  publishedAt: z.string().nullable(),
-  permalink: z.string().optional(),
-  errorMessage: z.string().optional(),
-});
-export type PostDispatchSummary = z.infer<typeof PostDispatchSummarySchema>;
-
-export const PostSummarySchema = z.object({
-  id: z.string(),
-  title: z.string().nullable(),
-  content: z.string(),
-  tags: z.array(z.string()),
-  status: PostStatusSchema,
-  scheduledAt: z.string().nullable(),
-  dispatches: z.array(PostDispatchSummarySchema),
-  createdAt: z.string(),
-});
-export type PostSummary = z.infer<typeof PostSummarySchema>;

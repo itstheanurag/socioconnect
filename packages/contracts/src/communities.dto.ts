@@ -48,7 +48,7 @@ export const CommunityGroupSummarySchema = z.object({
 export type CommunityGroupSummary = z.infer<typeof CommunityGroupSummarySchema>;
 
 export const CreateCommunityGroupRequestSchema = z.object({
-  accountId: z.string().uuid().or(z.string()),
+  accountId: z.uuid().or(z.string()),
   name: z.string().min(1, "Group name is required"),
   platform: z.string(),
   destinationIds: z.array(z.string()).min(1, "Select at least 1 destination"),
