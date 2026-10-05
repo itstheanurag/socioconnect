@@ -1,5 +1,6 @@
 export type SocialPlatform =
   | "twitter"
+  | "x"
   | "telegram"
   | "threads"
   | "tiktok"
@@ -14,7 +15,34 @@ export type SocialPlatform =
   | "linkedin"
   | "pinterest"
   | "facebook"
-  | "x";
+  | "google_business"
+  | "slack"
+  | "whatsapp"
+  | "mastodon"
+  | "whop"
+  | "twitch"
+  | "skool"
+  | "kick"
+  | "warpcast"
+  | "vk"
+  | "lemmy"
+  | "mewe"
+  | "nostr"
+  | "listmonk"
+  | "wordpress"
+  | "hashnode"
+  | "github"
+  | "gitlab"
+  | "producthunt"
+  | "hackernews"
+  | "substack"
+  | "beehiiv"
+  | "ghost"
+  | "notion"
+  | "patreon"
+  | "spotify"
+  | "behance"
+  | "tumblr";
 
 export interface PlatformCapabilities {
   supportsText: boolean;

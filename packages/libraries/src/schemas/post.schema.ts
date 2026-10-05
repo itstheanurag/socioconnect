@@ -37,16 +37,16 @@ export const platformOptionsSchema = z.object({
 
   // Pinterest
   boardId: z.string().optional(),
-  pinLink: z.string().url().optional(),
+  pinLink: z.url().optional(),
 
   // Dev.to / Medium
-  canonicalUrl: z.string().url().optional(),
+  canonicalUrl: z.url().optional(),
   series: z.string().optional(),
   publishStatus: z.enum(["public", "draft", "unlisted"]).optional(),
 
   // Discord
   channelId: z.string().optional(),
-  webhookUrl: z.string().url().optional(),
+  webhookUrl: z.url().optional(),
 
   // YouTube
   privacyStatus: z.enum(["public", "private", "unlisted"]).optional(),

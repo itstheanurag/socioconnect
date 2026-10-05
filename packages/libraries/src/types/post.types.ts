@@ -92,10 +92,16 @@ export interface ValidationError {
   critical: boolean;
 }
 
+export interface ValidationWarning {
+  field?: string;
+  message: string;
+  code?: string;
+}
+
 export interface ValidationResult {
   valid: boolean;
   errors: ValidationError[];
-  warnings: string[];
+  warnings: (string | ValidationWarning)[];
   characterCount: number;
   maxCharacters: number;
   remainingCharacters: number;
