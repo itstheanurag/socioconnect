@@ -24,7 +24,7 @@ export function CustomSelect({
   onChange,
   options,
   placeholder = "Select option...",
-  className = "",
+  className = "inline-block",
   buttonClassName = "",
 }: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -55,7 +55,7 @@ export function CustomSelect({
   }, [isOpen]);
 
   return (
-    <div ref={containerRef} className={`relative inline-block ${className}`}>
+    <div ref={containerRef} className={`relative ${className}`}>
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
@@ -81,7 +81,7 @@ export function CustomSelect({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 4, scale: 0.98 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
-            className="absolute z-50 mt-1.5 min-w-[160px] w-full rounded-2xl bg-neutral-900/95 backdrop-blur-xl border border-neutral-800 shadow-2xl p-1.5 space-y-0.5 overflow-hidden"
+            className="absolute z-50 mt-1.5 min-w-[160px] w-full max-h-60 overflow-y-auto rounded-2xl bg-neutral-900/95 backdrop-blur-xl border border-neutral-800 shadow-2xl p-1.5 space-y-0.5 scrollbar-thin"
           >
             {options.map((option) => {
               const isSelected = option.value === value;

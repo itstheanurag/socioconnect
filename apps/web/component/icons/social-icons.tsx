@@ -5,11 +5,14 @@ export interface PlatformConfig {
   name: string;
   color: string;
   glowColor: string;
-  category?: "social" | "video" | "newsletter" | "developer" | "community";
+  category?: "social" | "video" | "newsletter" | "developer" | "community" | "bot" | "automation";
   icon: (props: { className?: string }) => React.ReactNode;
 }
 
-// Crisp Vector SVG Brand Logos
+// ==========================================
+// Vector SVG Brand Logos (Pixel-Perfect)
+// ==========================================
+
 export const XIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 24.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -104,9 +107,15 @@ export const MastodonIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-export const SubstackIcon = ({ className }: { className?: string }) => (
+export const SlackIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z" />
+    <path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z" />
+  </svg>
+);
+
+export const DribbbleIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm8.995 10.74c-.035-.018-.737-.37-1.782-.23-.298-.696-.622-1.39-.972-2.072 1.492-.93 2.138-1.927 2.164-1.968a10.024 10.024 0 0 1 .59 4.27zm-2.077-5.437c-.027.042-.64.992-2.08 1.902-1.282-1.89-2.775-3.328-2.932-3.477a10.027 10.027 0 0 1 5.012 1.575zm-6.918-3.143c.16.15 1.66 1.597 2.94 3.493a32.08 32.08 0 0 1-6.195 1.348c.84-2.05 2.062-3.882 3.255-4.841zM7.74 8.21c1.942-.31 4.09-.762 5.952-1.32.348.675.67 1.36.965 2.046-3.795 1.15-7.397 1.258-7.747 1.267a10.158 10.158 0 0 1 .83-1.993zM3.01 12.18c.365-.01 3.73-.122 7.625-1.25.132.312.257.627.375.945-2.22 1.057-4.667 3.033-5.753 4.148a10.038 10.038 0 0 1-2.247-3.843zm3.432 4.98c.995-1.028 3.327-2.905 5.485-3.923.473 1.288.85 2.613 1.127 3.96-2.585.807-5.013.805-6.612-.037zm7.848-.28c-.27-1.32-.638-2.618-1.098-3.882 1.178-.14 2.223.195 2.268.21.328 1.488.243 2.933-.17 3.672zm1.254-4.895c-.048-.015-.992-.327-2.05-.205-.125-.332-.257-.66-.398-.985 1.037-.14 1.77.202 1.808.22a9.98 9.98 0 0 1 .64 1.97z" />
   </svg>
 );
 
@@ -116,37 +125,12 @@ export const TwitchIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-export const SpotifyIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.49 17.306a.755.755 0 0 1-1.04.249c-2.848-1.74-6.434-2.134-10.658-1.168a.754.754 0 1 1-.338-1.47c4.618-1.057 8.583-.607 11.787 1.35.37.227.487.712.249 1.039zm1.464-3.26a.945.945 0 0 1-1.302.311c-3.26-2.003-8.23-2.585-12.086-1.414a.945.945 0 1 1-.555-1.807c4.412-1.34 9.89-.691 13.632 1.609.426.262.559.822.311 1.301zm.126-3.41c-3.91-2.321-10.354-2.535-14.077-1.405a1.133 1.133 0 1 1-.656-2.17c4.275-1.298 11.39-1.048 15.89 1.623a1.134 1.134 0 0 1-1.157 1.952z" />
-  </svg>
-);
-
 export const MediumIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
     <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z" />
   </svg>
 );
 
-export const TumblrIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.645-.594 4.335-3.874 4.516-6.648h3.332v6.072h4.354v3.675H12.96v6.984c0 1.274.51 2.604 2.396 2.604 1.04 0 2.05-.333 2.544-.658L19 22.06c-1.25.962-3.076 1.94-4.437 1.94z" />
-  </svg>
-);
-
-export const SlackIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z" />
-  </svg>
-);
-
-export const GithubIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
-  </svg>
-);
-
-// Extended Brand Vector SVGs for rich platform pool
 export const DevtoIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
     <path d="M7.42 10.05c-.18-.16-.46-.23-.84-.23H5.34v4.36h1.24c.38 0 .66-.07.84-.23.19-.16.29-.43.29-.82v-2.26c0-.39-.1-.66-.29-.82zM0 3.75v16.5h24V3.75H0zm8.85 9.42c0 .76-.24 1.34-.73 1.73-.48.4-1.19.59-2.12.59H3.92V8.41h2.08c.93 0 1.64.2 2.12.59.49.39.73.97.73 1.73v2.44zm6.05-3.35h-3.48v1.85h2.32v1.39h-2.32v1.85h3.48v1.4h-4.9V8.41h4.9v1.41zm5.28 4.26c-.36.93-.9 1.4-1.63 1.4-.73 0-1.27-.47-1.63-1.4L17.1 8.41h1.53l.87 3.35.87-3.35h1.53l-1.72 5.67z" />
@@ -159,33 +143,101 @@ export const HashnodeIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-export const ProductHuntIcon = ({ className }: { className?: string }) => (
+// New Official Platforms from Reference Image
+
+export const GoogleBusinessIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M13.6 8.4h-3.4v4h3.4c1.1 0 2-.9 2-2s-.9-2-2-2zM12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zm1.6 15.6h-3.4v3.6H6.8V4.8h6.8c3.1 0 5.6 2.5 5.6 5.6s-2.5 5.2-5.6 5.2z" />
+    <path d="M21.35 11.1h-9.17v2.96h5.36c-.23 1.25-.94 2.31-2 3.02v2.51h3.24c1.89-1.74 2.98-4.3 2.98-7.38 0-.4-.04-.78-.11-1.11z" fill="#4285F4"/>
+    <path d="M12.18 20.5c2.7 0 4.96-.89 6.62-2.42l-3.24-2.51c-.9.6-2.04.96-3.38.96-2.6 0-4.8-1.75-5.59-4.11H3.23v2.59c1.64 3.26 5.01 5.49 8.95 5.49z" fill="#34A853"/>
+    <path d="M6.59 12.42c-.2-.6-.32-1.25-.32-1.92s.12-1.32.32-1.92V6H3.23C2.57 7.33 2.18 8.84 2.18 10.5s.39 3.17 1.05 4.5l3.36-2.58z" fill="#FBBC05"/>
+    <path d="M12.18 4.46c1.47 0 2.78.51 3.82 1.5l2.86-2.86C17.13 1.54 14.88.5 12.18.5 8.24.5 4.87 2.73 3.23 6l3.36 2.58c.79-2.36 2.99-4.12 5.59-4.12z" fill="#EA4335"/>
   </svg>
 );
 
-export const HackerNewsIcon = ({ className }: { className?: string }) => (
+export const WhopIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M0 0v24h24V0H0zm12.984 13.92v4.8H11.04v-4.8L7.2 6.72h2.232l2.568 5.16 2.544-5.16h2.208l-3.768 7.2z" />
+    <path d="M3.2 5.5h4.1l3.5 11.3 3.1-8.2-1.8-3.1h4.1l2.4 4.5 2.2-4.5h4l-5.6 13h-4.3l-3.1-8.1-3.2 8.1H3.2L0 5.5h4.2l1.6 7.4z" />
+  </svg>
+);
+
+export const SkoolIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.8 14.4h-2.1v-8.8h2.1v8.8zm5.7-3.8l2.5 3.8h-2.6l-1.9-3.1v3.1h-2.1v-8.8h2.1v4.3l1.8-4.3h2.6l-2.4 4.1z" />
+  </svg>
+);
+
+export const KickIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M2.5 2h6.2v6.2h3.1V5.1h3.1V2H21v6.2h-3.1v3.1h-3.1v1.4h3.1v3.1H21V22h-6.1v-3.1h-3.1v-3.1H8.7V22H2.5V2z" />
+  </svg>
+);
+
+export const WarpcastIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M18.24.24H5.76A5.76 5.76 0 0 0 0 6v12a5.76 5.76 0 0 0 5.76 5.76h12.48A5.76 5.76 0 0 0 24 18V6A5.76 5.76 0 0 0 18.24.24zm-1.44 14.4h-2.16v2.16H9.36v-2.16H7.2V9.36h2.16V7.2h5.28v2.16h2.16v5.28z" />
+  </svg>
+);
+
+export const VkIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M15.684 0H8.316C2.692 0 0 2.692 0 8.316v7.368C0 21.308 2.692 24 8.316 24h7.368C21.308 24 24 21.308 24 15.684V8.316C24 2.692 21.308 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.862-.525-2.05-1.716-1.036-.995-1.498-1.124-1.756-1.124-.36 0-.464.103-.464.6v1.64c0 .39-.128.599-1.173.599-1.728 0-3.645-1.05-4.996-2.997-2.038-2.888-2.593-5.06-2.593-5.508 0-.244.093-.47.548-.47h1.744c.41 0 .565.187.72.627.8 2.327 2.14 4.368 2.693 4.368.206 0 .302-.095.302-.614V10.74c-.062-.953-.556-1.035-.556-1.375 0-.16.136-.32.355-.32h2.215c.37 0 .5.195.5.636v3.424c0 .37.164.5.277.5.226 0 .412-.13.824-.543 1.258-1.398 2.15-3.535 2.15-3.535.114-.247.33-.47.74-.47h1.744c.525 0 .638.268.525.636-.216.99-2.316 3.96-2.42 4.12-.236.36-.082.525.237.834.73 1.05 1.718 2.227 2.16 2.94.33.525.072.84-.463.84z" />
+  </svg>
+);
+
+export const LemmyIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2a6 6 0 0 0-6 6c0 1.25.38 2.41 1.03 3.38A7.994 7.994 0 0 0 4 18a8 8 0 0 0 16 0 7.994 7.994 0 0 0-3.03-6.62A5.96 5.96 0 0 0 18 8a6 6 0 0 0-6-6zm-3.5 9a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm7 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm-3.5 6c-2.2 0-3.8-1.2-4-2.5h8c-.2 1.3-1.8 2.5-4 2.5z" />
+  </svg>
+);
+
+export const MeWeIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M3.2 6.4L1.1 17.6h3.4l1.3-7.5 2.7 7.5h2.8l2.7-7.5 1.3 7.5h3.4L16.6 6.4h-3.9l-2.7 7.4-2.7-7.4H3.2zm16.5 0v11.2h3.2V6.4h-3.2z" />
+  </svg>
+);
+
+export const NostrIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5.7 13.7c-.5.8-1.5 1.3-2.6 1.3-1.9 0-3.3-1.4-3.3-3.3 0-1.1.5-2.1 1.3-2.6l3.4-2.2c.4-.3.9-.1 1.1.3.2.4.1.9-.3 1.1l-3 1.9c-.4.3-.7.8-.7 1.4 0 1 .8 1.8 1.8 1.8.6 0 1.1-.3 1.4-.7l.9-1.2 1.3.9-1.3 1.3zM9.8 7.5c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5S8.3 9.8 8.3 9s.7-1.5 1.5-1.5z" />
+  </svg>
+);
+
+export const ListmonkIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <circle cx="12" cy="12" r="10" />
+    <circle cx="12" cy="12" r="4.5" fill="#0E121A" />
+  </svg>
+);
+
+export const WordPressIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm0 .96a11.04 11.04 0 0 1 8.84 4.41L14.7 19.38 8.54 5.92c1.07-.06 2.06-.17 2.06-.17.44-.06.39-.72-.05-.72 0 0-1.45.12-2.39.12-.89 0-2.34-.12-2.34-.12-.44 0-.5.66-.06.72 0 0 .95.11 1.94.17l2.9 8.65-4.08-12.1A11.03 11.03 0 0 1 12 .96zm-9.3 11.04c0-1.74.45-3.38 1.25-4.81l5.48 15.01A11.04 11.04 0 0 1 2.7 12zm9.3 11.04c-.7 0-1.38-.07-2.03-.2l4.13-11.98 4.22 11.55c-1.87.42-4.1.63-6.32.63zm8.38-4.59l-4.14-12c1.1-.06 2.1-.17 2.1-.17.44-.06.39-.72-.06-.72 0 0-1.44.12-2.38.12-.17 0-.38 0-.61-.01A11.04 11.04 0 0 1 21.3 12c0 2.56-.88 4.93-2.36 6.81z" />
+  </svg>
+);
+
+// Extended Platforms & Automation Monitors
+
+export const GithubIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+  </svg>
+);
+
+export const GitLabIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M23.955 13.587l-1.342-4.135-2.664-8.189a.455.455 0 0 0-.867 0L16.418 9.45H7.582L4.918 1.263a.455.455 0 0 0-.867 0L1.387 9.452.045 13.587a.91.91 0 0 0 .331 1.021L12 23.454l11.624-8.846a.91.91 0 0 0 .331-1.021z" fill="#E24329" />
+  </svg>
+);
+
+export const SubstackIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z" />
   </svg>
 );
 
 export const BeehiivIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
     <path d="M12 2L3 7.5v9L12 22l9-5.5v-9L12 2zm0 3.6l6 3.6-6 3.6-6-3.6 6-3.6zm-6.5 6.2l5.5 3.3v5.4l-5.5-3.3v-5.4zm13 5.4l-5.5 3.3v-5.4l5.5-3.3v5.4z" />
-  </svg>
-);
-
-export const DribbbleIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm8.995 10.74c-.035-.018-.737-.37-1.782-.23-.298-.696-.622-1.39-.972-2.072 1.492-.93 2.138-1.927 2.164-1.968a10.024 10.024 0 0 1 .59 4.27zm-2.077-5.437c-.027.042-.64.992-2.08 1.902-1.282-1.89-2.775-3.328-2.932-3.477a10.027 10.027 0 0 1 5.012 1.575zm-6.918-3.143c.16.15 1.66 1.597 2.94 3.493a32.08 32.08 0 0 1-6.195 1.348c.84-2.05 2.062-3.882 3.255-4.841zM7.74 8.21c1.942-.31 4.09-.762 5.952-1.32.348.675.67 1.36.965 2.046-3.795 1.15-7.397 1.258-7.747 1.267a10.158 10.158 0 0 1 .83-1.993zM3.01 12.18c.365-.01 3.73-.122 7.625-1.25.132.312.257.627.375.945-2.22 1.057-4.667 3.033-5.753 4.148a10.038 10.038 0 0 1-2.247-3.843zm3.432 4.98c.995-1.028 3.327-2.905 5.485-3.923.473 1.288.85 2.613 1.127 3.96-2.585.807-5.013.805-6.612-.037zm7.848-.28c-.27-1.32-.638-2.618-1.098-3.882 1.178-.14 2.223.195 2.268.21.328 1.488.243 2.933-.17 3.672zm1.254-4.895c-.048-.015-.992-.327-2.05-.205-.125-.332-.257-.66-.398-.985 1.037-.14 1.77.202 1.808.22a9.98 9.98 0 0 1 .64 1.97z" />
-  </svg>
-);
-
-export const BehanceIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M22 7h-7V5h7v2zm1.726 10c-.442 1.297-1.646 2.308-3.418 2.308-2.518 0-4.04-1.748-4.04-4.287 0-2.484 1.577-4.308 3.966-4.308 2.454 0 3.79 1.771 3.79 4.237v.882h-5.597c.078 1.487 1.002 2.115 2.052 2.115.82 0 1.464-.383 1.758-1.027l1.489.08zm-5.46-3.033h3.58c-.078-1.226-.782-1.92-1.776-1.92-.992 0-1.726.694-1.804 1.92zm-9.034 5.333H2V4.7h6.632c2.45 0 4.225 1.34 4.225 3.535 0 1.344-.664 2.383-1.804 2.923 1.503.498 2.36 1.74 2.36 3.377 0 2.583-1.99 4.765-4.685 4.765zm-4.304-7.53h4.08c1.328 0 2.176-.713 2.176-1.854 0-1.156-.848-1.824-2.176-1.824H4.928v3.678zm0 5.61h4.41c1.472 0 2.443-.76 2.443-2.083 0-1.34-.97-2.1-2.443-2.1h-4.41v4.183z" />
   </svg>
 );
 
@@ -201,9 +253,15 @@ export const NotionIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-export const FarcasterIcon = ({ className }: { className?: string }) => (
+export const ProductHuntIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M18.24.24H5.76A5.76 5.76 0 0 0 0 6v12a5.76 5.76 0 0 0 5.76 5.76h12.48A5.76 5.76 0 0 0 24 18V6A5.76 5.76 0 0 0 18.24.24zm-1.44 14.4h-2.16v2.16H9.36v-2.16H7.2V9.36h2.16V7.2h5.28v2.16h2.16v5.28z" />
+    <path d="M13.6 8.4h-3.4v4h3.4c1.1 0 2-.9 2-2s-.9-2-2-2zM12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zm1.6 15.6h-3.4v3.6H6.8V4.8h6.8c3.1 0 5.6 2.5 5.6 5.6s-2.5 5.2-5.6 5.2z" />
+  </svg>
+);
+
+export const HackerNewsIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M0 0v24h24V0H0zm12.984 13.92v4.8H11.04v-4.8L7.2 6.72h2.232l2.568 5.16 2.544-5.16h2.208l-3.768 7.2z" />
   </svg>
 );
 
@@ -213,23 +271,34 @@ export const PatreonIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-// Comprehensive Platform Pool with brand styling and subtle glows (32 platforms!)
+export const SpotifyIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.49 17.306a.755.755 0 0 1-1.04.249c-2.848-1.74-6.434-2.134-10.658-1.168a.754.754 0 1 1-.338-1.47c4.618-1.057 8.583-.607 11.787 1.35.37.227.487.712.249 1.039zm1.464-3.26a.945.945 0 0 1-1.302.311c-3.26-2.003-8.23-2.585-12.086-1.414a.945.945 0 1 1-.555-1.807c4.412-1.34 9.89-.691 13.632 1.609.426.262.559.822.311 1.301zm.126-3.41c-3.91-2.321-10.354-2.535-14.077-1.405a1.133 1.133 0 1 1-.656-2.17c4.275-1.298 11.39-1.048 15.89 1.623a1.134 1.134 0 0 1-1.157 1.952z" />
+  </svg>
+);
+
+export const BehanceIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M22 7h-7V5h7v2zm1.726 10c-.442 1.297-1.646 2.308-3.418 2.308-2.518 0-4.04-1.748-4.04-4.287 0-2.484 1.577-4.308 3.966-4.308 2.454 0 3.79 1.771 3.79 4.237v.882h-5.597c.078 1.487 1.002 2.115 2.052 2.115.82 0 1.464-.383 1.758-1.027l1.489.08zm-5.46-3.033h3.58c-.078-1.226-.782-1.92-1.776-1.92-.992 0-1.726.694-1.804 1.92zm-9.034 5.333H2V4.7h6.632c2.45 0 4.225 1.34 4.225 3.535 0 1.344-.664 2.383-1.804 2.923 1.503.498 2.36 1.74 2.36 3.377 0 2.583-1.99 4.765-4.685 4.765zm-4.304-7.53h4.08c1.328 0 2.176-.713 2.176-1.854 0-1.156-.848-1.824-2.176-1.824H4.928v3.678zm0 5.61h4.41c1.472 0 2.443-.76 2.443-2.083 0-1.34-.97-2.1-2.443-2.1h-4.41v4.183z" />
+  </svg>
+);
+
+export const TumblrIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.645-.594 4.335-3.874 4.516-6.648h3.332v6.072h4.354v3.675H12.96v6.984c0 1.274.51 2.604 2.396 2.604 1.04 0 2.05-.333 2.544-.658L19 22.06c-1.25.962-3.076 1.94-4.437 1.94z" />
+  </svg>
+);
+
+// Comprehensive Platform Pool configured for the ecosystem
 export const COMPLETE_PLATFORM_POOL: PlatformConfig[] = [
+  // 1. Social & Community (Image + Core)
   {
-    id: "twitter",
-    name: "X (Twitter)",
-    color: "#FFFFFF",
-    glowColor: "rgba(255, 255, 255, 0.16)",
+    id: "facebook",
+    name: "Facebook",
+    color: "#1877F2",
+    glowColor: "rgba(24, 119, 242, 0.25)",
     category: "social",
-    icon: XIcon,
-  },
-  {
-    id: "linkedin",
-    name: "LinkedIn",
-    color: "#0A66C2",
-    glowColor: "rgba(10, 102, 194, 0.25)",
-    category: "social",
-    icon: LinkedInIcon,
+    icon: FacebookIcon,
   },
   {
     id: "instagram",
@@ -240,14 +309,6 @@ export const COMPLETE_PLATFORM_POOL: PlatformConfig[] = [
     icon: InstagramIcon,
   },
   {
-    id: "tiktok",
-    name: "TikTok",
-    color: "#00F2FE",
-    glowColor: "rgba(0, 242, 254, 0.22)",
-    category: "video",
-    icon: TikTokIcon,
-  },
-  {
     id: "threads",
     name: "Threads",
     color: "#F5F5F7",
@@ -256,36 +317,12 @@ export const COMPLETE_PLATFORM_POOL: PlatformConfig[] = [
     icon: ThreadsIcon,
   },
   {
-    id: "youtube",
-    name: "YouTube",
-    color: "#FF0000",
-    glowColor: "rgba(255, 0, 0, 0.25)",
-    category: "video",
-    icon: YouTubeIcon,
-  },
-  {
-    id: "facebook",
-    name: "Facebook",
-    color: "#1877F2",
-    glowColor: "rgba(24, 119, 242, 0.25)",
+    id: "linkedin",
+    name: "LinkedIn",
+    color: "#0A66C2",
+    glowColor: "rgba(10, 102, 194, 0.25)",
     category: "social",
-    icon: FacebookIcon,
-  },
-  {
-    id: "pinterest",
-    name: "Pinterest",
-    color: "#E60023",
-    glowColor: "rgba(230, 0, 35, 0.25)",
-    category: "social",
-    icon: PinterestIcon,
-  },
-  {
-    id: "reddit",
-    name: "Reddit",
-    color: "#FF4500",
-    glowColor: "rgba(255, 69, 0, 0.25)",
-    category: "community",
-    icon: RedditIcon,
+    icon: LinkedInIcon,
   },
   {
     id: "bluesky",
@@ -296,6 +333,62 @@ export const COMPLETE_PLATFORM_POOL: PlatformConfig[] = [
     icon: BlueskyIcon,
   },
   {
+    id: "twitter",
+    name: "X (Twitter)",
+    color: "#FFFFFF",
+    glowColor: "rgba(255, 255, 255, 0.16)",
+    category: "social",
+    icon: XIcon,
+  },
+  {
+    id: "tiktok",
+    name: "TikTok",
+    color: "#00F2FE",
+    glowColor: "rgba(0, 242, 254, 0.22)",
+    category: "video",
+    icon: TikTokIcon,
+  },
+  {
+    id: "youtube",
+    name: "YouTube",
+    color: "#FF0000",
+    glowColor: "rgba(255, 0, 0, 0.25)",
+    category: "video",
+    icon: YouTubeIcon,
+  },
+  {
+    id: "google_business",
+    name: "Google My Business",
+    color: "#4285F4",
+    glowColor: "rgba(66, 133, 244, 0.25)",
+    category: "social",
+    icon: GoogleBusinessIcon,
+  },
+  {
+    id: "reddit",
+    name: "Reddit",
+    color: "#FF4500",
+    glowColor: "rgba(255, 69, 0, 0.25)",
+    category: "community",
+    icon: RedditIcon,
+  },
+  {
+    id: "telegram",
+    name: "Telegram",
+    color: "#24A1DE",
+    glowColor: "rgba(36, 161, 222, 0.25)",
+    category: "bot",
+    icon: TelegramIcon,
+  },
+  {
+    id: "whatsapp",
+    name: "WhatsApp",
+    color: "#25D366",
+    glowColor: "rgba(37, 211, 102, 0.25)",
+    category: "bot",
+    icon: WhatsAppIcon,
+  },
+  {
     id: "discord",
     name: "Discord",
     color: "#5865F2",
@@ -304,20 +397,28 @@ export const COMPLETE_PLATFORM_POOL: PlatformConfig[] = [
     icon: DiscordIcon,
   },
   {
-    id: "whatsapp",
-    name: "WhatsApp",
-    color: "#25D366",
-    glowColor: "rgba(37, 211, 102, 0.25)",
+    id: "slack",
+    name: "Slack",
+    color: "#E01E5A",
+    glowColor: "rgba(224, 30, 90, 0.25)",
     category: "community",
-    icon: WhatsAppIcon,
+    icon: SlackIcon,
   },
   {
-    id: "telegram",
-    name: "Telegram",
-    color: "#24A1DE",
-    glowColor: "rgba(36, 161, 222, 0.25)",
-    category: "community",
-    icon: TelegramIcon,
+    id: "pinterest",
+    name: "Pinterest",
+    color: "#E60023",
+    glowColor: "rgba(230, 0, 35, 0.25)",
+    category: "social",
+    icon: PinterestIcon,
+  },
+  {
+    id: "dribbble",
+    name: "Dribbble",
+    color: "#EA4C89",
+    glowColor: "rgba(234, 76, 137, 0.25)",
+    category: "social",
+    icon: DribbbleIcon,
   },
   {
     id: "mastodon",
@@ -326,6 +427,151 @@ export const COMPLETE_PLATFORM_POOL: PlatformConfig[] = [
     glowColor: "rgba(99, 100, 255, 0.25)",
     category: "community",
     icon: MastodonIcon,
+  },
+  {
+    id: "whop",
+    name: "Whop",
+    color: "#FF6243",
+    glowColor: "rgba(255, 98, 67, 0.25)",
+    category: "community",
+    icon: WhopIcon,
+  },
+  {
+    id: "twitch",
+    name: "Twitch",
+    color: "#9146FF",
+    glowColor: "rgba(145, 70, 255, 0.25)",
+    category: "video",
+    icon: TwitchIcon,
+  },
+  {
+    id: "skool",
+    name: "Skool",
+    color: "#2563EB",
+    glowColor: "rgba(37, 99, 235, 0.25)",
+    category: "community",
+    icon: SkoolIcon,
+  },
+  {
+    id: "kick",
+    name: "Kick",
+    color: "#53FC18",
+    glowColor: "rgba(83, 252, 24, 0.25)",
+    category: "video",
+    icon: KickIcon,
+  },
+  {
+    id: "warpcast",
+    name: "Warpcast",
+    color: "#8A63D2",
+    glowColor: "rgba(138, 99, 210, 0.25)",
+    category: "community",
+    icon: WarpcastIcon,
+  },
+  {
+    id: "vk",
+    name: "VK",
+    color: "#0077FF",
+    glowColor: "rgba(0, 119, 255, 0.25)",
+    category: "social",
+    icon: VkIcon,
+  },
+  {
+    id: "lemmy",
+    name: "Lemmy",
+    color: "#E2E8F0",
+    glowColor: "rgba(226, 232, 240, 0.2)",
+    category: "community",
+    icon: LemmyIcon,
+  },
+  {
+    id: "mewe",
+    name: "MeWe",
+    color: "#00C9A7",
+    glowColor: "rgba(0, 201, 167, 0.25)",
+    category: "social",
+    icon: MeWeIcon,
+  },
+  {
+    id: "nostr",
+    name: "Nostr",
+    color: "#9B51E0",
+    glowColor: "rgba(155, 81, 224, 0.25)",
+    category: "community",
+    icon: NostrIcon,
+  },
+  {
+    id: "listmonk",
+    name: "Listmonk",
+    color: "#0284C7",
+    glowColor: "rgba(2, 132, 199, 0.25)",
+    category: "newsletter",
+    icon: ListmonkIcon,
+  },
+  {
+    id: "wordpress",
+    name: "WordPress",
+    color: "#21759B",
+    glowColor: "rgba(33, 117, 155, 0.25)",
+    category: "developer",
+    icon: WordPressIcon,
+  },
+  {
+    id: "medium",
+    name: "Medium",
+    color: "#FFFFFF",
+    glowColor: "rgba(255, 255, 255, 0.16)",
+    category: "newsletter",
+    icon: MediumIcon,
+  },
+  {
+    id: "hashnode",
+    name: "Hashnode",
+    color: "#2962FF",
+    glowColor: "rgba(41, 98, 255, 0.25)",
+    category: "developer",
+    icon: HashnodeIcon,
+  },
+  {
+    id: "devto",
+    name: "Dev.to",
+    color: "#0A0A0A",
+    glowColor: "rgba(255, 255, 255, 0.2)",
+    category: "developer",
+    icon: DevtoIcon,
+  },
+  // 2. Monitoring & Automation Enhancers
+  {
+    id: "github",
+    name: "GitHub",
+    color: "#F0F6FC",
+    glowColor: "rgba(240, 246, 252, 0.16)",
+    category: "automation",
+    icon: GithubIcon,
+  },
+  {
+    id: "gitlab",
+    name: "GitLab",
+    color: "#FC6D26",
+    glowColor: "rgba(252, 109, 38, 0.25)",
+    category: "automation",
+    icon: GitLabIcon,
+  },
+  {
+    id: "producthunt",
+    name: "Product Hunt",
+    color: "#DA552F",
+    glowColor: "rgba(218, 85, 47, 0.25)",
+    category: "developer",
+    icon: ProductHuntIcon,
+  },
+  {
+    id: "hackernews",
+    name: "Hacker News",
+    color: "#FF6600",
+    glowColor: "rgba(255, 102, 0, 0.25)",
+    category: "developer",
+    icon: HackerNewsIcon,
   },
   {
     id: "substack",
@@ -352,76 +598,12 @@ export const COMPLETE_PLATFORM_POOL: PlatformConfig[] = [
     icon: GhostIcon,
   },
   {
-    id: "medium",
-    name: "Medium",
+    id: "notion",
+    name: "Notion",
     color: "#FFFFFF",
-    glowColor: "rgba(255, 255, 255, 0.16)",
-    category: "newsletter",
-    icon: MediumIcon,
-  },
-  {
-    id: "devto",
-    name: "DEV Community",
-    color: "#0A0A0A",
     glowColor: "rgba(255, 255, 255, 0.2)",
-    category: "developer",
-    icon: DevtoIcon,
-  },
-  {
-    id: "hashnode",
-    name: "Hashnode",
-    color: "#2962FF",
-    glowColor: "rgba(41, 98, 255, 0.25)",
-    category: "developer",
-    icon: HashnodeIcon,
-  },
-  {
-    id: "github",
-    name: "GitHub",
-    color: "#F0F6FC",
-    glowColor: "rgba(240, 246, 252, 0.16)",
-    category: "developer",
-    icon: GithubIcon,
-  },
-  {
-    id: "producthunt",
-    name: "Product Hunt",
-    color: "#DA552F",
-    glowColor: "rgba(218, 85, 47, 0.25)",
-    category: "developer",
-    icon: ProductHuntIcon,
-  },
-  {
-    id: "hackernews",
-    name: "Hacker News",
-    color: "#FF6600",
-    glowColor: "rgba(255, 102, 0, 0.25)",
-    category: "developer",
-    icon: HackerNewsIcon,
-  },
-  {
-    id: "farcaster",
-    name: "Farcaster",
-    color: "#8A63D2",
-    glowColor: "rgba(138, 99, 210, 0.25)",
-    category: "community",
-    icon: FarcasterIcon,
-  },
-  {
-    id: "twitch",
-    name: "Twitch",
-    color: "#9146FF",
-    glowColor: "rgba(145, 70, 255, 0.25)",
-    category: "video",
-    icon: TwitchIcon,
-  },
-  {
-    id: "spotify",
-    name: "Spotify Podcasts",
-    color: "#1ED760",
-    glowColor: "rgba(30, 215, 96, 0.25)",
-    category: "video",
-    icon: SpotifyIcon,
+    category: "newsletter",
+    icon: NotionIcon,
   },
   {
     id: "patreon",
@@ -432,12 +614,12 @@ export const COMPLETE_PLATFORM_POOL: PlatformConfig[] = [
     icon: PatreonIcon,
   },
   {
-    id: "dribbble",
-    name: "Dribbble",
-    color: "#EA4C89",
-    glowColor: "rgba(234, 76, 137, 0.25)",
-    category: "social",
-    icon: DribbbleIcon,
+    id: "spotify",
+    name: "Spotify Podcasts",
+    color: "#1ED760",
+    glowColor: "rgba(30, 215, 96, 0.25)",
+    category: "video",
+    icon: SpotifyIcon,
   },
   {
     id: "behance",
@@ -448,27 +630,11 @@ export const COMPLETE_PLATFORM_POOL: PlatformConfig[] = [
     icon: BehanceIcon,
   },
   {
-    id: "notion",
-    name: "Notion",
-    color: "#FFFFFF",
-    glowColor: "rgba(255, 255, 255, 0.2)",
-    category: "newsletter",
-    icon: NotionIcon,
-  },
-  {
     id: "tumblr",
     name: "Tumblr",
     color: "#36465D",
     glowColor: "rgba(54, 70, 93, 0.3)",
     category: "social",
     icon: TumblrIcon,
-  },
-  {
-    id: "slack",
-    name: "Slack Communities",
-    color: "#E01E5A",
-    glowColor: "rgba(224, 30, 90, 0.25)",
-    category: "community",
-    icon: SlackIcon,
   },
 ];

@@ -122,6 +122,8 @@ export interface DashboardState {
   deleteAutomation: (id: string) => void;
 
   // Connector Actions
+  addConnector: (connector: ConnectorAccount) => void;
+  deleteConnector: (id: string) => void;
   toggleConnectorSync: (id: string) => void;
 }
 
@@ -454,6 +456,28 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
   },
 
   // Connector Actions
+  addConnector: (connector) => {
+    set((state) => {
+      // If connector for platform already exists, update it, else prepend
+      const exists = state.connectors.some((c) => c.platformId === connector.platformId);
+      const connectors = exists
+        ? state.connectors.map((c) => (c.platformId === connector.platformId ? connector : c))
+        : [connector, ...state.connectors];
+      return { connectors };
+    });
+    globalNotifier.success?.(
+      "Platform Connected",
+      `${connector.platformName} (${connector.accountHandle}) is now ready for broadcasting.`,
+    );
+  },
+
+  deleteConnector: (id) => {
+    set((state) => ({
+      connectors: state.connectors.filter((c) => c.id !== id),
+    }));
+    globalNotifier.info?.("Platform Disconnected", "Connector account has been removed.");
+  },
+
   toggleConnectorSync: (id) => {
     set((state) => ({
       connectors: state.connectors.map((c) =>

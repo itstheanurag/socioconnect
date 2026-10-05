@@ -4,6 +4,15 @@ import React, { useState } from "react";
 import { Globe, Sparkles, Save } from "lucide-react";
 import { useNotification } from "@/context/notification-context";
 import { useDashboard } from "@/component/dashboard/context/dashboard-context";
+import { CustomSelect, CustomSelectOption } from "@/component/dashboard/ui/custom-select";
+
+const TIMEZONE_OPTIONS: CustomSelectOption[] = [
+  { value: "Asia/Kolkata (GMT+5:30)", label: "Asia/Kolkata (GMT+5:30)" },
+  { value: "UTC (GMT+0)", label: "UTC (GMT+0)" },
+  { value: "America/New_York (EST)", label: "America/New_York (EST)" },
+  { value: "America/Los_Angeles (PST)", label: "America/Los_Angeles (PST)" },
+  { value: "Europe/London (GMT+1)", label: "Europe/London (GMT+1)" },
+];
 
 export function SettingsView() {
   const { activeWorkspace } = useDashboard();
@@ -62,17 +71,13 @@ export function SettingsView() {
 
           <div className="space-y-1.5">
             <label className="text-neutral-400">Default Publishing Timezone</label>
-            <select
+            <CustomSelect
               value={timezone}
-              onChange={(e) => setTimezone(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-neutral-200 focus:outline-hidden cursor-pointer"
-            >
-              <option value="Asia/Kolkata (GMT+5:30)">Asia/Kolkata (GMT+5:30)</option>
-              <option value="UTC (GMT+0)">UTC (GMT+0)</option>
-              <option value="America/New_York (EST)">America/New_York (EST)</option>
-              <option value="America/Los_Angeles (PST)">America/Los_Angeles (PST)</option>
-              <option value="Europe/London (GMT+1)">Europe/London (GMT+1)</option>
-            </select>
+              onChange={setTimezone}
+              options={TIMEZONE_OPTIONS}
+              className="w-full"
+              buttonClassName="w-full py-2.5 bg-neutral-950"
+            />
           </div>
         </div>
       </div>

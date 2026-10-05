@@ -1,5 +1,6 @@
 import { CompatibilityAnalysis, PlatformId, PostMedia } from "@/component/dashboard/types";
 import { PLATFORM_CAPABILITIES } from "@/component/dashboard/data/mock-data";
+import { getPlatformDisplayName } from "@/component/dashboard/ui/platform-icon";
 
 export interface ContentAnalysisInput {
   text: string;
@@ -11,7 +12,20 @@ export function analyzePlatformCompatibility(
   platformId: PlatformId,
   content: ContentAnalysisInput,
 ): CompatibilityAnalysis {
-  const caps = PLATFORM_CAPABILITIES[platformId];
+  const caps = PLATFORM_CAPABILITIES[platformId] || {
+    text: true,
+    maxTextLength: 1000,
+    singleImage: true,
+    carousel: false,
+    maxCarouselImages: 4,
+    video: false,
+    maxVideoDurationSec: 0,
+    audioMusic: false,
+    markdown: false,
+    threading: false,
+    polls: false,
+    scheduling: false,
+  };
   const imageCount = content.media.filter((m) => m.type === "image").length;
   const videoCount = content.media.filter((m) => m.type === "video").length;
   const audioCount =
@@ -108,31 +122,6 @@ export function analyzePlatformCompatibility(
     modificationsSummary,
     requiredActions,
   };
-}
-
-export function getPlatformDisplayName(platformId: PlatformId): string {
-  switch (platformId) {
-    case "instagram":
-      return "Instagram";
-    case "twitter":
-      return "X (Twitter)";
-    case "linkedin":
-      return "LinkedIn";
-    case "reddit":
-      return "Reddit";
-    case "telegram":
-      return "Telegram";
-    case "facebook":
-      return "Facebook";
-    case "tiktok":
-      return "TikTok";
-    case "youtube":
-      return "YouTube";
-    case "threads":
-      return "Threads";
-    default:
-      return platformId;
-  }
 }
 
 export function getRecommendedPlatforms(

@@ -17,12 +17,25 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useDashboard } from "@/component/dashboard/context/dashboard-context";
-import { PlatformIcon, getPlatformBrandColor, getPlatformDisplayName } from "@/component/dashboard/ui/platform-icon";
+import {
+  PlatformIcon,
+  getPlatformBrandColor,
+  getPlatformDisplayName,
+} from "@/component/dashboard/ui/platform-icon";
+import { CustomSelect, CustomSelectOption } from "@/component/dashboard/ui/custom-select";
 import { AutomationRule, PlatformId } from "@/component/dashboard/types";
+
+const TRIGGER_OPTIONS: CustomSelectOption[] = [
+  { value: "rss", label: "RSS Feed Updates (Blog / Changelog)" },
+  { value: "github", label: "GitHub Release Tag Webhook" },
+  { value: "substack", label: "Substack Newsletter Dispatch" },
+  { value: "webhook", label: "Custom Webhook Endpoint" },
+];
 
 export function AutomationsView() {
   const { automations, toggleAutomation } = useDashboard();
   const [isNewRuleModalOpen, setIsNewRuleModalOpen] = useState(false);
+  const [triggerSource, setTriggerSource] = useState("rss");
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300 pb-16">
@@ -183,12 +196,13 @@ export function AutomationsView() {
               <div className="space-y-4 text-xs">
                 <div className="space-y-1.5">
                   <label className="text-neutral-300 font-medium">Trigger Source</label>
-                  <select className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-neutral-100 focus:outline-hidden focus:border-amber-500/50">
-                    <option>RSS Feed Updates (Blog / Changelog)</option>
-                    <option>GitHub Release Tag Webhook</option>
-                    <option>Substack Newsletter Dispatch</option>
-                    <option>Custom Webhook Endpoint</option>
-                  </select>
+                  <CustomSelect
+                    value={triggerSource}
+                    onChange={setTriggerSource}
+                    options={TRIGGER_OPTIONS}
+                    className="w-full"
+                    buttonClassName="w-full py-2.5 bg-neutral-950"
+                  />
                 </div>
 
                 <div className="space-y-1.5">
