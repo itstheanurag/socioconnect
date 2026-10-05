@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@scalar/hono-api-reference": "^0.9.30",
-    "hono-rate-limiter": "^0.5.1"
+    "hono-rate-limiter": "^0.5.1",
+    "mime-types": "^3.0.2"
   }
 }
