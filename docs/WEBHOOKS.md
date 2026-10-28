@@ -85,10 +85,23 @@ minutes.
 
 Every delivery is persisted in `webhooks.webhook_deliveries`. Successful
 responses are marked `success`; failures are marked `failed` with
-`nextRetryAt = now + 5 minutes`. A worker can retry pending deliveries.
+`nextRetryAt = now + 5 minutes`.
 
-Current limitation: delivery is attempted in-process after the event. Run the
-API as a long-lived process, or add a worker for guaranteed retries.
+Retry failed deliveries:
+
+```bash
+cd apps/api
+bun run webhooks:process
+```
+
+Run it from cron or a worker every few minutes. The command processes due
+deliveries in batches (`WEBHOOK_RETRY_LIMIT`, default 50).
+
+## SSRF protection
+
+In production, webhook creation resolves the hostname and rejects private,
+loopback, link-local, and unique-local addresses. Delivery re-validates the URL
+before sending. HTTPS is required.
 
 ## URL rules
 

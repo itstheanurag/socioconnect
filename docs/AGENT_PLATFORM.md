@@ -31,6 +31,8 @@ Scope: public API, API keys, remote MCP server, ChatGPT/Claude distribution, age
 - [x] TypeScript SDK and `socioconnect` CLI
 - [x] demo login, seeded review workspace, legal/support pages, OpenAI challenge endpoint
 - [x] team workspaces, invites, member roles, workspace switching, and Team UI
+- [x] reschedule and media upload tools, SDK/CLI coverage
+- [x] webhook retry worker and SSRF validation
 - [ ] public submission: deploy domains, replace assets, run review, submit listings
 - [ ] workspace-scoped billing/quota/notification/community reads (still user-scoped)
 - [ ] workspace-scoped reads for billing, quotas, notifications, and communities

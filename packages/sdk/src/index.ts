@@ -105,8 +105,7 @@ interface Envelope<T> {
 
 function idempotencyKey(prefix: string): string {
   const suffix =
-    globalThis.crypto?.randomUUID?.() ??
-    `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
   return `${prefix}-${suffix}`;
 }
 
@@ -124,7 +123,11 @@ export class SocioConnectClient {
   private async request<T>(
     method: "GET" | "POST" | "PATCH" | "DELETE",
     path: string,
-    options?: { body?: unknown; idempotencyKey?: string; query?: Record<string, string | number | undefined> },
+    options?: {
+      body?: unknown;
+      idempotencyKey?: string;
+      query?: Record<string, string | number | undefined>;
+    },
   ): Promise<T> {
     const url = new URL(`${this.baseUrl}${path}`);
     for (const [key, value] of Object.entries(options?.query ?? {})) {
@@ -242,6 +245,55 @@ export class SocioConnectClient {
           targets: input.targets,
         },
         idempotencyKey: input.idempotencyKey ?? idempotencyKey("update"),
+      },
+    );
+  }
+
+  async reschedulePost(postId: string, scheduledAt: string, idempotencyKeyValue?: string) {
+    return this.request<{ postId: string; status: string; scheduledAt: string | null }>(
+      "PATCH",
+      `/v1/posts/${encodeURIComponent(postId)}`,
+      {
+        body: { scheduledAt },
+        idempotencyKey: idempotencyKeyValue ?? idempotencyKey("reschedule"),
+      },
+    );
+  }
+
+  async createMediaUploadUrl(input: {
+    filename: string;
+    mimeType: string;
+    sizeBytes: number;
+    type: "image" | "video" | "gif" | "audio";
+  }) {
+    return this.request<{
+      uploadUrl: string;
+      storageKey: string;
+      publicUrl: string;
+      expiresInSeconds: number;
+    }>("POST", "/v1/media/presigned-url", { body: input });
+  }
+
+  async confirmMediaUpload(input: {
+    storageKey: string;
+    url: string;
+    thumbnailUrl?: string;
+    mimeType: string;
+    type: "image" | "video" | "gif" | "audio";
+    sizeBytes: number;
+    width?: number;
+    height?: number;
+    durationSeconds?: number;
+    altText?: string;
+    idempotencyKey?: string;
+  }) {
+    const { idempotencyKey: key, ...body } = input;
+    return this.request<{ mediaId: string; url: string; type: string; sizeBytes: number | null }>(
+      "POST",
+      "/v1/media/confirm",
+      {
+        body,
+        idempotencyKey: key ?? idempotencyKey("media"),
       },
     );
   }

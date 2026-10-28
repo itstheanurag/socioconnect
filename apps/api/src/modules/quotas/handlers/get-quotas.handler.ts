@@ -5,6 +5,7 @@ import { errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
+import { resolveWorkspaceId } from "@/utils/workspace";
 
 export const getQuotasSummaryRoute = createRoute({
   method: "get",
@@ -55,8 +56,9 @@ export const getQuotasSummaryHandler: AppRouteHandler<GetQuotasSummaryRoute> = a
   const user = c.get("user");
 
   try {
+    const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
     const subscription = await SubscriptionsRepository.getOrCreate(user.id);
-    const connectedAccounts = await AccountsRepository.findAllByUserId(user.id);
+    const connectedAccounts = await AccountsRepository.findAllByWorkspaceId(workspaceId);
 
     return c.json({
       message: "Quotas retrieved successfully",

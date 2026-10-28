@@ -115,11 +115,14 @@ Scopes are the same as API keys: `profile:read`, `accounts:read`,
 
 - `create_draft` — creates a draft only
 - `update_draft` — edits content or replaces targets while still a draft
+- `reschedule_post` — move a scheduled post to a new time
 - `create_publish_intent` — preview + short-lived approval intent
 - `render_publish_preview` — interactive MCP Apps review card when supported
 - `confirm_publish_intent` — publish or schedule after approval
 - `cancel_scheduled_post` — cancel a draft or scheduled post
 - `retry_failed_dispatch` — retry one failed destination
+- `create_media_upload_url` — allocate a presigned media upload
+- `confirm_media_upload` — register an uploaded media asset
 
 Publishing and retrying are annotated `destructiveHint: true` and
 `openWorldHint: true`.
@@ -191,6 +194,6 @@ Still required before public directory submission:
 ## Limitations
 
 - Stateless transport; no resumable SSE event store.
-- Media upload tools are not exposed yet.
+- Media storage is still a mock presigned URL in development until the R2 client is wired in production.
 - The consent page is server-rendered and minimal.
 - Access tokens are short-lived JWTs; refresh tokens are revocable, access tokens are not denylisted.

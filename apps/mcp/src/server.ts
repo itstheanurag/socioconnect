@@ -230,6 +230,65 @@ export function createMcpServer(auth: McpAuth): McpServer {
   );
 
   server.registerTool(
+    "create_media_upload_url",
+    {
+      title: "Create media upload URL",
+      description:
+        "Allocate a presigned media upload URL. Upload the file to uploadUrl with the returned headers, then call confirm_media_upload with the storage key and public URL.",
+      inputSchema: {
+        filename: z.string().min(1),
+        mimeType: z.string().min(1),
+        sizeBytes: z.number().positive(),
+        type: z.enum(["image", "video", "gif", "audio"]),
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
+    },
+    async (input) => {
+      try {
+        return ok(await apiRequest(auth, "POST", "/v1/media/presigned-url", { body: input }));
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    "confirm_media_upload",
+    {
+      title: "Confirm media upload",
+      description:
+        "Register an uploaded media asset in the workspace vault after the presigned upload succeeds.",
+      inputSchema: {
+        storageKey: z.string(),
+        url: z.string().url(),
+        thumbnailUrl: z.string().url().optional(),
+        mimeType: z.string(),
+        type: z.enum(["image", "video", "gif", "audio"]),
+        sizeBytes: z.number().positive(),
+        width: z.number().optional(),
+        height: z.number().optional(),
+        durationSeconds: z.number().optional(),
+        altText: z.string().optional(),
+        idempotencyKey: z.string().optional(),
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
+    },
+    async (input) => {
+      try {
+        const { idempotencyKey, ...body } = input;
+        return ok(
+          await apiRequest(auth, "POST", "/v1/media/confirm", {
+            body,
+            idempotencyKey: idempotencyKey ?? `mcp-media-${randomUUID()}`,
+          }),
+        );
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
     "create_draft",
     {
       title: "Create draft",
@@ -309,6 +368,33 @@ export function createMcpServer(auth: McpAuth): McpServer {
           await apiRequest(auth, "PATCH", `/v1/posts/${encodeURIComponent(postId)}`, {
             body,
             idempotencyKey: idempotencyKey ?? `mcp-update-${randomUUID()}`,
+          }),
+        );
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    "reschedule_post",
+    {
+      title: "Reschedule post",
+      description:
+        "Move a scheduled post to a new time. Only posts in scheduled status can be rescheduled; drafts and published posts cannot.",
+      inputSchema: {
+        postId: z.string().uuid(),
+        scheduledAt: z.string().datetime().describe("New ISO 8601 time in the future"),
+        idempotencyKey: z.string().optional(),
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
+    },
+    async (input) => {
+      try {
+        return ok(
+          await apiRequest(auth, "PATCH", `/v1/posts/${encodeURIComponent(input.postId)}`, {
+            body: { scheduledAt: input.scheduledAt },
+            idempotencyKey: input.idempotencyKey ?? `mcp-reschedule-${randomUUID()}`,
           }),
         );
       } catch (err) {

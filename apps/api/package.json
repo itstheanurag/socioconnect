@@ -9,7 +9,8 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "bun run src/migrate.ts",
     "seed:demo": "bun run src/scripts/seed-demo.ts",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "webhooks:process": "bun run src/scripts/process-webhooks.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.6",

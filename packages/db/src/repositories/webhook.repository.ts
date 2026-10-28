@@ -1,4 +1,4 @@
-import { and, arrayContains, desc, eq, or } from "drizzle-orm";
+import { and, arrayContains, desc, eq, lte, or } from "drizzle-orm";
 import { type DBTransaction, db } from "@/connection";
 import {
   webhookDeliveriesTable,
@@ -17,10 +17,7 @@ export namespace WebhookRepository {
     options?: { tx?: DBTransaction },
   ): Promise<WebhookEndpoint> {
     const queryClient = options?.tx || db;
-    const [endpoint] = await queryClient
-      .insert(webhookEndpointsTable)
-      .values(payload)
-      .returning();
+    const [endpoint] = await queryClient.insert(webhookEndpointsTable).values(payload).returning();
     return endpoint;
   }
 
@@ -86,10 +83,7 @@ export namespace WebhookRepository {
         updatedAt: new Date(),
       })
       .where(
-        and(
-          eq(webhookEndpointsTable.id, id),
-          eq(webhookEndpointsTable.workspaceId, workspaceId),
-        ),
+        and(eq(webhookEndpointsTable.id, id), eq(webhookEndpointsTable.workspaceId, workspaceId)),
       )
       .returning();
     return endpoint ?? null;
@@ -100,10 +94,7 @@ export namespace WebhookRepository {
     options?: { tx?: DBTransaction },
   ): Promise<WebhookDelivery> {
     const queryClient = options?.tx || db;
-    const [delivery] = await queryClient
-      .insert(webhookDeliveriesTable)
-      .values(payload)
-      .returning();
+    const [delivery] = await queryClient.insert(webhookDeliveriesTable).values(payload).returning();
     return delivery;
   }
 
@@ -127,6 +118,17 @@ export namespace WebhookRepository {
       .where(eq(webhookDeliveriesTable.id, id))
       .returning();
     return delivery;
+  }
+
+  export async function findDueDeliveries(now: Date, limit = 50): Promise<WebhookDelivery[]> {
+    return db.query.webhookDeliveriesTable.findMany({
+      where: and(
+        eq(webhookDeliveriesTable.status, WebhookDeliveryStatusEnum.FAILED),
+        lte(webhookDeliveriesTable.nextRetryAt, now),
+      ),
+      orderBy: [webhookDeliveriesTable.nextRetryAt],
+      limit,
+    });
   }
 
   export async function listDeliveries(

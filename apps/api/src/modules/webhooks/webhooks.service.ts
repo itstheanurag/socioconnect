@@ -1,4 +1,5 @@
 import { createHmac, randomBytes, randomUUID } from "node:crypto";
+import { lookup } from "node:dns/promises";
 import {
   WebhookDeliveryStatusEnum,
   WebhookRepository,
@@ -45,7 +46,35 @@ export function sanitizeEndpoint(endpoint: WebhookEndpoint): PublicWebhookEndpoi
   };
 }
 
-export function validateWebhookUrl(raw: string): string {
+export function isPrivateAddress(address: string): boolean {
+  if (
+    address === "::1" ||
+    address.startsWith("fc") ||
+    address.startsWith("fd") ||
+    address.startsWith("fe80")
+  ) {
+    return true;
+  }
+  if (address.startsWith("::ffff:")) {
+    return isPrivateAddress(address.slice("::ffff:".length));
+  }
+
+  const parts = address.split(".").map(Number);
+  if (parts.length !== 4 || parts.some((part) => Number.isNaN(part))) return false;
+
+  const [a, b] = parts;
+  return (
+    a === 10 ||
+    a === 127 ||
+    a === 0 ||
+    (a === 169 && b === 254) ||
+    (a === 172 && b >= 16 && b <= 31) ||
+    (a === 192 && b === 168) ||
+    (a === 100 && b >= 64 && b <= 127)
+  );
+}
+
+export async function validateWebhookUrl(raw: string): Promise<string> {
   let url: URL;
   try {
     url = new URL(raw);
@@ -67,14 +96,23 @@ export function validateWebhookUrl(raw: string): string {
     throw new Error("Webhook URL must use HTTPS or localhost HTTP in development");
   }
 
+  if (env.NODE_ENV === "production" && !isLocalhost) {
+    let addresses: Array<{ address: string }> = [];
+    try {
+      addresses = await lookup(url.hostname, { all: true });
+    } catch {
+      throw new Error("Webhook host could not be resolved");
+    }
+
+    if (addresses.length === 0 || addresses.some((entry) => isPrivateAddress(entry.address))) {
+      throw new Error("Webhook URL must not resolve to a private address");
+    }
+  }
+
   return url.toString();
 }
 
-export function signWebhook(
-  secret: string,
-  timestamp: string,
-  body: string,
-): string {
+export function signWebhook(secret: string, timestamp: string, body: string): string {
   return createHmac("sha256", secret).update(`${timestamp}.${body}`).digest("hex");
 }
 
@@ -90,7 +128,7 @@ export const WebhookService = {
     description?: string;
     events: string[];
   }) {
-    const url = validateWebhookUrl(input.url);
+    const url = await validateWebhookUrl(input.url);
     const events = input.events.length > 0 ? input.events : ["*"];
     if (events.includes("*") === false) {
       const invalid = events.filter(
@@ -182,6 +220,40 @@ export const WebhookService = {
     }
   },
 
+  async retryPendingDeliveries(limit = 50): Promise<{
+    processed: number;
+    succeeded: number;
+    failed: number;
+  }> {
+    const due = await WebhookRepository.findDueDeliveries(new Date(), limit);
+    let succeeded = 0;
+    let failed = 0;
+
+    for (const delivery of due) {
+      const endpoint = await WebhookRepository.findEndpoint(
+        delivery.endpointId,
+        delivery.workspaceId,
+      );
+      if (!endpoint) continue;
+
+      try {
+        const result = await deliver(delivery, endpoint);
+        if (result.status === WebhookDeliveryStatusEnum.SUCCESS) succeeded += 1;
+        else failed += 1;
+      } catch (err) {
+        failed += 1;
+        logger.error("webhook retry failed", {
+          module: "webhooks",
+          action: "service:retry",
+          error: err,
+          deliveryId: delivery.id,
+        });
+      }
+    }
+
+    return { processed: due.length, succeeded, failed };
+  },
+
   async testEndpoint(id: string, workspaceId: string) {
     const endpoint = await WebhookRepository.findEndpoint(id, workspaceId);
     if (!endpoint) return null;
@@ -210,6 +282,20 @@ async function deliver(
   delivery: WebhookDelivery,
   endpoint: WebhookEndpoint,
 ): Promise<WebhookDelivery> {
+  try {
+    await validateWebhookUrl(endpoint.url);
+  } catch (err) {
+    return WebhookRepository.updateDelivery(delivery.id, {
+      status: WebhookDeliveryStatusEnum.FAILED,
+      attempts: delivery.attempts + 1,
+      responseStatus: null,
+      responseBody: null,
+      error: err instanceof Error ? err.message : "Unsafe webhook URL",
+      nextRetryAt: null,
+      deliveredAt: null,
+    });
+  }
+
   const secret = decrypt(
     endpoint.secretCiphertext,
     endpoint.secretIv,
@@ -239,9 +325,7 @@ async function deliver(
     const success = response.status >= 200 && response.status < 300;
 
     return WebhookRepository.updateDelivery(delivery.id, {
-      status: success
-        ? WebhookDeliveryStatusEnum.SUCCESS
-        : WebhookDeliveryStatusEnum.FAILED,
+      status: success ? WebhookDeliveryStatusEnum.SUCCESS : WebhookDeliveryStatusEnum.FAILED,
       attempts,
       responseStatus: response.status,
       responseBody: text.slice(0, 2_000) || null,

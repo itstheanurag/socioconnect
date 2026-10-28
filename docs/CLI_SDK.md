@@ -30,6 +30,9 @@ socioconnect draft update <postId> --content "Updated copy"
 socioconnect intent create --post <postId> --mode schedule --at 2026-11-02T14:00:00Z
 socioconnect intent confirm <intentId>
 socioconnect posts cancel <postId>
+socioconnect posts reschedule <postId> --at 2026-11-02T14:00:00Z
+socioconnect media upload-url --filename image.png --mime image/png --size 120000 --type image
+socioconnect media confirm --storage-key key --url https://cdn/... --mime image/png --type image --size 120000
 socioconnect dispatch retry <dispatchId>
 socioconnect usage
 socioconnect activity --limit 20

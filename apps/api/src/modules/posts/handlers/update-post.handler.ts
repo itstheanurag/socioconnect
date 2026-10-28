@@ -49,6 +49,7 @@ export const updatePostRoute = createRoute({
               linkUrl: z.url().nullable().optional(),
               mediaIds: z.array(z.uuid()).optional(),
               targets: z.array(targetSchema).optional(),
+              scheduledAt: z.string().datetime().nullable().optional(),
             })
             .refine((value) => Object.values(value).some((item) => item !== undefined), {
               message: "At least one field must be provided",
@@ -68,6 +69,7 @@ export const updatePostRoute = createRoute({
               postId: z.uuid(),
               status: z.enum(PostStatusEnum),
               updatedAt: z.string(),
+              scheduledAt: z.string().nullable(),
               dispatchesCount: z.number(),
             }),
           }),
@@ -121,6 +123,46 @@ export const updatePostHandler: AppRouteHandler<UpdatePostRoute> = async (c) => 
           StatusCodes.HTTP_409_CONFLICT,
         ),
       });
+    }
+
+    let rescheduleAt: Date | null = null;
+    if (body.scheduledAt !== undefined) {
+      if (body.scheduledAt === null) {
+        throw new HTTPException(StatusCodes.HTTP_400_BAD_REQUEST, {
+          res: c.json(
+            {
+              message: "scheduledAt cannot be cleared; cancel the post instead",
+              code: "INVALID_SCHEDULE",
+            },
+            StatusCodes.HTTP_400_BAD_REQUEST,
+          ),
+        });
+      }
+
+      if (post.status !== PostStatusEnum.SCHEDULED) {
+        throw new HTTPException(StatusCodes.HTTP_409_CONFLICT, {
+          res: c.json(
+            {
+              message: "Only scheduled posts can be rescheduled",
+              code: "RESCHEDULE_REQUIRES_SCHEDULED",
+            },
+            StatusCodes.HTTP_409_CONFLICT,
+          ),
+        });
+      }
+
+      rescheduleAt = new Date(body.scheduledAt);
+      if (rescheduleAt <= new Date()) {
+        throw new HTTPException(StatusCodes.HTTP_400_BAD_REQUEST, {
+          res: c.json(
+            {
+              message: "scheduledAt must be in the future",
+              code: "SCHEDULED_AT_IN_PAST",
+            },
+            StatusCodes.HTTP_400_BAD_REQUEST,
+          ),
+        });
+      }
     }
 
     let targets:
@@ -192,7 +234,7 @@ export const updatePostHandler: AppRouteHandler<UpdatePostRoute> = async (c) => 
       }
     }
 
-    const updated = await PostsRepository.updateDraft(id, {
+    let updated = await PostsRepository.updateDraft(id, {
       title: body.title,
       content: body.content,
       tags: body.tags,
@@ -200,6 +242,11 @@ export const updatePostHandler: AppRouteHandler<UpdatePostRoute> = async (c) => 
       mediaIds: body.mediaIds,
       targets,
     });
+
+    if (rescheduleAt) {
+      const rescheduled = await PostsRepository.reschedulePost(id, rescheduleAt);
+      updated = { ...updated, post: rescheduled };
+    }
 
     await recordAuditEvent(c, {
       action: "post.updated",
@@ -209,6 +256,7 @@ export const updatePostHandler: AppRouteHandler<UpdatePostRoute> = async (c) => 
         status: updated.post.status,
         dispatches: updated.dispatches.length,
         replacedTargets: body.targets !== undefined,
+        scheduledAt: updated.post.scheduledAt ? updated.post.scheduledAt.toISOString() : null,
       },
     });
     await WebhookService.emit(workspaceId, "post.updated", {
@@ -216,6 +264,7 @@ export const updatePostHandler: AppRouteHandler<UpdatePostRoute> = async (c) => 
       status: updated.post.status,
       dispatches: updated.dispatches.length,
       replacedTargets: body.targets !== undefined,
+      scheduledAt: updated.post.scheduledAt ? updated.post.scheduledAt.toISOString() : null,
     });
 
     return c.json({
@@ -224,6 +273,7 @@ export const updatePostHandler: AppRouteHandler<UpdatePostRoute> = async (c) => 
         postId: updated.post.id,
         status: updated.post.status as PostStatusEnum,
         updatedAt: updated.post.updatedAt.toISOString(),
+        scheduledAt: updated.post.scheduledAt ? updated.post.scheduledAt.toISOString() : null,
         dispatchesCount: updated.dispatches.length,
       },
     });

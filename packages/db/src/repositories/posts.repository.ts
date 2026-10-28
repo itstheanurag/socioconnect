@@ -146,6 +146,35 @@ export namespace PostsRepository {
     return db.transaction(execute);
   }
 
+  export async function reschedulePost(
+    postId: string,
+    scheduledAt: Date,
+    options?: { tx?: DBTransaction },
+  ): Promise<Post> {
+    const queryClient = options?.tx || db;
+    const now = new Date();
+
+    const [post] = await queryClient
+      .update(postsTable)
+      .set({ scheduledAt, updatedAt: now })
+      .where(eq(postsTable.id, postId))
+      .returning();
+
+    await queryClient
+      .update(postDispatchesTable)
+      .set({ scheduledFor: scheduledAt, updatedAt: now })
+      .where(eq(postDispatchesTable.postId, postId));
+
+    logger.audit("post rescheduled", {
+      module: "posts",
+      action: "repository:reschedulePost",
+      postId,
+      scheduledAt: scheduledAt.toISOString(),
+    });
+
+    return post;
+  }
+
   /**
    * Cancels a draft or scheduled post and all of its dispatches.
    */

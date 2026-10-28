@@ -41,11 +41,14 @@ Usage:
   socioconnect posts list [--status draft|scheduled|published|failed] [--limit 20]
   socioconnect posts get <postId>
   socioconnect posts cancel <postId>
+  socioconnect posts reschedule <postId> --at 2026-11-02T14:00:00Z
   socioconnect draft create --content "..." --account <accountId> --platform x [--title "..."] [--link "..."] [--idempotency-key key]
   socioconnect draft update <postId> --content "..." [--idempotency-key key]
   socioconnect intent create --post <postId> --mode publish|schedule [--at ISO] [--idempotency-key key]
   socioconnect intent get <intentId>
   socioconnect intent confirm <intentId> [--idempotency-key key]
+  socioconnect media upload-url --filename image.png --mime image/png --size 120000 --type image
+  socioconnect media confirm --storage-key key --url https://cdn/... --mime image/png --type image --size 120000
   socioconnect dispatch retry <dispatchId>
   socioconnect usage
   socioconnect activity [--limit 20]
@@ -77,10 +80,7 @@ async function main(): Promise<void> {
   });
 
   if (scope === "whoami") {
-    const [profile, workspace] = await Promise.all([
-      client.getProfile(),
-      client.getWorkspace(),
-    ]);
+    const [profile, workspace] = await Promise.all([client.getProfile(), client.getWorkspace()]);
     print({ profile: profile.user, workspace: workspace.workspace });
     return;
   }
@@ -116,6 +116,55 @@ async function main(): Promise<void> {
     const id = arg(0);
     if (!id) throw new Error("postId is required");
     print(await client.cancelPost(id, flag("idempotency-key")));
+    return;
+  }
+
+  if (scope === "posts" && action === "reschedule") {
+    const id = arg(0);
+    const at = flag("at");
+    if (!id || !at) throw new Error("postId and --at are required");
+    print(await client.reschedulePost(id, at, flag("idempotency-key")));
+    return;
+  }
+
+  if (scope === "media" && action === "upload-url") {
+    const filename = flag("filename");
+    const mimeType = flag("mime");
+    const sizeBytes = flag("size");
+    const type = (flag("type") ?? "image") as "image" | "video" | "gif" | "audio";
+    if (!filename || !mimeType || !sizeBytes) {
+      throw new Error("--filename, --mime and --size are required");
+    }
+    print(
+      await client.createMediaUploadUrl({ filename, mimeType, sizeBytes: Number(sizeBytes), type }),
+    );
+    return;
+  }
+
+  if (scope === "media" && action === "confirm") {
+    const storageKey = flag("storage-key");
+    const url = flag("url");
+    const mimeType = flag("mime");
+    const sizeBytes = flag("size");
+    const type = (flag("type") ?? "image") as "image" | "video" | "gif" | "audio";
+    if (!storageKey || !url || !mimeType || !sizeBytes) {
+      throw new Error("--storage-key, --url, --mime and --size are required");
+    }
+    print(
+      await client.confirmMediaUpload({
+        storageKey,
+        url,
+        mimeType,
+        sizeBytes: Number(sizeBytes),
+        type,
+        thumbnailUrl: flag("thumbnail"),
+        width: flag("width") ? Number(flag("width")) : undefined,
+        height: flag("height") ? Number(flag("height")) : undefined,
+        durationSeconds: flag("duration") ? Number(flag("duration")) : undefined,
+        altText: flag("alt"),
+        idempotencyKey: flag("idempotency-key"),
+      }),
+    );
     return;
   }
 
