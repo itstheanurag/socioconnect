@@ -77,6 +77,30 @@ export const INITIAL_USAGE: SubscriptionUsage = {
   teamMembersUsed: 1,
 };
 
+export interface ProviderSubscriptionState {
+  userId: string;
+  externalCustomerId?: string | null;
+  externalSubscriptionId?: string | null;
+  tier: SubscriptionTierEnum;
+  status: SubscriptionStatusEnum;
+  billingInterval: BillingIntervalEnum;
+  currentPeriodStart?: Date | null;
+  currentPeriodEnd?: Date | null;
+  cancelAtPeriodEnd?: boolean;
+  canceledAt?: Date | null;
+  metadata?: Record<string, unknown>;
+}
+
+function addBillingInterval(date: Date, interval: BillingIntervalEnum): Date {
+  const next = new Date(date);
+  if (interval === BillingIntervalEnum.YEARLY) {
+    next.setFullYear(next.getFullYear() + 1);
+  } else {
+    next.setMonth(next.getMonth() + 1);
+  }
+  return next;
+}
+
 export namespace SubscriptionsRepository {
   /**
    * Retrieves or initializes a creator's active subscription with live limits & usage
@@ -125,7 +149,8 @@ export namespace SubscriptionsRepository {
         return existing;
       }
 
-      // Initialize default Creator Pro trial / Solo subscription
+      // Initialize a free subscription. Paid entitlements are only granted by
+      // the billing provider webhook after a successful checkout.
       const periodStart = new Date();
       const periodEnd = new Date();
       periodEnd.setMonth(periodEnd.getMonth() + 1);
@@ -134,13 +159,13 @@ export namespace SubscriptionsRepository {
         .insert(subscriptionsTable)
         .values({
           userId,
-          tier: SubscriptionTierEnum.SOLO,
+          tier: SubscriptionTierEnum.FREE,
           status: SubscriptionStatusEnum.ACTIVE,
           billingInterval: BillingIntervalEnum.MONTHLY,
           currentPeriodStart: periodStart,
           currentPeriodEnd: periodEnd,
           cancelAtPeriodEnd: false,
-          limits: DEFAULT_PLAN_LIMITS[SubscriptionTierEnum.SOLO],
+          limits: DEFAULT_PLAN_LIMITS[SubscriptionTierEnum.FREE],
           usage: INITIAL_USAGE,
         })
         .returning();
@@ -303,6 +328,188 @@ export namespace SubscriptionsRepository {
   ): Promise<Invoice> {
     const queryClient = options?.tx || db;
     const [invoice] = await queryClient.insert(invoicesTable).values(payload).returning();
+    return invoice;
+  }
+
+  /**
+   * Finds a subscription without creating one.
+   */
+  export async function findByUserId(
+    userId: string,
+    options?: { tx?: DBTransaction },
+  ): Promise<Subscription | null> {
+    const queryClient = options?.tx || db;
+    const existing = await queryClient.query.subscriptionsTable.findFirst({
+      where: eq(subscriptionsTable.userId, userId),
+    });
+    return existing ?? null;
+  }
+
+  /**
+   * Finds a subscription by its provider identifiers.
+   */
+  export async function findByExternalIds(
+    identifiers: { externalSubscriptionId?: string | null; externalCustomerId?: string | null },
+    options?: { tx?: DBTransaction },
+  ): Promise<Subscription | null> {
+    const queryClient = options?.tx || db;
+
+    if (identifiers.externalSubscriptionId) {
+      const bySubscription = await queryClient.query.subscriptionsTable.findFirst({
+        where: eq(subscriptionsTable.externalSubscriptionId, identifiers.externalSubscriptionId),
+      });
+      if (bySubscription) return bySubscription;
+    }
+
+    if (identifiers.externalCustomerId) {
+      const byCustomer = await queryClient.query.subscriptionsTable.findFirst({
+        where: eq(subscriptionsTable.externalCustomerId, identifiers.externalCustomerId),
+      });
+      if (byCustomer) return byCustomer;
+    }
+
+    return null;
+  }
+
+  /**
+   * Applies the authoritative state from the payment provider.
+   *
+   * The provider webhook is the source of truth: checkout never grants a plan,
+   * only an activated/renewed subscription does.
+   */
+  export async function syncFromProvider(
+    state: ProviderSubscriptionState,
+    options?: { tx?: DBTransaction },
+  ): Promise<Subscription> {
+    const queryClient = options?.tx || db;
+
+    let existing = await findByExternalIds(
+      {
+        externalSubscriptionId: state.externalSubscriptionId,
+        externalCustomerId: state.externalCustomerId,
+      },
+      options,
+    );
+
+    if (!existing) {
+      existing = await findByUserId(state.userId, options);
+    }
+
+    const periodStart = state.currentPeriodStart ?? existing?.currentPeriodStart ?? new Date();
+    const periodEnd =
+      state.currentPeriodEnd ??
+      existing?.currentPeriodEnd ??
+      addBillingInterval(periodStart, state.billingInterval);
+
+    const periodRolledOver =
+      !!existing && periodStart.getTime() > new Date(existing.currentPeriodStart).getTime();
+
+    const usage: SubscriptionUsage = existing
+      ? {
+          ...existing.usage,
+          monthlyDropsUsed: periodRolledOver ? 0 : existing.usage.monthlyDropsUsed,
+          aiCreditsUsed: periodRolledOver ? 0 : existing.usage.aiCreditsUsed,
+        }
+      : INITIAL_USAGE;
+
+    const metadata = {
+      ...(existing?.metadata ?? {}),
+      ...(state.metadata ?? {}),
+    };
+
+    if (existing) {
+      const [updated] = await queryClient
+        .update(subscriptionsTable)
+        .set({
+          tier: state.tier,
+          status: state.status,
+          billingInterval: state.billingInterval,
+          externalCustomerId: state.externalCustomerId ?? existing.externalCustomerId,
+          externalSubscriptionId: state.externalSubscriptionId ?? existing.externalSubscriptionId,
+          currentPeriodStart: periodStart,
+          currentPeriodEnd: periodEnd,
+          cancelAtPeriodEnd: state.cancelAtPeriodEnd ?? existing.cancelAtPeriodEnd,
+          canceledAt: state.canceledAt ?? null,
+          limits: DEFAULT_PLAN_LIMITS[state.tier],
+          usage,
+          metadata,
+          updatedAt: new Date(),
+        })
+        .where(eq(subscriptionsTable.id, existing.id))
+        .returning();
+
+      logger.audit("subscription synced from billing provider", {
+        module: "subscriptions",
+        action: "repository:syncFromProvider",
+        userId: updated.userId,
+        tier: updated.tier,
+        status: updated.status,
+        externalSubscriptionId: updated.externalSubscriptionId,
+      });
+
+      return updated;
+    }
+
+    const [created] = await queryClient
+      .insert(subscriptionsTable)
+      .values({
+        userId: state.userId,
+        tier: state.tier,
+        status: state.status,
+        billingInterval: state.billingInterval,
+        externalCustomerId: state.externalCustomerId ?? null,
+        externalSubscriptionId: state.externalSubscriptionId ?? null,
+        currentPeriodStart: periodStart,
+        currentPeriodEnd: periodEnd,
+        cancelAtPeriodEnd: state.cancelAtPeriodEnd ?? false,
+        canceledAt: state.canceledAt ?? null,
+        limits: DEFAULT_PLAN_LIMITS[state.tier],
+        usage,
+        metadata,
+      })
+      .returning();
+
+    logger.audit("subscription created from billing provider", {
+      module: "subscriptions",
+      action: "repository:syncFromProvider",
+      userId: created.userId,
+      tier: created.tier,
+      status: created.status,
+      externalSubscriptionId: created.externalSubscriptionId,
+    });
+
+    return created;
+  }
+
+  /**
+   * Records or updates an invoice by its provider invoice/payment ID.
+   */
+  export async function upsertInvoice(
+    payload: NewInvoice & { externalInvoiceId: string },
+    options?: { tx?: DBTransaction },
+  ): Promise<Invoice> {
+    const queryClient = options?.tx || db;
+
+    const [invoice] = await queryClient
+      .insert(invoicesTable)
+      .values(payload)
+      .onConflictDoUpdate({
+        target: invoicesTable.externalInvoiceId,
+        set: {
+          amountDue: payload.amountDue,
+          amountPaid: payload.amountPaid,
+          currency: payload.currency,
+          status: payload.status,
+          hostedInvoiceUrl: payload.hostedInvoiceUrl,
+          invoicePdfUrl: payload.invoicePdfUrl,
+          periodStart: payload.periodStart,
+          periodEnd: payload.periodEnd,
+          paidAt: payload.paidAt,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+
     return invoice;
   }
 

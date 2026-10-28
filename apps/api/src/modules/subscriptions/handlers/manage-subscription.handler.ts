@@ -5,6 +5,7 @@ import { errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
+import { BillingProviderError, DodoPaymentsService } from "../services/dodo-payments.service";
 
 // 1. Cancel Subscription (at period end)
 export const cancelSubscriptionRoute = createRoute({
@@ -40,6 +41,18 @@ export const cancelSubscriptionHandler: AppRouteHandler<CancelSubscriptionRoute>
   const user = c.get("user");
 
   try {
+    const current = await SubscriptionsRepository.findByUserId(user.id);
+
+    if (!current?.externalSubscriptionId) {
+      throw new HTTPException(StatusCodes.HTTP_400_BAD_REQUEST, {
+        res: c.json(
+          { message: "No paid subscription found for this user" },
+          StatusCodes.HTTP_400_BAD_REQUEST,
+        ),
+      });
+    }
+
+    await DodoPaymentsService.cancelSubscription(current.externalSubscriptionId, true);
     const updated = await SubscriptionsRepository.cancelAtPeriodEnd(user.id);
 
     return c.json({
@@ -54,6 +67,19 @@ export const cancelSubscriptionHandler: AppRouteHandler<CancelSubscriptionRoute>
     });
   } catch (err) {
     if (err instanceof HTTPException) throw err;
+
+    if (err instanceof BillingProviderError) {
+      logger.error("billing provider rejected cancellation", {
+        module: "subscriptions",
+        action: "cancelSubscriptionHandler",
+        error: err,
+        code: err.code,
+      });
+
+      throw new HTTPException(StatusCodes.HTTP_502_BAD_GATEWAY, {
+        res: c.json({ message: err.message }, StatusCodes.HTTP_502_BAD_GATEWAY),
+      });
+    }
 
     logger.error("Error canceling subscription", {
       module: "subscriptions",
@@ -104,6 +130,23 @@ export const resumeSubscriptionHandler: AppRouteHandler<ResumeSubscriptionRoute>
   const user = c.get("user");
 
   try {
+    const current = await SubscriptionsRepository.findByUserId(user.id);
+
+    if (!current?.externalSubscriptionId) {
+      throw new HTTPException(StatusCodes.HTTP_400_BAD_REQUEST, {
+        res: c.json(
+          { message: "No paid subscription found for this user" },
+          StatusCodes.HTTP_400_BAD_REQUEST,
+        ),
+      });
+    }
+
+    if (current.status === SubscriptionStatusEnum.PAUSED) {
+      await DodoPaymentsService.resumeSubscription(current.externalSubscriptionId);
+    } else {
+      await DodoPaymentsService.clearScheduledCancellation(current.externalSubscriptionId);
+    }
+
     const updated = await SubscriptionsRepository.resume(user.id);
 
     return c.json({
@@ -115,6 +158,19 @@ export const resumeSubscriptionHandler: AppRouteHandler<ResumeSubscriptionRoute>
     });
   } catch (err) {
     if (err instanceof HTTPException) throw err;
+
+    if (err instanceof BillingProviderError) {
+      logger.error("billing provider rejected resume", {
+        module: "subscriptions",
+        action: "resumeSubscriptionHandler",
+        error: err,
+        code: err.code,
+      });
+
+      throw new HTTPException(StatusCodes.HTTP_502_BAD_GATEWAY, {
+        res: c.json({ message: err.message }, StatusCodes.HTTP_502_BAD_GATEWAY),
+      });
+    }
 
     logger.error("Error resuming subscription", {
       module: "subscriptions",

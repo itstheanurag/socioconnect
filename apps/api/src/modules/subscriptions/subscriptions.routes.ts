@@ -17,6 +17,7 @@ import {
   resumeSubscriptionHandler,
 } from "./handlers/manage-subscription.handler";
 import { getInvoicesRoute, getInvoicesHandler } from "./handlers/invoices.handler";
+import { createPortalSessionRoute, createPortalSessionHandler } from "./handlers/portal.handler";
 import {
   postSubscriptionWebhookRoute,
   postSubscriptionWebhookHandler,
@@ -30,4 +31,5 @@ subscriptionRoutes.openapi(checkoutSubscriptionRoute, checkoutSubscriptionHandle
 subscriptionRoutes.openapi(cancelSubscriptionRoute, cancelSubscriptionHandler);
 subscriptionRoutes.openapi(resumeSubscriptionRoute, resumeSubscriptionHandler);
 subscriptionRoutes.openapi(getInvoicesRoute, getInvoicesHandler);
+subscriptionRoutes.openapi(createPortalSessionRoute, createPortalSessionHandler);
 subscriptionRoutes.openapi(postSubscriptionWebhookRoute, postSubscriptionWebhookHandler);

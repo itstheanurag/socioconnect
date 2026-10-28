@@ -161,6 +161,17 @@ bun run db:migrate              # Apply migrations to database
 
 ---
 
+## 💳 Billing
+
+Subscriptions are handled by **Dodo Payments** (hosted checkout + webhooks). Plan
+entitlements are granted only from verified subscription webhooks, never from
+the checkout redirect.
+
+See [docs/BILLING.md](docs/BILLING.md) for environment variables, Dodo product
+setup, webhook events, and local testing.
+
+---
+
 ## 📜 License
 
 This project is licensed under the MIT License.

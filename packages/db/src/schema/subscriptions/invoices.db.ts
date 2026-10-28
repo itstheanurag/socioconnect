@@ -1,4 +1,4 @@
-import { index, integer, pgEnum, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { index, integer, pgEnum, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { enumToPgEnum } from "@repo/shared";
 import { subscriptionsSchema } from "./index";
@@ -13,10 +13,7 @@ export enum InvoiceStatusEnum {
   UNCOLLECTIBLE = "uncollectible",
 }
 
-export const invoiceStatusPgEnum = pgEnum(
-  "invoice_status",
-  enumToPgEnum(InvoiceStatusEnum),
-);
+export const invoiceStatusPgEnum = pgEnum("invoice_status", enumToPgEnum(InvoiceStatusEnum));
 
 export const invoicesTable = subscriptionsSchema.table(
   "invoices",
@@ -50,6 +47,7 @@ export const invoicesTable = subscriptionsSchema.table(
     index("invoices_user_id_idx").on(table.userId),
     index("invoices_subscription_id_idx").on(table.subscriptionId),
     index("invoices_status_idx").on(table.status),
+    uniqueIndex("invoices_external_invoice_id_idx").on(table.externalInvoiceId),
   ],
 );
 

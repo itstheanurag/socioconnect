@@ -58,6 +58,28 @@ const apiEnvSchema = baseEnvSchema.extend({
     .optional()
     .default("http://localhost:3000"),
 
+  // Billing - Dodo Payments (optional; billing routes return 503 when unset)
+  DODO_PAYMENTS_API_KEY: z.string().optional().default(""),
+  DODO_PAYMENTS_WEBHOOK_KEY: z.string().optional().default(""),
+  DODO_PAYMENTS_ENVIRONMENT: z.enum(["test_mode", "live_mode"]).optional().default("test_mode"),
+  DODO_PAYMENTS_SKIP_WEBHOOK_VERIFICATION: z
+    .string()
+    .optional()
+    .default("false")
+    .transform((value) => value === "true"),
+  DODO_PAYMENTS_RETURN_URL: z.string().url().optional(),
+  DODO_PAYMENTS_CANCEL_URL: z.string().url().optional(),
+
+  // Dodo product IDs, one per paid tier and billing interval.
+  DODO_PRODUCT_SOLO_MONTHLY: z.string().optional().default(""),
+  DODO_PRODUCT_SOLO_YEARLY: z.string().optional().default(""),
+  DODO_PRODUCT_CREATOR_PRO_MONTHLY: z.string().optional().default(""),
+  DODO_PRODUCT_CREATOR_PRO_YEARLY: z.string().optional().default(""),
+  DODO_PRODUCT_STUDIO_MONTHLY: z.string().optional().default(""),
+  DODO_PRODUCT_STUDIO_YEARLY: z.string().optional().default(""),
+  DODO_PRODUCT_AGENCY_MONTHLY: z.string().optional().default(""),
+  DODO_PRODUCT_AGENCY_YEARLY: z.string().optional().default(""),
+
   // Docker Services (optional, with defaults)
   POSTGRES_PORT: z.string().optional().default("5432"),
   PROMETHEUS_PORT: z.string().optional().default("9090"),
@@ -82,6 +104,20 @@ export const env = apiEnvSchema.parse({
   APPLE_REDIRECT_URI: process.env.APPLE_REDIRECT_URI,
   CORS_ORIGIN: process.env.CORS_ORIGIN,
   FRONTEND_URL: process.env.FRONTEND_URL,
+  DODO_PAYMENTS_API_KEY: process.env.DODO_PAYMENTS_API_KEY,
+  DODO_PAYMENTS_WEBHOOK_KEY: process.env.DODO_PAYMENTS_WEBHOOK_KEY,
+  DODO_PAYMENTS_ENVIRONMENT: process.env.DODO_PAYMENTS_ENVIRONMENT,
+  DODO_PAYMENTS_SKIP_WEBHOOK_VERIFICATION: process.env.DODO_PAYMENTS_SKIP_WEBHOOK_VERIFICATION,
+  DODO_PAYMENTS_RETURN_URL: process.env.DODO_PAYMENTS_RETURN_URL,
+  DODO_PAYMENTS_CANCEL_URL: process.env.DODO_PAYMENTS_CANCEL_URL,
+  DODO_PRODUCT_SOLO_MONTHLY: process.env.DODO_PRODUCT_SOLO_MONTHLY,
+  DODO_PRODUCT_SOLO_YEARLY: process.env.DODO_PRODUCT_SOLO_YEARLY,
+  DODO_PRODUCT_CREATOR_PRO_MONTHLY: process.env.DODO_PRODUCT_CREATOR_PRO_MONTHLY,
+  DODO_PRODUCT_CREATOR_PRO_YEARLY: process.env.DODO_PRODUCT_CREATOR_PRO_YEARLY,
+  DODO_PRODUCT_STUDIO_MONTHLY: process.env.DODO_PRODUCT_STUDIO_MONTHLY,
+  DODO_PRODUCT_STUDIO_YEARLY: process.env.DODO_PRODUCT_STUDIO_YEARLY,
+  DODO_PRODUCT_AGENCY_MONTHLY: process.env.DODO_PRODUCT_AGENCY_MONTHLY,
+  DODO_PRODUCT_AGENCY_YEARLY: process.env.DODO_PRODUCT_AGENCY_YEARLY,
   POSTGRES_PORT: process.env.POSTGRES_PORT,
   PROMETHEUS_PORT: process.env.PROMETHEUS_PORT,
   GRAFANA_PORT: process.env.GRAFANA_PORT,

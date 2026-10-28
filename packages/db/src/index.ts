@@ -24,7 +24,9 @@ export {
   SubscriptionsRepository,
   SubscriptionsService,
   DEFAULT_PLAN_LIMITS,
+  type ProviderSubscriptionState,
 } from "./repositories/subscriptions.repository";
+export { BillingWebhookEventsRepository } from "./repositories/billing-webhook-events.repository";
 export { AnalyticsRepository, AnalyticsService } from "./repositories/analytics.repository";
 export {
   NotificationsRepository,

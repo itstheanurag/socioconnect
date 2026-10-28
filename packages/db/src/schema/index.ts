@@ -120,6 +120,14 @@ export {
   type NewInvoice,
   type UpdateInvoice,
 } from "./subscriptions/invoices.db";
+export {
+  billingWebhookEventsTable,
+  BillingWebhookStatusEnum,
+  billingWebhookStatusPgEnum,
+  type BillingWebhookEvent,
+  type NewBillingWebhookEvent,
+  type UpdateBillingWebhookEvent,
+} from "./subscriptions/billing-webhook-events.db";
 
 // Analytics Schema
 export { analyticsSchema } from "./analytics";
