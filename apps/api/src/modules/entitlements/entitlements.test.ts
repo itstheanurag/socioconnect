@@ -2,7 +2,10 @@ import { describe, expect, it } from "bun:test";
 import type { Subscription } from "@repo/db";
 import {
   evaluateAiEntitlement,
+  evaluateChannelEntitlement,
   evaluatePublishEntitlement,
+  evaluateSeatEntitlement,
+  evaluateStorageEntitlement,
   evaluateSubscriptionStatus,
   planRateLimit,
   type EntitlementDecision,
@@ -94,6 +97,46 @@ describe("entitlements", () => {
 
     expect(decision.allowed).toBe(false);
     expect(decision.code).toBe("QUOTA_EXCEEDED");
+  });
+
+  it("enforces connected channel limits", () => {
+    const atLimit = withUsage({ channelsUsed: 2 });
+    const rejected = evaluateChannelEntitlement(atLimit, 1);
+
+    expect(rejected.allowed).toBe(false);
+    expect(rejected.code).toBe("QUOTA_EXCEEDED");
+    expect(rejected.limit).toBe(2);
+
+    const belowLimit = withUsage({ channelsUsed: 1 });
+    expect(evaluateChannelEntitlement(belowLimit, 1).allowed).toBe(true);
+  });
+
+  it("counts pending invites against team seats", () => {
+    const subscription = makeSubscription({
+      limits: { ...makeSubscription().limits, maxTeamMembers: 3 },
+      usage: { ...makeSubscription().usage, teamMembersUsed: 2 },
+    });
+
+    expect(evaluateSeatEntitlement(subscription, 1, 1).allowed).toBe(false);
+
+    const withRoom = makeSubscription({
+      limits: { ...makeSubscription().limits, maxTeamMembers: 3 },
+      usage: { ...makeSubscription().usage, teamMembersUsed: 1 },
+    });
+    expect(evaluateSeatEntitlement(withRoom, 1, 1).allowed).toBe(true);
+  });
+
+  it("enforces workspace media storage limits", () => {
+    const subscription = withUsage({ cdnStorageUsedBytes: 900_000 });
+    const rejected = evaluateStorageEntitlement(subscription, 200_000);
+
+    expect(rejected.allowed).toBe(false);
+    expect(rejected.code).toBe("QUOTA_EXCEEDED");
+    expect(rejected.remaining).toBe(100_000);
+
+    const allowed = evaluateStorageEntitlement(subscription, 50_000);
+    expect(allowed.allowed).toBe(true);
+    expect(allowed.remaining).toBe(100_000);
   });
 
   it("maps plan tiers to per-key rate limits", () => {

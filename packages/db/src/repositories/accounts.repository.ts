@@ -1,10 +1,11 @@
-import { and, eq, isNull } from "drizzle-orm";
+import { and, count, eq, isNull } from "drizzle-orm";
 import { type DBTransaction, db } from "@/connection";
 import {
   connectedAccountsTable,
   type ConnectedAccount,
   type NewConnectedAccount,
   ConnectedAccountStatus,
+  SocialPlatformEnum,
 } from "@/schema";
 import { WorkspacesRepository } from "./workspaces.repository";
 import { withMetrics } from "@/utils/metrics-wrapper";
@@ -51,6 +52,49 @@ export namespace AccountsRepository {
   }
 
   /**
+   * Finds a connected account by its provider identity, including disconnected
+   * rows so reconnects do not consume another channel slot.
+   */
+  export async function findByPlatformAccount(
+    userId: string,
+    platform: SocialPlatformEnum,
+    platformAccountId: string,
+    options?: { tx?: DBTransaction },
+  ): Promise<ConnectedAccount | undefined> {
+    const queryClient = options?.tx || db;
+    return await withMetrics("select", "connected_accounts", async () =>
+      queryClient.query.connectedAccountsTable.findFirst({
+        where: and(
+          eq(connectedAccountsTable.userId, userId),
+          eq(connectedAccountsTable.platform, platform),
+          eq(connectedAccountsTable.platformAccountId, platformAccountId),
+        ),
+      }),
+    );
+  }
+
+  /**
+   * Counts active (not disconnected) accounts in a workspace.
+   */
+  export async function countByWorkspaceId(
+    workspaceId: string,
+    options?: { tx?: DBTransaction },
+  ): Promise<number> {
+    const queryClient = options?.tx || db;
+    const [row] = await queryClient
+      .select({ value: count() })
+      .from(connectedAccountsTable)
+      .where(
+        and(
+          eq(connectedAccountsTable.workspaceId, workspaceId),
+          isNull(connectedAccountsTable.deletedAt),
+        ),
+      );
+
+    return Number(row?.value ?? 0);
+  }
+
+  /**
    * Upserts a connected social account (handles reconnects and token updates)
    */
   export async function upsert(
@@ -71,6 +115,7 @@ export namespace AccountsRepository {
         const [updated] = await queryClient
           .update(connectedAccountsTable)
           .set({
+            workspaceId: payload.workspaceId ?? existing.workspaceId,
             username: payload.username,
             displayName: payload.displayName,
             avatarUrl: payload.avatarUrl,

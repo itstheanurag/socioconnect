@@ -1,4 +1,4 @@
-import { and, desc, eq, isNull } from "drizzle-orm";
+import { and, desc, eq, isNull, sql } from "drizzle-orm";
 import { type DBTransaction, db } from "@/connection";
 import { mediaAssetsTable, type MediaAsset, type NewMediaAsset, MediaTypeEnum } from "@/schema";
 import { WorkspacesRepository } from "./workspaces.repository";
@@ -119,6 +119,26 @@ export namespace MediaRepository {
         offset: options?.offset || 0,
       });
     });
+  }
+
+  /**
+   * Sums active media bytes for a workspace.
+   */
+  export async function sumStorageBytesForWorkspace(
+    workspaceId: string,
+    options?: { tx?: DBTransaction },
+  ): Promise<number> {
+    const queryClient = options?.tx || db;
+    const [row] = await queryClient
+      .select({
+        value: sql<number>`coalesce(sum(${mediaAssetsTable.sizeBytes}), 0)`,
+      })
+      .from(mediaAssetsTable)
+      .where(
+        and(eq(mediaAssetsTable.workspaceId, workspaceId), isNull(mediaAssetsTable.deletedAt)),
+      );
+
+    return Number(row?.value ?? 0);
   }
 
   /**

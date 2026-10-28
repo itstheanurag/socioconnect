@@ -7,6 +7,8 @@ import { errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
+import { resolveWorkspaceId } from "@/utils/workspace";
+import { EntitlementError, EntitlementsService } from "@/modules/entitlements/entitlements.service";
 
 // 1. Generate Presigned Direct Upload URL
 export const getPresignedUrlRoute = createRoute({
@@ -67,6 +69,9 @@ export const getPresignedUrlHandler: AppRouteHandler<GetPresignedUrlRoute> = asy
   const user = c.get("user");
 
   try {
+    const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
+    await EntitlementsService.assertCanStoreMedia(workspaceId, sizeBytes);
+
     if (r2Configured()) {
       const storage = R2StorageService.fromEnv(process.env);
       const upload = await storage.createPresignedUploadUrl({
@@ -113,6 +118,15 @@ export const getPresignedUrlHandler: AppRouteHandler<GetPresignedUrlRoute> = asy
       },
     });
   } catch (err) {
+    if (err instanceof EntitlementError) {
+      throw new HTTPException(err.statusCode as 402, {
+        res: c.json(
+          { message: err.message, code: err.decision.code, ...err.decision },
+          err.statusCode as 402,
+        ),
+      });
+    }
+
     logger.error("Error generating presigned upload URL", {
       module: "media",
       action: "getPresignedUrlHandler",
@@ -184,6 +198,8 @@ export const confirmMediaUploadHandler: AppRouteHandler<ConfirmMediaUploadRoute>
   const user = c.get("user");
 
   try {
+    const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
+
     if (!body.storageKey.startsWith(`vault/${user.id}/`)) {
       throw new HTTPException(StatusCodes.HTTP_403_FORBIDDEN, {
         res: c.json(
@@ -213,8 +229,11 @@ export const confirmMediaUploadHandler: AppRouteHandler<ConfirmMediaUploadRoute>
       mimeType = metadata.contentType || body.mimeType;
     }
 
+    await EntitlementsService.assertCanStoreMedia(workspaceId, sizeBytes);
+
     const asset = await MediaRepository.create({
       userId: user.id,
+      workspaceId,
       storageKey: body.storageKey,
       url: body.url,
       thumbnailUrl: body.thumbnailUrl || null,
@@ -240,6 +259,15 @@ export const confirmMediaUploadHandler: AppRouteHandler<ConfirmMediaUploadRoute>
       StatusCodes.HTTP_201_CREATED,
     );
   } catch (err) {
+    if (err instanceof EntitlementError) {
+      throw new HTTPException(err.statusCode as 402, {
+        res: c.json(
+          { message: err.message, code: err.decision.code, ...err.decision },
+          err.statusCode as 402,
+        ),
+      });
+    }
+
     logger.error("Error confirming media upload", {
       module: "media",
       action: "confirmMediaUploadHandler",

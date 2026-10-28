@@ -57,7 +57,8 @@ export const getQuotasSummaryHandler: AppRouteHandler<GetQuotasSummaryRoute> = a
 
   try {
     const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
-    const subscription = await SubscriptionsRepository.getOrCreateForWorkspace(workspaceId);
+    const subscription =
+      await SubscriptionsRepository.refreshResourceUsageForWorkspace(workspaceId);
     const connectedAccounts = await AccountsRepository.findAllByWorkspaceId(workspaceId);
 
     return c.json({

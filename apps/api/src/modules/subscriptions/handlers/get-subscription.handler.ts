@@ -80,7 +80,7 @@ export const getCurrentSubscriptionHandler: AppRouteHandler<GetCurrentSubscripti
 
   try {
     const { workspaceId } = await resolveWorkspaceMembership(user.id, c.var.auth);
-    const sub = await SubscriptionsRepository.getOrCreateForWorkspace(workspaceId);
+    const sub = await SubscriptionsRepository.refreshResourceUsageForWorkspace(workspaceId);
 
     const channelPct = Math.min(
       100,

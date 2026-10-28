@@ -36,6 +36,7 @@ Scope: public API, API keys, remote MCP server, ChatGPT/Claude distribution, age
 - [x] real R2 presigned media storage when configured, with workspace-scoped notifications and communities
 - [x] dashboard signal-room theme applied across shell, overview, and deeper views
 - [x] workspace-level billing with per-workspace plans, usage, invoices, and portal
+- [x] hard plan limits for channels, team seats, and media storage, with live usage meters
 - [x] per-tool `securitySchemes` and scope metadata in MCP tool descriptors
 - [x] production Dockerfiles, `docker-compose.prod.yml`, Caddy reverse proxy, and deployment guide
 - [x] final brand assets and marketplace screenshots

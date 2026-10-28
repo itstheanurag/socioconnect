@@ -9,6 +9,8 @@ import type { AppBindings, AppRouteHandler } from "@/types";
 import { enforceUserMiddleware } from "@/middlewares/enforce-user.middleware";
 import { recordAuditEvent } from "@/utils/events";
 import { env } from "@/env";
+import type { Context } from "hono";
+import { EntitlementError, EntitlementsService } from "@/modules/entitlements/entitlements.service";
 
 const workspaceSchema = z.object({
   id: z.uuid(),
@@ -50,6 +52,26 @@ function requireManager(role: WorkspaceRole): void {
         headers: { "content-type": "application/json" },
       }),
     });
+  }
+}
+
+async function assertSeatAvailable(
+  c: Context<AppBindings>,
+  workspaceId: string,
+  pendingInvites = 0,
+): Promise<void> {
+  try {
+    await EntitlementsService.assertCanAddTeamMember(workspaceId, pendingInvites, 1);
+  } catch (err) {
+    if (err instanceof EntitlementError) {
+      throw new HTTPException(err.statusCode as 402, {
+        res: c.json(
+          { message: err.message, code: err.decision.code, ...err.decision },
+          err.statusCode as 402,
+        ),
+      });
+    }
+    throw err;
   }
 }
 
@@ -376,6 +398,9 @@ export const inviteMemberHandler: AppRouteHandler<InviteMemberRoute> = async (c)
     }
   }
 
+  const pendingInvites = await WorkspacesRepository.countPendingInvitations(id);
+  await assertSeatAvailable(c, id, pendingInvites);
+
   const token = randomBytes(32).toString("base64url");
   const invite = await WorkspacesRepository.createInvitation({
     workspaceId: id,
@@ -499,6 +524,11 @@ export const acceptInviteHandler: AppRouteHandler<AcceptInviteRoute> = async (c)
         StatusCodes.HTTP_403_FORBIDDEN,
       ),
     });
+  }
+
+  const existingMembership = await WorkspacesRepository.getMembership(invite.workspaceId, user.id);
+  if (!existingMembership) {
+    await assertSeatAvailable(c, invite.workspaceId);
   }
 
   await WorkspacesRepository.addMember(invite.workspaceId, user.id, invite.role as WorkspaceRole);

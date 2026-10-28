@@ -1,4 +1,4 @@
-import { and, desc, eq, isNull } from "drizzle-orm";
+import { and, count, desc, eq, gt, isNull } from "drizzle-orm";
 import { type DBTransaction, db } from "@/connection";
 import {
   usersTable,
@@ -69,6 +69,44 @@ export namespace WorkspacesRepository {
       ),
     });
     return membership ?? null;
+  }
+
+  /**
+   * Counts active members in a workspace.
+   */
+  export async function countMembers(
+    workspaceId: string,
+    options?: { tx?: DBTransaction },
+  ): Promise<number> {
+    const queryClient = options?.tx || db;
+    const [row] = await queryClient
+      .select({ value: count() })
+      .from(workspaceMembersTable)
+      .where(eq(workspaceMembersTable.workspaceId, workspaceId));
+
+    return Number(row?.value ?? 0);
+  }
+
+  /**
+   * Counts pending, unexpired invitations for a workspace.
+   */
+  export async function countPendingInvitations(
+    workspaceId: string,
+    options?: { tx?: DBTransaction },
+  ): Promise<number> {
+    const queryClient = options?.tx || db;
+    const [row] = await queryClient
+      .select({ value: count() })
+      .from(workspaceInvitationsTable)
+      .where(
+        and(
+          eq(workspaceInvitationsTable.workspaceId, workspaceId),
+          isNull(workspaceInvitationsTable.acceptedAt),
+          gt(workspaceInvitationsTable.expiresAt, new Date()),
+        ),
+      );
+
+    return Number(row?.value ?? 0);
   }
 
   export async function createWorkspace(input: {

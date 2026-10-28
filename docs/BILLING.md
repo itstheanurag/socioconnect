@@ -106,6 +106,27 @@ history) require a browser session and the workspace `owner` or `admin` role.
 API keys and MCP clients cannot change a plan. Reading the current plan and
 quota summary is available to any workspace member.
 
+## Plan limit enforcement
+
+Limits are enforced per workspace, not per user:
+
+| Resource      | Enforced on                         | Response             |
+| ------------- | ----------------------------------- | -------------------- |
+| Monthly drops | Post creation / intent confirmation | `402 QUOTA_EXCEEDED` |
+| AI credits    | AI adaptation                       | `402 QUOTA_EXCEEDED` |
+| Channels      | Connecting a new social account     | `402 QUOTA_EXCEEDED` |
+| Team seats    | Creating or accepting invitations   | `402 QUOTA_EXCEEDED` |
+| Media storage | Presigned upload and confirm        | `402 QUOTA_EXCEEDED` |
+
+Channels, seats, and storage are derived from the workspace tables rather than
+incremented counters, so disconnecting an account, removing a member, or
+deleting media frees the allowance immediately. Pending invitations count
+against the seat limit.
+
+Reconnects and existing over-limit resources are allowed; only new consumption
+is blocked. A plan downgrade does not delete existing accounts, members, or
+media.
+
 ## Webhook security and idempotency
 
 - Signatures use the [Standard Webhooks](https://standardwebhooks.com/) scheme:

@@ -78,6 +78,71 @@ export function evaluateAiEntitlement(
   });
 }
 
+export function evaluateChannelEntitlement(
+  subscription: Subscription,
+  channelCount = 1,
+): EntitlementDecision {
+  const status = evaluateSubscriptionStatus(subscription);
+  if (!status.allowed) return status;
+
+  return evaluateMonthlyLimit({
+    used: subscription.usage.channelsUsed,
+    limit: subscription.limits.maxChannels,
+    requested: channelCount,
+    label: "Connected channel",
+  });
+}
+
+export function evaluateSeatEntitlement(
+  subscription: Subscription,
+  pendingInvites = 0,
+  seatCount = 1,
+): EntitlementDecision {
+  const status = evaluateSubscriptionStatus(subscription);
+  if (!status.allowed) return status;
+
+  return evaluateMonthlyLimit({
+    used: subscription.usage.teamMembersUsed + Math.max(0, pendingInvites),
+    limit: subscription.limits.maxTeamMembers,
+    requested: seatCount,
+    label: "Team seat",
+  });
+}
+
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
+}
+
+export function evaluateStorageEntitlement(
+  subscription: Subscription,
+  requestedBytes: number,
+): EntitlementDecision {
+  const status = evaluateSubscriptionStatus(subscription);
+  if (!status.allowed) return status;
+
+  const used = subscription.usage.cdnStorageUsedBytes;
+  const limit = subscription.limits.maxCdnStorageBytes;
+  const requested = Math.max(0, requestedBytes);
+  const remaining = Math.max(0, limit - used);
+
+  if (used + requested > limit) {
+    return {
+      allowed: false,
+      code: "QUOTA_EXCEEDED",
+      message: `Media storage limit reached: ${formatBytes(used)} of ${formatBytes(limit)} used, ${formatBytes(requested)} requested.`,
+      limit,
+      used,
+      requested,
+      remaining,
+    };
+  }
+
+  return { allowed: true, limit, used, requested, remaining };
+}
+
 export function planRateLimit(tier: string): number {
   switch (tier) {
     case "agency":

@@ -1,4 +1,4 @@
-import { and, desc, eq, isNull } from "drizzle-orm";
+import { and, desc, eq, isNull, sql } from "drizzle-orm";
 import { type DBTransaction, db } from "@/connection";
 import {
   subscriptionsTable,
@@ -14,6 +14,8 @@ import {
   BillingIntervalEnum,
 } from "@/schema";
 import { WorkspacesRepository } from "./workspaces.repository";
+import { AccountsRepository } from "./accounts.repository";
+import { MediaRepository } from "./media.repository";
 import { withMetrics } from "@/utils/metrics-wrapper";
 import { logger } from "@repo/shared";
 
@@ -219,6 +221,58 @@ export namespace SubscriptionsRepository {
       });
       throw err;
     }
+  }
+
+  /**
+   * Reads live resource usage from the underlying workspace tables.
+   *
+   * Drops and AI credits are event counters; channels, seats, and storage are
+   * derived so disconnects, removals, and deletes are reflected immediately.
+   */
+  export async function getResourceUsageForWorkspace(
+    workspaceId: string,
+    options?: { tx?: DBTransaction },
+  ): Promise<Pick<SubscriptionUsage, "channelsUsed" | "teamMembersUsed" | "cdnStorageUsedBytes">> {
+    const [channelsUsed, teamMembersUsed, cdnStorageUsedBytes] = await Promise.all([
+      AccountsRepository.countByWorkspaceId(workspaceId, options),
+      WorkspacesRepository.countMembers(workspaceId, options),
+      MediaRepository.sumStorageBytesForWorkspace(workspaceId, options),
+    ]);
+
+    return { channelsUsed, teamMembersUsed, cdnStorageUsedBytes };
+  }
+
+  /**
+   * Refreshes channel, seat, and storage meters from their source tables.
+   */
+  export async function refreshResourceUsageForWorkspace(
+    workspaceId: string,
+    options?: { tx?: DBTransaction },
+  ): Promise<Subscription> {
+    const queryClient = options?.tx || db;
+    const current = await getOrCreateForWorkspace(workspaceId, options);
+    const live = await getResourceUsageForWorkspace(workspaceId, options);
+
+    if (
+      current.usage.channelsUsed === live.channelsUsed &&
+      current.usage.teamMembersUsed === live.teamMembersUsed &&
+      current.usage.cdnStorageUsedBytes === live.cdnStorageUsedBytes
+    ) {
+      return current;
+    }
+
+    const [updated] = await queryClient
+      .update(subscriptionsTable)
+      .set({
+        // Merge only the derived keys so a concurrent drop/AI increment is
+        // never overwritten by a stale read.
+        usage: sql`${subscriptionsTable.usage} || ${JSON.stringify(live)}::jsonb`,
+        updatedAt: new Date(),
+      })
+      .where(eq(subscriptionsTable.id, current.id))
+      .returning();
+
+    return updated;
   }
 
   /**
