@@ -253,9 +253,13 @@ API (Pino) → pino-loki → HTTP POST → Loki → Grafana
 ### Configuration
 
 ```bash
-# Enable Loki shipping (set in .env)
+# Optional. Set this only when Loki is running.
+# Leave empty or unset to disable log shipping.
 LOKI_HOST=http://localhost:3100
 ```
+
+Loki shipping is opt-in. If the collector is down, the API keeps running and
+Loki transport errors are suppressed so they cannot flood the console.
 
 ### Labels
 

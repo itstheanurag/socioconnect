@@ -178,10 +178,14 @@ async function start() {
 }
 
 let server: ServerType;
+let shuttingDown = false;
 void start();
 
 // Stop server
 async function stop() {
+  if (shuttingDown) return;
+  shuttingDown = true;
+
   const shutdownTimeout = setTimeout(() => {
     logger.error("Shutdown timeout reached, forcing exit", {
       module: "system",
@@ -199,6 +203,12 @@ async function stop() {
       action: "shutdown",
       error: error as Error,
     });
+  }
+
+  // The dev hot-reload can close the listener before the handler runs.
+  if (!server || !server.listening) {
+    clearTimeout(shutdownTimeout);
+    process.exit(0);
   }
 
   // Close server after resources

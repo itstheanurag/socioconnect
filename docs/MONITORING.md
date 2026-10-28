@@ -302,7 +302,7 @@ logger.audit("Sensitive data accessed", {
 ### Environment Variables
 
 ```bash
-# Loki host for log shipping (default: http://localhost:3100)
+# Optional Loki host for log shipping. Leave unset to disable.
 LOKI_HOST=http://localhost:3100
 
 # Log level (default: info)

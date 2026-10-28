@@ -13,7 +13,8 @@ export const baseEnvSchema = z.object({
     .enum(["fatal", "error", "warn", "info", "debug", "trace"])
     .optional()
     .default("info"),
-  LOKI_HOST: z.string().optional().default("http://localhost:3100"),
+  // Opt-in: leave empty to disable Loki log shipping.
+  LOKI_HOST: z.string().optional(),
 });
 
 export type BaseEnv = z.infer<typeof baseEnvSchema>;
