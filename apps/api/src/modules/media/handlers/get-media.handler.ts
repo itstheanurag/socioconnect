@@ -5,6 +5,7 @@ import { errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
+import { resolveWorkspaceId } from "@/utils/workspace";
 
 // 1. List Media Assets
 export const getMediaRoute = createRoute({
@@ -60,7 +61,8 @@ export const getMediaHandler: AppRouteHandler<GetMediaRoute> = async (c) => {
   const user = c.get("user");
 
   try {
-    const rawMedia = await MediaRepository.findAllByUserId(user.id, {
+    const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
+    const rawMedia = await MediaRepository.findAllByWorkspaceId(workspaceId, {
       type,
       limit,
       offset: (page - 1) * limit,

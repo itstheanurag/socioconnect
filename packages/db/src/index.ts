@@ -10,6 +10,8 @@ export { WorkspacesRepository } from "./repositories/workspaces.repository";
 export { ApiKeysRepository } from "./repositories/api-keys.repository";
 export { IdempotencyRepository } from "./repositories/idempotency.repository";
 export { PublishIntentsRepository } from "./repositories/publish-intents.repository";
+export { AuditRepository } from "./repositories/audit.repository";
+export { UsageRepository } from "./repositories/usage.repository";
 export { SessionRepository, SessionService } from "./repositories/session.repository";
 export { AccountsRepository, AccountsService } from "./repositories/accounts.repository";
 export { TelegramBotSessionsRepository } from "./repositories/telegram-bot-sessions.repository";

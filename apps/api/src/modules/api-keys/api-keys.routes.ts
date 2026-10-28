@@ -6,6 +6,7 @@ import { ApiKeysRepository, AccountsRepository, WorkspacesRepository } from "@re
 import type { AppBindings, AppRouteHandler } from "@/types";
 import { enforceUserMiddleware } from "@/middlewares/enforce-user.middleware";
 import { enforceSessionMiddleware } from "@/middlewares/enforce-session.middleware";
+import { recordAuditEvent } from "@/utils/events";
 import { API_KEY_SCOPES, generateApiKey, isValidScope } from "./api-keys.service";
 
 const apiKeySummarySchema = z.object({
@@ -179,6 +180,17 @@ export const createApiKeyHandler: AppRouteHandler<CreateApiKeyRoute> = async (c)
     apiKeyId: created.id,
   });
 
+  await recordAuditEvent(c, {
+    action: "api_key.created",
+    resourceType: "api_key",
+    resourceId: created.id,
+    metadata: {
+      scopes: created.scopes,
+      accountIds: created.accountIds,
+      environment: created.environment,
+    },
+  });
+
   return c.json(
     {
       message: "API key created successfully. Copy it now; it will not be shown again.",
@@ -238,6 +250,13 @@ export const revokeApiKeyHandler: AppRouteHandler<RevokeApiKeyRoute> = async (c)
       res: c.json({ message: "API key not found" }, StatusCodes.HTTP_404_NOT_FOUND),
     });
   }
+
+  await recordAuditEvent(c, {
+    action: "api_key.revoked",
+    resourceType: "api_key",
+    resourceId: revoked.id,
+    metadata: { name: revoked.name, prefix: revoked.prefix },
+  });
 
   return c.json({ message: "API key revoked successfully" });
 };
@@ -300,6 +319,13 @@ export const rotateApiKeyHandler: AppRouteHandler<RotateApiKeyRoute> = async (c)
   });
 
   await ApiKeysRepository.revoke(existing.id, workspace.id);
+
+  await recordAuditEvent(c, {
+    action: "api_key.rotated",
+    resourceType: "api_key",
+    resourceId: created.id,
+    metadata: { replacedKeyId: existing.id, name: created.name },
+  });
 
   return c.json(
     {

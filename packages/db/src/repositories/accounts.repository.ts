@@ -140,6 +140,24 @@ export namespace AccountsRepository {
   }
 
   /**
+   * Finds all active connected accounts for a workspace
+   */
+  export async function findAllByWorkspaceId(
+    workspaceId: string,
+    options?: { tx?: DBTransaction },
+  ): Promise<ConnectedAccount[]> {
+    const queryClient = options?.tx || db;
+    return await withMetrics("select", "connected_accounts", async () =>
+      queryClient.query.connectedAccountsTable.findMany({
+        where: and(
+          eq(connectedAccountsTable.workspaceId, workspaceId),
+          isNull(connectedAccountsTable.deletedAt),
+        ),
+      }),
+    );
+  }
+
+  /**
    * Updates tokens after a silent refresh
    */
   export async function updateTokens(

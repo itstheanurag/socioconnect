@@ -181,7 +181,8 @@ requires a confirmed publish intent.
 
 API key creation, scopes, account allowlists, and usage are documented in
 [docs/API_KEYS.md](docs/API_KEYS.md). The draft -> preview -> confirm publish
-flow is documented in [docs/PUBLISH_INTENTS.md](docs/PUBLISH_INTENTS.md).
+flow is documented in [docs/PUBLISH_INTENTS.md](docs/PUBLISH_INTENTS.md). Audit and
+usage ledgers are documented in [docs/EVENTS.md](docs/EVENTS.md).
 
 ---
 

@@ -14,6 +14,7 @@ import {
 import type { AppBindings, AppRouteHandler } from "@/types";
 import { enforceUserMiddleware } from "@/middlewares/enforce-user.middleware";
 import { isAccountAllowed } from "@/utils/authz";
+import { recordAuditEvent, recordUsageEvent } from "@/utils/events";
 import { buildPreview, computeRevisionHash } from "./publish-intents.service";
 
 const ACTIVE_POST_STATUSES = new Set(["draft", "scheduled"]);
@@ -171,6 +172,18 @@ export const createPublishIntentHandler: AppRouteHandler<CreatePublishIntentRout
       draftRevisionHash: computeRevisionHash(post),
       scheduledAt,
       expiresAt,
+    });
+
+    await recordAuditEvent(c, {
+      action: "publish_intent.created",
+      resourceType: "publish_intent",
+      resourceId: intent.id,
+      metadata: {
+        postId: post.id,
+        mode: intent.mode,
+        scheduledAt: scheduledAt?.toISOString() ?? null,
+        destinations: post.dispatches.length,
+      },
     });
 
     return c.json(
@@ -412,7 +425,29 @@ export const confirmPublishIntentHandler: AppRouteHandler<ConfirmPublishIntentRo
       return { activatedPost, confirmed };
     });
 
-    await QuotasRepository.incrementDrops(user.id, 1);
+    await QuotasRepository.incrementDrops(user.id, post.dispatches.length);
+
+    await recordUsageEvent(c, {
+      operation: "publish_operation",
+      quantity: post.dispatches.length,
+      postId: post.id,
+      metadata: {
+        intentId: intent.id,
+        mode: intent.mode,
+        destinations: post.dispatches.length,
+      },
+    });
+    await recordAuditEvent(c, {
+      action: "publish_intent.confirmed",
+      resourceType: "publish_intent",
+      resourceId: intent.id,
+      metadata: {
+        postId: post.id,
+        mode: intent.mode,
+        postStatus: result.activatedPost.status,
+        destinations: post.dispatches.length,
+      },
+    });
 
     logger.audit("publish intent executed", {
       module: "posts",

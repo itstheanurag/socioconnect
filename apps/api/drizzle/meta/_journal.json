@@ -43,6 +43,13 @@
       "when": 1793163408749,
       "tag": "0005_idempotency_publish_intents",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793164263519,
+      "tag": "0006_audit_usage_events",
+      "breakpoints": true
     }
   ]
 }

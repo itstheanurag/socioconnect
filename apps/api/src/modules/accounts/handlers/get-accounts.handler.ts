@@ -6,6 +6,7 @@ import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
 import { isAccountAllowed } from "@/utils/authz";
+import { resolveWorkspaceId } from "@/utils/workspace";
 
 export const getAccountsRoute = createRoute({
   method: "get",
@@ -68,7 +69,8 @@ export const getAccountsHandler: AppRouteHandler<GetAccountsRoute> = async (c) =
   const user = c.get("user");
 
   try {
-    const rawAccounts = await AccountsRepository.findAllByUserId(user.id);
+    const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
+    const rawAccounts = await AccountsRepository.findAllByWorkspaceId(workspaceId);
     const auth = c.var.auth;
 
     const accounts = rawAccounts

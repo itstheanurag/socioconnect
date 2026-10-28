@@ -11,6 +11,7 @@ import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
 import { isAccountAllowed } from "@/utils/authz";
+import { resolveWorkspaceId } from "@/utils/workspace";
 
 // 1. Get Destinations for a Specific Account
 export const getAccountDestinationsRoute = createRoute({
@@ -68,8 +69,14 @@ export const getAccountDestinationsHandler: AppRouteHandler<GetAccountDestinatio
   const user = c.get("user");
 
   try {
+    const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
     const account = await AccountsRepository.findById(accountId);
-    if (!account || account.userId !== user.id || !isAccountAllowed(c.var.auth, account.id)) {
+    if (
+      !account ||
+      account.userId !== user.id ||
+      (account.workspaceId && account.workspaceId !== workspaceId) ||
+      !isAccountAllowed(c.var.auth, account.id)
+    ) {
       throw new HTTPException(StatusCodes.HTTP_404_NOT_FOUND, {
         res: c.json({ message: "Account not found" }, StatusCodes.HTTP_404_NOT_FOUND),
       });

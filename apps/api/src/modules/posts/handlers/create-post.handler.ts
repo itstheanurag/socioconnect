@@ -13,6 +13,7 @@ import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
 import { isAccountAllowed } from "@/utils/authz";
+import { recordAuditEvent, recordUsageEvent } from "@/utils/events";
 
 export const createPostRoute = createRoute({
   method: "post",
@@ -147,8 +148,21 @@ export const createPostHandler: AppRouteHandler<CreatePostRoute> = async (c) => 
     // schedules immediately. API-key requests create drafts and are counted
     // when a publish intent is confirmed.
     if (!isApiKeyDraft) {
-      await QuotasRepository.incrementDrops(user.id, 1);
+      await QuotasRepository.incrementDrops(user.id, body.targets.length);
     }
+
+    await recordUsageEvent(c, {
+      operation: isApiKeyDraft ? "draft_created" : "publish_operation",
+      quantity: isApiKeyDraft ? 0 : body.targets.length,
+      postId: post.id,
+      metadata: { status: post.status, destinations: body.targets.length },
+    });
+    await recordAuditEvent(c, {
+      action: isApiKeyDraft ? "post.draft_created" : "post.created",
+      resourceType: "post",
+      resourceId: post.id,
+      metadata: { status: post.status, destinations: body.targets.length },
+    });
 
     return c.json(
       {

@@ -17,8 +17,9 @@ Scope: public API, API keys, remote MCP server, ChatGPT/Claude distribution, age
 - [x] `Idempotency-Key` middleware and storage (required for API-key writes)
 - [x] publish intents with draft revision hash, preview, and explicit confirmation
 - [x] API-key `POST /v1/posts` creates drafts only; publishing requires an intent
-- [ ] full workspace-scoped queries (currently user-scoped reads with workspace writes)
-- [ ] `audit_events` and `usage_events` tables (next)
+- [x] `audit_events` and `usage_events` ledgers with request metadata
+- [x] workspace-scoped reads for accounts, posts, destinations, and media
+- [ ] workspace-scoped reads for billing, quotas, notifications, and communities
 - [ ] OAuth 2.1 AS and `apps/mcp` (Phase 2)
 
 ---

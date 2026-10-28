@@ -109,6 +109,9 @@ Then, atomically:
 - `schedule` mode: post becomes `scheduled`, dispatches become `pending` with
   the scheduled time
 
+Confirmation records one `publish_operation` usage event per destination. Retries
+do not consume additional usage.
+
 ## Why the revision hash matters
 
 The intent stores a SHA-256 hash of the post content, targets, platform options,

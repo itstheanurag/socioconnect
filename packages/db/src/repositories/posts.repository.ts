@@ -188,6 +188,43 @@ export namespace PostsRepository {
   }
 
   /**
+   * Finds all posts for a workspace (with optional pagination & status filters)
+   */
+  export async function findAllByWorkspaceId(
+    workspaceId: string,
+    filters?: {
+      status?: PostStatusEnum;
+      startDate?: Date;
+      endDate?: Date;
+      limit?: number;
+      offset?: number;
+    },
+    options?: { tx?: DBTransaction },
+  ) {
+    const queryClient = options?.tx || db;
+    return await withMetrics("select", "posts", async () =>
+      queryClient.query.postsTable.findMany({
+        where: and(
+          eq(postsTable.workspaceId, workspaceId),
+          isNull(postsTable.deletedAt),
+          filters?.status ? eq(postsTable.status, filters.status) : undefined,
+        ),
+        orderBy: [desc(postsTable.createdAt)],
+        limit: filters?.limit || 50,
+        offset: filters?.offset || 0,
+        with: {
+          dispatches: {
+            with: {
+              account: true,
+              destination: true,
+            },
+          },
+        },
+      }),
+    );
+  }
+
+  /**
    * Finds and atomically claims all pending dispatches due for execution (Worker Queue)
    */
   export async function findDueDispatches(

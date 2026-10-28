@@ -17,6 +17,7 @@ import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
 import { isAccountAllowed } from "@/utils/authz";
+import { recordAuditEvent } from "@/utils/events";
 import type {
   AuthCredentials,
   PublishResult,
@@ -622,6 +623,13 @@ export const retryDispatchHandler: AppRouteHandler<RetryDispatchRoute> = async (
       externalPostId: null,
       nextRetryAt: null,
       errorDetails: {},
+    });
+
+    await recordAuditEvent(c, {
+      action: "dispatch.retried",
+      resourceType: "dispatch",
+      resourceId: updated.id,
+      metadata: { postId: updated.postId, platform: updated.platform },
     });
 
     return c.json({

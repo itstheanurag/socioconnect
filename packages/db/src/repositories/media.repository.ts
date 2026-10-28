@@ -90,6 +90,38 @@ export namespace MediaRepository {
   }
 
   /**
+   * Finds media assets for a workspace with pagination and optional type filter
+   */
+  export async function findAllByWorkspaceId(
+    workspaceId: string,
+    options?: {
+      type?: MediaTypeEnum;
+      limit?: number;
+      offset?: number;
+      tx?: DBTransaction;
+    },
+  ): Promise<MediaAsset[]> {
+    const queryClient = options?.tx || db;
+    return await withMetrics("select", "media_assets", async () => {
+      const conditions = [
+        eq(mediaAssetsTable.workspaceId, workspaceId),
+        isNull(mediaAssetsTable.deletedAt),
+      ];
+
+      if (options?.type) {
+        conditions.push(eq(mediaAssetsTable.type, options.type));
+      }
+
+      return queryClient.query.mediaAssetsTable.findMany({
+        where: and(...conditions),
+        orderBy: [desc(mediaAssetsTable.createdAt)],
+        limit: options?.limit || 24,
+        offset: options?.offset || 0,
+      });
+    });
+  }
+
+  /**
    * Soft-deletes a media asset
    */
   export async function deleteAsset(

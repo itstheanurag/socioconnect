@@ -12,6 +12,7 @@ import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
 import { isAccountAllowed } from "@/utils/authz";
+import { resolveWorkspaceId } from "@/utils/workspace";
 
 // 1. List Posts with Filtering
 export const getPostsRoute = createRoute({
@@ -78,7 +79,8 @@ export const getPostsHandler: AppRouteHandler<GetPostsRoute> = async (c) => {
   const user = c.get("user");
 
   try {
-    const rawPosts = await PostsRepository.findAllByUserId(user.id, {
+    const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
+    const rawPosts = await PostsRepository.findAllByWorkspaceId(workspaceId, {
       status,
       limit,
       offset: (page - 1) * limit,
@@ -183,9 +185,14 @@ export const getPostByIdHandler: AppRouteHandler<GetPostByIdRoute> = async (c) =
   const user = c.get("user");
 
   try {
+    const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
     const post = await PostsRepository.findById(id);
 
-    if (!post || post.userId !== user.id) {
+    if (
+      !post ||
+      post.userId !== user.id ||
+      (post.workspaceId && post.workspaceId !== workspaceId)
+    ) {
       throw new HTTPException(StatusCodes.HTTP_404_NOT_FOUND, {
         res: c.json({ message: "Post not found" }, StatusCodes.HTTP_404_NOT_FOUND),
       });
