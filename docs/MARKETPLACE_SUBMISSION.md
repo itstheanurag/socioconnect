@@ -146,13 +146,13 @@ Expected:
 ## Submission assets
 
 - [x] App icons generated (`icon-192.png`, `icon-512.png`)
-- [ ] Replace placeholder plugin icon/logo with final brand assets
-- [ ] Add screenshots of the preview card and Developers screen
-- [ ] Privacy policy URL
-- [ ] Terms URL
-- [ ] Support URL
-- [ ] Documentation URL
-- [ ] Demo account credentials
+- [x] Final plugin icon and logo (`plugins/socioconnect/assets/`)
+- [x] Marketplace screenshots in `plugins/socioconnect/assets/screenshots/`
+- [x] Privacy policy URL (`https://socioconnect.app/privacy`)
+- [x] Terms URL (`https://socioconnect.app/terms`)
+- [x] Support URL (`https://socioconnect.app/support`)
+- [x] Documentation URL (`https://socioconnect.app/docs/mcp`)
+- [ ] Demo account credentials seeded on the deployment host
 - [ ] Test prompts copied into the submission portal
 - [ ] MCP endpoint health and metadata checked from a clean network
 - [ ] `claude plugin validate ./plugins/socioconnect`
@@ -160,8 +160,7 @@ Expected:
 
 ## Known limitations to disclose
 
-- Media upload is not exposed as an agent tool yet.
 - The preview UI requires an MCP Apps host; text preview remains available.
-- Per-tool `securitySchemes` metadata may be required by some clients.
 - Access tokens are short-lived but not individually revocable; refresh tokens are.
-- Outbound webhooks and the CLI/SDK are on the roadmap.
+- Billing changes are dashboard-only; agents cannot start checkout.
+- Media upload requires a presigned upload followed by a confirm call.

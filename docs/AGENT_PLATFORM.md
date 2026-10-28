@@ -1,6 +1,6 @@
 # Agent Platform Plan: API Keys, MCP, ChatGPT & Claude
 
-Status: **Phase 0 in progress**
+Status: **Implementation complete; external submission pending**
 Branch: `feat/app-refresh`
 Scope: public API, API keys, remote MCP server, ChatGPT/Claude distribution, agent-safe publishing
 
@@ -35,10 +35,11 @@ Scope: public API, API keys, remote MCP server, ChatGPT/Claude distribution, age
 - [x] webhook retry worker and SSRF validation
 - [x] real R2 presigned media storage when configured, with workspace-scoped notifications and communities
 - [x] dashboard signal-room theme applied across shell, overview, and deeper views
-- [x] production Dockerfiles and `docker-compose.prod.yml`
-- [ ] public submission: deploy domains, replace assets, run review, submit listings
-- [ ] team-level billing (workspaces currently share the owner subscription)
-- [ ] per-tool `securitySchemes` metadata
+- [x] workspace-level billing with per-workspace plans, usage, invoices, and portal
+- [x] per-tool `securitySchemes` and scope metadata in MCP tool descriptors
+- [x] production Dockerfiles, `docker-compose.prod.yml`, Caddy reverse proxy, and deployment guide
+- [x] final brand assets and marketplace screenshots
+- [ ] public submission: deploy domains, run review, submit listings
 
 ---
 

@@ -5,6 +5,7 @@ import { ApiError, apiRequest } from "./api-client";
 import type { McpAuth } from "./auth";
 import { env } from "./env";
 import { PUBLISH_PREVIEW_URI, publishPreviewHtml } from "./widgets/publish-preview";
+import { attachToolSecuritySchemes } from "./tool-security";
 
 type ToolResult = {
   content: Array<{ type: "text"; text: string }>;
@@ -674,6 +675,8 @@ export function createMcpServer(auth: McpAuth): McpServer {
       ],
     }),
   );
+
+  attachToolSecuritySchemes(server);
 
   return server;
 }

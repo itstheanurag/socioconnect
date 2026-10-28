@@ -127,6 +127,47 @@ Scopes are the same as API keys: `profile:read`, `accounts:read`,
 Publishing and retrying are annotated `destructiveHint: true` and
 `openWorldHint: true`.
 
+## Tool security schemes
+
+Every tool descriptor advertises the credential and scope it expects:
+
+```json
+{
+  "name": "confirm_publish_intent",
+  "securitySchemes": [
+    { "type": "oauth2", "name": "socioconnect_oauth", "scopes": ["posts:publish"] },
+    {
+      "type": "apiKey",
+      "name": "socioconnect_api_key",
+      "in": "header",
+      "parameterName": "Authorization",
+      "scheme": "bearer"
+    }
+  ],
+  "_meta": {
+    "securitySchemes": ["...same entries..."]
+  }
+}
+```
+
+The metadata is published at both the top level and in `_meta` because MCP core
+does not yet standardize a per-tool security field. Clients that strip unknown
+top-level properties still receive the data through `_meta`.
+
+Tool scopes:
+
+| Tools                                                                                                | Scopes              |
+| ---------------------------------------------------------------------------------------------------- | ------------------- |
+| `get_profile`                                                                                        | `profile:read`      |
+| `list_accounts`, `get_connect_link`                                                                  | `accounts:read`     |
+| `list_destinations`                                                                                  | `destinations:read` |
+| `list_posts`, `get_post`                                                                             | `posts:read`        |
+| `create_draft`, `update_draft`, `reschedule_post`, `cancel_scheduled_post`                           | `posts:write`       |
+| `create_publish_intent`, `render_publish_preview`, `confirm_publish_intent`, `retry_failed_dispatch` | `posts:publish`     |
+| `get_usage`                                                                                          | `usage:read`        |
+| `create_media_upload_url`, `confirm_media_upload`                                                    | `media:write`       |
+| `get_platform_capabilities`                                                                          | none                |
+
 ## Prompts
 
 - `weekly_content_plan`
@@ -184,16 +225,15 @@ skills, MCP config, local marketplace entry, and a preview widget.
 
 Still required before public directory submission:
 
-- public HTTPS domain and `/.well-known/openai-apps-challenge` verification
-- replace placeholder brand assets
-- privacy policy, support contact, and a no-MFA demo account
-- review scripts and expected outputs
-- multi-account profile behavior verified in ChatGPT
-- Claude connector + plugin bundle submission
+- deploy the production domains and complete OpenAI domain verification
+- run the review script in ChatGPT, Claude, Codex, and Cursor
+- submit the Claude connector and plugin bundle
+- keep the review demo account password rotated after each review
 
 ## Limitations
 
 - Stateless transport; no resumable SSE event store.
 - Media storage uses Cloudflare R2 when configured; development falls back to a mock presigned URL.
 - The consent page is server-rendered and minimal.
+- Tool security metadata is emitted at the top level and in `_meta`; some clients only read `_meta`.
 - Access tokens are short-lived JWTs; refresh tokens are revocable, access tokens are not denylisted.

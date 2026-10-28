@@ -21,7 +21,10 @@ socioconnect/
 │   ├── weekly-scheduler/
 │   ├── schedule-audit/
 │   └── failure-triage/
-└── assets/                  # replace placeholder brand assets before submission
+└── assets/
+    ├── icon.png
+    ├── logo.png
+    └── screenshots/         # marketplace review screenshots
 ```
 
 ## Skills
@@ -99,9 +102,10 @@ Then restart the ChatGPT desktop app and install from the local source.
 - [ ] OAuth discovered from `/.well-known/oauth-protected-resource`
 - [ ] Demo account with sample data and no MFA
 - [ ] Privacy policy and support contact
-- [ ] Tool annotations match behavior
+- [x] Tool annotations match behavior
+- [x] Per-tool security schemes and scopes in MCP metadata
 - [ ] Test prompts and expected responses
-- [ ] Replace placeholder icon/logo/assets
+- [x] Final icon, logo, and marketplace screenshots
 
 ### Claude
 
@@ -111,10 +115,20 @@ Then restart the ChatGPT desktop app and install from the local source.
 - [ ] Directory listing icon, docs, support, privacy, and terms URLs
 - [ ] Verify the connector and plugin pair correctly
 
+## Screenshots
+
+Marketplace-ready captures live in `assets/screenshots/`:
+
+- `overview.png` — workspace signal rail and publishing overview
+- `team-billing.png` — workspace plan, usage, and plan selection
+- `developers.png` — API keys, agent access, and MCP connection details
+- `publish-preview.png` — approval card rendered by the preview widget
+- `overview-mobile.png` — mobile layout
+
 ## Known gaps
 
 - The preview widget depends on MCP Apps UI support. Text fallback remains.
-- Media upload is not exposed as a tool yet.
-- Per-tool `securitySchemes` metadata may need to be added when the client
-  schema supports it.
-- Replace the placeholder brand assets before public submission.
+- Access tokens are short-lived but not individually revocable; refresh tokens
+  are revocable.
+- The review account must be seeded on the deployment host and its password
+  rotated after each review.

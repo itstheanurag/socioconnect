@@ -165,13 +165,15 @@ bun run db:migrate              # Apply migrations to database
 
 ## 💳 Billing
 
-Subscriptions are handled by **Dodo Payments** (hosted checkout + webhooks). Plan
-entitlements are granted only from verified subscription webhooks, never from
-the checkout redirect.
+Subscriptions are handled by **Dodo Payments** (hosted checkout + webhooks) and
+belong to **workspaces**, not users. Every personal or team workspace has its
+own plan, usage, invoices, and billing portal. Plan entitlements are granted only
+from verified subscription webhooks, never from the checkout redirect.
 
-Production containers are defined in `docker-compose.prod.yml` (API, web, MCP,
-and PostgreSQL). See [docs/BILLING.md](docs/BILLING.md) for environment variables, Dodo product
-setup, webhook events, and local testing.
+Production containers are defined in `docker-compose.prod.yml` (web, API, MCP,
+Caddy, and PostgreSQL). See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the
+deployment runbook and [docs/BILLING.md](docs/BILLING.md) for environment
+variables, Dodo product setup, webhook events, and local testing.
 
 ---
 

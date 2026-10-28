@@ -1,0 +1,22 @@
+{
+  email {$ACME_EMAIL}
+}
+
+# Web app
+{$WEB_DOMAIN} {
+  encode zstd gzip
+  reverse_proxy web:3000
+}
+
+# API + OAuth authorization server
+{$API_DOMAIN} {
+  encode zstd gzip
+  reverse_proxy api:8000
+}
+
+# MCP server + protected resource metadata
+{$MCP_DOMAIN} {
+  encode zstd gzip
+  reverse_proxy mcp:8010
+}
+
