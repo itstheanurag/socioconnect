@@ -5,7 +5,10 @@ import { z } from "zod";
  * Apps should extend this with their own specific variables
  */
 export const baseEnvSchema = z.object({
-  NODE_ENV: z.enum(["development", "staging", "production"]).optional().default("development"),
+  NODE_ENV: z
+    .enum(["development", "test", "staging", "production"])
+    .optional()
+    .default("development"),
   LOG_LEVEL: z
     .enum(["fatal", "error", "warn", "info", "debug", "trace"])
     .optional()

@@ -33,6 +33,7 @@ import { notificationRoutes } from "./modules/notifications/notifications.routes
 import { communityRoutes } from "./modules/communities/communities.routes";
 import { getUserMiddleware } from "@/middlewares/get-user.middleware";
 import { apiKeyMiddleware } from "@/middlewares/api-key.middleware";
+import { apiKeyRateLimitMiddleware } from "@/middlewares/api-key-rate-limit.middleware";
 import { apiKeyScopeMiddleware } from "@/middlewares/api-key-scope.middleware";
 import { idempotencyMiddleware } from "@/middlewares/idempotency.middleware";
 import { serviceTokenMiddleware } from "@/middlewares/service-token.middleware";
@@ -76,6 +77,7 @@ app.use(globalRateLimiter);
 
 app.use(getUserMiddleware);
 app.use(apiKeyMiddleware);
+app.use(apiKeyRateLimitMiddleware);
 app.use(serviceTokenMiddleware);
 app.use(apiKeyScopeMiddleware);
 app.use(idempotencyMiddleware);

@@ -2,7 +2,6 @@ import { createRoute, z } from "@hono/zod-openapi";
 import { enforceUserMiddleware } from "@/middlewares/enforce-user.middleware";
 import {
   PostsRepository,
-  QuotasRepository,
   PostStatusEnum,
   TimingStrategyEnum,
   DispatchStatusEnum,
@@ -14,6 +13,7 @@ import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
 import { isAccountAllowed } from "@/utils/authz";
 import { recordAuditEvent, recordUsageEvent } from "@/utils/events";
+import { EntitlementError, EntitlementsService } from "@/modules/entitlements/entitlements.service";
 
 export const createPostRoute = createRoute({
   method: "post",
@@ -110,6 +110,10 @@ export const createPostHandler: AppRouteHandler<CreatePostRoute> = async (c) => 
 
     const scheduledDate = body.scheduledAt ? new Date(body.scheduledAt) : null;
     const isAgentDraft = c.var.auth?.type !== "session";
+    if (!isAgentDraft) {
+      await EntitlementsService.assertCanPublish(user.id, body.targets.length);
+    }
+
     const initialStatus = isAgentDraft
       ? PostStatusEnum.DRAFT
       : scheduledDate && scheduledDate > new Date()
@@ -148,7 +152,7 @@ export const createPostHandler: AppRouteHandler<CreatePostRoute> = async (c) => 
     // schedules immediately. API-key requests create drafts and are counted
     // when a publish intent is confirmed.
     if (!isAgentDraft) {
-      await QuotasRepository.incrementDrops(user.id, body.targets.length);
+      await EntitlementsService.recordPublishUsage(user.id, body.targets.length);
     }
 
     await recordUsageEvent(c, {
@@ -178,6 +182,19 @@ export const createPostHandler: AppRouteHandler<CreatePostRoute> = async (c) => 
     );
   } catch (err) {
     if (err instanceof HTTPException) throw err;
+
+    if (err instanceof EntitlementError) {
+      throw new HTTPException(err.statusCode as 402, {
+        res: c.json(
+          {
+            message: err.message,
+            code: err.decision.code,
+            ...err.decision,
+          },
+          err.statusCode as 402,
+        ),
+      });
+    }
 
     logger.error("Error creating post", {
       module: "posts",

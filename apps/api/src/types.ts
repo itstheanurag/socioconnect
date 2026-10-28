@@ -1,5 +1,5 @@
-import { RouteConfig, RouteHandler } from "@hono/zod-openapi";
-import { Session, User } from "@repo/db";
+import type { RouteConfig, RouteHandler } from "@hono/zod-openapi";
+import type { Session, User } from "@repo/db";
 
 /**
  * Application-wide Hono bindings that define context variables available in handlers.
@@ -29,6 +29,8 @@ export interface AuthContext {
   workspaceId?: string;
   apiKeyId?: string;
   oauthClientId?: string;
+  /** Requests per minute for API-key credentials. */
+  rateLimitPerMinute?: number;
   /** Optional account allowlist for API keys. Empty means all workspace accounts. */
   accountIds?: string[];
 }

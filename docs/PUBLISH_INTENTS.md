@@ -123,16 +123,18 @@ model silently publishes a different version.
 
 ## Errors
 
-| Code                    | Meaning                                              |
-| ----------------------- | ---------------------------------------------------- |
-| `POST_NOT_PUBLISHABLE`  | Post is already dispatching, published, or cancelled |
-| `NO_DESTINATIONS`       | Post has no target accounts                          |
-| `SCHEDULED_AT_REQUIRED` | Schedule mode without `scheduledAt`                  |
-| `SCHEDULED_AT_IN_PAST`  | Scheduled time is not in the future                  |
-| `INTENT_NOT_PENDING`    | Intent was already confirmed, expired, or canceled   |
-| `INTENT_EXPIRED`        | Intent is older than its TTL                         |
-| `DRAFT_CHANGED`         | Post changed after the intent was created            |
-| `ACCOUNT_NOT_ALLOWED`   | API key allowlist does not cover a target account    |
+| Code                    | Meaning                                               |
+| ----------------------- | ----------------------------------------------------- |
+| `POST_NOT_PUBLISHABLE`  | Post is already dispatching, published, or cancelled  |
+| `NO_DESTINATIONS`       | Post has no target accounts                           |
+| `SCHEDULED_AT_REQUIRED` | Schedule mode without `scheduledAt`                   |
+| `SCHEDULED_AT_IN_PAST`  | Scheduled time is not in the future                   |
+| `INTENT_NOT_PENDING`    | Intent was already confirmed, expired, or canceled    |
+| `INTENT_EXPIRED`        | Intent is older than its TTL                          |
+| `DRAFT_CHANGED`         | Post changed after the intent was created             |
+| `ACCOUNT_NOT_ALLOWED`   | API key allowlist does not cover a target account     |
+| `QUOTA_EXCEEDED`        | No publish operations left in the current period      |
+| `SUBSCRIPTION_INACTIVE` | Workspace subscription is paused, canceled, or unpaid |
 
 ## Idempotency
 

@@ -49,6 +49,7 @@ export const apiKeyMiddleware: MiddlewareHandler<AppBindings> = async (c, next) 
       workspaceId: apiKey.workspaceId,
       apiKeyId: apiKey.id,
       accountIds: apiKey.accountIds,
+      rateLimitPerMinute: apiKey.rateLimitPerMinute,
     });
 
     await ApiKeysRepository.touchLastUsed(apiKey.id);

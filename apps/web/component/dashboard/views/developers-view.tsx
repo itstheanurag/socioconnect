@@ -628,6 +628,10 @@ function KeyCard({
             {apiKey.expiresAt ? formatDate(apiKey.expiresAt) : "Never"}
           </div>
         </div>
+        <div>
+          <div className="font-mono uppercase tracking-wider">Rate limit</div>
+          <div className="mt-0.5 text-neutral-300">{apiKey.rateLimitPerMinute}/min</div>
+        </div>
       </div>
     </div>
   );

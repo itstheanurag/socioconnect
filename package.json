@@ -16,6 +16,8 @@
     "db:generate": "turbo db:generate",
     "db:migrate": "turbo db:migrate",
     "lint": "turbo lint",
+    "test": "bun test",
+    "test:agent": "bun test apps/api/src/modules/api-keys apps/api/src/modules/oauth apps/api/src/modules/entitlements apps/api/src/modules/publish-intents/publish-intents.hash.test.ts apps/api/src/middlewares/api-key-scope.middleware.test.ts packages/shared/src/oauth-token.test.ts packages/shared/src/service-token.test.ts",
     "type-check": "turbo type-check",
     "clean": "turbo clean && rm -rf node_modules"
   },

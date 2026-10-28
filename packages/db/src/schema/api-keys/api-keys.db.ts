@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { index, pgSchema, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { integer, index, pgSchema, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { usersTable } from "@/schema/users/users.db";
 import { workspacesTable } from "@/schema/workspaces/workspaces.db";
 
@@ -21,6 +21,7 @@ export const apiKeysTable = apiKeysSchema.table(
     scopes: text("scopes").array().notNull().default([]),
     accountIds: uuid("account_ids").array().notNull().default([]),
     environment: text("environment").notNull().default("live"),
+    rateLimitPerMinute: integer("rate_limit_per_minute").notNull().default(60),
     expiresAt: timestamp("expires_at", { withTimezone: true }),
     lastUsedAt: timestamp("last_used_at", { withTimezone: true }),
     revokedAt: timestamp("revoked_at", { withTimezone: true }),

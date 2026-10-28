@@ -7,6 +7,7 @@ import type { AppBindings, AppRouteHandler } from "@/types";
 import { enforceUserMiddleware } from "@/middlewares/enforce-user.middleware";
 import { enforceSessionMiddleware } from "@/middlewares/enforce-session.middleware";
 import { recordAuditEvent } from "@/utils/events";
+import { EntitlementsService } from "@/modules/entitlements/entitlements.service";
 import { API_KEY_SCOPES, generateApiKey, isValidScope } from "./api-keys.service";
 
 const apiKeySummarySchema = z.object({
@@ -16,6 +17,7 @@ const apiKeySummarySchema = z.object({
   scopes: z.array(z.string()),
   accountIds: z.array(z.uuid()),
   environment: z.string(),
+  rateLimitPerMinute: z.number(),
   lastUsedAt: z.string().nullable(),
   expiresAt: z.string().nullable(),
   createdAt: z.string(),
@@ -63,6 +65,7 @@ export const listApiKeysHandler: AppRouteHandler<ListApiKeysRoute> = async (c) =
         scopes: key.scopes,
         accountIds: key.accountIds,
         environment: key.environment,
+        rateLimitPerMinute: key.rateLimitPerMinute,
         lastUsedAt: key.lastUsedAt ? key.lastUsedAt.toISOString() : null,
         expiresAt: key.expiresAt ? key.expiresAt.toISOString() : null,
         createdAt: key.createdAt.toISOString(),
@@ -169,6 +172,7 @@ export const createApiKeyHandler: AppRouteHandler<CreateApiKeyRoute> = async (c)
     scopes,
     accountIds,
     environment: generated.prefix.includes("_live_") ? "live" : "test",
+    rateLimitPerMinute: await EntitlementsService.getRateLimitForUser(user.id),
     expiresAt: expiresAt ? new Date(expiresAt) : null,
   });
 
@@ -202,6 +206,7 @@ export const createApiKeyHandler: AppRouteHandler<CreateApiKeyRoute> = async (c)
           scopes: created.scopes,
           accountIds: created.accountIds,
           environment: created.environment,
+          rateLimitPerMinute: created.rateLimitPerMinute,
           lastUsedAt: null,
           expiresAt: created.expiresAt ? created.expiresAt.toISOString() : null,
           createdAt: created.createdAt.toISOString(),
@@ -315,6 +320,7 @@ export const rotateApiKeyHandler: AppRouteHandler<RotateApiKeyRoute> = async (c)
     scopes: existing.scopes,
     accountIds: existing.accountIds,
     environment: existing.environment,
+    rateLimitPerMinute: existing.rateLimitPerMinute,
     expiresAt: existing.expiresAt,
   });
 
@@ -338,6 +344,7 @@ export const rotateApiKeyHandler: AppRouteHandler<RotateApiKeyRoute> = async (c)
           scopes: created.scopes,
           accountIds: created.accountIds,
           environment: created.environment,
+          rateLimitPerMinute: created.rateLimitPerMinute,
           lastUsedAt: null,
           expiresAt: created.expiresAt ? created.expiresAt.toISOString() : null,
           createdAt: created.createdAt.toISOString(),

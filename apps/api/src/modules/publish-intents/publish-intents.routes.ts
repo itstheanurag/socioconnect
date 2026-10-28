@@ -9,12 +9,12 @@ import {
   PublishIntentModeEnum,
   PublishIntentStateEnum,
   PublishIntentsRepository,
-  QuotasRepository,
 } from "@repo/db";
 import type { AppBindings, AppRouteHandler } from "@/types";
 import { enforceUserMiddleware } from "@/middlewares/enforce-user.middleware";
 import { isAccountAllowed } from "@/utils/authz";
 import { recordAuditEvent, recordUsageEvent } from "@/utils/events";
+import { EntitlementError, EntitlementsService } from "@/modules/entitlements/entitlements.service";
 import { buildPreview, computeRevisionHash } from "./publish-intents.service";
 
 const ACTIVE_POST_STATUSES = new Set(["draft", "scheduled"]);
@@ -404,6 +404,8 @@ export const confirmPublishIntentHandler: AppRouteHandler<ConfirmPublishIntentRo
       });
     }
 
+    await EntitlementsService.assertCanPublish(user.id, post.dispatches.length);
+
     const scheduledAt =
       intent.mode === PublishIntentModeEnum.SCHEDULE ? intent.scheduledAt : new Date();
 
@@ -429,7 +431,7 @@ export const confirmPublishIntentHandler: AppRouteHandler<ConfirmPublishIntentRo
       return { activatedPost, confirmed };
     });
 
-    await QuotasRepository.incrementDrops(user.id, post.dispatches.length);
+    await EntitlementsService.recordPublishUsage(user.id, post.dispatches.length);
 
     await recordUsageEvent(c, {
       operation: "publish_operation",
@@ -480,6 +482,19 @@ export const confirmPublishIntentHandler: AppRouteHandler<ConfirmPublishIntentRo
     });
   } catch (err) {
     if (err instanceof HTTPException) throw err;
+
+    if (err instanceof EntitlementError) {
+      throw new HTTPException(err.statusCode as 402, {
+        res: c.json(
+          {
+            message: err.message,
+            code: err.decision.code,
+            ...err.decision,
+          },
+          err.statusCode as 402,
+        ),
+      });
+    }
 
     logger.error("Error confirming publish intent", {
       module: "posts",

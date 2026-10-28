@@ -24,6 +24,9 @@ Scope: public API, API keys, remote MCP server, ChatGPT/Claude distribution, age
 - [x] service-token exchange so OAuth tokens are never passed through to the API
 - [x] plugin package with OpenAI + Claude manifests, six skills, local marketplace, and preview widget
 - [x] dashboard API & Agent Access screen with key creation, rotation, revocation, connect instructions, and activity
+- [x] subscription status gating and monthly publish/AI quota enforcement
+- [x] AI credit usage events and per-key rate limits
+- [x] unit tests for API-key crypto, OAuth PKCE, service tokens, scopes, entitlements, and revision hashes
 - [ ] public submission: domain verification, brand assets, demo account, review scripts
 - [ ] workspace-scoped reads for billing, quotas, notifications, and communities
 - [ ] media upload tool and per-tool `securitySchemes` metadata

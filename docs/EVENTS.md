@@ -35,21 +35,22 @@ They must not contain provider tokens, API keys, post bodies, or other secrets.
 
 `usage.usage_events` answers **what did it consume**:
 
-| Column         | Purpose                                                  |
-| -------------- | -------------------------------------------------------- |
-| `workspace_id` | Tenant boundary                                          |
-| `api_key_id`   | Credential responsible, when applicable                  |
-| `source`       | `web`, `api`, `mcp`, `cli`, `plugin`, `system`           |
-| `operation`    | `publish_operation`, `draft_created`, future `ai_credit` |
-| `quantity`     | Units consumed                                           |
-| `post_id`      | Related post, when applicable                            |
-| `metadata`     | Small context                                            |
-| `created_at`   | Event time                                               |
+| Column         | Purpose                                           |
+| -------------- | ------------------------------------------------- |
+| `workspace_id` | Tenant boundary                                   |
+| `api_key_id`   | Credential responsible, when applicable           |
+| `source`       | `web`, `api`, `mcp`, `cli`, `plugin`, `system`    |
+| `operation`    | `publish_operation`, `draft_created`, `ai_credit` |
+| `quantity`     | Units consumed                                    |
+| `post_id`      | Related post, when applicable                     |
+| `metadata`     | Small context                                     |
+| `created_at`   | Event time                                        |
 
 Rules:
 
 - `publish_operation` quantity is the number of destination publishes.
 - `draft_created` has quantity `0`; it is analytics, not billable volume.
+- `ai_credit` is recorded once per AI adaptation.
 - Retries do not consume quota.
 - API-key events use source `api`; browser-session events use `web`.
 

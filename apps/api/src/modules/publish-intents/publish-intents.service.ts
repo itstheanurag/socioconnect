@@ -1,28 +1,15 @@
-import { createHash } from "node:crypto";
 import type { SocialPlatform, UniversalPostPayload } from "@repo/libraries";
 import { createSocialProviderRegistry } from "@/modules/provider-registry";
+import { type RevisionDispatch, type RevisionPost } from "./publish-intents.hash";
 
-type DispatchWithRelations = {
-  id: string;
-  accountId: string;
-  destinationId: string | null;
-  platform: string;
-  customContent: string | null;
-  customTitle: string | null;
-  platformOptions: Record<string, unknown> | null;
-  scheduledFor: Date;
+export { computeRevisionHash } from "./publish-intents.hash";
+
+type DispatchWithRelations = RevisionDispatch & {
   account?: { username: string } | null;
   destination?: { name: string } | null;
 };
 
-type PostWithDispatches = {
-  id: string;
-  title: string | null;
-  content: string;
-  tags: string[];
-  linkUrl: string | null;
-  mediaIds: string[];
-  timingStrategy: string;
+type PostWithDispatches = Omit<RevisionPost, "dispatches"> & {
   status: string;
   scheduledAt: Date | null;
   dispatches: DispatchWithRelations[];
@@ -53,34 +40,6 @@ export interface PublishIntentPreview {
     warnings: string[];
   }>;
   estimatedDrops: number;
-}
-
-export function computeRevisionHash(post: PostWithDispatches): string {
-  const dispatches = [...post.dispatches]
-    .sort((a, b) => a.id.localeCompare(b.id))
-    .map((dispatch) => ({
-      id: dispatch.id,
-      accountId: dispatch.accountId,
-      destinationId: dispatch.destinationId,
-      platform: dispatch.platform,
-      customContent: dispatch.customContent,
-      customTitle: dispatch.customTitle,
-      platformOptions: dispatch.platformOptions,
-      scheduledFor: dispatch.scheduledFor.toISOString(),
-    }));
-
-  const payload = {
-    id: post.id,
-    title: post.title,
-    content: post.content,
-    tags: post.tags,
-    linkUrl: post.linkUrl,
-    mediaIds: post.mediaIds,
-    timingStrategy: post.timingStrategy,
-    dispatches,
-  };
-
-  return createHash("sha256").update(JSON.stringify(payload)).digest("hex");
 }
 
 export function buildPreview(post: PostWithDispatches): PublishIntentPreview {

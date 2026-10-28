@@ -1,7 +1,8 @@
-import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
+import { randomBytes, timingSafeEqual } from "node:crypto";
 import { OAuthRepository, type OAuthClient, type OAuthRefreshToken } from "@repo/db";
 import { signOAuthAccessToken } from "@repo/shared";
-import { API_KEY_SCOPES } from "@/modules/api-keys/api-keys.service";
+import { API_KEY_SCOPES } from "@/modules/api-keys/api-key-crypto";
+import { hashToken, randomToken, verifyPkce } from "./oauth-crypto";
 import { env } from "@/env";
 
 const AUTH_CODE_TTL_MS = 10 * 60 * 1000;
@@ -28,23 +29,7 @@ export const oauthConfig = {
   supportedScopes: API_KEY_SCOPES,
 };
 
-export function hashToken(token: string): string {
-  return createHash("sha256").update(token).digest("hex");
-}
-
-export function randomToken(): string {
-  return randomBytes(32).toString("base64url");
-}
-
-export function pkceChallenge(verifier: string): string {
-  return createHash("sha256").update(verifier).digest("base64url");
-}
-
-export function verifyPkce(verifier: string, challenge: string): boolean {
-  const computed = Buffer.from(pkceChallenge(verifier));
-  const expected = Buffer.from(challenge);
-  return computed.length === expected.length && timingSafeEqual(computed, expected);
-}
+export { hashToken, pkceChallenge, randomToken, verifyPkce } from "./oauth-crypto";
 
 export function validateScopes(requested: string[]): string[] {
   const scopes = requested.length > 0 ? requested : [...oauthConfig.supportedScopes];

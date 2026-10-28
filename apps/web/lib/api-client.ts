@@ -98,6 +98,7 @@ export interface ApiKeySummary {
   scopes: string[];
   accountIds: string[];
   environment: string;
+  rateLimitPerMinute: number;
   lastUsedAt: string | null;
   expiresAt: string | null;
   createdAt: string;

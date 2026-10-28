@@ -152,3 +152,35 @@ revocable per workspace.
 - Never put keys in client-side code, URLs, logs, or chat messages.
 - Prefer `posts:write` for drafting agents and keep `posts:publish` for a
   separate, human-approved agent.
+
+## Rate limits
+
+Each key gets a per-minute request limit based on the workspace plan:
+
+| Plan        | Requests/min |
+| ----------- | ------------ |
+| Free        | 10           |
+| Solo        | 30           |
+| Creator Pro | 60           |
+| Studio      | 180          |
+| Agency      | 600          |
+
+The API returns:
+
+- `X-RateLimit-Limit`
+- `X-RateLimit-Remaining`
+- `X-RateLimit-Reset` (Unix seconds)
+- `429 RATE_LIMITED` with `Retry-After` when exceeded
+
+Limits are currently process-local. Use Redis when running multiple API
+instances.
+
+## Plan and quota errors
+
+Publishing is blocked with:
+
+- `402 QUOTA_EXCEEDED` when the monthly destination limit is exhausted
+- `403 SUBSCRIPTION_INACTIVE` when the workspace is `paused`, `canceled`, or `unpaid`
+
+`past_due` keeps access during the grace period. Draft creation remains available
+when a workspace is inactive; publishing does not.
