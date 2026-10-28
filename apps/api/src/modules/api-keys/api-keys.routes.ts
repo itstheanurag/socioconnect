@@ -2,12 +2,13 @@ import { createRoute, z } from "@hono/zod-openapi";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
 import { createRouter, errorResponseSchemas, logger } from "@repo/shared";
-import { ApiKeysRepository, AccountsRepository, WorkspacesRepository } from "@repo/db";
+import { ApiKeysRepository, AccountsRepository } from "@repo/db";
 import type { AppBindings, AppRouteHandler } from "@/types";
 import { enforceUserMiddleware } from "@/middlewares/enforce-user.middleware";
 import { enforceSessionMiddleware } from "@/middlewares/enforce-session.middleware";
 import { recordAuditEvent } from "@/utils/events";
 import { EntitlementsService } from "@/modules/entitlements/entitlements.service";
+import { resolveWorkspaceId } from "@/utils/workspace";
 import { API_KEY_SCOPES, generateApiKey, isValidScope } from "./api-keys.service";
 
 const apiKeySummarySchema = z.object({
@@ -52,8 +53,8 @@ export type ListApiKeysRoute = typeof listApiKeysRoute;
 
 export const listApiKeysHandler: AppRouteHandler<ListApiKeysRoute> = async (c) => {
   const user = c.get("user");
-  const workspace = await WorkspacesRepository.ensurePersonalWorkspace(user.id);
-  const keys = await ApiKeysRepository.listByWorkspace(workspace.id);
+  const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
+  const keys = await ApiKeysRepository.listByWorkspace(workspaceId);
 
   return c.json({
     message: "API keys retrieved successfully",
@@ -136,10 +137,7 @@ export const createApiKeyHandler: AppRouteHandler<CreateApiKeyRoute> = async (c)
     });
   }
 
-  const workspace = await WorkspacesRepository.ensurePersonalWorkspace(
-    user.id,
-    `${user.firstName}'s workspace`,
-  );
+  const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
 
   if (accountIds.length > 0) {
     const accounts = await Promise.all(
@@ -164,7 +162,7 @@ export const createApiKeyHandler: AppRouteHandler<CreateApiKeyRoute> = async (c)
 
   const generated = generateApiKey();
   const created = await ApiKeysRepository.create({
-    workspaceId: workspace.id,
+    workspaceId,
     createdByUserId: user.id,
     name,
     prefix: generated.prefix,
@@ -172,7 +170,7 @@ export const createApiKeyHandler: AppRouteHandler<CreateApiKeyRoute> = async (c)
     scopes,
     accountIds,
     environment: generated.prefix.includes("_live_") ? "live" : "test",
-    rateLimitPerMinute: await EntitlementsService.getRateLimitForUser(user.id),
+    rateLimitPerMinute: await EntitlementsService.getRateLimitForWorkspace(workspaceId),
     expiresAt: expiresAt ? new Date(expiresAt) : null,
   });
 
@@ -180,7 +178,7 @@ export const createApiKeyHandler: AppRouteHandler<CreateApiKeyRoute> = async (c)
     module: "api-keys",
     action: "handler:create",
     userId: user.id,
-    workspaceId: workspace.id,
+    workspaceId,
     apiKeyId: created.id,
   });
 
@@ -247,8 +245,8 @@ export type RevokeApiKeyRoute = typeof revokeApiKeyRoute;
 export const revokeApiKeyHandler: AppRouteHandler<RevokeApiKeyRoute> = async (c) => {
   const user = c.get("user");
   const { id } = c.req.valid("param");
-  const workspace = await WorkspacesRepository.ensurePersonalWorkspace(user.id);
-  const revoked = await ApiKeysRepository.revoke(id, workspace.id);
+  const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
+  const revoked = await ApiKeysRepository.revoke(id, workspaceId);
 
   if (!revoked) {
     throw new HTTPException(StatusCodes.HTTP_404_NOT_FOUND, {
@@ -301,10 +299,10 @@ export type RotateApiKeyRoute = typeof rotateApiKeyRoute;
 export const rotateApiKeyHandler: AppRouteHandler<RotateApiKeyRoute> = async (c) => {
   const user = c.get("user");
   const { id } = c.req.valid("param");
-  const workspace = await WorkspacesRepository.ensurePersonalWorkspace(user.id);
+  const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
   const existing = await ApiKeysRepository.findById(id);
 
-  if (!existing || existing.workspaceId !== workspace.id) {
+  if (!existing || existing.workspaceId !== workspaceId) {
     throw new HTTPException(StatusCodes.HTTP_404_NOT_FOUND, {
       res: c.json({ message: "API key not found" }, StatusCodes.HTTP_404_NOT_FOUND),
     });
@@ -324,7 +322,7 @@ export const rotateApiKeyHandler: AppRouteHandler<RotateApiKeyRoute> = async (c)
     expiresAt: existing.expiresAt,
   });
 
-  await ApiKeysRepository.revoke(existing.id, workspace.id);
+  await ApiKeysRepository.revoke(existing.id, workspaceId);
 
   await recordAuditEvent(c, {
     action: "api_key.rotated",

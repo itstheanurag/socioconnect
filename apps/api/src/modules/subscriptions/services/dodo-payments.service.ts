@@ -49,6 +49,7 @@ export interface DodoSubscription {
 
 interface CreateCheckoutSessionInput {
   userId: string;
+  workspaceId: string;
   email: string;
   name?: string | null;
   tier: SubscriptionTierEnum;
@@ -144,6 +145,7 @@ export const DodoPaymentsService = {
         cancel_url: input.cancelUrl ?? dodoConfig.cancelUrl,
         metadata: {
           user_id: input.userId,
+          workspace_id: input.workspaceId,
           tier: input.tier,
           billing_interval: input.interval,
         },

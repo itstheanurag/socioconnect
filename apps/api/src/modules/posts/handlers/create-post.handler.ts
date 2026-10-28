@@ -12,6 +12,7 @@ import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
 import { isAccountAllowed } from "@/utils/authz";
+import { resolveWorkspaceId } from "@/utils/workspace";
 import { recordAuditEvent, recordUsageEvent } from "@/utils/events";
 import { WebhookService } from "@/modules/webhooks/webhooks.service";
 import { EntitlementError, EntitlementsService } from "@/modules/entitlements/entitlements.service";
@@ -92,6 +93,7 @@ export const createPostHandler: AppRouteHandler<CreatePostRoute> = async (c) => 
 
   try {
     const auth = c.var.auth;
+    const workspaceId = await resolveWorkspaceId(user.id, auth);
     const forbiddenTarget = body.targets.find(
       (target) => !isAccountAllowed(auth, target.accountId),
     );
@@ -112,7 +114,7 @@ export const createPostHandler: AppRouteHandler<CreatePostRoute> = async (c) => 
     const scheduledDate = body.scheduledAt ? new Date(body.scheduledAt) : null;
     const isAgentDraft = c.var.auth?.type !== "session";
     if (!isAgentDraft) {
-      await EntitlementsService.assertCanPublish(user.id, body.targets.length);
+      await EntitlementsService.assertCanPublish(workspaceId, body.targets.length);
     }
 
     const initialStatus = isAgentDraft
@@ -137,6 +139,7 @@ export const createPostHandler: AppRouteHandler<CreatePostRoute> = async (c) => 
     const { post, dispatches: createdDispatches } = await PostsRepository.createWithDispatches({
       post: {
         userId: user.id,
+        workspaceId,
         title: body.title || null,
         content: body.content,
         tags: body.tags,
@@ -153,7 +156,7 @@ export const createPostHandler: AppRouteHandler<CreatePostRoute> = async (c) => 
     // schedules immediately. API-key requests create drafts and are counted
     // when a publish intent is confirmed.
     if (!isAgentDraft) {
-      await EntitlementsService.recordPublishUsage(user.id, body.targets.length);
+      await EntitlementsService.recordPublishUsage(workspaceId, body.targets.length);
     }
 
     await recordUsageEvent(c, {

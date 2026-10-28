@@ -57,11 +57,10 @@ async function main() {
     `${NAME}'s workspace`,
   );
 
-  await SubscriptionsRepository.updateTier(
-    user.id,
+  await SubscriptionsRepository.updateTierForWorkspace(
+    workspace.id,
     SubscriptionTierEnum.CREATOR_PRO,
     BillingIntervalEnum.MONTHLY,
-    { customerId: "cus_demo_review", subscriptionId: "sub_demo_review" },
   );
 
   const token = encrypt("demo-social-token", process.env.ENCRYPTION_KEY);
@@ -219,7 +218,9 @@ async function main() {
   console.log("");
   console.log("Demo account ready");
   console.log(`  email:    ${EMAIL}`);
-  console.log(`  password: ${process.env.DEMO_ACCOUNT_PASSWORD ? "(set via DEMO_ACCOUNT_PASSWORD)" : "(not set)"}`);
+  console.log(
+    `  password: ${process.env.DEMO_ACCOUNT_PASSWORD ? "(set via DEMO_ACCOUNT_PASSWORD)" : "(not set)"}`,
+  );
   console.log(`  login:    ${process.env.FRONTEND_URL || "http://localhost:3000"}/demo`);
   console.log(`  workspace:${workspace.id}`);
   console.log("");

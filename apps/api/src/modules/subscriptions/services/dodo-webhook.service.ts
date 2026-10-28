@@ -124,6 +124,7 @@ async function syncSubscription(data: Record<string, unknown>): Promise<void> {
   const customerId = asString(customer?.customer_id);
   const metadata = asRecord(data.metadata);
   const metadataUserId = asString(metadata?.user_id);
+  const metadataWorkspaceId = asString(metadata?.workspace_id);
   const productId = asString(data.product_id);
 
   const existing = await SubscriptionsRepository.findByExternalIds({
@@ -157,6 +158,7 @@ async function syncSubscription(data: Record<string, unknown>): Promise<void> {
 
   await SubscriptionsRepository.syncFromProvider({
     userId,
+    workspaceId: metadataWorkspaceId ?? existing?.workspaceId ?? null,
     externalCustomerId: customerId,
     externalSubscriptionId: subscriptionId,
     tier,
@@ -213,6 +215,7 @@ async function recordPayment(data: Record<string, unknown>): Promise<void> {
   await SubscriptionsRepository.upsertInvoice({
     subscriptionId: subscription.id,
     userId: subscription.userId,
+    workspaceId: subscription.workspaceId,
     externalInvoiceId: asString(data.invoice_id) ?? paymentId,
     invoiceNumber: asString(data.invoice_number) ?? `DODO-${paymentId}`,
     amountDue: amount,

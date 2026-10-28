@@ -1,4 +1,13 @@
-import { boolean, index, jsonb, pgEnum, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  index,
+  jsonb,
+  pgEnum,
+  text,
+  timestamp,
+  uniqueIndex,
+  uuid,
+} from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { enumToPgEnum } from "@repo/shared";
 import { subscriptionsSchema } from "./index";
@@ -57,10 +66,7 @@ export const subscriptionStatusPgEnum = pgEnum(
   enumToPgEnum(SubscriptionStatusEnum),
 );
 
-export const billingIntervalPgEnum = pgEnum(
-  "billing_interval",
-  enumToPgEnum(BillingIntervalEnum),
-);
+export const billingIntervalPgEnum = pgEnum("billing_interval", enumToPgEnum(BillingIntervalEnum));
 
 export const subscriptionsTable = subscriptionsSchema.table(
   "subscriptions",
@@ -75,7 +81,9 @@ export const subscriptionsTable = subscriptionsSchema.table(
 
     tier: subscriptionTierPgEnum("tier").notNull().default(SubscriptionTierEnum.FREE),
     status: subscriptionStatusPgEnum("status").notNull().default(SubscriptionStatusEnum.ACTIVE),
-    billingInterval: billingIntervalPgEnum("billing_interval").notNull().default(BillingIntervalEnum.MONTHLY),
+    billingInterval: billingIntervalPgEnum("billing_interval")
+      .notNull()
+      .default(BillingIntervalEnum.MONTHLY),
 
     externalCustomerId: text("external_customer_id"),
     externalSubscriptionId: text("external_subscription_id"),
@@ -95,8 +103,8 @@ export const subscriptionsTable = subscriptionsSchema.table(
     deletedAt: timestamp("deleted_at", { withTimezone: true }),
   },
   (table) => [
-    uniqueIndex("subscriptions_user_id_idx").on(table.userId),
-    index("subscriptions_workspace_id_idx").on(table.workspaceId),
+    index("subscriptions_user_id_idx").on(table.userId),
+    uniqueIndex("subscriptions_workspace_id_idx").on(table.workspaceId),
     index("subscriptions_status_idx").on(table.status),
     index("subscriptions_tier_idx").on(table.tier),
     index("subscriptions_ext_sub_idx").on(table.externalSubscriptionId),
@@ -107,6 +115,10 @@ export const subscriptionsRelations = relations(subscriptionsTable, ({ one, many
   user: one(usersTable, {
     fields: [subscriptionsTable.userId],
     references: [usersTable.id],
+  }),
+  workspace: one(workspacesTable, {
+    fields: [subscriptionsTable.workspaceId],
+    references: [workspacesTable.id],
   }),
   invoices: many(invoicesTable),
 }));

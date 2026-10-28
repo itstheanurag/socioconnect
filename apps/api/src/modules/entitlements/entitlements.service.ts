@@ -24,38 +24,42 @@ function assertDecision(decision: EntitlementDecision): void {
 }
 
 export const EntitlementsService = {
-  async getSubscription(userId: string): Promise<Subscription> {
-    return SubscriptionsRepository.getOrCreate(userId);
+  /**
+   * Subscriptions are billed per workspace: every member of a team consumes
+   * the workspace plan, not the workspace owner's personal plan.
+   */
+  async getSubscription(workspaceId: string): Promise<Subscription> {
+    return SubscriptionsRepository.getOrCreateForWorkspace(workspaceId);
   },
 
-  async assertCanPublish(userId: string, destinationCount: number): Promise<Subscription> {
-    const subscription = await EntitlementsService.getSubscription(userId);
+  async assertCanPublish(workspaceId: string, destinationCount: number): Promise<Subscription> {
+    const subscription = await EntitlementsService.getSubscription(workspaceId);
     assertDecision(evaluatePublishEntitlement(subscription, destinationCount));
     return subscription;
   },
 
-  async assertCanUseAiCredits(userId: string, creditCount = 1): Promise<Subscription> {
-    const subscription = await EntitlementsService.getSubscription(userId);
+  async assertCanUseAiCredits(workspaceId: string, creditCount = 1): Promise<Subscription> {
+    const subscription = await EntitlementsService.getSubscription(workspaceId);
     assertDecision(evaluateAiEntitlement(subscription, creditCount));
     return subscription;
   },
 
-  async recordPublishUsage(userId: string, destinationCount: number): Promise<void> {
+  async recordPublishUsage(workspaceId: string, destinationCount: number): Promise<void> {
     if (destinationCount <= 0) return;
-    await SubscriptionsRepository.incrementUsage(userId, {
+    await SubscriptionsRepository.incrementUsageForWorkspace(workspaceId, {
       monthlyDrops: destinationCount,
     });
   },
 
-  async recordAiCreditUsage(userId: string, creditCount = 1): Promise<void> {
+  async recordAiCreditUsage(workspaceId: string, creditCount = 1): Promise<void> {
     if (creditCount <= 0) return;
-    await SubscriptionsRepository.incrementUsage(userId, {
+    await SubscriptionsRepository.incrementUsageForWorkspace(workspaceId, {
       aiCredits: creditCount,
     });
   },
 
-  async getRateLimitForUser(userId: string): Promise<number> {
-    const subscription = await EntitlementsService.getSubscription(userId);
+  async getRateLimitForWorkspace(workspaceId: string): Promise<number> {
+    const subscription = await EntitlementsService.getSubscription(workspaceId);
     return planRateLimit(subscription.tier);
   },
 };

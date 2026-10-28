@@ -13,6 +13,7 @@ import {
 import type { AppBindings, AppRouteHandler } from "@/types";
 import { enforceUserMiddleware } from "@/middlewares/enforce-user.middleware";
 import { isAccountAllowed } from "@/utils/authz";
+import { resolveWorkspaceId } from "@/utils/workspace";
 import { recordAuditEvent, recordUsageEvent } from "@/utils/events";
 import { WebhookService } from "@/modules/webhooks/webhooks.service";
 import { EntitlementError, EntitlementsService } from "@/modules/entitlements/entitlements.service";
@@ -413,7 +414,8 @@ export const confirmPublishIntentHandler: AppRouteHandler<ConfirmPublishIntentRo
       });
     }
 
-    await EntitlementsService.assertCanPublish(user.id, post.dispatches.length);
+    const workspaceId = post.workspaceId ?? (await resolveWorkspaceId(user.id, auth));
+    await EntitlementsService.assertCanPublish(workspaceId, post.dispatches.length);
 
     const scheduledAt =
       intent.mode === PublishIntentModeEnum.SCHEDULE ? intent.scheduledAt : new Date();
@@ -440,7 +442,7 @@ export const confirmPublishIntentHandler: AppRouteHandler<ConfirmPublishIntentRo
       return { activatedPost, confirmed };
     });
 
-    await EntitlementsService.recordPublishUsage(user.id, post.dispatches.length);
+    await EntitlementsService.recordPublishUsage(workspaceId, post.dispatches.length);
 
     await recordUsageEvent(c, {
       operation: "publish_operation",

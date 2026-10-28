@@ -334,3 +334,125 @@ export async function acceptWorkspaceInvite(token: string): Promise<string> {
   );
   return data.payload.workspaceId;
 }
+
+// ---------------------------------------------------------------------------
+// Workspace billing
+// ---------------------------------------------------------------------------
+
+export interface SubscriptionLimits {
+  maxChannels: number;
+  maxMonthlyDrops: number;
+  maxAiCredits: number;
+  maxCdnStorageBytes: number;
+  maxTeamMembers: number;
+  hasDedicatedScheduler: boolean;
+  hasPrioritySupport: boolean;
+  hasCustomBranding: boolean;
+}
+
+export interface SubscriptionSummary {
+  id: string;
+  tier: string;
+  status: string;
+  billingInterval: "monthly" | "yearly";
+  currentPeriodStart: string;
+  currentPeriodEnd: string;
+  cancelAtPeriodEnd: boolean;
+  canceledAt: string | null;
+  hasBillingAccount: boolean;
+  limits: SubscriptionLimits;
+  usage: {
+    channelsUsed: number;
+    monthlyDropsUsed: number;
+    aiCreditsUsed: number;
+    cdnStorageUsedBytes: number;
+    teamMembersUsed: number;
+  };
+  percentageUsed: {
+    channels: number;
+    drops: number;
+    aiCredits: number;
+    cdnStorage: number;
+  };
+}
+
+export interface SubscriptionPlan {
+  tier: string;
+  name: string;
+  description: string;
+  popular?: boolean;
+  monthlyPriceDollars: number;
+  yearlyPriceDollars: number;
+  limits: SubscriptionLimits;
+  features: string[];
+}
+
+export interface CheckoutSession {
+  sessionId: string;
+  checkoutUrl: string;
+  tier: string;
+  interval: "monthly" | "yearly";
+}
+
+export interface BillingInvoice {
+  id: string;
+  invoiceNumber: string;
+  amountDueDollars: number;
+  amountPaidDollars: number;
+  currency: string;
+  status: string;
+  hostedInvoiceUrl: string | null;
+  invoicePdfUrl: string | null;
+  periodStart: string;
+  periodEnd: string;
+  paidAt: string | null;
+  createdAt: string;
+}
+
+export async function getSubscription(): Promise<SubscriptionSummary> {
+  const data = await apiFetch<{ payload: SubscriptionSummary }>("/v1/subscriptions/current");
+  return data.payload;
+}
+
+export async function getSubscriptionPlans(): Promise<SubscriptionPlan[]> {
+  const data = await apiFetch<{ payload: { plans: SubscriptionPlan[] } }>(
+    "/v1/subscriptions/plans",
+  );
+  return data.payload.plans;
+}
+
+export async function createCheckoutSession(input: {
+  tier: string;
+  interval: "monthly" | "yearly";
+  successUrl?: string;
+  cancelUrl?: string;
+}): Promise<CheckoutSession> {
+  const data = await apiFetch<{ payload: CheckoutSession }>("/v1/subscriptions/checkout", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+  return data.payload;
+}
+
+export async function createBillingPortalSession(returnUrl?: string): Promise<string> {
+  const data = await apiFetch<{ payload: { url: string } }>("/v1/subscriptions/portal", {
+    method: "POST",
+    body: JSON.stringify(returnUrl ? { returnUrl } : {}),
+  });
+  return data.payload.url;
+}
+
+export async function cancelSubscription(): Promise<void> {
+  await apiFetch("/v1/subscriptions/cancel", { method: "POST" });
+}
+
+export async function resumeSubscription(): Promise<void> {
+  await apiFetch("/v1/subscriptions/resume", { method: "POST" });
+}
+
+export async function getBillingInvoices(): Promise<BillingInvoice[]> {
+  const data = await apiFetch<{ payload: { invoices: BillingInvoice[] } }>(
+    "/v1/subscriptions/invoices",
+  );
+  return data.payload.invoices;
+}

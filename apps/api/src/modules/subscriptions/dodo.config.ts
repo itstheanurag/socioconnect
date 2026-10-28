@@ -66,8 +66,8 @@ export const dodoConfig = {
     env.DODO_PAYMENTS_ENVIRONMENT === "live_mode"
       ? "https://live.dodopayments.com"
       : "https://test.dodopayments.com",
-  returnUrl: env.DODO_PAYMENTS_RETURN_URL ?? `${env.FRONTEND_URL}/app/billing?checkout=success`,
-  cancelUrl: env.DODO_PAYMENTS_CANCEL_URL ?? `${env.FRONTEND_URL}/app/billing?checkout=cancelled`,
+  returnUrl: env.DODO_PAYMENTS_RETURN_URL ?? `${env.FRONTEND_URL}/dashboard?checkout=success`,
+  cancelUrl: env.DODO_PAYMENTS_CANCEL_URL ?? `${env.FRONTEND_URL}/dashboard?checkout=cancelled`,
   skipWebhookVerification:
     env.NODE_ENV !== "production" && env.DODO_PAYMENTS_SKIP_WEBHOOK_VERIFICATION,
 };

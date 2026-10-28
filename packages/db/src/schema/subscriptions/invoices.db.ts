@@ -4,6 +4,7 @@ import { enumToPgEnum } from "@repo/shared";
 import { subscriptionsSchema } from "./index";
 import { usersTable } from "@/schema/users/users.db";
 import { subscriptionsTable } from "./subscriptions.db";
+import { workspacesTable } from "@/schema/workspaces/workspaces.db";
 
 export enum InvoiceStatusEnum {
   DRAFT = "draft",
@@ -25,7 +26,9 @@ export const invoicesTable = subscriptionsSchema.table(
     userId: uuid("user_id")
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),
-
+    workspaceId: uuid("workspace_id").references(() => workspacesTable.id, {
+      onDelete: "cascade",
+    }),
     externalInvoiceId: text("external_invoice_id"),
     invoiceNumber: text("invoice_number").notNull(),
     amountDue: integer("amount_due").notNull(), // Amount in cents
@@ -45,6 +48,7 @@ export const invoicesTable = subscriptionsSchema.table(
   },
   (table) => [
     index("invoices_user_id_idx").on(table.userId),
+    index("invoices_workspace_id_idx").on(table.workspaceId),
     index("invoices_subscription_id_idx").on(table.subscriptionId),
     index("invoices_status_idx").on(table.status),
     uniqueIndex("invoices_external_invoice_id_idx").on(table.externalInvoiceId),

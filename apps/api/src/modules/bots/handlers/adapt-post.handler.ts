@@ -6,6 +6,7 @@ import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
 import { recordUsageEvent } from "@/utils/events";
+import { resolveWorkspaceId } from "@/utils/workspace";
 import { EntitlementError, EntitlementsService } from "@/modules/entitlements/entitlements.service";
 
 export const adaptPostRoute = createRoute({
@@ -59,7 +60,8 @@ export const adaptPostHandler: AppRouteHandler<AdaptPostRoute> = async (c) => {
   const user = c.get("user");
 
   try {
-    await EntitlementsService.assertCanUseAiCredits(user.id, 1);
+    const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
+    await EntitlementsService.assertCanUseAiCredits(workspaceId, 1);
 
     let adaptedContent = content;
     let suggestedTags: string[] = [];
@@ -91,7 +93,7 @@ export const adaptPostHandler: AppRouteHandler<AdaptPostRoute> = async (c) => {
         maxCharacters = 5000;
     }
 
-    await EntitlementsService.recordAiCreditUsage(user.id, 1);
+    await EntitlementsService.recordAiCreditUsage(workspaceId, 1);
     await recordUsageEvent(c, {
       operation: "ai_credit",
       quantity: 1,

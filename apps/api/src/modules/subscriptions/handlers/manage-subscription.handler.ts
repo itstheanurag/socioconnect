@@ -6,6 +6,7 @@ import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
 import { BillingProviderError, DodoPaymentsService } from "../services/dodo-payments.service";
+import { resolveBillingWorkspace } from "@/utils/workspace";
 
 // 1. Cancel Subscription (at period end)
 export const cancelSubscriptionRoute = createRoute({
@@ -41,19 +42,20 @@ export const cancelSubscriptionHandler: AppRouteHandler<CancelSubscriptionRoute>
   const user = c.get("user");
 
   try {
-    const current = await SubscriptionsRepository.findByUserId(user.id);
+    const workspaceId = await resolveBillingWorkspace(user.id, c.var.auth);
+    const current = await SubscriptionsRepository.findByWorkspaceId(workspaceId);
 
     if (!current?.externalSubscriptionId) {
       throw new HTTPException(StatusCodes.HTTP_400_BAD_REQUEST, {
         res: c.json(
-          { message: "No paid subscription found for this user" },
+          { message: "No paid subscription found for this workspace" },
           StatusCodes.HTTP_400_BAD_REQUEST,
         ),
       });
     }
 
     await DodoPaymentsService.cancelSubscription(current.externalSubscriptionId, true);
-    const updated = await SubscriptionsRepository.cancelAtPeriodEnd(user.id);
+    const updated = await SubscriptionsRepository.cancelAtPeriodEndForWorkspace(workspaceId);
 
     return c.json({
       message: "Subscription scheduled for cancellation at the end of the current billing cycle",
@@ -130,12 +132,13 @@ export const resumeSubscriptionHandler: AppRouteHandler<ResumeSubscriptionRoute>
   const user = c.get("user");
 
   try {
-    const current = await SubscriptionsRepository.findByUserId(user.id);
+    const workspaceId = await resolveBillingWorkspace(user.id, c.var.auth);
+    const current = await SubscriptionsRepository.findByWorkspaceId(workspaceId);
 
     if (!current?.externalSubscriptionId) {
       throw new HTTPException(StatusCodes.HTTP_400_BAD_REQUEST, {
         res: c.json(
-          { message: "No paid subscription found for this user" },
+          { message: "No paid subscription found for this workspace" },
           StatusCodes.HTTP_400_BAD_REQUEST,
         ),
       });
@@ -147,7 +150,7 @@ export const resumeSubscriptionHandler: AppRouteHandler<ResumeSubscriptionRoute>
       await DodoPaymentsService.clearScheduledCancellation(current.externalSubscriptionId);
     }
 
-    const updated = await SubscriptionsRepository.resume(user.id);
+    const updated = await SubscriptionsRepository.resumeForWorkspace(workspaceId);
 
     return c.json({
       message: "Subscription successfully resumed and will auto-renew",

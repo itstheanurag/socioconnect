@@ -6,6 +6,7 @@ import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
 import { BillingProviderError, DodoPaymentsService } from "../services/dodo-payments.service";
+import { resolveBillingWorkspace } from "@/utils/workspace";
 
 export const checkoutSubscriptionRoute = createRoute({
   method: "post",
@@ -68,10 +69,12 @@ export const checkoutSubscriptionHandler: AppRouteHandler<CheckoutSubscriptionRo
   }
 
   try {
-    const existing = await SubscriptionsRepository.findByUserId(user.id);
+    const workspaceId = await resolveBillingWorkspace(user.id, c.var.auth);
+    const existing = await SubscriptionsRepository.findByWorkspaceId(workspaceId);
 
     const session = await DodoPaymentsService.createCheckoutSession({
       userId: user.id,
+      workspaceId,
       email: user.email,
       name: `${user.firstName}${user.lastName ? ` ${user.lastName}` : ""}`,
       tier,
@@ -93,6 +96,7 @@ export const checkoutSubscriptionHandler: AppRouteHandler<CheckoutSubscriptionRo
       module: "subscriptions",
       action: "checkoutSubscriptionHandler",
       userId: user.id,
+      workspaceId,
       tier,
       interval,
       sessionId: session.session_id,

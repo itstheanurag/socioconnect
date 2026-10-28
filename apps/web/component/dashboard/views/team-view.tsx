@@ -32,6 +32,7 @@ import {
   type WorkspaceMemberSummary,
   type WorkspaceSummary,
 } from "@/lib/api-client";
+import { WorkspaceBillingCard } from "./workspace-billing-card";
 
 function initials(firstName: string, lastName: string | null): string {
   return `${firstName?.[0] ?? ""}${lastName?.[0] ?? ""}`.toUpperCase() || "?";
@@ -231,6 +232,8 @@ export function TeamView() {
           New workspace
         </button>
       </div>
+
+      <WorkspaceBillingCard workspaceName={current?.name ?? "Workspace"} role={currentRole} />
 
       <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr]">
         <div className="signal-card rounded-3xl p-5 shadow-xl">

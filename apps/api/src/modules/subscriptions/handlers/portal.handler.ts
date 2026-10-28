@@ -6,6 +6,7 @@ import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
 import { BillingProviderError, DodoPaymentsService } from "../services/dodo-payments.service";
+import { resolveBillingWorkspace } from "@/utils/workspace";
 
 export const createPortalSessionRoute = createRoute({
   method: "post",
@@ -51,12 +52,13 @@ export const createPortalSessionHandler: AppRouteHandler<CreatePortalSessionRout
   const user = c.get("user");
 
   try {
-    const subscription = await SubscriptionsRepository.findByUserId(user.id);
+    const workspaceId = await resolveBillingWorkspace(user.id, c.var.auth);
+    const subscription = await SubscriptionsRepository.findByWorkspaceId(workspaceId);
 
     if (!subscription?.externalCustomerId) {
       throw new HTTPException(StatusCodes.HTTP_400_BAD_REQUEST, {
         res: c.json(
-          { message: "No billing account found for this user" },
+          { message: "No billing account found for this workspace" },
           StatusCodes.HTTP_400_BAD_REQUEST,
         ),
       });

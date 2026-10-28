@@ -1,4 +1,4 @@
-import { desc, eq, isNull } from "drizzle-orm";
+import { and, desc, eq, isNull } from "drizzle-orm";
 import { type DBTransaction, db } from "@/connection";
 import {
   subscriptionsTable,
@@ -79,7 +79,13 @@ export const INITIAL_USAGE: SubscriptionUsage = {
 };
 
 export interface ProviderSubscriptionState {
+  /**
+   * The user that completed checkout. Subscriptions are billed per workspace,
+   * so this is only used to resolve the personal workspace when the webhook
+   * does not carry a workspace id.
+   */
   userId: string;
+  workspaceId?: string | null;
   externalCustomerId?: string | null;
   externalSubscriptionId?: string | null;
   tier: SubscriptionTierEnum;
@@ -102,69 +108,87 @@ function addBillingInterval(date: Date, interval: BillingIntervalEnum): Date {
   return next;
 }
 
+/**
+ * Rolls the usage meters over when a new billing period has started.
+ */
+function rollUsageForward(
+  existing: Subscription,
+  now: Date,
+): { currentPeriodStart: Date; currentPeriodEnd: Date; usage: SubscriptionUsage } | null {
+  if (now <= new Date(existing.currentPeriodEnd)) return null;
+
+  const currentPeriodStart = new Date(existing.currentPeriodEnd);
+  const currentPeriodEnd = addBillingInterval(currentPeriodStart, existing.billingInterval);
+
+  return {
+    currentPeriodStart,
+    currentPeriodEnd,
+    usage: {
+      ...existing.usage,
+      monthlyDropsUsed: 0,
+      aiCreditsUsed: 0,
+    },
+  };
+}
+
+async function resolveWorkspace(
+  workspaceId: string,
+  options?: { tx?: DBTransaction },
+): Promise<{ id: string; ownerUserId: string }> {
+  const workspace = await WorkspacesRepository.findById(workspaceId, options);
+  if (!workspace) {
+    throw new Error(`Workspace ${workspaceId} not found`);
+  }
+  return workspace;
+}
+
 export namespace SubscriptionsRepository {
   /**
-   * Retrieves or initializes a creator's active subscription with live limits & usage
+   * Retrieves or initializes the billing subscription for a workspace.
+   *
+   * Every workspace (personal or team) owns exactly one subscription, so team
+   * members share the workspace plan instead of the owner's personal plan.
    */
-  export async function getOrCreate(
-    userId: string,
+  export async function getOrCreateForWorkspace(
+    workspaceId: string,
     options?: { tx?: DBTransaction },
   ): Promise<Subscription> {
     const queryClient = options?.tx || db;
     try {
       const existing = await queryClient.query.subscriptionsTable.findFirst({
-        where: eq(subscriptionsTable.userId, userId),
+        where: eq(subscriptionsTable.workspaceId, workspaceId),
       });
 
       if (existing) {
-        // Automatic billing cycle rollover check
-        const now = new Date();
-        if (now > new Date(existing.currentPeriodEnd)) {
-          const nextPeriodStart = new Date(existing.currentPeriodEnd);
-          const nextPeriodEnd = new Date(nextPeriodStart);
+        const rollover = rollUsageForward(existing, new Date());
+        if (!rollover) return existing;
 
-          if (existing.billingInterval === BillingIntervalEnum.YEARLY) {
-            nextPeriodEnd.setFullYear(nextPeriodEnd.getFullYear() + 1);
-          } else {
-            nextPeriodEnd.setMonth(nextPeriodEnd.getMonth() + 1);
-          }
+        const [refreshed] = await queryClient
+          .update(subscriptionsTable)
+          .set({
+            currentPeriodStart: rollover.currentPeriodStart,
+            currentPeriodEnd: rollover.currentPeriodEnd,
+            usage: rollover.usage,
+            updatedAt: new Date(),
+          })
+          .where(eq(subscriptionsTable.id, existing.id))
+          .returning();
 
-          const [refreshed] = await queryClient
-            .update(subscriptionsTable)
-            .set({
-              currentPeriodStart: nextPeriodStart,
-              currentPeriodEnd: nextPeriodEnd,
-              usage: {
-                ...existing.usage,
-                monthlyDropsUsed: 0,
-                aiCreditsUsed: 0,
-              },
-              updatedAt: new Date(),
-            })
-            .where(eq(subscriptionsTable.id, existing.id))
-            .returning();
-
-          return refreshed;
-        }
-
-        return existing;
+        return refreshed;
       }
+
+      const workspace = await resolveWorkspace(workspaceId, options);
 
       // Initialize a free subscription. Paid entitlements are only granted by
       // the billing provider webhook after a successful checkout.
       const periodStart = new Date();
       const periodEnd = new Date();
       periodEnd.setMonth(periodEnd.getMonth() + 1);
-      const workspace = await WorkspacesRepository.ensurePersonalWorkspace(
-        userId,
-        undefined,
-        options,
-      );
 
       const [created] = await queryClient
         .insert(subscriptionsTable)
         .values({
-          userId,
+          userId: workspace.ownerUserId,
           workspaceId: workspace.id,
           tier: SubscriptionTierEnum.FREE,
           status: SubscriptionStatusEnum.ACTIVE,
@@ -177,18 +201,20 @@ export namespace SubscriptionsRepository {
         })
         .returning();
 
-      logger.audit("subscription initialized for creator", {
+      logger.audit("workspace subscription initialized", {
         module: "subscriptions",
-        action: "repository:getOrCreate",
-        userId,
+        action: "repository:getOrCreateForWorkspace",
+        userId: workspace.ownerUserId,
+        workspaceId: workspace.id,
         tier: created.tier,
       });
 
       return created;
     } catch (err) {
-      logger.error("error getting or creating subscription", {
+      logger.error("error getting or creating workspace subscription", {
         module: "subscriptions",
-        action: "repository:getOrCreate",
+        action: "repository:getOrCreateForWorkspace",
+        workspaceId,
         error: err,
       });
       throw err;
@@ -196,10 +222,27 @@ export namespace SubscriptionsRepository {
   }
 
   /**
-   * Updates plan tier, interval, and updates corresponding limits
+   * Retrieves the subscription for a user's personal workspace.
+   *
+   * @deprecated Pass an explicit workspace id to the workspace-scoped methods.
    */
-  export async function updateTier(
+  export async function getOrCreate(
     userId: string,
+    options?: { tx?: DBTransaction },
+  ): Promise<Subscription> {
+    const workspace = await WorkspacesRepository.ensurePersonalWorkspace(
+      userId,
+      undefined,
+      options,
+    );
+    return getOrCreateForWorkspace(workspace.id, options);
+  }
+
+  /**
+   * Updates plan tier, interval, and the corresponding limits for a workspace.
+   */
+  export async function updateTierForWorkspace(
+    workspaceId: string,
     tier: SubscriptionTierEnum,
     billingInterval: BillingIntervalEnum,
     externalData?: {
@@ -209,7 +252,7 @@ export namespace SubscriptionsRepository {
     options?: { tx?: DBTransaction },
   ): Promise<Subscription> {
     const queryClient = options?.tx || db;
-    const current = await getOrCreate(userId, options);
+    const current = await getOrCreateForWorkspace(workspaceId, options);
     const newLimits = DEFAULT_PLAN_LIMITS[tier];
 
     const [updated] = await queryClient
@@ -228,10 +271,10 @@ export namespace SubscriptionsRepository {
       .where(eq(subscriptionsTable.id, current.id))
       .returning();
 
-    logger.audit("subscription tier upgraded", {
+    logger.audit("workspace subscription tier updated", {
       module: "subscriptions",
-      action: "repository:updateTier",
-      userId,
+      action: "repository:updateTierForWorkspace",
+      workspaceId,
       oldTier: current.tier,
       newTier: tier,
       interval: billingInterval,
@@ -241,10 +284,31 @@ export namespace SubscriptionsRepository {
   }
 
   /**
-   * Increments real-time usage meters (monthly drops, AI credits, channels)
+   * @deprecated Pass an explicit workspace id to `updateTierForWorkspace`.
    */
-  export async function incrementUsage(
+  export async function updateTier(
     userId: string,
+    tier: SubscriptionTierEnum,
+    billingInterval: BillingIntervalEnum,
+    externalData?: {
+      customerId?: string;
+      subscriptionId?: string;
+    },
+    options?: { tx?: DBTransaction },
+  ): Promise<Subscription> {
+    const workspace = await WorkspacesRepository.ensurePersonalWorkspace(
+      userId,
+      undefined,
+      options,
+    );
+    return updateTierForWorkspace(workspace.id, tier, billingInterval, externalData, options);
+  }
+
+  /**
+   * Increments real-time usage meters for a workspace.
+   */
+  export async function incrementUsageForWorkspace(
+    workspaceId: string,
     deltas: {
       monthlyDrops?: number;
       aiCredits?: number;
@@ -254,7 +318,7 @@ export namespace SubscriptionsRepository {
     options?: { tx?: DBTransaction },
   ): Promise<Subscription> {
     const queryClient = options?.tx || db;
-    const current = await getOrCreate(userId, options);
+    const current = await getOrCreateForWorkspace(workspaceId, options);
 
     const newUsage: SubscriptionUsage = {
       ...current.usage,
@@ -280,14 +344,35 @@ export namespace SubscriptionsRepository {
   }
 
   /**
-   * Schedules subscription cancellation at the end of the billing period
+   * @deprecated Pass an explicit workspace id to `incrementUsageForWorkspace`.
    */
-  export async function cancelAtPeriodEnd(
+  export async function incrementUsage(
     userId: string,
+    deltas: {
+      monthlyDrops?: number;
+      aiCredits?: number;
+      channels?: number;
+      cdnStorageBytes?: number;
+    },
+    options?: { tx?: DBTransaction },
+  ): Promise<Subscription> {
+    const workspace = await WorkspacesRepository.ensurePersonalWorkspace(
+      userId,
+      undefined,
+      options,
+    );
+    return incrementUsageForWorkspace(workspace.id, deltas, options);
+  }
+
+  /**
+   * Schedules workspace subscription cancellation at the end of the period.
+   */
+  export async function cancelAtPeriodEndForWorkspace(
+    workspaceId: string,
     options?: { tx?: DBTransaction },
   ): Promise<Subscription> {
     const queryClient = options?.tx || db;
-    const current = await getOrCreate(userId, options);
+    const current = await getOrCreateForWorkspace(workspaceId, options);
 
     const [updated] = await queryClient
       .update(subscriptionsTable)
@@ -303,14 +388,29 @@ export namespace SubscriptionsRepository {
   }
 
   /**
-   * Resumes a canceled subscription before the billing period lapses
+   * @deprecated Pass an explicit workspace id to `cancelAtPeriodEndForWorkspace`.
    */
-  export async function resume(
+  export async function cancelAtPeriodEnd(
     userId: string,
     options?: { tx?: DBTransaction },
   ): Promise<Subscription> {
+    const workspace = await WorkspacesRepository.ensurePersonalWorkspace(
+      userId,
+      undefined,
+      options,
+    );
+    return cancelAtPeriodEndForWorkspace(workspace.id, options);
+  }
+
+  /**
+   * Resumes a canceled workspace subscription before the period lapses.
+   */
+  export async function resumeForWorkspace(
+    workspaceId: string,
+    options?: { tx?: DBTransaction },
+  ): Promise<Subscription> {
     const queryClient = options?.tx || db;
-    const current = await getOrCreate(userId, options);
+    const current = await getOrCreateForWorkspace(workspaceId, options);
 
     const [updated] = await queryClient
       .update(subscriptionsTable)
@@ -327,7 +427,22 @@ export namespace SubscriptionsRepository {
   }
 
   /**
-   * Records a billing invoice from payment gateway
+   * @deprecated Pass an explicit workspace id to `resumeForWorkspace`.
+   */
+  export async function resume(
+    userId: string,
+    options?: { tx?: DBTransaction },
+  ): Promise<Subscription> {
+    const workspace = await WorkspacesRepository.ensurePersonalWorkspace(
+      userId,
+      undefined,
+      options,
+    );
+    return resumeForWorkspace(workspace.id, options);
+  }
+
+  /**
+   * Records a billing invoice from payment gateway.
    */
   export async function createInvoice(
     payload: NewInvoice,
@@ -339,17 +454,30 @@ export namespace SubscriptionsRepository {
   }
 
   /**
-   * Finds a subscription without creating one.
+   * Finds a workspace subscription without creating one.
+   */
+  export async function findByWorkspaceId(
+    workspaceId: string,
+    options?: { tx?: DBTransaction },
+  ): Promise<Subscription | null> {
+    const queryClient = options?.tx || db;
+    const existing = await queryClient.query.subscriptionsTable.findFirst({
+      where: eq(subscriptionsTable.workspaceId, workspaceId),
+    });
+    return existing ?? null;
+  }
+
+  /**
+   * Finds the subscription for a user's personal workspace.
+   *
+   * @deprecated Pass an explicit workspace id to `findByWorkspaceId`.
    */
   export async function findByUserId(
     userId: string,
     options?: { tx?: DBTransaction },
   ): Promise<Subscription | null> {
-    const queryClient = options?.tx || db;
-    const existing = await queryClient.query.subscriptionsTable.findFirst({
-      where: eq(subscriptionsTable.userId, userId),
-    });
-    return existing ?? null;
+    const personal = await WorkspacesRepository.findByOwnerId(userId, options);
+    return personal ? findByWorkspaceId(personal.id, options) : null;
   }
 
   /**
@@ -398,9 +526,35 @@ export namespace SubscriptionsRepository {
       options,
     );
 
+    if (!existing && state.workspaceId) {
+      existing = await findByWorkspaceId(state.workspaceId, options);
+    }
+
     if (!existing) {
       existing = await findByUserId(state.userId, options);
     }
+
+    // A provider subscription is bound to the workspace that created the
+    // checkout. Ignore a conflicting workspace hint rather than moving billing
+    // to a different tenant.
+    let workspaceId = existing?.workspaceId ?? state.workspaceId ?? null;
+    if (!workspaceId) {
+      workspaceId = (
+        await WorkspacesRepository.ensurePersonalWorkspace(state.userId, undefined, options)
+      ).id;
+    }
+
+    if (existing?.workspaceId && state.workspaceId && existing.workspaceId !== state.workspaceId) {
+      logger.warn("billing webhook workspace does not match subscription", {
+        module: "billing",
+        action: "webhook:subscription:workspaceMismatch",
+        subscriptionId: state.externalSubscriptionId,
+        subscriptionWorkspaceId: existing.workspaceId,
+        webhookWorkspaceId: state.workspaceId,
+      });
+    }
+
+    const workspace = await resolveWorkspace(workspaceId, options);
 
     const periodStart = state.currentPeriodStart ?? existing?.currentPeriodStart ?? new Date();
     const periodEnd =
@@ -428,6 +582,8 @@ export namespace SubscriptionsRepository {
       const [updated] = await queryClient
         .update(subscriptionsTable)
         .set({
+          workspaceId: workspace.id,
+          userId: existing.userId ?? workspace.ownerUserId,
           tier: state.tier,
           status: state.status,
           billingInterval: state.billingInterval,
@@ -449,6 +605,7 @@ export namespace SubscriptionsRepository {
         module: "subscriptions",
         action: "repository:syncFromProvider",
         userId: updated.userId,
+        workspaceId: updated.workspaceId,
         tier: updated.tier,
         status: updated.status,
         externalSubscriptionId: updated.externalSubscriptionId,
@@ -460,10 +617,8 @@ export namespace SubscriptionsRepository {
     const [created] = await queryClient
       .insert(subscriptionsTable)
       .values({
-        userId: state.userId,
-        workspaceId: (
-          await WorkspacesRepository.ensurePersonalWorkspace(state.userId, undefined, options)
-        ).id,
+        userId: workspace.ownerUserId ?? state.userId,
+        workspaceId: workspace.id,
         tier: state.tier,
         status: state.status,
         billingInterval: state.billingInterval,
@@ -483,6 +638,7 @@ export namespace SubscriptionsRepository {
       module: "subscriptions",
       action: "repository:syncFromProvider",
       userId: created.userId,
+      workspaceId: created.workspaceId,
       tier: created.tier,
       status: created.status,
       externalSubscriptionId: created.externalSubscriptionId,
@@ -506,6 +662,7 @@ export namespace SubscriptionsRepository {
       .onConflictDoUpdate({
         target: invoicesTable.externalInvoiceId,
         set: {
+          workspaceId: payload.workspaceId,
           amountDue: payload.amountDue,
           amountPaid: payload.amountPaid,
           currency: payload.currency,
@@ -524,19 +681,57 @@ export namespace SubscriptionsRepository {
   }
 
   /**
-   * Lists all invoices for a user
+   * Lists all invoices for a workspace, including invoices recorded before
+   * invoices were scoped to workspaces.
+   */
+  export async function listInvoicesForWorkspace(
+    workspaceId: string,
+    options?: { tx?: DBTransaction },
+  ): Promise<Invoice[]> {
+    const queryClient = options?.tx || db;
+    return await withMetrics("select", "invoices", async () => {
+      const subscription = await findByWorkspaceId(workspaceId, options);
+      const workspaceInvoices = await queryClient.query.invoicesTable.findMany({
+        where: eq(invoicesTable.workspaceId, workspaceId),
+        orderBy: [desc(invoicesTable.createdAt)],
+      });
+
+      if (!subscription || subscription.workspaceId !== workspaceId) {
+        return workspaceInvoices;
+      }
+
+      const legacyInvoices = await queryClient
+        .select()
+        .from(invoicesTable)
+        .where(
+          and(eq(invoicesTable.subscriptionId, subscription.id), isNull(invoicesTable.workspaceId)),
+        )
+        .orderBy(desc(invoicesTable.createdAt));
+
+      const byId = new Map(workspaceInvoices.map((invoice) => [invoice.id, invoice]));
+      for (const invoice of legacyInvoices) {
+        byId.set(invoice.id, invoice);
+      }
+
+      return [...byId.values()].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    });
+  }
+
+  /**
+   * Lists all invoices for a user's personal workspace.
+   *
+   * @deprecated Pass an explicit workspace id to `listInvoicesForWorkspace`.
    */
   export async function listInvoices(
     userId: string,
     options?: { tx?: DBTransaction },
   ): Promise<Invoice[]> {
-    const queryClient = options?.tx || db;
-    return await withMetrics("select", "invoices", async () =>
-      queryClient.query.invoicesTable.findMany({
-        where: eq(invoicesTable.userId, userId),
-        orderBy: [desc(invoicesTable.createdAt)],
-      }),
+    const workspace = await WorkspacesRepository.ensurePersonalWorkspace(
+      userId,
+      undefined,
+      options,
     );
+    return listInvoicesForWorkspace(workspace.id, options);
   }
 }
 
