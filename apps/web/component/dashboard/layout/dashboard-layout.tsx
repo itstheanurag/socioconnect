@@ -17,6 +17,7 @@ import { AutomationsView } from "@/component/dashboard/views/automations-view";
 import { CommunitiesView } from "@/component/dashboard/views/communities-view";
 import { ConnectorsView } from "@/component/dashboard/views/connectors-view";
 import { AnalyticsView } from "@/component/dashboard/views/analytics-view";
+import { DevelopersView } from "@/component/dashboard/views/developers-view";
 import { SettingsView } from "@/component/dashboard/views/settings-view";
 
 // Mobile Bottom Navigation
@@ -46,6 +47,8 @@ export function DashboardLayout() {
         return <ConnectorsView />;
       case "analytics":
         return <AnalyticsView />;
+      case "developers":
+        return <DevelopersView />;
       case "settings":
         return <SettingsView />;
       default:

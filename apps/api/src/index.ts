@@ -25,6 +25,7 @@ import { workspaceRoutes } from "./modules/workspaces/workspaces.routes";
 import { publishIntentRoutes } from "./modules/publish-intents/publish-intents.routes";
 import { oauthRoutes } from "./modules/oauth/oauth.routes";
 import { platformRoutes } from "./modules/platforms/platforms.routes";
+import { activityRoutes } from "./modules/activity/activity.routes";
 import { mediaRoutes } from "./modules/media/media.routes";
 import { dispatchRoutes } from "./modules/dispatches/dispatches.routes";
 import { analyticsRoutes } from "./modules/analytics/analytics.routes";
@@ -138,6 +139,7 @@ const routes = [
   publishIntentRoutes,
   oauthRoutes,
   platformRoutes,
+  activityRoutes,
 ] as const;
 
 routes.forEach((route) => {

@@ -12,6 +12,7 @@ import {
   Radio,
   BarChart3,
   Settings,
+  KeyRound,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -118,6 +119,16 @@ export function Sidebar() {
           id: "analytics",
           label: "Analytics",
           icon: BarChart3,
+        },
+      ],
+    },
+    {
+      groupLabel: "DEVELOPERS",
+      items: [
+        {
+          id: "developers",
+          label: "API & Agents",
+          icon: KeyRound,
         },
       ],
     },

@@ -71,6 +71,7 @@ const POLICIES: ScopePolicy[] = [
   { method: "POST", pattern: /^\/v1\/notifications(?:\/.*)?$/, scope: "notifications:read" },
 
   { method: "GET", pattern: /^\/v1\/quotas(?:\/.*)?$/, scope: "usage:read" },
+  { method: "GET", pattern: /^\/v1\/activity$/, scope: "usage:read" },
   { method: "GET", pattern: /^\/v1\/subscriptions\/current$/, scope: "usage:read" },
   { method: "GET", pattern: /^\/v1\/subscriptions\/invoices$/, scope: "usage:read" },
 ];
