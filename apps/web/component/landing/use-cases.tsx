@@ -178,97 +178,164 @@ function FounderVisual() {
 }
 
 function CampaignVisual() {
+  const [activeStep, setActiveStep] = useState(0);
   const steps = [
     { num: "01", title: "Campaign Core", desc: "One unified narrative" },
     { num: "02", title: "Platform Adaptation", desc: "Native dialects & media specs" },
     { num: "03", title: "Timed Distribution", desc: "Autonomous release queue" },
   ];
 
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setActiveStep((current) => (current + 1) % steps.length);
+    }, 1700);
+    return () => window.clearInterval(interval);
+  }, [steps.length]);
+
   return (
-    <div className="relative flex min-h-[360px] h-full items-center justify-center overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/60">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_55%)]" />
+    <div className="relative flex min-h-[360px] h-full items-center justify-center overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/60 p-6 sm:p-8">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.08),transparent_55%)]" />
 
-      <div className="relative w-full max-w-xl space-y-3 px-6 sm:px-8">
-        {steps.map((step, index) => (
+      <div className="relative w-full max-w-xl">
+        <div className="mb-4 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.16em] text-neutral-500">
+          <span>Campaign pipeline</span>
+          <span className="flex items-center gap-1.5 text-emerald-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+            In flight
+          </span>
+        </div>
+
+        <div className="relative space-y-3">
+          <div className="absolute bottom-8 left-[22px] top-8 w-px bg-neutral-800" />
           <motion.div
-            key={step.num}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.12 }}
-            className="flex items-center gap-4 rounded-xl border border-neutral-800 bg-neutral-900/80 p-3.5 backdrop-blur-xl"
-          >
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/15 text-blue-400 font-mono text-xs font-semibold">
-              {step.num}
-            </div>
+            className="absolute left-[22px] top-8 w-px bg-rose-500/60"
+            animate={{
+              height: `${Math.min(100, activeStep * 50)}%`,
+            }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          />
 
-            <div className="flex-1 min-w-0">
-              <div className="text-xs font-semibold text-neutral-100 tracking-tight">
-                {step.title}
-              </div>
-              <div className="text-[11px] text-neutral-400 mt-0.5">{step.desc}</div>
-            </div>
+          {steps.map((step, index) => {
+            const isActive = index === activeStep;
+            return (
+              <motion.div
+                key={step.num}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.12 }}
+                className={`relative flex items-center gap-4 rounded-xl border p-3.5 backdrop-blur-xl transition-colors duration-300 ${
+                  isActive
+                    ? "border-neutral-600 bg-neutral-900"
+                    : "border-neutral-800 bg-neutral-900/60"
+                }`}
+              >
+                <div
+                  className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-lg font-mono text-xs font-semibold transition-colors duration-300 ${
+                    isActive ? "bg-rose-500 text-[#1b0b08]" : "bg-neutral-800 text-neutral-400"
+                  }`}
+                >
+                  {step.num}
+                </div>
 
-            {index < steps.length - 1 && (
-              <div className="text-neutral-500 text-xs">
-                <span>↓</span>
-              </div>
-            )}
-          </motion.div>
-        ))}
+                <div className="min-w-0 flex-1">
+                  <div className="text-xs font-semibold tracking-tight text-neutral-100">
+                    {step.title}
+                  </div>
+                  <div className="mt-0.5 text-[11px] text-neutral-400">{step.desc}</div>
+                </div>
+
+                <span
+                  className={`h-1.5 w-1.5 rounded-full transition-colors duration-300 ${
+                    isActive ? "bg-emerald-400" : "bg-neutral-700"
+                  }`}
+                />
+              </motion.div>
+            );
+          })}
+        </div>
+
+        <div className="mt-4 flex items-center justify-between border-t border-neutral-800/70 pt-3 font-mono text-[9px] uppercase tracking-[0.14em] text-neutral-500">
+          <span>One campaign → native formats</span>
+          <span>Approval gate on</span>
+        </div>
       </div>
     </div>
   );
 }
 
 function CommunityVisual() {
-  return (
-    <div className="relative flex min-h-[360px] h-full items-center justify-center overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/60">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(168,85,247,0.1),transparent_55%)]" />
+  const communities = ["r/dev", "r/saas", "r/build", "r/ai", "r/tech"];
+  const windows = [
+    { day: "Mon", time: "09:00" },
+    { day: "Wed", time: "18:00" },
+    { day: "Fri", time: "12:00" },
+  ];
 
-      <div className="relative w-full max-w-xl flex-col items-center gap-4 px-8">
-        <div className="flex -space-x-2">
-          {[0, 1, 2, 3, 4].map((item) => (
+  return (
+    <div className="relative flex min-h-[360px] h-full items-center justify-center overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/60 p-6 sm:p-8">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(168,85,247,0.06),transparent_55%)]" />
+
+      <div className="relative w-full max-w-xl">
+        <div className="mb-4 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.16em] text-neutral-500">
+          <span>Community targeting</span>
+          <span className="flex items-center gap-1.5 text-emerald-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+            Peak window
+          </span>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {communities.map((community, index) => (
             <motion.div
-              key={item}
-              initial={{ opacity: 0, scale: 0.6 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: item * 0.08 }}
-              className="h-10 w-10 rounded-full border-2 border-neutral-950 bg-neutral-800 flex items-center justify-center text-[10px] font-mono text-purple-300"
+              key={community}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.06 }}
+              className="rounded-full border border-neutral-700 bg-neutral-900 px-3 py-2 font-mono text-[11px] text-purple-200"
             >
-              r/
-              {item === 0
-                ? "dev"
-                : item === 1
-                  ? "saas"
-                  : item === 2
-                    ? "build"
-                    : item === 3
-                      ? "ai"
-                      : "tech"}
+              {community}
             </motion.div>
           ))}
         </div>
 
-        <div className="flex items-center gap-3 rounded-xl border border-neutral-800 bg-neutral-900/80 px-4 py-3 backdrop-blur-xl">
-          <MessageCircle className="h-4 w-4 text-purple-400 shrink-0" />
-          <div className="text-xs text-neutral-200">
-            Targeted community precision without spam flags
+        <div className="mt-4 rounded-xl border border-neutral-800 bg-neutral-900/80 p-4 backdrop-blur-xl">
+          <div className="flex items-center gap-2.5">
+            <MessageCircle className="h-4 w-4 shrink-0 text-purple-400" />
+            <div className="text-xs text-neutral-200">
+              Targeted community precision without spam flags
+            </div>
+          </div>
+
+          <div className="mt-3 flex flex-wrap gap-2 font-mono text-[10px]">
+            <span className="rounded-lg border border-purple-400/25 bg-purple-400/10 px-2.5 py-1.5 text-purple-200">
+              Optimal peak
+            </span>
+            <span className="rounded-lg border border-neutral-800 bg-neutral-950/40 px-2.5 py-1.5 text-neutral-400">
+              Live AMA
+            </span>
+            <span className="rounded-lg border border-neutral-800 bg-neutral-950/40 px-2.5 py-1.5 text-neutral-400">
+              Scheduled
+            </span>
           </div>
         </div>
 
-        <div className="flex gap-2 pt-1 font-mono text-[11px]">
-          {["Optimal Peak", "Live AMA", "Scheduled"].map((item, index) => (
+        <div className="mt-4 grid grid-cols-3 gap-2">
+          {windows.map((window) => (
             <div
-              key={item}
-              className={`rounded-lg border px-3 py-1.5 ${
-                index === 0
-                  ? "border-purple-400/30 bg-purple-400/15 text-purple-300"
-                  : "border-neutral-800 bg-neutral-900/40 text-neutral-400"
-              }`}
+              key={`${window.day}-${window.time}`}
+              className="rounded-xl border border-neutral-800 bg-neutral-950/50 px-3 py-2"
             >
-              {item}
+              <div className="font-mono text-[9px] uppercase tracking-[0.14em] text-neutral-600">
+                {window.day}
+              </div>
+              <div className="mt-0.5 font-mono text-xs text-neutral-300">{window.time}</div>
             </div>
           ))}
+        </div>
+
+        <div className="mt-4 flex items-center justify-between border-t border-neutral-800/70 pt-3 font-mono text-[9px] uppercase tracking-[0.14em] text-neutral-500">
+          <span>5 communities · 18 channels</span>
+          <span>Approval gate on</span>
         </div>
       </div>
     </div>
@@ -290,14 +357,22 @@ function AudienceVisual({ visual }: { visual: VisualType }) {
 
 export default function UseCases() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isAutoRotating, setIsAutoRotating] = useState(true);
 
   useEffect(() => {
+    if (!isAutoRotating) return;
+
     const interval = window.setInterval(() => {
       setActiveIndex((current) => (current + 1) % AUDIENCES.length);
     }, 5500);
 
     return () => window.clearInterval(interval);
-  }, []);
+  }, [isAutoRotating]);
+
+  const selectAudience = (index: number) => {
+    setActiveIndex(index);
+    setIsAutoRotating(false);
+  };
 
   const activeAudience = AUDIENCES[activeIndex];
 
@@ -352,7 +427,7 @@ export default function UseCases() {
                   <button
                     key={audience.id}
                     type="button"
-                    onClick={() => setActiveIndex(index)}
+                    onClick={() => selectAudience(index)}
                     className={`group flex w-full items-center gap-3 rounded-xl px-3.5 py-3 text-left transition-all cursor-pointer ${
                       isActive
                         ? "bg-neutral-900 border border-neutral-700 text-neutral-100 shadow-lg"
@@ -422,7 +497,7 @@ export default function UseCases() {
                         key={audience.id}
                         type="button"
                         aria-label={`Show ${audience.label}`}
-                        onClick={() => setActiveIndex(index)}
+                        onClick={() => selectAudience(index)}
                         className="h-2 py-0.5 cursor-pointer"
                       >
                         <span

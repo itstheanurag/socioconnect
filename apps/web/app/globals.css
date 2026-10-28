@@ -196,8 +196,8 @@ select option {
   --color-amber-400: #f6c453;
 
   background:
-    radial-gradient(ellipse 55% 35% at 12% 0%, rgba(255, 77, 61, 0.08), transparent 65%),
-    radial-gradient(ellipse 45% 30% at 88% 8%, rgba(140, 200, 255, 0.05), transparent 70%), #0d0c0b;
+    radial-gradient(ellipse 55% 35% at 12% 0%, rgba(255, 77, 61, 0.035), transparent 65%),
+    radial-gradient(ellipse 45% 30% at 88% 8%, rgba(140, 200, 255, 0.02), transparent 70%), #0d0c0b;
   color: #f6f1e7;
 }
 
@@ -218,22 +218,18 @@ select option {
     0 18px 40px -32px rgba(0, 0, 0, 0.8);
 }
 
-.dashboard-shell .signal-card::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto;
-  height: 1px;
-  background: linear-gradient(90deg, #ff4d3d, rgba(255, 77, 61, 0.15) 40%, transparent 80%);
-  opacity: 0.7;
-}
-
 .dashboard-shell .signal-tabular {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
 }
 
+.dashboard-shell,
+.dashboard-shell * {
+  scrollbar-color: rgba(169, 159, 146, 0.22) transparent;
+}
+
 .dashboard-shell .signal-scroll::-webkit-scrollbar-thumb {
-  background: rgba(255, 77, 61, 0.35);
+  background: rgba(169, 159, 146, 0.22);
 }
 
 @keyframes signal-pulse {

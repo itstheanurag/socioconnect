@@ -76,8 +76,6 @@ export function DashboardLayout() {
   return (
     <div className="dashboard-shell h-screen max-h-screen w-screen overflow-hidden text-neutral-200 flex flex-col selection:bg-rose-500/30 selection:text-neutral-100 relative font-sans">
       <div className="signal-grid fixed inset-0 pointer-events-none opacity-80" />
-      <div className="fixed -top-24 left-1/3 h-80 w-80 rounded-full bg-rose-500/5 blur-[130px] pointer-events-none" />
-      <div className="fixed bottom-0 right-1/5 h-96 w-96 rounded-full bg-sky-400/5 blur-[150px] pointer-events-none" />
 
       {/* Strict Fixed Header */}
       <TopBar />
