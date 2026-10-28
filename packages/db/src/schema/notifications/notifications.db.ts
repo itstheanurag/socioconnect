@@ -3,6 +3,7 @@ import { relations } from "drizzle-orm";
 import { enumToPgEnum } from "@repo/shared";
 import { notificationsSchema } from "./index";
 import { usersTable } from "@/schema/users/users.db";
+import { workspacesTable } from "@/schema/workspaces/workspaces.db";
 
 export enum NotificationTypeEnum {
   DISPATCH_SUCCESS = "dispatch_success",
@@ -37,6 +38,9 @@ export const notificationsTable = notificationsSchema.table(
     userId: uuid("user_id")
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),
+    workspaceId: uuid("workspace_id").references(() => workspacesTable.id, {
+      onDelete: "cascade",
+    }),
 
     type: notificationTypePgEnum("type").notNull().default(NotificationTypeEnum.SYSTEM),
     priority: notificationPriorityPgEnum("priority")
@@ -55,6 +59,7 @@ export const notificationsTable = notificationsSchema.table(
   },
   (table) => [
     index("notifications_user_id_idx").on(table.userId),
+    index("notifications_workspace_id_idx").on(table.workspaceId),
     index("notifications_user_unread_idx").on(table.userId, table.isRead),
     index("notifications_created_at_idx").on(table.createdAt),
   ],

@@ -33,10 +33,10 @@ Scope: public API, API keys, remote MCP server, ChatGPT/Claude distribution, age
 - [x] team workspaces, invites, member roles, workspace switching, and Team UI
 - [x] reschedule and media upload tools, SDK/CLI coverage
 - [x] webhook retry worker and SSRF validation
+- [x] real R2 presigned media storage when configured, with workspace-scoped notifications
 - [ ] public submission: deploy domains, replace assets, run review, submit listings
-- [ ] workspace-scoped billing/quota/notification/community reads (still user-scoped)
-- [ ] workspace-scoped reads for billing, quotas, notifications, and communities
-- [ ] media upload tool and per-tool `securitySchemes` metadata
+- [ ] workspace-scoped billing/community reads and team-level billing
+- [ ] per-tool `securitySchemes` metadata
 
 ---
 

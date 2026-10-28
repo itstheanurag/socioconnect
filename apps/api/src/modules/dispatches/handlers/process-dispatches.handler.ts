@@ -519,6 +519,7 @@ export const processDueDispatchesHandler: AppRouteHandler<ProcessDueDispatchesRo
           try {
             await NotificationsRepository.create({
               userId: dispatch.account.userId,
+              workspaceId: dispatch.post.workspaceId ?? null,
               type:
                 classified.code === "AUTH_REVOKED"
                   ? NotificationTypeEnum.TOKEN_EXPIRING

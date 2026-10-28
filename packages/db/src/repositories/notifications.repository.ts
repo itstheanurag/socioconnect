@@ -50,10 +50,12 @@ export namespace NotificationsRepository {
           {
             id: "notif-001",
             userId,
+            workspaceId: null,
             type: NotificationTypeEnum.DISPATCH_SUCCESS,
             priority: NotificationPriorityEnum.NORMAL,
             title: "Post Dispatched to 4 Channels",
-            message: "Your scheduled drop 'Turbopack vs Vite Benchmarks' was successfully published to X, LinkedIn, Discord, and Reddit.",
+            message:
+              "Your scheduled drop 'Turbopack vs Vite Benchmarks' was successfully published to X, LinkedIn, Discord, and Reddit.",
             linkUrl: "/app/calendar",
             isRead: false,
             readAt: null,
@@ -63,10 +65,12 @@ export namespace NotificationsRepository {
           {
             id: "notif-002",
             userId,
+            workspaceId: null,
             type: NotificationTypeEnum.MILESTONE,
             priority: NotificationPriorityEnum.LOW,
             title: "Audience Milestone Reached! 🎉",
-            message: "Your collective network surpassed 50,000 impressions across connected accounts this month.",
+            message:
+              "Your collective network surpassed 50,000 impressions across connected accounts this month.",
             linkUrl: "/app/usage",
             isRead: false,
             readAt: null,
@@ -76,10 +80,12 @@ export namespace NotificationsRepository {
           {
             id: "notif-003",
             userId,
+            workspaceId: null,
             type: NotificationTypeEnum.SYSTEM,
             priority: NotificationPriorityEnum.LOW,
             title: "AI Adaptation Engine Updated",
-            message: "New tone optimizer presets (punchy, editorial, storyteller) are now active in the Studio composer.",
+            message:
+              "New tone optimizer presets (punchy, editorial, storyteller) are now active in the Studio composer.",
             linkUrl: "/app/bots",
             isRead: true,
             readAt: new Date(Date.now() - 1000 * 60 * 60 * 24),
@@ -101,6 +107,25 @@ export namespace NotificationsRepository {
         unreadCount,
       };
     });
+  }
+
+  export async function findAllByWorkspaceId(
+    workspaceId: string,
+    options?: { limit?: number; unreadOnly?: boolean; tx?: DBTransaction },
+  ): Promise<{ notifications: Notification[]; unreadCount: number }> {
+    const queryClient = options?.tx || db;
+    const limit = options?.limit || 30;
+
+    const all = await queryClient.query.notificationsTable.findMany({
+      where: eq(notificationsTable.workspaceId, workspaceId),
+      orderBy: [desc(notificationsTable.createdAt)],
+      limit,
+    });
+
+    return {
+      notifications: options?.unreadOnly ? all.filter((n) => !n.isRead) : all,
+      unreadCount: all.filter((n) => !n.isRead).length,
+    };
   }
 
   /**

@@ -145,7 +145,8 @@ Expected:
 
 ## Submission assets
 
-- [ ] Replace placeholder icon/logo with final brand assets
+- [x] App icons generated (`icon-192.png`, `icon-512.png`)
+- [ ] Replace placeholder plugin icon/logo with final brand assets
 - [ ] Add screenshots of the preview card and Developers screen
 - [ ] Privacy policy URL
 - [ ] Terms URL

@@ -194,6 +194,6 @@ Still required before public directory submission:
 ## Limitations
 
 - Stateless transport; no resumable SSE event store.
-- Media storage is still a mock presigned URL in development until the R2 client is wired in production.
+- Media storage uses Cloudflare R2 when configured; development falls back to a mock presigned URL.
 - The consent page is server-rendered and minimal.
 - Access tokens are short-lived JWTs; refresh tokens are revocable, access tokens are not denylisted.
