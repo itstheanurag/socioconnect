@@ -87,7 +87,7 @@ export const getPostsHandler: AppRouteHandler<GetPostsRoute> = async (c) => {
     const auth = c.var.auth;
     const visiblePosts =
       auth?.type === "api_key" && auth.accountIds?.length
-        ? rawPosts.filter((post) =>
+        ? (rawPosts as Array<{ dispatches: Array<{ accountId: string }> }>).filter((post) =>
             post.dispatches.some((dispatch) => isAccountAllowed(auth, dispatch.accountId)),
           )
         : rawPosts;
@@ -195,7 +195,9 @@ export const getPostByIdHandler: AppRouteHandler<GetPostByIdRoute> = async (c) =
     if (
       auth?.type === "api_key" &&
       auth.accountIds?.length &&
-      !post.dispatches.some((dispatch) => isAccountAllowed(auth, dispatch.accountId))
+      !(post.dispatches as Array<{ accountId: string }>).some((dispatch) =>
+        isAccountAllowed(auth, dispatch.accountId),
+      )
     ) {
       throw new HTTPException(StatusCodes.HTTP_404_NOT_FOUND, {
         res: c.json({ message: "Post not found" }, StatusCodes.HTTP_404_NOT_FOUND),

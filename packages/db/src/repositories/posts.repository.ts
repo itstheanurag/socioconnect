@@ -129,6 +129,51 @@ export namespace PostsRepository {
   }
 
   /**
+   * Activates a draft or scheduled post after a publish intent is confirmed.
+   */
+  export async function activateForPublish(
+    postId: string,
+    input: { mode: "publish" | "schedule"; scheduledAt: Date },
+    options?: { tx?: DBTransaction },
+  ): Promise<Post> {
+    const queryClient = options?.tx || db;
+    const now = new Date();
+    const targetTime = input.mode === "schedule" ? input.scheduledAt : now;
+
+    const [post] = await queryClient
+      .update(postsTable)
+      .set({
+        status: input.mode === "schedule" ? PostStatusEnum.SCHEDULED : PostStatusEnum.DISPATCHING,
+        scheduledAt: targetTime,
+        updatedAt: now,
+      })
+      .where(eq(postsTable.id, postId))
+      .returning();
+
+    await queryClient
+      .update(postDispatchesTable)
+      .set({
+        status: DispatchStatusEnum.PENDING,
+        scheduledFor: targetTime,
+        nextRetryAt: null,
+        errorDetails: null,
+        dispatchedAt: null,
+        updatedAt: now,
+      })
+      .where(eq(postDispatchesTable.postId, postId));
+
+    logger.audit("post activated for publishing", {
+      module: "posts",
+      action: "repository:activateForPublish",
+      postId,
+      mode: input.mode,
+      scheduledAt: targetTime.toISOString(),
+    });
+
+    return post;
+  }
+
+  /**
    * Finds a dispatch by ID with its post and account.
    */
   export async function findDispatchById(id: string, options?: { tx?: DBTransaction }) {

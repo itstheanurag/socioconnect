@@ -7,6 +7,7 @@ import { connectedAccountsTable, socialPlatformPgEnum } from "@/schema/accounts/
 import { connectedDestinationsTable } from "@/schema/accounts/destinations.db";
 
 export enum DispatchStatusEnum {
+  DRAFT = "draft",
   PENDING = "pending",
   PROCESSING = "processing",
   SUCCESS = "success",
@@ -15,10 +16,7 @@ export enum DispatchStatusEnum {
   CANCELLED = "cancelled",
 }
 
-export const dispatchStatusPgEnum = pgEnum(
-  "dispatch_status",
-  enumToPgEnum(DispatchStatusEnum),
-);
+export const dispatchStatusPgEnum = pgEnum("dispatch_status", enumToPgEnum(DispatchStatusEnum));
 
 export const postDispatchesTable = postsSchema.table(
   "post_dispatches",
@@ -33,8 +31,9 @@ export const postDispatchesTable = postsSchema.table(
       .references(() => connectedAccountsTable.id, { onDelete: "cascade" }),
 
     // Optional: Target specific Subreddit, Discord channel, FB group/page, or Pinterest board
-    destinationId: uuid("destination_id")
-      .references(() => connectedDestinationsTable.id, { onDelete: "set null" }),
+    destinationId: uuid("destination_id").references(() => connectedDestinationsTable.id, {
+      onDelete: "set null",
+    }),
 
     platform: socialPlatformPgEnum("platform").notNull(),
     status: dispatchStatusPgEnum("status").notNull().default(DispatchStatusEnum.PENDING),

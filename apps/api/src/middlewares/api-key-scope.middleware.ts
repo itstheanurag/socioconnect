@@ -42,6 +42,14 @@ const POLICIES: ScopePolicy[] = [
   { method: "PUT", pattern: /^\/v1\/posts(?:\/.*)?$/, scope: "posts:write" },
   { method: "DELETE", pattern: /^\/v1\/posts(?:\/.*)?$/, scope: "posts:write" },
 
+  { method: "POST", pattern: /^\/v1\/publish-intents$/, scope: "posts:publish" },
+  { method: "GET", pattern: /^\/v1\/publish-intents\/[^/]+$/, scope: "posts:read" },
+  {
+    method: "POST",
+    pattern: /^\/v1\/publish-intents\/[^/]+\/confirm$/,
+    scope: "posts:publish",
+  },
+
   {
     method: "GET",
     pattern: /^\/v1\/dispatches\/[^/]+\/transactions$/,

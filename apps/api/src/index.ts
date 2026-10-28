@@ -22,6 +22,7 @@ import { botRoutes } from "./modules/bots/bots.routes";
 import { subscriptionRoutes } from "./modules/subscriptions/subscriptions.routes";
 import { apiKeyRoutes } from "./modules/api-keys/api-keys.routes";
 import { workspaceRoutes } from "./modules/workspaces/workspaces.routes";
+import { publishIntentRoutes } from "./modules/publish-intents/publish-intents.routes";
 import { mediaRoutes } from "./modules/media/media.routes";
 import { dispatchRoutes } from "./modules/dispatches/dispatches.routes";
 import { analyticsRoutes } from "./modules/analytics/analytics.routes";
@@ -30,6 +31,7 @@ import { communityRoutes } from "./modules/communities/communities.routes";
 import { getUserMiddleware } from "@/middlewares/get-user.middleware";
 import { apiKeyMiddleware } from "@/middlewares/api-key.middleware";
 import { apiKeyScopeMiddleware } from "@/middlewares/api-key-scope.middleware";
+import { idempotencyMiddleware } from "@/middlewares/idempotency.middleware";
 import { type AppBindings, type AppRouteHandler } from "./types";
 import { createRoute, z } from "@hono/zod-openapi";
 import { secureHeaders } from "hono/secure-headers";
@@ -71,6 +73,7 @@ app.use(globalRateLimiter);
 app.use(getUserMiddleware);
 app.use(apiKeyMiddleware);
 app.use(apiKeyScopeMiddleware);
+app.use(idempotencyMiddleware);
 
 const getHealthRoute = createRoute({
   method: "get",
@@ -128,6 +131,7 @@ const routes = [
   communityRoutes,
   apiKeyRoutes,
   workspaceRoutes,
+  publishIntentRoutes,
 ] as const;
 
 routes.forEach((route) => {

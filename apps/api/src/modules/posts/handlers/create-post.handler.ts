@@ -108,8 +108,10 @@ export const createPostHandler: AppRouteHandler<CreatePostRoute> = async (c) => 
     }
 
     const scheduledDate = body.scheduledAt ? new Date(body.scheduledAt) : null;
-    const initialStatus =
-      scheduledDate && scheduledDate > new Date()
+    const isApiKeyDraft = c.var.auth?.type === "api_key";
+    const initialStatus = isApiKeyDraft
+      ? PostStatusEnum.DRAFT
+      : scheduledDate && scheduledDate > new Date()
         ? PostStatusEnum.SCHEDULED
         : PostStatusEnum.DISPATCHING;
 
@@ -117,7 +119,7 @@ export const createPostHandler: AppRouteHandler<CreatePostRoute> = async (c) => 
       accountId: t.accountId,
       destinationId: t.destinationId,
       platform: t.platform,
-      status: DispatchStatusEnum.PENDING,
+      status: isApiKeyDraft ? DispatchStatusEnum.DRAFT : DispatchStatusEnum.PENDING,
       scheduledFor: t.scheduledFor ? new Date(t.scheduledFor) : scheduledDate || new Date(),
       customContent: t.customContent || null,
       customTitle: t.customTitle || null,
@@ -141,8 +143,12 @@ export const createPostHandler: AppRouteHandler<CreatePostRoute> = async (c) => 
       dispatches,
     });
 
-    // Increment user quota counter
-    await QuotasRepository.incrementDrops(user.id, 1);
+    // Increment user quota counter only when a session request publishes or
+    // schedules immediately. API-key requests create drafts and are counted
+    // when a publish intent is confirmed.
+    if (!isApiKeyDraft) {
+      await QuotasRepository.incrementDrops(user.id, 1);
+    }
 
     return c.json(
       {

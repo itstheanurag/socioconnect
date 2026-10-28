@@ -14,7 +14,9 @@ Scope: public API, API keys, remote MCP server, ChatGPT/Claude distribution, age
 - [x] account-allowlist enforcement on accounts, destinations, posts, retries
 - [x] `GET/POST /v1/api-keys`, `DELETE /v1/api-keys/{id}`, `POST /v1/api-keys/{id}/rotate`
 - [x] `GET /v1/workspaces`, `GET /v1/workspaces/current`
-- [ ] `Idempotency-Key` middleware and storage (next)
+- [x] `Idempotency-Key` middleware and storage (required for API-key writes)
+- [x] publish intents with draft revision hash, preview, and explicit confirmation
+- [x] API-key `POST /v1/posts` creates drafts only; publishing requires an intent
 - [ ] full workspace-scoped queries (currently user-scoped reads with workspace writes)
 - [ ] `audit_events` and `usage_events` tables (next)
 - [ ] OAuth 2.1 AS and `apps/mcp` (Phase 2)

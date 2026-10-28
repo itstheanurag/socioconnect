@@ -99,6 +99,22 @@ DELETE /v1/api-keys/{id}
 Rotation creates a replacement with the same scopes and revokes the old key
 immediately.
 
+## Idempotent writes
+
+Every API-key write must include an `Idempotency-Key` header:
+
+```http
+POST /v1/posts
+Authorization: Bearer sck_test_...
+Idempotency-Key: draft-2026-11-02-1
+```
+
+Successful responses are cached for 24 hours. Retrying with the same key and
+body replays the original response with `Idempotent-Replayed: true`. Reusing the
+key with a different body returns `409 IDEMPOTENCY_CONFLICT`.
+
+See [PUBLISH_INTENTS.md](PUBLISH_INTENTS.md) for the full agent publish flow.
+
 ## Deny-by-default
 
 API keys can only call routes with an explicit scope policy. Billing changes,

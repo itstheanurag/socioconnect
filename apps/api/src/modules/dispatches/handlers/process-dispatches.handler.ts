@@ -10,6 +10,7 @@ import {
   NotificationTypeEnum,
   NotificationPriorityEnum,
   SocialPlatformEnum,
+  PostStatusEnum,
 } from "@repo/db";
 import { decrypt, encrypt, errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
@@ -598,6 +599,21 @@ export const retryDispatchHandler: AppRouteHandler<RetryDispatchRoute> = async (
     ) {
       throw new HTTPException(StatusCodes.HTTP_404_NOT_FOUND, {
         res: c.json({ message: "Dispatch not found" }, StatusCodes.HTTP_404_NOT_FOUND),
+      });
+    }
+
+    if (
+      dispatch.status === DispatchStatusEnum.DRAFT ||
+      dispatch.post.status === PostStatusEnum.DRAFT
+    ) {
+      throw new HTTPException(StatusCodes.HTTP_409_CONFLICT, {
+        res: c.json(
+          {
+            message: "Draft dispatches cannot be retried. Confirm a publish intent first.",
+            code: "DRAFT_DISPATCH_NOT_RETRYABLE",
+          },
+          StatusCodes.HTTP_409_CONFLICT,
+        ),
       });
     }
 

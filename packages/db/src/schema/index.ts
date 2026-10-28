@@ -73,6 +73,28 @@ export {
   type DispatchTransaction,
   type NewDispatchTransaction,
 } from "./posts/dispatch-transactions.db";
+export {
+  publishIntentsTable,
+  publishIntentsRelations,
+  PublishIntentStateEnum,
+  PublishIntentModeEnum,
+  PublishIntentActorEnum,
+  publishIntentStatePgEnum,
+  publishIntentModePgEnum,
+  publishIntentActorPgEnum,
+  type PublishIntent,
+  type NewPublishIntent,
+  type UpdatePublishIntent,
+} from "./posts/publish-intents.db";
+
+// Idempotency
+export {
+  idempotencyKeysTable,
+  IdempotencyStateEnum,
+  type IdempotencyKey,
+  type NewIdempotencyKey,
+  type UpdateIdempotencyKey,
+} from "./idempotency/idempotency.db";
 
 // Media Assets Schema
 export { mediaSchema } from "./media";

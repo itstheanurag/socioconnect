@@ -180,7 +180,8 @@ is draft-first: agents can compose and validate freely, but every public post
 requires a confirmed publish intent.
 
 API key creation, scopes, account allowlists, and usage are documented in
-[docs/API_KEYS.md](docs/API_KEYS.md).
+[docs/API_KEYS.md](docs/API_KEYS.md). The draft -> preview -> confirm publish
+flow is documented in [docs/PUBLISH_INTENTS.md](docs/PUBLISH_INTENTS.md).
 
 ---
 
