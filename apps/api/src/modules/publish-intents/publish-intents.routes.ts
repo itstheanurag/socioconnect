@@ -14,6 +14,7 @@ import type { AppBindings, AppRouteHandler } from "@/types";
 import { enforceUserMiddleware } from "@/middlewares/enforce-user.middleware";
 import { isAccountAllowed } from "@/utils/authz";
 import { recordAuditEvent, recordUsageEvent } from "@/utils/events";
+import { WebhookService } from "@/modules/webhooks/webhooks.service";
 import { EntitlementError, EntitlementsService } from "@/modules/entitlements/entitlements.service";
 import { buildPreview, computeRevisionHash } from "./publish-intents.service";
 
@@ -184,6 +185,14 @@ export const createPublishIntentHandler: AppRouteHandler<CreatePublishIntentRout
         scheduledAt: scheduledAt?.toISOString() ?? null,
         destinations: post.dispatches.length,
       },
+    });
+    await WebhookService.emit(workspaceId, "publish_intent.created", {
+      intentId: intent.id,
+      postId: post.id,
+      mode: intent.mode,
+      scheduledAt: scheduledAt?.toISOString() ?? null,
+      expiresAt: intent.expiresAt.toISOString(),
+      destinations: post.dispatches.length,
     });
 
     return c.json(
@@ -453,6 +462,16 @@ export const confirmPublishIntentHandler: AppRouteHandler<ConfirmPublishIntentRo
         postStatus: result.activatedPost.status,
         destinations: post.dispatches.length,
       },
+    });
+    await WebhookService.emit(intent.workspaceId, "publish_intent.confirmed", {
+      intentId: intent.id,
+      postId: post.id,
+      mode: intent.mode,
+      postStatus: result.activatedPost.status,
+      scheduledAt: result.activatedPost.scheduledAt
+        ? result.activatedPost.scheduledAt.toISOString()
+        : null,
+      destinations: post.dispatches.length,
     });
 
     logger.audit("publish intent executed", {

@@ -18,6 +18,7 @@ import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
 import { isAccountAllowed } from "@/utils/authz";
 import { recordAuditEvent } from "@/utils/events";
+import { WebhookService } from "@/modules/webhooks/webhooks.service";
 import type {
   AuthCredentials,
   PublishResult,
@@ -410,6 +411,23 @@ export const processDueDispatchesHandler: AppRouteHandler<ProcessDueDispatchesRo
           latencyMs,
         });
 
+        await WebhookService.emit(dispatch.post.workspaceId ?? "", "dispatch.succeeded", {
+          dispatchId: dispatch.id,
+          postId: dispatch.postId,
+          platform: dispatch.platform,
+          externalPostUrl,
+        });
+
+        const postAfterSuccess = await PostsRepository.findById(dispatch.postId);
+        if (postAfterSuccess?.status === PostStatusEnum.PUBLISHED) {
+          await WebhookService.emit(dispatch.post.workspaceId ?? "", "post.published", {
+            postId: dispatch.postId,
+            publishedAt: postAfterSuccess.publishedAt
+              ? postAfterSuccess.publishedAt.toISOString()
+              : null,
+          });
+        }
+
         return {
           dispatchId: dispatch.id,
           platform: dispatch.platform,
@@ -474,6 +492,27 @@ export const processDueDispatchesHandler: AppRouteHandler<ProcessDueDispatchesRo
           latencyMs,
           nextRetryAt,
         });
+
+        if (nextStatus === DispatchStatusEnum.FAILED) {
+          await WebhookService.emit(dispatch.post.workspaceId ?? "", "dispatch.failed", {
+            dispatchId: dispatch.id,
+            postId: dispatch.postId,
+            platform: dispatch.platform,
+            code: classified.code,
+            message: classified.message,
+          });
+
+          const postAfterFailure = await PostsRepository.findById(dispatch.postId);
+          if (
+            postAfterFailure?.status === PostStatusEnum.FAILED ||
+            postAfterFailure?.status === PostStatusEnum.PARTIALLY_FAILED
+          ) {
+            await WebhookService.emit(dispatch.post.workspaceId ?? "", "post.failed", {
+              postId: dispatch.postId,
+              status: postAfterFailure.status,
+            });
+          }
+        }
 
         // If permanent failure or auth error, send in-app notification to creator
         if (!willRetry || classified.code === "AUTH_REVOKED") {
@@ -630,6 +669,11 @@ export const retryDispatchHandler: AppRouteHandler<RetryDispatchRoute> = async (
       resourceType: "dispatch",
       resourceId: updated.id,
       metadata: { postId: updated.postId, platform: updated.platform },
+    });
+    await WebhookService.emit(dispatch.post.workspaceId ?? "", "dispatch.retried", {
+      dispatchId: updated.id,
+      postId: updated.postId,
+      platform: updated.platform,
     });
 
     return c.json({

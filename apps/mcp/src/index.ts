@@ -46,6 +46,16 @@ app.get("/.well-known/oauth-protected-resource/mcp", (c) =>
   c.json(protectedResourceMetadata, 200, { "Cache-Control": "no-store" }),
 );
 
+app.get("/.well-known/openai-apps-challenge", (c) => {
+  if (!env.OPENAI_APPS_CHALLENGE_TOKEN) {
+    return c.text("Not found", 404);
+  }
+  return c.text(env.OPENAI_APPS_CHALLENGE_TOKEN, 200, {
+    "Content-Type": "text/plain; charset=utf-8",
+    "Cache-Control": "no-store",
+  });
+});
+
 app.all("/mcp", async (c) => {
   const auth = await resolveMcpAuth(c);
   if (!auth) {

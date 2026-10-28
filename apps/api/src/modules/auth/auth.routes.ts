@@ -19,6 +19,10 @@ import {
 import { type AppBindings } from "../../types";
 import { getMeHandler, getMeRoute } from "./handlers/get-me.handler";
 import { getLogoutHandler, getLogoutRoute } from "./handlers/get-logout.handler";
+import {
+  postDemoLoginRoute,
+  postDemoLoginHandler,
+} from "./handlers/post-demo-login.handler";
 
 const authRoutes = createRouter<AppBindings>();
 
@@ -33,5 +37,6 @@ authRoutes.openapi(getOauthSessionEstablishRoute, getOauthSessionEstablishHandle
 authRoutes.openapi(postRefreshTokenRoute, postRefreshTokenHandler);
 authRoutes.openapi(getMeRoute, getMeHandler);
 authRoutes.openapi(getLogoutRoute, getLogoutHandler);
+authRoutes.openapi(postDemoLoginRoute, postDemoLoginHandler);
 
 export default authRoutes;

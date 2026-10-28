@@ -88,6 +88,16 @@ const apiEnvSchema = baseEnvSchema.extend({
   OAUTH_ACCESS_TOKEN_TTL_SECONDS: z.coerce.number().int().min(60).max(3600).optional().default(900),
   OAUTH_REFRESH_TOKEN_TTL_DAYS: z.coerce.number().int().min(1).max(90).optional().default(30),
 
+  // Marketplace review demo login (disabled by default)
+  DEMO_LOGIN_ENABLED: z
+    .string()
+    .optional()
+    .default("false")
+    .transform((value) => value === "true"),
+  DEMO_ACCOUNT_EMAIL: z.string().email().optional().default("demo@socioconnect.app"),
+  DEMO_ACCOUNT_PASSWORD: z.string().optional().default(""),
+  DEMO_ACCOUNT_NAME: z.string().optional().default("Demo Creator"),
+
   // Docker Services (optional, with defaults)
   POSTGRES_PORT: z.string().optional().default("5432"),
   PROMETHEUS_PORT: z.string().optional().default("9090"),
@@ -132,6 +142,10 @@ export const env = apiEnvSchema.parse({
   SERVICE_TOKEN_SECRET: process.env.SERVICE_TOKEN_SECRET,
   OAUTH_ACCESS_TOKEN_TTL_SECONDS: process.env.OAUTH_ACCESS_TOKEN_TTL_SECONDS,
   OAUTH_REFRESH_TOKEN_TTL_DAYS: process.env.OAUTH_REFRESH_TOKEN_TTL_DAYS,
+  DEMO_LOGIN_ENABLED: process.env.DEMO_LOGIN_ENABLED,
+  DEMO_ACCOUNT_EMAIL: process.env.DEMO_ACCOUNT_EMAIL,
+  DEMO_ACCOUNT_PASSWORD: process.env.DEMO_ACCOUNT_PASSWORD,
+  DEMO_ACCOUNT_NAME: process.env.DEMO_ACCOUNT_NAME,
   POSTGRES_PORT: process.env.POSTGRES_PORT,
   PROMETHEUS_PORT: process.env.PROMETHEUS_PORT,
   GRAFANA_PORT: process.env.GRAFANA_PORT,

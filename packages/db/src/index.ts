@@ -43,3 +43,4 @@ export { CommunitiesRepository, CommunitiesService } from "./repositories/commun
 
 // Export metrics utilities
 export { withMetrics } from "./utils/metrics-wrapper";
+export { WebhookRepository } from "./repositories/webhook.repository";

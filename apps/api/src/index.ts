@@ -26,6 +26,7 @@ import { publishIntentRoutes } from "./modules/publish-intents/publish-intents.r
 import { oauthRoutes } from "./modules/oauth/oauth.routes";
 import { platformRoutes } from "./modules/platforms/platforms.routes";
 import { activityRoutes } from "./modules/activity/activity.routes";
+import { webhookRoutes } from "./modules/webhooks/webhooks.routes";
 import { mediaRoutes } from "./modules/media/media.routes";
 import { dispatchRoutes } from "./modules/dispatches/dispatches.routes";
 import { analyticsRoutes } from "./modules/analytics/analytics.routes";
@@ -142,6 +143,7 @@ const routes = [
   oauthRoutes,
   platformRoutes,
   activityRoutes,
+  webhookRoutes,
 ] as const;
 
 routes.forEach((route) => {

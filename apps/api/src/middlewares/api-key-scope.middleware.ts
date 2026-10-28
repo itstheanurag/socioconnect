@@ -72,6 +72,10 @@ const POLICIES: ScopePolicy[] = [
 
   { method: "GET", pattern: /^\/v1\/quotas(?:\/.*)?$/, scope: "usage:read" },
   { method: "GET", pattern: /^\/v1\/activity$/, scope: "usage:read" },
+  { method: "GET", pattern: /^\/v1\/webhooks$/, scope: "webhooks:manage" },
+  { method: "POST", pattern: /^\/v1\/webhooks$/, scope: "webhooks:manage" },
+  { method: "DELETE", pattern: /^\/v1\/webhooks\/[^/]+$/, scope: "webhooks:manage" },
+  { method: "POST", pattern: /^\/v1\/webhooks\/[^/]+\/test$/, scope: "webhooks:manage" },
   { method: "GET", pattern: /^\/v1\/subscriptions\/current$/, scope: "usage:read" },
   { method: "GET", pattern: /^\/v1\/subscriptions\/invoices$/, scope: "usage:read" },
 ];

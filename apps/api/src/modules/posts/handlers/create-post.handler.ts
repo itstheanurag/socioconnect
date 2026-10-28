@@ -13,6 +13,7 @@ import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
 import { isAccountAllowed } from "@/utils/authz";
 import { recordAuditEvent, recordUsageEvent } from "@/utils/events";
+import { WebhookService } from "@/modules/webhooks/webhooks.service";
 import { EntitlementError, EntitlementsService } from "@/modules/entitlements/entitlements.service";
 
 export const createPostRoute = createRoute({
@@ -166,6 +167,12 @@ export const createPostHandler: AppRouteHandler<CreatePostRoute> = async (c) => 
       resourceType: "post",
       resourceId: post.id,
       metadata: { status: post.status, destinations: body.targets.length },
+    });
+    await WebhookService.emit(post.workspaceId ?? "", "post.created", {
+      postId: post.id,
+      status: post.status,
+      scheduledAt: post.scheduledAt ? post.scheduledAt.toISOString() : null,
+      destinations: body.targets.length,
     });
 
     return c.json(

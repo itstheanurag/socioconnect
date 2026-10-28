@@ -14,6 +14,7 @@ import { enforceUserMiddleware } from "@/middlewares/enforce-user.middleware";
 import { isAccountAllowed } from "@/utils/authz";
 import { recordAuditEvent } from "@/utils/events";
 import { resolveWorkspaceId } from "@/utils/workspace";
+import { WebhookService } from "@/modules/webhooks/webhooks.service";
 
 const targetSchema = z.object({
   accountId: z.uuid(),
@@ -210,6 +211,12 @@ export const updatePostHandler: AppRouteHandler<UpdatePostRoute> = async (c) => 
         replacedTargets: body.targets !== undefined,
       },
     });
+    await WebhookService.emit(workspaceId, "post.updated", {
+      postId: updated.post.id,
+      status: updated.post.status,
+      dispatches: updated.dispatches.length,
+      replacedTargets: body.targets !== undefined,
+    });
 
     return c.json({
       message: "Post updated successfully",
@@ -305,6 +312,11 @@ export const cancelPostHandler: AppRouteHandler<CancelPostRoute> = async (c) => 
       resourceType: "post",
       resourceId: cancelled.id,
       metadata: { previousStatus: post.status },
+    });
+    await WebhookService.emit(workspaceId, "post.cancelled", {
+      postId: cancelled.id,
+      previousStatus: post.status,
+      status: cancelled.status,
     });
 
     return c.json({

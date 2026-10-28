@@ -23,7 +23,8 @@ export type LoggerModules =
   | "dispatches"
   | "analytics"
   | "notifications"
-  | "communities";
+  | "communities"
+  | "webhooks";
 
 export interface LoggerMeta {
   module: LoggerModules;

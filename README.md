@@ -189,7 +189,9 @@ agent connection setup are documented in [docs/MCP.md](docs/MCP.md).
 
 The ChatGPT/Codex/Claude marketplace package lives in
 [`plugins/socioconnect`](plugins/socioconnect), with local marketplace metadata at
-`.agents/plugins/marketplace.json`.
+`.agents/plugins/marketplace.json`. Webhooks are documented in
+[docs/WEBHOOKS.md](docs/WEBHOOKS.md); the CLI and SDK are in
+[docs/CLI_SDK.md](docs/CLI_SDK.md).
 
 ---
 

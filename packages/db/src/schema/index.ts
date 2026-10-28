@@ -205,3 +205,6 @@ export {
   type NewCommunityAutomation,
   type UpdateCommunityAutomation,
 } from "./communities/community-groups.db";
+
+// Webhooks
+export * from "./webhooks";

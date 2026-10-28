@@ -27,7 +27,10 @@ Scope: public API, API keys, remote MCP server, ChatGPT/Claude distribution, age
 - [x] subscription status gating and monthly publish/AI quota enforcement
 - [x] AI credit usage events and per-key rate limits
 - [x] unit tests for API-key crypto, OAuth PKCE, service tokens, scopes, entitlements, and revision hashes
-- [ ] public submission: domain verification, brand assets, demo account, review scripts
+- [x] outbound webhooks with signed deliveries and delivery log
+- [x] TypeScript SDK and `socioconnect` CLI
+- [x] demo login, seeded review workspace, legal/support pages, OpenAI challenge endpoint
+- [ ] public submission: deploy domains, replace assets, run review, submit listings
 - [ ] workspace-scoped reads for billing, quotas, notifications, and communities
 - [ ] media upload tool and per-tool `securitySchemes` metadata
 

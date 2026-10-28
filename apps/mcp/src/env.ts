@@ -13,6 +13,7 @@ const envSchema = z.object({
   MCP_RESOURCE_URL: z.string().url().default("http://localhost:8010/mcp"),
   JWT_SECRET: z.string().min(32),
   SERVICE_TOKEN_SECRET: z.string().optional().default(""),
+  OPENAI_APPS_CHALLENGE_TOKEN: z.string().optional().default(""),
   LOG_LEVEL: z.string().optional().default("info"),
 });
 
@@ -24,6 +25,7 @@ export const env = envSchema.parse({
   MCP_RESOURCE_URL: process.env.MCP_RESOURCE_URL,
   JWT_SECRET: process.env.JWT_SECRET,
   SERVICE_TOKEN_SECRET: process.env.SERVICE_TOKEN_SECRET,
+  OPENAI_APPS_CHALLENGE_TOKEN: process.env.OPENAI_APPS_CHALLENGE_TOKEN,
   LOG_LEVEL: process.env.LOG_LEVEL,
 });
 
