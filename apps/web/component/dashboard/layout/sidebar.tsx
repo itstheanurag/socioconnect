@@ -16,6 +16,7 @@ import {
   Building2,
   ChevronLeft,
   ChevronRight,
+  Share2,
 } from "lucide-react";
 import { motion } from "motion/react";
 import { useDashboard } from "@/component/dashboard/context/dashboard-context";
@@ -51,38 +52,23 @@ export function Sidebar() {
 
   const navGroups: NavGroup[] = [
     {
-      items: [
-        {
-          id: "overview",
-          label: "Overview",
-          icon: LayoutDashboard,
-        },
-      ],
+      items: [{ id: "overview", label: "Overview", icon: LayoutDashboard }],
     },
     {
-      groupLabel: "CONTENT",
+      groupLabel: "Content",
       items: [
-        {
-          id: "compose",
-          label: "Compose",
-          icon: PenTool,
-          highlight: true,
-        },
+        { id: "compose", label: "Compose", icon: PenTool, highlight: true },
         {
           id: "posts",
           label: "Posts",
           icon: FileText,
           badge: scheduledCount > 0 ? scheduledCount : undefined,
         },
-        {
-          id: "calendar",
-          label: "Calendar",
-          icon: CalendarDays,
-        },
+        { id: "calendar", label: "Calendar", icon: CalendarDays },
       ],
     },
     {
-      groupLabel: "AUTOMATION",
+      groupLabel: "Automation",
       items: [
         {
           id: "bots",
@@ -90,62 +76,29 @@ export function Sidebar() {
           icon: Bot,
           badge: activeBotsCount > 0 ? `${activeBotsCount} on` : undefined,
         },
-        {
-          id: "automations",
-          label: "Automations",
-          icon: Zap,
-        },
+        { id: "automations", label: "Automations", icon: Zap },
       ],
     },
     {
-      groupLabel: "NETWORK",
+      groupLabel: "Network",
       items: [
-        {
-          id: "communities",
-          label: "Communities",
-          icon: Users,
-        },
-        {
-          id: "connectors",
-          label: "Connectors",
-          icon: Radio,
-          badge: connectedCount,
-        },
+        { id: "communities", label: "Communities", icon: Users },
+        { id: "connectors", label: "Connectors", icon: Radio, badge: connectedCount },
       ],
     },
     {
-      groupLabel: "ANALYTICS",
-      items: [
-        {
-          id: "analytics",
-          label: "Analytics",
-          icon: BarChart3,
-        },
-      ],
+      groupLabel: "Analytics",
+      items: [{ id: "analytics", label: "Analytics", icon: BarChart3 }],
     },
     {
-      groupLabel: "DEVELOPERS",
-      items: [
-        {
-          id: "developers",
-          label: "API & Agents",
-          icon: KeyRound,
-        },
-      ],
+      groupLabel: "Developers",
+      items: [{ id: "developers", label: "API & Agents", icon: KeyRound }],
     },
     {
-      groupLabel: "WORKSPACE",
+      groupLabel: "Workspace",
       items: [
-        {
-          id: "team",
-          label: "Team",
-          icon: Building2,
-        },
-        {
-          id: "settings",
-          label: "Settings",
-          icon: Settings,
-        },
+        { id: "team", label: "Team", icon: Building2 },
+        { id: "settings", label: "Settings", icon: Settings },
       ],
     },
   ];
@@ -153,48 +106,61 @@ export function Sidebar() {
   return (
     <motion.aside
       initial={false}
-      animate={{
-        width: isSidebarCollapsed ? 68 : 240,
-      }}
+      animate={{ width: isSidebarCollapsed ? 72 : 248 }}
       transition={{ type: "spring", stiffness: 350, damping: 30 }}
-      className="hidden md:flex flex-col h-full border-r border-neutral-800 bg-neutral-950/95 backdrop-blur-xl shrink-0 select-none z-20 overflow-hidden relative"
+      className="hidden md:flex flex-col h-full border-r border-neutral-800/80 bg-neutral-950/70 backdrop-blur-xl shrink-0 select-none z-20 overflow-hidden relative"
     >
-      {/* Sidebar Top: Collapse / Expand Toggle Bar */}
-      <div className="h-12 border-b border-neutral-800/80 px-3 flex items-center justify-between shrink-0">
-        {!isSidebarCollapsed ? (
-          <div className="flex items-center justify-between w-full">
-            <span className="text-[11px] font-mono uppercase tracking-wider text-neutral-400 font-semibold pl-1">
-              Workspace
+      <div className="h-16 shrink-0 border-b border-neutral-800/80 px-3">
+        <div className="flex h-full items-center justify-between gap-2">
+          <button
+            type="button"
+            onClick={() => setCurrentSection("overview")}
+            className={`flex min-w-0 items-center gap-2.5 text-left ${isSidebarCollapsed ? "mx-auto" : ""}`}
+          >
+            <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-rose-500 text-[#1b0b08] shadow-lg shadow-rose-500/20">
+              <Share2 className="h-4 w-4" />
             </span>
+            {!isSidebarCollapsed && (
+              <span className="min-w-0">
+                <span className="block truncate font-display text-sm font-bold tracking-tight text-neutral-100">
+                  Socio<span className="font-serif italic font-normal text-rose-300">Connect</span>
+                </span>
+                <span className="block font-mono text-[9px] uppercase tracking-[0.16em] text-neutral-500">
+                  Broadcast OS
+                </span>
+              </span>
+            )}
+          </button>
+
+          {!isSidebarCollapsed && (
             <button
               type="button"
               onClick={toggleSidebar}
-              className="p-1 rounded-lg hover:bg-neutral-900 text-neutral-400 hover:text-neutral-200 transition-colors cursor-pointer"
+              className="rounded-lg p-1.5 text-neutral-500 transition-colors hover:bg-neutral-900 hover:text-neutral-200"
               title="Collapse sidebar (Ctrl+B)"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="h-4 w-4" />
             </button>
-          </div>
-        ) : (
-          <div className="w-full flex justify-center">
-            <button
-              type="button"
-              onClick={toggleSidebar}
-              className="p-1.5 rounded-lg hover:bg-neutral-900 text-neutral-400 hover:text-neutral-200 transition-colors cursor-pointer"
-              title="Expand sidebar (Ctrl+B)"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
-      {/* Navigation Group Items */}
-      <div className="flex-1 overflow-y-auto py-3 px-2 space-y-4 scrollbar-none">
+      {isSidebarCollapsed && (
+        <button
+          type="button"
+          onClick={toggleSidebar}
+          className="mx-auto mt-2 rounded-lg border border-neutral-800 bg-neutral-900/60 p-1 text-neutral-500 hover:text-neutral-200"
+          title="Expand sidebar (Ctrl+B)"
+        >
+          <ChevronRight className="h-3.5 w-3.5" />
+        </button>
+      )}
+
+      <div className="flex-1 overflow-y-auto px-2.5 py-3 space-y-3.5 scrollbar-none">
         {navGroups.map((group, groupIdx) => (
-          <div key={groupIdx} className="space-y-0.5">
+          <div key={groupIdx} className="space-y-1">
             {group.groupLabel && !isSidebarCollapsed && (
-              <div className="px-2.5 py-1 text-[10px] font-mono font-semibold tracking-wider text-neutral-500 uppercase">
+              <div className="px-2.5 pb-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.16em] text-neutral-600">
                 {group.groupLabel}
               </div>
             )}
@@ -209,43 +175,49 @@ export function Sidebar() {
                   type="button"
                   onClick={() => setCurrentSection(item.id)}
                   title={isSidebarCollapsed ? item.label : undefined}
-                  className={`group relative w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all duration-150 cursor-pointer ${
+                  className={`group relative flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-xs transition-all duration-150 ${
                     isActive
                       ? item.highlight
-                        ? "bg-red-600 text-neutral-100 shadow-md shadow-red-600/25 font-semibold"
-                        : "bg-neutral-900 text-neutral-100 font-semibold border border-neutral-800 shadow-xs"
+                        ? "bg-rose-500 font-semibold text-[#1b0b08] shadow-lg shadow-rose-500/15"
+                        : "border border-neutral-800 bg-neutral-900/80 font-semibold text-neutral-100"
                       : item.highlight
-                        ? "bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 border border-rose-500/20"
-                        : "text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900/60"
+                        ? "border border-rose-500/20 bg-rose-500/10 text-rose-200 hover:bg-rose-500/15"
+                        : "text-neutral-400 hover:bg-neutral-900/60 hover:text-neutral-100"
                   } ${isSidebarCollapsed ? "justify-center px-2" : ""}`}
                 >
+                  {isActive && !item.highlight && (
+                    <span className="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-rose-500" />
+                  )}
                   <Icon
-                    className={`w-4 h-4 shrink-0 transition-transform ${
+                    className={`h-4 w-4 shrink-0 transition-transform ${
                       isActive
-                        ? "scale-105"
-                        : "group-hover:scale-105 text-neutral-400 group-hover:text-neutral-200"
-                    } ${item.highlight && !isActive ? "text-rose-400" : ""}`}
+                        ? item.highlight
+                          ? "text-[#1b0b08]"
+                          : "text-rose-300"
+                        : item.highlight
+                          ? "text-rose-300"
+                          : "text-neutral-500 group-hover:text-neutral-300"
+                    } group-hover:scale-105`}
                   />
 
                   {!isSidebarCollapsed && (
-                    <span className="truncate flex-1 text-left">{item.label}</span>
+                    <span className="min-w-0 flex-1 truncate text-left">{item.label}</span>
                   )}
 
                   {!isSidebarCollapsed && item.badge !== undefined && (
                     <span
-                      className={`text-[10px] font-mono font-semibold px-1.5 py-0.2 rounded-full shrink-0 ${
-                        isActive
-                          ? "bg-neutral-800 text-neutral-200"
-                          : "bg-neutral-800/80 text-neutral-400"
+                      className={`shrink-0 rounded-full px-1.5 py-px font-mono text-[9px] font-semibold ${
+                        isActive && item.highlight
+                          ? "bg-[#1b0b08]/15 text-[#1b0b08]"
+                          : "bg-neutral-800 text-neutral-400"
                       }`}
                     >
                       {item.badge}
                     </span>
                   )}
 
-                  {/* Collapsed Active Indicator Dot */}
                   {isSidebarCollapsed && isActive && (
-                    <span className="absolute right-1.5 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-rose-500" />
+                    <span className="absolute right-1.5 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-rose-500" />
                   )}
                 </button>
               );
@@ -254,19 +226,28 @@ export function Sidebar() {
         ))}
       </div>
 
-      {/* Sidebar Footer: Quick status pill */}
-      <div className="p-3 border-t border-neutral-800/80 bg-neutral-950/80 shrink-0">
+      <div className="shrink-0 border-t border-neutral-800/80 p-3">
         {!isSidebarCollapsed ? (
-          <div className="flex items-center justify-between p-2 rounded-xl bg-neutral-900 border border-neutral-800 text-[11px]">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="font-mono text-neutral-300">Gateway Live</span>
+          <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-2.5">
+            <div className="flex items-center justify-between">
+              <span className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.14em] text-neutral-500">
+                <span className="signal-live-dot h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                Signal stable
+              </span>
+              <span className="signal-tabular font-mono text-[9px] text-neutral-500">
+                {connectedCount} ch
+              </span>
             </div>
-            <span className="text-[10px] font-mono text-neutral-400">99.98%</span>
+            <div className="mt-2 h-1 overflow-hidden rounded-full bg-neutral-800">
+              <div
+                className="h-full rounded-full bg-linear-to-r from-emerald-400 to-sky-400"
+                style={{ width: `${Math.min(100, 35 + connectedCount * 8)}%` }}
+              />
+            </div>
           </div>
         ) : (
-          <div className="flex justify-center" title="Gateway Online (99.98%)">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <div className="flex justify-center" title="Signal stable">
+            <span className="signal-live-dot h-2 w-2 rounded-full bg-emerald-400" />
           </div>
         )}
       </div>

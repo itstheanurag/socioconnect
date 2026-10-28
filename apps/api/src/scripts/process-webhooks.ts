@@ -15,6 +15,7 @@ async function main() {
     connectionString: databaseUrl,
     ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
   });
+  
   await connectDB();
 
   try {

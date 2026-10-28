@@ -5,7 +5,6 @@ import {
   Calendar,
   Layers,
   Radio,
-  Sparkles,
   ArrowUpRight,
   Plus,
   Clock,
@@ -108,11 +107,11 @@ export function OverviewView() {
           )}
 
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold tracking-wider text-rose-300 bg-rose-500/10 border border-rose-500/20 mb-1.5">
-              <Sparkles className="w-3 h-3" />
-              Social Operating System
+            <div className="mb-1.5 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-emerald-300">
+              <span className="signal-live-dot h-1.5 w-1.5 rounded-full bg-emerald-400" />
+              Live broadcast desk
             </div>
-            <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-neutral-100">
+            <h1 className="font-display text-3xl font-bold tracking-[-0.02em] text-neutral-100 sm:text-4xl">
               Good morning, {userName}
             </h1>
             <p className="text-xs sm:text-sm text-neutral-400">
@@ -125,7 +124,7 @@ export function OverviewView() {
           <button
             type="button"
             onClick={() => navigateToCompose()}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-neutral-100 text-xs font-semibold shadow-lg shadow-red-600/25 transition-all cursor-pointer active:scale-95"
+            className="flex items-center gap-2 rounded-xl bg-rose-500 px-4 py-2.5 text-[11px] font-semibold text-[#1b0b08] shadow-lg shadow-rose-500/20 transition-all hover:bg-rose-400 cursor-pointer active:scale-95"
           >
             <Plus className="w-4 h-4" />
             <span>Create New Post</span>
@@ -137,7 +136,7 @@ export function OverviewView() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <motion.div
           whileHover={{ y: -2 }}
-          className="rounded-2xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-3 relative overflow-hidden group shadow-xl"
+          className="signal-card rounded-2xl p-5 space-y-3 relative overflow-hidden group"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-neutral-400">Scheduled Queue</span>
@@ -146,7 +145,7 @@ export function OverviewView() {
             </div>
           </div>
           <div className="flex items-baseline justify-between">
-            <span className="font-display text-3xl font-bold text-neutral-100">
+            <span className="signal-tabular font-display text-3xl font-bold text-neutral-100">
               {scheduledPosts.length}
             </span>
             <span className="text-[11px] font-mono text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded-full">
@@ -158,7 +157,7 @@ export function OverviewView() {
 
         <motion.div
           whileHover={{ y: -2 }}
-          className="rounded-2xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-3 relative overflow-hidden group shadow-xl"
+          className="signal-card rounded-2xl p-5 space-y-3 relative overflow-hidden group"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-neutral-400">Published Content</span>
@@ -167,7 +166,7 @@ export function OverviewView() {
             </div>
           </div>
           <div className="flex items-baseline justify-between">
-            <span className="font-display text-3xl font-bold text-neutral-100">
+            <span className="signal-tabular font-display text-3xl font-bold text-neutral-100">
               {publishedPosts.length > 0 ? publishedPosts.length : 138}
             </span>
             <span className="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full flex items-center gap-0.5">
@@ -179,7 +178,7 @@ export function OverviewView() {
 
         <motion.div
           whileHover={{ y: -2 }}
-          className="rounded-2xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-3 relative overflow-hidden group shadow-xl"
+          className="signal-card rounded-2xl p-5 space-y-3 relative overflow-hidden group"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-neutral-400">Connected Accounts</span>
@@ -188,7 +187,7 @@ export function OverviewView() {
             </div>
           </div>
           <div className="flex items-baseline justify-between">
-            <span className="font-display text-3xl font-bold text-neutral-100">
+            <span className="signal-tabular font-display text-3xl font-bold text-neutral-100">
               {connectedConnectors.length}
             </span>
             <span className="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
@@ -200,7 +199,7 @@ export function OverviewView() {
 
         <motion.div
           whileHover={{ y: -2 }}
-          className="rounded-2xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-3 relative overflow-hidden group shadow-xl"
+          className="signal-card rounded-2xl p-5 space-y-3 relative overflow-hidden group"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-neutral-400">Telegram Bots</span>
@@ -209,7 +208,7 @@ export function OverviewView() {
             </div>
           </div>
           <div className="flex items-baseline justify-between">
-            <span className="font-display text-3xl font-bold text-neutral-100">
+            <span className="signal-tabular font-display text-3xl font-bold text-neutral-100">
               {bots.length} active
             </span>
             <span className="text-[11px] font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded-full">
@@ -241,7 +240,7 @@ export function OverviewView() {
             </button>
           </div>
 
-          <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-4">
+          <div className="signal-card rounded-3xl p-5 space-y-4">
             {/* Today Group */}
             <div className="space-y-2">
               <div className="text-[11px] font-mono uppercase tracking-wider text-rose-300 font-semibold flex items-center gap-1.5">
@@ -364,7 +363,7 @@ export function OverviewView() {
             </button>
           </div>
 
-          <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-4">
+          <div className="signal-card rounded-3xl p-5 space-y-4">
             <div className="space-y-3.5">
               {platformActivity.map((plat) => (
                 <div key={plat.platformId} className="space-y-1.5">

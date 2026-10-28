@@ -2,13 +2,24 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { Share2, Bell, ChevronDown, LogOut, Sparkles, ExternalLink } from "lucide-react";
+import {
+  Share2,
+  Bell,
+  ChevronDown,
+  LogOut,
+  Sparkles,
+  ExternalLink,
+  Search,
+  PenTool,
+} from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from "@/context/auth-context";
 import { WorkspaceSwitcher } from "./workspace-switcher";
+import { useDashboard } from "@/component/dashboard/context/dashboard-context";
 
 export function TopBar() {
   const { user, logout } = useAuth();
+  const { setIsGlobalSearchOpen, navigateToCompose } = useDashboard();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [avatarError, setAvatarError] = useState(false);
@@ -50,8 +61,19 @@ export function TopBar() {
         </span>
       </Link>
 
-      <div className="flex items-center gap-3">
+      <div className="flex min-w-0 items-center gap-2">
         <WorkspaceSwitcher />
+        <button
+          type="button"
+          onClick={() => setIsGlobalSearchOpen(true)}
+          className="hidden sm:flex items-center gap-2 rounded-xl border border-neutral-800 bg-neutral-900/50 px-3 py-1.5 text-[11px] text-neutral-500 transition-colors hover:border-neutral-700 hover:text-neutral-300"
+        >
+          <Search className="h-3.5 w-3.5" />
+          <span className="w-28 text-left">Search workspace</span>
+          <span className="rounded border border-neutral-800 px-1 font-mono text-[9px] text-neutral-600">
+            /
+          </span>
+        </button>
       </div>
 
       {/* Right: Notifications & Profile Section */}
@@ -111,6 +133,15 @@ export function TopBar() {
             )}
           </AnimatePresence>
         </div>
+
+        <button
+          type="button"
+          onClick={() => navigateToCompose()}
+          className="hidden sm:inline-flex items-center gap-1.5 rounded-xl bg-rose-500 px-3 py-2 text-[11px] font-semibold text-[#1b0b08] shadow-lg shadow-rose-500/15 transition-colors hover:bg-rose-400"
+        >
+          <PenTool className="h-3.5 w-3.5" />
+          New post
+        </button>
 
         {/* User Profile Menu */}
         <div className="relative" ref={userRef}>
