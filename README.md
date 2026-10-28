@@ -172,6 +172,15 @@ setup, webhook events, and local testing.
 
 ---
 
+## 🤖 Agent Platform
+
+Public API keys, the remote MCP server, and the ChatGPT/Claude distribution plan
+are described in [docs/AGENT_PLATFORM.md](docs/AGENT_PLATFORM.md). The core rule
+is draft-first: agents can compose and validate freely, but every public post
+requires a confirmed publish intent.
+
+---
+
 ## 📜 License
 
 This project is licensed under the MIT License.
