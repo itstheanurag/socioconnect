@@ -12,6 +12,7 @@ import { errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
+import { isAccountAllowed } from "@/utils/authz";
 
 export const createPostRoute = createRoute({
   method: "post",
@@ -88,6 +89,24 @@ export const createPostHandler: AppRouteHandler<CreatePostRoute> = async (c) => 
   const user = c.get("user");
 
   try {
+    const auth = c.var.auth;
+    const forbiddenTarget = body.targets.find(
+      (target) => !isAccountAllowed(auth, target.accountId),
+    );
+
+    if (forbiddenTarget) {
+      throw new HTTPException(StatusCodes.HTTP_403_FORBIDDEN, {
+        res: c.json(
+          {
+            message: "This API key is not allowed to publish to one or more target accounts",
+            code: "ACCOUNT_NOT_ALLOWED",
+            accountId: forbiddenTarget.accountId,
+          },
+          StatusCodes.HTTP_403_FORBIDDEN,
+        ),
+      });
+    }
+
     const scheduledDate = body.scheduledAt ? new Date(body.scheduledAt) : null;
     const initialStatus =
       scheduledDate && scheduledDate > new Date()
@@ -138,6 +157,8 @@ export const createPostHandler: AppRouteHandler<CreatePostRoute> = async (c) => 
       StatusCodes.HTTP_201_CREATED,
     );
   } catch (err) {
+    if (err instanceof HTTPException) throw err;
+
     logger.error("Error creating post", {
       module: "posts",
       action: "createPostHandler",

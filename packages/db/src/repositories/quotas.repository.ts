@@ -1,6 +1,7 @@
 import { eq, sql } from "drizzle-orm";
 import { type DBTransaction, db } from "@/connection";
 import { userQuotasTable, type UserQuota, PlanTierEnum } from "@/schema";
+import { WorkspacesRepository } from "./workspaces.repository";
 import { withMetrics } from "@/utils/metrics-wrapper";
 import { logger } from "@repo/shared";
 
@@ -45,11 +46,17 @@ export namespace QuotasRepository {
       // Initialize default Solo tier quota
       const cycleResetsAt = new Date();
       cycleResetsAt.setMonth(cycleResetsAt.getMonth() + 1);
+      const workspace = await WorkspacesRepository.ensurePersonalWorkspace(
+        userId,
+        undefined,
+        options,
+      );
 
       const [created] = await queryClient
         .insert(userQuotasTable)
         .values({
           userId,
+          workspaceId: workspace.id,
           tier: PlanTierEnum.SOLO,
           maxChannels: 3,
           maxMonthlyDrops: 30,

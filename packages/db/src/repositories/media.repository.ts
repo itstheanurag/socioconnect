@@ -1,6 +1,7 @@
 import { and, desc, eq, isNull } from "drizzle-orm";
 import { type DBTransaction, db } from "@/connection";
 import { mediaAssetsTable, type MediaAsset, type NewMediaAsset, MediaTypeEnum } from "@/schema";
+import { WorkspacesRepository } from "./workspaces.repository";
 import { withMetrics } from "@/utils/metrics-wrapper";
 import { logger } from "@repo/shared";
 
@@ -14,8 +15,15 @@ export namespace MediaRepository {
   ): Promise<MediaAsset> {
     const queryClient = options?.tx || db;
     try {
+      const workspaceId =
+        payload.workspaceId ??
+        (await WorkspacesRepository.ensurePersonalWorkspace(payload.userId, undefined, options)).id;
+
       const result = await withMetrics("insert", "media_assets", async () =>
-        queryClient.insert(mediaAssetsTable).values(payload).returning(),
+        queryClient
+          .insert(mediaAssetsTable)
+          .values({ ...payload, workspaceId })
+          .returning(),
       );
       const [media] = result;
 

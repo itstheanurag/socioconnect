@@ -5,6 +5,7 @@ import { errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
+import { isAccountAllowed } from "@/utils/authz";
 
 export const healthCheckAccountRoute = createRoute({
   method: "post",
@@ -47,7 +48,7 @@ export const healthCheckAccountHandler: AppRouteHandler<HealthCheckAccountRoute>
   try {
     const account = await AccountsRepository.findById(id);
 
-    if (!account || account.userId !== user.id) {
+    if (!account || account.userId !== user.id || !isAccountAllowed(c.var.auth, account.id)) {
       throw new HTTPException(StatusCodes.HTTP_404_NOT_FOUND, {
         res: c.json({ message: "Account not found" }, StatusCodes.HTTP_404_NOT_FOUND),
       });

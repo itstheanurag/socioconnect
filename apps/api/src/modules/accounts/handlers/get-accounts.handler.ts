@@ -5,6 +5,7 @@ import { errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
+import { isAccountAllowed } from "@/utils/authz";
 
 export const getAccountsRoute = createRoute({
   method: "get",
@@ -68,21 +69,24 @@ export const getAccountsHandler: AppRouteHandler<GetAccountsRoute> = async (c) =
 
   try {
     const rawAccounts = await AccountsRepository.findAllByUserId(user.id);
+    const auth = c.var.auth;
 
-    const accounts = rawAccounts.map((a) => ({
-      id: a.id,
-      platform: a.platform as SocialPlatformEnum,
-      platformAccountId: a.platformAccountId,
-      username: a.username,
-      displayName: a.displayName,
-      avatarUrl: a.avatarUrl,
-      profileUrl: a.profileUrl,
-      status: a.status as ConnectedAccountStatus,
-      scopes: a.scopes,
-      lastHealthCheckAt: a.lastHealthCheckAt ? a.lastHealthCheckAt.toISOString() : null,
-      lastHealthStatus: a.lastHealthStatus,
-      createdAt: a.createdAt.toISOString(),
-    }));
+    const accounts = rawAccounts
+      .filter((account) => isAccountAllowed(auth, account.id))
+      .map((a) => ({
+        id: a.id,
+        platform: a.platform as SocialPlatformEnum,
+        platformAccountId: a.platformAccountId,
+        username: a.username,
+        displayName: a.displayName,
+        avatarUrl: a.avatarUrl,
+        profileUrl: a.profileUrl,
+        status: a.status as ConnectedAccountStatus,
+        scopes: a.scopes,
+        lastHealthCheckAt: a.lastHealthCheckAt ? a.lastHealthCheckAt.toISOString() : null,
+        lastHealthStatus: a.lastHealthStatus,
+        createdAt: a.createdAt.toISOString(),
+      }));
 
     return c.json({
       message: "Accounts retrieved successfully",

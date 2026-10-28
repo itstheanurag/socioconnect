@@ -37,6 +37,9 @@ export const getUserMiddleware: MiddlewareHandler<AppBindings> = async (c, next)
           if (session) {
             c.set("session", session);
           }
+          if (user && session) {
+            c.set("auth", { type: "session", scopes: null });
+          }
         }
       } catch {
         // Stale or invalid JWT - do not block public requests or throw 500
@@ -45,7 +48,6 @@ export const getUserMiddleware: MiddlewareHandler<AppBindings> = async (c, next)
 
     return next();
   } catch (err) {
-    
     logger.error("Error in getUserMiddleware:", {
       action: "getUserMiddleware",
       error: err,

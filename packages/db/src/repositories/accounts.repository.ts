@@ -6,6 +6,7 @@ import {
   type NewConnectedAccount,
   ConnectedAccountStatus,
 } from "@/schema";
+import { WorkspacesRepository } from "./workspaces.repository";
 import { withMetrics } from "@/utils/metrics-wrapper";
 import { logger } from "@repo/shared";
 
@@ -19,8 +20,15 @@ export namespace AccountsRepository {
   ): Promise<ConnectedAccount> {
     const queryClient = options?.tx || db;
     try {
+      const workspaceId =
+        payload.workspaceId ??
+        (await WorkspacesRepository.ensurePersonalWorkspace(payload.userId, undefined, options)).id;
+
       const result = await withMetrics("insert", "connected_accounts", async () =>
-        queryClient.insert(connectedAccountsTable).values(payload).returning(),
+        queryClient
+          .insert(connectedAccountsTable)
+          .values({ ...payload, workspaceId })
+          .returning(),
       );
       const [account] = result;
 

@@ -22,12 +22,24 @@ import { Session, User } from "@repo/db";
  *
  * @see {@link file://@/middlewares/get-user.middleware.ts getUserMiddleware} - Populates user & session from JWT
  */
+export interface AuthContext {
+  type: "session" | "api_key";
+  /** Null for session auth (full user access), array for scoped API keys. */
+  scopes: string[] | null;
+  workspaceId?: string;
+  apiKeyId?: string;
+  /** Optional account allowlist for API keys. Empty means all workspace accounts. */
+  accountIds?: string[];
+}
+
 export interface AppBindings {
   Variables: {
     /** The authenticated user, populated by auth middleware */
     user: User;
-    /** The current session, populated by auth middleware */
-    session: Session;
+    /** The current login session. Undefined for API-key requests. */
+    session?: Session;
+    /** How the request authenticated. */
+    auth?: AuthContext;
   };
 }
 

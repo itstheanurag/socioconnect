@@ -1,8 +1,23 @@
 # Agent Platform Plan: API Keys, MCP, ChatGPT & Claude
 
-Status: **planning**
+Status: **Phase 0 in progress**
 Branch: `feat/app-refresh`
 Scope: public API, API keys, remote MCP server, ChatGPT/Claude distribution, agent-safe publishing
+
+### Implementation status (2026-10-28)
+
+- [x] `workspaces` + `workspace_members` schema
+- [x] personal workspace backfill and lazy provisioning
+- [x] `workspace_id` on accounts, posts, media, subscriptions, quotas
+- [x] scoped API keys (hashed, prefix lookup, expiry, revoke, rotate)
+- [x] API-key auth middleware + deny-by-default scope map
+- [x] account-allowlist enforcement on accounts, destinations, posts, retries
+- [x] `GET/POST /v1/api-keys`, `DELETE /v1/api-keys/{id}`, `POST /v1/api-keys/{id}/rotate`
+- [x] `GET /v1/workspaces`, `GET /v1/workspaces/current`
+- [ ] `Idempotency-Key` middleware and storage (next)
+- [ ] full workspace-scoped queries (currently user-scoped reads with workspace writes)
+- [ ] `audit_events` and `usage_events` tables (next)
+- [ ] OAuth 2.1 AS and `apps/mcp` (Phase 2)
 
 ---
 

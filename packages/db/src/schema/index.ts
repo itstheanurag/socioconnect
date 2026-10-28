@@ -1,3 +1,7 @@
+// Workspaces & API Keys Schema
+export * from "./workspaces";
+export * from "./api-keys";
+
 // Users Schema
 export { usersSchema } from "./users";
 export { type NewUser, usersTable, type UpdateUser, type User, UserRole } from "./users/users.db";

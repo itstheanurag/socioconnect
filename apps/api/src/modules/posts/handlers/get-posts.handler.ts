@@ -11,6 +11,7 @@ import { errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
+import { isAccountAllowed } from "@/utils/authz";
 
 // 1. List Posts with Filtering
 export const getPostsRoute = createRoute({
@@ -83,7 +84,15 @@ export const getPostsHandler: AppRouteHandler<GetPostsRoute> = async (c) => {
       offset: (page - 1) * limit,
     });
 
-    const posts = rawPosts.map((p) => ({
+    const auth = c.var.auth;
+    const visiblePosts =
+      auth?.type === "api_key" && auth.accountIds?.length
+        ? rawPosts.filter((post) =>
+            post.dispatches.some((dispatch) => isAccountAllowed(auth, dispatch.accountId)),
+          )
+        : rawPosts;
+
+    const posts = visiblePosts.map((p) => ({
       id: p.id,
       title: p.title,
       content: p.content,
@@ -177,6 +186,17 @@ export const getPostByIdHandler: AppRouteHandler<GetPostByIdRoute> = async (c) =
     const post = await PostsRepository.findById(id);
 
     if (!post || post.userId !== user.id) {
+      throw new HTTPException(StatusCodes.HTTP_404_NOT_FOUND, {
+        res: c.json({ message: "Post not found" }, StatusCodes.HTTP_404_NOT_FOUND),
+      });
+    }
+
+    const auth = c.var.auth;
+    if (
+      auth?.type === "api_key" &&
+      auth.accountIds?.length &&
+      !post.dispatches.some((dispatch) => isAccountAllowed(auth, dispatch.accountId))
+    ) {
       throw new HTTPException(StatusCodes.HTTP_404_NOT_FOUND, {
         res: c.json({ message: "Post not found" }, StatusCodes.HTTP_404_NOT_FOUND),
       });

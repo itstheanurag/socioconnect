@@ -3,6 +3,7 @@ import { relations } from "drizzle-orm";
 import { enumToPgEnum } from "@repo/shared";
 import { subscriptionsSchema } from "./index";
 import { usersTable } from "@/schema/users/users.db";
+import { workspacesTable } from "@/schema/workspaces/workspaces.db";
 import { invoicesTable } from "./invoices.db";
 
 export enum SubscriptionTierEnum {
@@ -68,6 +69,9 @@ export const subscriptionsTable = subscriptionsSchema.table(
     userId: uuid("user_id")
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),
+    workspaceId: uuid("workspace_id").references(() => workspacesTable.id, {
+      onDelete: "cascade",
+    }),
 
     tier: subscriptionTierPgEnum("tier").notNull().default(SubscriptionTierEnum.FREE),
     status: subscriptionStatusPgEnum("status").notNull().default(SubscriptionStatusEnum.ACTIVE),
@@ -92,6 +96,7 @@ export const subscriptionsTable = subscriptionsSchema.table(
   },
   (table) => [
     uniqueIndex("subscriptions_user_id_idx").on(table.userId),
+    index("subscriptions_workspace_id_idx").on(table.workspaceId),
     index("subscriptions_status_idx").on(table.status),
     index("subscriptions_tier_idx").on(table.tier),
     index("subscriptions_ext_sub_idx").on(table.externalSubscriptionId),

@@ -3,6 +3,7 @@ import { relations } from "drizzle-orm";
 import { enumToPgEnum } from "@repo/shared";
 import { mediaSchema } from "./index";
 import { usersTable } from "@/schema/users/users.db";
+import { workspacesTable } from "@/schema/workspaces/workspaces.db";
 
 export enum MediaTypeEnum {
   IMAGE = "image",
@@ -11,10 +12,7 @@ export enum MediaTypeEnum {
   AUDIO = "audio",
 }
 
-export const mediaTypePgEnum = pgEnum(
-  "media_type",
-  enumToPgEnum(MediaTypeEnum),
-);
+export const mediaTypePgEnum = pgEnum("media_type", enumToPgEnum(MediaTypeEnum));
 
 export const mediaAssetsTable = mediaSchema.table(
   "media_assets",
@@ -23,6 +21,9 @@ export const mediaAssetsTable = mediaSchema.table(
     userId: uuid("user_id")
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),
+    workspaceId: uuid("workspace_id").references(() => workspacesTable.id, {
+      onDelete: "cascade",
+    }),
 
     url: text("url").notNull(),
     storageKey: text("storage_key").notNull(), // S3/R2 storage key
@@ -42,6 +43,7 @@ export const mediaAssetsTable = mediaSchema.table(
   },
   (table) => [
     index("media_user_id_idx").on(table.userId),
+    index("media_workspace_id_idx").on(table.workspaceId),
     index("media_type_idx").on(table.type),
     index("media_created_at_idx").on(table.createdAt),
   ],

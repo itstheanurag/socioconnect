@@ -14,6 +14,7 @@ import {
   DispatchStatusEnum,
   TransactionOutcomeEnum,
 } from "@/schema";
+import { WorkspacesRepository } from "./workspaces.repository";
 import { withMetrics } from "@/utils/metrics-wrapper";
 import { logger } from "@repo/shared";
 
@@ -32,7 +33,15 @@ export namespace PostsRepository {
   ): Promise<{ post: Post; dispatches: PostDispatch[] }> {
     const execute = async (tx: DBTransaction) => {
       // 1. Create master post
-      const [post] = await tx.insert(postsTable).values(input.post).returning();
+      const workspaceId =
+        input.post.workspaceId ??
+        (await WorkspacesRepository.ensurePersonalWorkspace(input.post.userId, undefined, { tx }))
+          .id;
+
+      const [post] = await tx
+        .insert(postsTable)
+        .values({ ...input.post, workspaceId })
+        .returning();
 
       // 2. Create target dispatches
       const dispatchValues = input.dispatches.map((d) => ({
@@ -117,6 +126,20 @@ export namespace PostsRepository {
         },
       }),
     );
+  }
+
+  /**
+   * Finds a dispatch by ID with its post and account.
+   */
+  export async function findDispatchById(id: string, options?: { tx?: DBTransaction }) {
+    const queryClient = options?.tx || db;
+    return queryClient.query.postDispatchesTable.findFirst({
+      where: eq(postDispatchesTable.id, id),
+      with: {
+        post: true,
+        account: true,
+      },
+    });
   }
 
   /**

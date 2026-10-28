@@ -179,6 +179,9 @@ are described in [docs/AGENT_PLATFORM.md](docs/AGENT_PLATFORM.md). The core rule
 is draft-first: agents can compose and validate freely, but every public post
 requires a confirmed publish intent.
 
+API key creation, scopes, account allowlists, and usage are documented in
+[docs/API_KEYS.md](docs/API_KEYS.md).
+
 ---
 
 ## 📜 License

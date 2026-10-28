@@ -13,6 +13,7 @@ import {
   SubscriptionStatusEnum,
   BillingIntervalEnum,
 } from "@/schema";
+import { WorkspacesRepository } from "./workspaces.repository";
 import { withMetrics } from "@/utils/metrics-wrapper";
 import { logger } from "@repo/shared";
 
@@ -154,11 +155,17 @@ export namespace SubscriptionsRepository {
       const periodStart = new Date();
       const periodEnd = new Date();
       periodEnd.setMonth(periodEnd.getMonth() + 1);
+      const workspace = await WorkspacesRepository.ensurePersonalWorkspace(
+        userId,
+        undefined,
+        options,
+      );
 
       const [created] = await queryClient
         .insert(subscriptionsTable)
         .values({
           userId,
+          workspaceId: workspace.id,
           tier: SubscriptionTierEnum.FREE,
           status: SubscriptionStatusEnum.ACTIVE,
           billingInterval: BillingIntervalEnum.MONTHLY,
@@ -454,6 +461,9 @@ export namespace SubscriptionsRepository {
       .insert(subscriptionsTable)
       .values({
         userId: state.userId,
+        workspaceId: (
+          await WorkspacesRepository.ensurePersonalWorkspace(state.userId, undefined, options)
+        ).id,
         tier: state.tier,
         status: state.status,
         billingInterval: state.billingInterval,

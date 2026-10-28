@@ -3,6 +3,7 @@ import { relations } from "drizzle-orm";
 import { enumToPgEnum } from "@repo/shared";
 import { postsSchema } from "./index";
 import { usersTable } from "@/schema/users/users.db";
+import { workspacesTable } from "@/schema/workspaces/workspaces.db";
 import { postDispatchesTable } from "./post-dispatches.db";
 
 export enum PostStatusEnum {
@@ -31,6 +32,9 @@ export const postsTable = postsSchema.table(
     userId: uuid("user_id")
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),
+    workspaceId: uuid("workspace_id").references(() => workspacesTable.id, {
+      onDelete: "cascade",
+    }),
 
     title: text("title"),
     content: text("content").notNull(),
@@ -54,6 +58,7 @@ export const postsTable = postsSchema.table(
   },
   (table) => [
     index("posts_user_id_idx").on(table.userId),
+    index("posts_workspace_id_idx").on(table.workspaceId),
     index("posts_status_idx").on(table.status),
     index("posts_scheduled_at_idx").on(table.scheduledAt),
     index("posts_created_at_idx").on(table.createdAt),

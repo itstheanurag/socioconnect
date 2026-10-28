@@ -18,6 +18,8 @@ export type LoggerModules =
   | "bots"
   | "subscriptions"
   | "billing"
+  | "api-keys"
+  | "workspaces"
   | "dispatches"
   | "analytics"
   | "notifications"
