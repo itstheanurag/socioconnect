@@ -24,7 +24,7 @@ Scope: public API, API keys, remote MCP server, ChatGPT/Claude distribution, age
 - [x] service-token exchange so OAuth tokens are never passed through to the API
 - [ ] ChatGPT plugin package, Claude connector submission, and composer UI
 - [ ] workspace-scoped reads for billing, quotas, notifications, and communities
-- [ ] `update_draft`, `cancel_scheduled_post`, and media tools
+- [ ] media upload tool and per-tool `securitySchemes` metadata
 
 ---
 

@@ -23,6 +23,15 @@ export interface CreatePostInput {
   dispatches: Array<Omit<NewPostDispatch, "postId">>;
 }
 
+export interface UpdatePostInput {
+  title?: string | null;
+  content?: string;
+  tags?: string[];
+  linkUrl?: string | null;
+  mediaIds?: string[];
+  targets?: Array<Omit<NewPostDispatch, "postId">>;
+}
+
 export namespace PostsRepository {
   /**
    * Creates a post along with its multi-channel dispatches in a single transaction
@@ -69,6 +78,110 @@ export namespace PostsRepository {
     }
 
     return await db.transaction(execute);
+  }
+
+  /**
+   * Updates an editable draft. When targets are supplied, existing draft
+   * dispatches are replaced atomically.
+   */
+  export async function updateDraft(
+    postId: string,
+    input: UpdatePostInput,
+    options?: { tx?: DBTransaction },
+  ): Promise<{ post: Post; dispatches: PostDispatch[] }> {
+    const execute = async (tx: DBTransaction) => {
+      const postValues: Partial<NewPost> = { updatedAt: new Date() };
+
+      if (input.title !== undefined) postValues.title = input.title;
+      if (input.content !== undefined) postValues.content = input.content;
+      if (input.tags !== undefined) postValues.tags = input.tags;
+      if (input.linkUrl !== undefined) postValues.linkUrl = input.linkUrl;
+      if (input.mediaIds !== undefined) postValues.mediaIds = input.mediaIds;
+
+      const [post] = await tx
+        .update(postsTable)
+        .set(postValues)
+        .where(eq(postsTable.id, postId))
+        .returning();
+
+      let dispatches: PostDispatch[];
+
+      if (input.targets !== undefined) {
+        await tx.delete(postDispatchesTable).where(eq(postDispatchesTable.postId, postId));
+
+        dispatches =
+          input.targets.length > 0
+            ? await tx
+                .insert(postDispatchesTable)
+                .values(
+                  input.targets.map((target) => ({
+                    ...target,
+                    postId,
+                    status: DispatchStatusEnum.DRAFT,
+                  })),
+                )
+                .returning()
+            : [];
+      } else {
+        dispatches = await tx.query.postDispatchesTable.findMany({
+          where: eq(postDispatchesTable.postId, postId),
+        });
+      }
+
+      logger.audit("draft updated", {
+        module: "posts",
+        action: "repository:updateDraft",
+        postId,
+        targetCount: dispatches.length,
+        replacedTargets: input.targets !== undefined,
+      });
+
+      return { post, dispatches };
+    };
+
+    if (options?.tx) {
+      return execute(options.tx);
+    }
+
+    return db.transaction(execute);
+  }
+
+  /**
+   * Cancels a draft or scheduled post and all of its dispatches.
+   */
+  export async function cancelPost(
+    postId: string,
+    options?: { tx?: DBTransaction },
+  ): Promise<Post> {
+    const queryClient = options?.tx || db;
+    const now = new Date();
+
+    const [post] = await queryClient
+      .update(postsTable)
+      .set({
+        status: PostStatusEnum.CANCELLED,
+        scheduledAt: null,
+        updatedAt: now,
+      })
+      .where(eq(postsTable.id, postId))
+      .returning();
+
+    await queryClient
+      .update(postDispatchesTable)
+      .set({
+        status: DispatchStatusEnum.CANCELLED,
+        nextRetryAt: null,
+        updatedAt: now,
+      })
+      .where(eq(postDispatchesTable.postId, postId));
+
+    logger.audit("post cancelled", {
+      module: "posts",
+      action: "repository:cancelPost",
+      postId,
+    });
+
+    return post;
   }
 
   /**

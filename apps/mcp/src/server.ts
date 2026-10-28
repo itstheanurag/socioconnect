@@ -275,6 +275,73 @@ export function createMcpServer(auth: McpAuth): McpServer {
   );
 
   server.registerTool(
+    "update_draft",
+    {
+      title: "Update draft",
+      description:
+        "Edit a draft's content or replace its destination targets. Published and dispatching posts cannot be edited. Any pending publish intent becomes invalid when the draft changes.",
+      inputSchema: {
+        postId: z.string().uuid(),
+        content: z.string().min(1).optional(),
+        title: z.string().nullable().optional(),
+        linkUrl: z.string().url().nullable().optional(),
+        tags: z.array(z.string()).optional(),
+        targets: z
+          .array(
+            z.object({
+              accountId: z.string().uuid(),
+              platform: z.string(),
+              destinationId: z.string().uuid().optional(),
+              customContent: z.string().optional(),
+              customTitle: z.string().optional(),
+            }),
+          )
+          .optional(),
+        idempotencyKey: z.string().optional(),
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
+    },
+    async (input) => {
+      try {
+        const { postId, idempotencyKey, ...body } = input;
+        return ok(
+          await apiRequest(auth, "PATCH", `/v1/posts/${encodeURIComponent(postId)}`, {
+            body,
+            idempotencyKey: idempotencyKey ?? `mcp-update-${randomUUID()}`,
+          }),
+        );
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    "cancel_scheduled_post",
+    {
+      title: "Cancel scheduled post",
+      description:
+        "Cancel a draft or scheduled post and all of its future dispatches. Use this only after the user asks to cancel.",
+      inputSchema: {
+        postId: z.string().uuid(),
+        idempotencyKey: z.string().optional(),
+      },
+      annotations: { readOnlyHint: false, destructiveHint: true, openWorldHint: false },
+    },
+    async (input) => {
+      try {
+        return ok(
+          await apiRequest(auth, "POST", `/v1/posts/${encodeURIComponent(input.postId)}/cancel`, {
+            idempotencyKey: input.idempotencyKey ?? `mcp-cancel-${input.postId}`,
+          }),
+        );
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
     "create_publish_intent",
     {
       title: "Create publish intent",

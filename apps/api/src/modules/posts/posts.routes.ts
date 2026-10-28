@@ -7,9 +7,17 @@ import {
   getPostByIdRoute,
   getPostByIdHandler,
 } from "./handlers/get-posts.handler";
+import {
+  updatePostRoute,
+  updatePostHandler,
+  cancelPostRoute,
+  cancelPostHandler,
+} from "./handlers/update-post.handler";
 
 export const postRoutes = createRouter<AppBindings>();
 
 postRoutes.openapi(createPostRoute, createPostHandler);
 postRoutes.openapi(getPostsRoute, getPostsHandler);
 postRoutes.openapi(getPostByIdRoute, getPostByIdHandler);
+postRoutes.openapi(updatePostRoute, updatePostHandler);
+postRoutes.openapi(cancelPostRoute, cancelPostHandler);

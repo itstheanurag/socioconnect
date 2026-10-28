@@ -31,12 +31,8 @@ export async function resolveMcpAuth(c: Context): Promise<McpAuth | null> {
   if (!token) return null;
 
   if (token.startsWith("sck_")) {
-    const response = await fetch(`${env.API_BASE_URL}/v1/auth/me`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    if (!response.ok) return null;
-
+    // API-key scope validation happens on the API for each tool call. Do not
+    // require profile:read here just to establish the connection.
     return {
       type: "api_key",
       apiToken: token,

@@ -114,8 +114,10 @@ Scopes are the same as API keys: `profile:read`, `accounts:read`,
 ### Write
 
 - `create_draft` — creates a draft only
+- `update_draft` — edits content or replaces targets while still a draft
 - `create_publish_intent` — preview + short-lived approval intent
 - `confirm_publish_intent` — publish or schedule after approval
+- `cancel_scheduled_post` — cancel a draft or scheduled post
 - `retry_failed_dispatch` — retry one failed destination
 
 Publishing and retrying are annotated `destructiveHint: true` and
@@ -174,6 +176,6 @@ submission:
 ## Limitations
 
 - Stateless transport; no resumable SSE event store.
-- `update_draft`, `cancel_scheduled_post`, and media upload tools are not exposed yet.
+- Media upload tools are not exposed yet.
 - The consent page is server-rendered and minimal.
 - Access tokens are short-lived JWTs; refresh tokens are revocable, access tokens are not denylisted.
