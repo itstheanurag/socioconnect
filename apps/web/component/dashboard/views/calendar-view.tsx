@@ -89,7 +89,7 @@ export function CalendarView() {
       </div>
 
       {/* Month View Grid */}
-      <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl overflow-hidden shadow-2xl">
+      <div className="signal-card rounded-3xl backdrop-blur-xl overflow-hidden shadow-2xl">
         {/* Day of Week Headers */}
         <div className="grid grid-cols-7 border-b border-neutral-800 bg-neutral-950/40 text-center py-2.5 text-xs font-mono font-medium text-neutral-400 uppercase tracking-wider">
           <div>Sun</div>

@@ -15,6 +15,7 @@ import { errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
+import { resolveWorkspaceId } from "@/utils/workspace";
 
 // 1. List Community Automations
 export const getAutomationsRoute = createRoute({
@@ -166,8 +167,9 @@ export const createAutomationHandler: AppRouteHandler<CreateAutomationRoute> = a
   const body = c.req.valid("json");
 
   try {
+    const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
     const group = await CommunitiesRepository.findGroupById(groupId, user.id);
-    if (!group) {
+    if (!group || (group.workspaceId && group.workspaceId !== workspaceId)) {
       throw new HTTPException(StatusCodes.HTTP_404_NOT_FOUND, {
         res: c.json({ message: "Community group not found" }, StatusCodes.HTTP_404_NOT_FOUND),
       });

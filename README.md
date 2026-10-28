@@ -169,7 +169,8 @@ Subscriptions are handled by **Dodo Payments** (hosted checkout + webhooks). Pla
 entitlements are granted only from verified subscription webhooks, never from
 the checkout redirect.
 
-See [docs/BILLING.md](docs/BILLING.md) for environment variables, Dodo product
+Production containers are defined in `docker-compose.prod.yml` (API, web, MCP,
+and PostgreSQL). See [docs/BILLING.md](docs/BILLING.md) for environment variables, Dodo product
 setup, webhook events, and local testing.
 
 ---

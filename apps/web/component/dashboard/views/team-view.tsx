@@ -200,7 +200,7 @@ export function TeamView() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center rounded-3xl border border-neutral-800 bg-neutral-900/60 py-24">
+      <div className="flex items-center justify-center signal-card rounded-3xl py-24">
         <Loader2 className="h-5 w-5 animate-spin text-rose-400" />
       </div>
     );
@@ -233,7 +233,7 @@ export function TeamView() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr]">
-        <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 p-5 shadow-xl">
+        <div className="signal-card rounded-3xl p-5 shadow-xl">
           <div className="flex items-center justify-between">
             <h2 className="flex items-center gap-2 text-sm font-semibold text-neutral-100">
               <Building2 className="h-4 w-4 text-rose-300" />
@@ -293,7 +293,7 @@ export function TeamView() {
           </div>
         </div>
 
-        <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 p-5 shadow-xl">
+        <div className="signal-card rounded-3xl p-5 shadow-xl">
           <h2 className="flex items-center gap-2 text-sm font-semibold text-neutral-100">
             <Shield className="h-4 w-4 text-emerald-300" />
             Current access
@@ -325,7 +325,7 @@ export function TeamView() {
       </div>
 
       <div className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
-        <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 p-5 shadow-xl">
+        <div className="signal-card rounded-3xl p-5 shadow-xl">
           <div className="flex items-center justify-between">
             <h2 className="flex items-center gap-2 text-sm font-semibold text-neutral-100">
               <Users className="h-4 w-4 text-sky-300" />
@@ -404,7 +404,7 @@ export function TeamView() {
 
         <div className="space-y-4">
           {canManage && (
-            <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 p-5 shadow-xl">
+            <div className="signal-card rounded-3xl p-5 shadow-xl">
               <h2 className="flex items-center gap-2 text-sm font-semibold text-neutral-100">
                 <UserPlus className="h-4 w-4 text-rose-300" />
                 Invite a member
@@ -472,7 +472,7 @@ export function TeamView() {
             </div>
           )}
 
-          <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 p-5 shadow-xl">
+          <div className="signal-card rounded-3xl p-5 shadow-xl">
             <h2 className="flex items-center gap-2 text-sm font-semibold text-neutral-100">
               <Mail className="h-4 w-4 text-amber-300" />
               Pending invitations

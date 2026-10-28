@@ -1236,7 +1236,7 @@ export function ConnectorsView() {
               <motion.div
                 key={connector.id}
                 layout
-                className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-4 shadow-xl flex flex-col justify-between hover:border-neutral-700 transition-colors group relative"
+                className="signal-card rounded-3xl backdrop-blur-xl p-5 space-y-4 shadow-xl flex flex-col justify-between hover:border-neutral-700 transition-colors group relative"
               >
                 <div className="space-y-3">
                   {/* Header with Avatar & Platform Badge */}
@@ -1434,7 +1434,7 @@ export function ConnectorsView() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-lg rounded-3xl border border-neutral-800 bg-neutral-900/95 p-6 space-y-5 shadow-2xl"
+              className="w-full max-w-lg signal-card rounded-3xl p-6 space-y-5 shadow-2xl"
             >
               {/* Sub-Modal Header */}
               <div className="flex items-start justify-between border-b border-neutral-800 pb-4">

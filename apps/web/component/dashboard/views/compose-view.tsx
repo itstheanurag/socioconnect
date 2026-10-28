@@ -349,7 +349,7 @@ export function ComposeView() {
           </div>
 
           {/* Platform Tabs: Base + Target-Specific Overrides */}
-          <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-4 shadow-xl">
+          <div className="signal-card rounded-3xl backdrop-blur-xl p-5 space-y-4 shadow-xl">
             <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
               <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-1 max-w-[calc(100%-80px)]">
                 <button
@@ -745,7 +745,7 @@ export function ComposeView() {
           </div>
 
           {/* Media & Cloudflare R2 Upload Manager */}
-          <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-4 shadow-xl">
+          <div className="signal-card rounded-3xl backdrop-blur-xl p-5 space-y-4 shadow-xl">
             <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
               <div className="flex items-center gap-2">
                 <Layers className="w-4 h-4 text-rose-400" />
@@ -865,7 +865,7 @@ export function ComposeView() {
         {/* Right Column (4 cols): Intelligent Platform Compatibility Engine & Scheduling */}
         <div className="lg:col-span-4 space-y-6">
           {/* Compatibility Engine Card */}
-          <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-4 shadow-xl">
+          <div className="signal-card rounded-3xl backdrop-blur-xl p-5 space-y-4 shadow-xl">
             <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-rose-400" />
@@ -976,7 +976,7 @@ export function ComposeView() {
           </div>
 
           {/* Communities & Scheduling Card */}
-          <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-4 shadow-xl">
+          <div className="signal-card rounded-3xl backdrop-blur-xl p-5 space-y-4 shadow-xl">
             <h3 className="font-display text-sm font-semibold text-neutral-100 border-b border-neutral-800 pb-3">
               Distribution &amp; Timing
             </h3>

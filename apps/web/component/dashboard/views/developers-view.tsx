@@ -325,10 +325,7 @@ function CreateKeyModal({
                 </div>
                 <div className="grid gap-3 sm:grid-cols-3">
                   {SCOPE_GROUPS.map((group) => (
-                    <div
-                      key={group.label}
-                      className="rounded-2xl border border-neutral-800 bg-neutral-900/60 p-3"
-                    >
+                    <div key={group.label} className="signal-card rounded-2xl p-3">
                       <div
                         className={`mb-2 text-[10px] font-mono font-semibold uppercase tracking-wider ${group.tone}`}
                       >
@@ -551,7 +548,7 @@ function KeyCard({
   onRevoke: () => void;
 }) {
   return (
-    <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 p-5 shadow-xl backdrop-blur-xl">
+    <div className="signal-card rounded-3xl p-5 shadow-xl backdrop-blur-xl">
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-start gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-neutral-700 bg-neutral-800">
@@ -852,7 +849,7 @@ export function DevelopersView() {
           return (
             <div
               key={stat.label}
-              className="rounded-2xl border border-neutral-800 bg-neutral-900/80 p-4 shadow-lg backdrop-blur-xl"
+              className="signal-card rounded-2xl p-4 shadow-lg backdrop-blur-xl"
             >
               <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-neutral-500">
                 <span>{stat.label}</span>
@@ -866,7 +863,7 @@ export function DevelopersView() {
         })}
       </div>
 
-      <div className="flex flex-wrap items-center gap-1 rounded-2xl border border-neutral-800 bg-neutral-900/70 p-1">
+      <div className="flex flex-wrap items-center gap-1 signal-card rounded-2xl p-1">
         {[
           { id: "keys" as Tab, label: "API keys", icon: KeyRound },
           { id: "connect" as Tab, label: "Connect agents", icon: Bot },
@@ -893,7 +890,7 @@ export function DevelopersView() {
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center rounded-3xl border border-neutral-800 bg-neutral-900/60 py-20">
+        <div className="flex items-center justify-center signal-card rounded-3xl py-20">
           <div className="flex flex-col items-center gap-3">
             <Loader2 className="h-6 w-6 animate-spin text-rose-400" />
             <span className="font-mono text-xs text-neutral-500">Loading agent access…</span>
@@ -904,7 +901,7 @@ export function DevelopersView() {
           <div className="space-y-3">
             {keys.length === 0 ? (
               <div className="rounded-3xl border border-dashed border-neutral-800 bg-neutral-900/40 px-6 py-14 text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-neutral-800 bg-neutral-900">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center signal-card rounded-2xl">
                   <KeyRound className="h-5 w-5 text-neutral-500" />
                 </div>
                 <h3 className="mt-4 font-display text-base font-semibold text-neutral-100">
@@ -937,7 +934,7 @@ export function DevelopersView() {
           </div>
 
           <div className="space-y-4">
-            <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 p-5 shadow-xl">
+            <div className="signal-card rounded-3xl p-5 shadow-xl">
               <h3 className="flex items-center gap-2 text-sm font-semibold text-neutral-100">
                 <ShieldCheck className="h-4 w-4 text-emerald-300" />
                 Key hygiene
@@ -960,7 +957,7 @@ export function DevelopersView() {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 p-5 shadow-xl">
+            <div className="signal-card rounded-3xl p-5 shadow-xl">
               <div className="flex items-center justify-between">
                 <h3 className="flex items-center gap-2 text-sm font-semibold text-neutral-100">
                   <Clock className="h-4 w-4 text-amber-300" />
@@ -987,7 +984,7 @@ export function DevelopersView() {
         </div>
       ) : tab === "connect" ? (
         <div className="grid gap-5 lg:grid-cols-2">
-          <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 p-5 shadow-xl">
+          <div className="signal-card rounded-3xl p-5 shadow-xl">
             <div className="flex items-center gap-2 text-sm font-semibold text-neutral-100">
               <Radio className="h-4 w-4 text-rose-300" />
               MCP endpoint
@@ -1010,7 +1007,7 @@ export function DevelopersView() {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 p-5 shadow-xl">
+          <div className="signal-card rounded-3xl p-5 shadow-xl">
             <div className="flex items-center gap-2 text-sm font-semibold text-neutral-100">
               <Lock className="h-4 w-4 text-emerald-300" />
               Authentication
@@ -1034,7 +1031,7 @@ export function DevelopersView() {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 p-5 shadow-xl">
+          <div className="signal-card rounded-3xl p-5 shadow-xl">
             <div className="flex items-center gap-2 text-sm font-semibold text-neutral-100">
               <Sparkles className="h-4 w-4 text-amber-300" />
               ChatGPT
@@ -1047,7 +1044,7 @@ export function DevelopersView() {
             </ol>
           </div>
 
-          <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 p-5 shadow-xl">
+          <div className="signal-card rounded-3xl p-5 shadow-xl">
             <div className="flex items-center gap-2 text-sm font-semibold text-neutral-100">
               <Terminal className="h-4 w-4 text-sky-300" />
               Claude Code / CLI
@@ -1081,7 +1078,7 @@ curl ${API_URL}/v1/accounts \\
         </div>
       ) : (
         <div className="grid gap-5 lg:grid-cols-[1.4fr_1fr]">
-          <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 p-5 shadow-xl">
+          <div className="signal-card rounded-3xl p-5 shadow-xl">
             <div className="flex items-center justify-between">
               <h3 className="flex items-center gap-2 text-sm font-semibold text-neutral-100">
                 <Activity className="h-4 w-4 text-rose-300" />
@@ -1155,7 +1152,7 @@ curl ${API_URL}/v1/accounts \\
           </div>
 
           <div className="space-y-4">
-            <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 p-5 shadow-xl">
+            <div className="signal-card rounded-3xl p-5 shadow-xl">
               <h3 className="flex items-center gap-2 text-sm font-semibold text-neutral-100">
                 <FileText className="h-4 w-4 text-emerald-300" />
                 This month
@@ -1202,7 +1199,7 @@ curl ${API_URL}/v1/accounts \\
               </p>
             </div>
 
-            <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 p-5 shadow-xl">
+            <div className="signal-card rounded-3xl p-5 shadow-xl">
               <h3 className="flex items-center gap-2 text-sm font-semibold text-neutral-100">
                 <Lock className="h-4 w-4 text-sky-300" />
                 What gets recorded

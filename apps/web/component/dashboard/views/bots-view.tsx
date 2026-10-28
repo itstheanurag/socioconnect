@@ -90,7 +90,7 @@ export function BotsView() {
           <motion.div
             key={bot.id}
             layout
-            className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-4 shadow-xl flex flex-col justify-between hover:border-neutral-700 transition-colors"
+            className="signal-card rounded-3xl backdrop-blur-xl p-5 space-y-4 shadow-xl flex flex-col justify-between hover:border-neutral-700 transition-colors"
           >
             <div className="space-y-3">
               {/* Bot Header */}
@@ -180,7 +180,7 @@ export function BotsView() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-xl rounded-3xl border border-neutral-800 bg-neutral-900 shadow-2xl overflow-hidden flex flex-col"
+              className="w-full max-w-xl signal-card rounded-3xl shadow-2xl overflow-hidden flex flex-col"
             >
               {/* Modal Header */}
               <div className="p-5 border-b border-neutral-800 flex items-center justify-between bg-neutral-950/40">

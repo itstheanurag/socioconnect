@@ -16,7 +16,11 @@ import {
 import { motion, AnimatePresence } from "motion/react";
 import { useDashboard } from "@/component/dashboard/context/dashboard-context";
 import { useNotification } from "@/context/notification-context";
-import { PlatformIcon, getPlatformBrandColor, getPlatformDisplayName } from "@/component/dashboard/ui/platform-icon";
+import {
+  PlatformIcon,
+  getPlatformBrandColor,
+  getPlatformDisplayName,
+} from "@/component/dashboard/ui/platform-icon";
 import { PlatformId } from "@/component/dashboard/types";
 
 export function CommunitiesView() {
@@ -95,7 +99,7 @@ export function CommunitiesView() {
           return (
             <div
               key={c.id}
-              className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-4 shadow-xl flex flex-col justify-between hover:border-neutral-700 transition-colors"
+              className="signal-card rounded-3xl backdrop-blur-xl p-5 space-y-4 shadow-xl flex flex-col justify-between hover:border-neutral-700 transition-colors"
             >
               <div className="space-y-3">
                 {/* Community Title & Actions */}
@@ -172,7 +176,7 @@ export function CommunitiesView() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-lg rounded-3xl border border-neutral-800 bg-neutral-900 shadow-2xl p-6 space-y-5"
+              className="w-full max-w-lg signal-card rounded-3xl shadow-2xl p-6 space-y-5"
             >
               <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
                 <div className="flex items-center gap-2 text-rose-400 font-bold text-sm">

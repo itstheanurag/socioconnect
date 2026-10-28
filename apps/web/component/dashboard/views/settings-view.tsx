@@ -59,7 +59,7 @@ export function SettingsView() {
       </div>
 
       {/* General Settings */}
-      <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-6 shadow-xl space-y-4">
+      <div className="signal-card rounded-3xl backdrop-blur-xl p-6 shadow-xl space-y-4">
         <h3 className="font-display text-sm font-semibold text-neutral-100 flex items-center gap-2">
           <Globe className="w-4 h-4 text-rose-400" />
           <span>General Workspace Profile</span>
@@ -90,7 +90,7 @@ export function SettingsView() {
       </div>
 
       {/* Publishing Intelligence Policies */}
-      <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-6 shadow-xl space-y-4">
+      <div className="signal-card rounded-3xl backdrop-blur-xl p-6 shadow-xl space-y-4">
         <h3 className="font-display text-sm font-semibold text-neutral-100 flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-amber-400" />
           <span>Automation &amp; Formatting Intelligence</span>
