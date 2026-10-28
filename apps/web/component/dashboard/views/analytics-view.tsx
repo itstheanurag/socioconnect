@@ -85,7 +85,7 @@ export function AnalyticsView() {
 
       {/* Top High-level Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="rounded-2xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-2 shadow-xl">
+        <div className="signal-card rounded-2xl backdrop-blur-xl p-5 space-y-2 shadow-xl">
           <div className="flex items-center justify-between text-xs text-neutral-400">
             <span>Total Impressions</span>
             <Eye className="w-4 h-4 text-sky-400" />
@@ -96,7 +96,7 @@ export function AnalyticsView() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-2 shadow-xl">
+        <div className="signal-card rounded-2xl backdrop-blur-xl p-5 space-y-2 shadow-xl">
           <div className="flex items-center justify-between text-xs text-neutral-400">
             <span>Cross-Network Engagement</span>
             <Heart className="w-4 h-4 text-rose-400" />
@@ -107,7 +107,7 @@ export function AnalyticsView() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-2 shadow-xl">
+        <div className="signal-card rounded-2xl backdrop-blur-xl p-5 space-y-2 shadow-xl">
           <div className="flex items-center justify-between text-xs text-neutral-400">
             <span>Dispatched Campaigns</span>
             <Share2 className="w-4 h-4 text-emerald-400" />
@@ -116,7 +116,7 @@ export function AnalyticsView() {
           <div className="text-[11px] font-mono text-neutral-400">100% broadcast delivery</div>
         </div>
 
-        <div className="rounded-2xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-2 shadow-xl">
+        <div className="signal-card rounded-2xl backdrop-blur-xl p-5 space-y-2 shadow-xl">
           <div className="flex items-center justify-between text-xs text-neutral-400">
             <span>Peak Broadcast Hour</span>
             <Sparkles className="w-4 h-4 text-amber-400" />
@@ -127,7 +127,7 @@ export function AnalyticsView() {
       </div>
 
       {/* Platform Level Breakdown Table */}
-      <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-6 shadow-xl space-y-4">
+      <div className="signal-card rounded-3xl backdrop-blur-xl p-6 shadow-xl space-y-4">
         <h3 className="font-display text-lg font-bold text-neutral-100">
           Channel Velocity Breakdown
         </h3>

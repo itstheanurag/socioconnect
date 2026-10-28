@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 import { X, Loader2, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
@@ -116,6 +117,16 @@ export default function AuthModal() {
                 <p className="text-center text-[11px] text-neutral-500">
                   Google OAuth 2.0 authentication with zero password storage.
                 </p>
+
+                <div className="text-center">
+                  <Link
+                    href="/demo"
+                    onClick={closeAuthModal}
+                    className="text-[11px] text-neutral-500 underline decoration-neutral-700 underline-offset-4 hover:text-neutral-300"
+                  >
+                    Review the demo account
+                  </Link>
+                </div>
               </div>
 
               {/* Security & Privacy Badges */}

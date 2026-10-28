@@ -1,10 +1,14 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { enforceUserMiddleware } from "@/middlewares/enforce-user.middleware";
 import { MediaRepository, MediaTypeEnum } from "@repo/db";
+import { R2StorageService } from "@repo/storage";
+import { env } from "@/env";
 import { errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
+import { resolveWorkspaceId } from "@/utils/workspace";
+import { EntitlementError, EntitlementsService } from "@/modules/entitlements/entitlements.service";
 
 // 1. Generate Presigned Direct Upload URL
 export const getPresignedUrlRoute = createRoute({
@@ -52,15 +56,56 @@ export const getPresignedUrlRoute = createRoute({
 
 export type GetPresignedUrlRoute = typeof getPresignedUrlRoute;
 
+function r2Configured(): boolean {
+  return Boolean(
+    process.env.CLOUDFLARE_R2_ACCOUNT_ID &&
+      process.env.CLOUDFLARE_R2_ACCESS_KEY_ID &&
+      process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY,
+  );
+}
+
 export const getPresignedUrlHandler: AppRouteHandler<GetPresignedUrlRoute> = async (c) => {
-  const { filename, mimeType } = c.req.valid("json");
+  const { filename, mimeType, sizeBytes } = c.req.valid("json");
   const user = c.get("user");
 
   try {
+    const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
+    await EntitlementsService.assertCanStoreMedia(workspaceId, sizeBytes);
+
+    if (r2Configured()) {
+      const storage = R2StorageService.fromEnv(process.env);
+      const upload = await storage.createPresignedUploadUrl({
+        userId: user.id,
+        fileName: filename,
+        contentType: mimeType,
+        sizeBytes,
+        folder: "vault",
+        expiresInSec: 900,
+      });
+
+      return c.json({
+        message: "Presigned URL generated successfully",
+        payload: {
+          uploadUrl: upload.uploadUrl,
+          storageKey: upload.fileKey,
+          publicUrl: upload.publicUrl,
+          expiresInSeconds: upload.expiresInSec,
+        },
+      });
+    }
+
+    if (env.NODE_ENV === "production") {
+      throw new HTTPException(StatusCodes.HTTP_503_SERVICE_UNAVAILABLE, {
+        res: c.json(
+          { message: "Media storage is not configured" },
+          StatusCodes.HTTP_503_SERVICE_UNAVAILABLE,
+        ),
+      });
+    }
+
     const extension = filename.split(".").pop() || "bin";
     const storageKey = `vault/${user.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${extension}`;
     const publicUrl = `https://cdn.socioconnect.app/${storageKey}`;
-    // Direct presigned S3/R2 upload URL
     const uploadUrl = `https://storage.socioconnect.app/${storageKey}?X-Amz-Signature=mock_sign_${Date.now()}`;
 
     return c.json({
@@ -73,6 +118,15 @@ export const getPresignedUrlHandler: AppRouteHandler<GetPresignedUrlRoute> = asy
       },
     });
   } catch (err) {
+    if (err instanceof EntitlementError) {
+      throw new HTTPException(err.statusCode as 402, {
+        res: c.json(
+          { message: err.message, code: err.decision.code, ...err.decision },
+          err.statusCode as 402,
+        ),
+      });
+    }
+
     logger.error("Error generating presigned upload URL", {
       module: "media",
       action: "getPresignedUrlHandler",
@@ -144,14 +198,48 @@ export const confirmMediaUploadHandler: AppRouteHandler<ConfirmMediaUploadRoute>
   const user = c.get("user");
 
   try {
+    const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
+
+    if (!body.storageKey.startsWith(`vault/${user.id}/`)) {
+      throw new HTTPException(StatusCodes.HTTP_403_FORBIDDEN, {
+        res: c.json(
+          { message: "Storage key does not belong to this user" },
+          StatusCodes.HTTP_403_FORBIDDEN,
+        ),
+      });
+    }
+
+    let sizeBytes = body.sizeBytes;
+    let mimeType = body.mimeType;
+
+    if (r2Configured()) {
+      const storage = R2StorageService.fromEnv(process.env);
+      const metadata = await storage.getFileMetadata(body.storageKey);
+
+      if (!metadata) {
+        throw new HTTPException(StatusCodes.HTTP_400_BAD_REQUEST, {
+          res: c.json(
+            { message: "Uploaded file was not found in storage" },
+            StatusCodes.HTTP_400_BAD_REQUEST,
+          ),
+        });
+      }
+
+      sizeBytes = metadata.sizeBytes || body.sizeBytes;
+      mimeType = metadata.contentType || body.mimeType;
+    }
+
+    await EntitlementsService.assertCanStoreMedia(workspaceId, sizeBytes);
+
     const asset = await MediaRepository.create({
       userId: user.id,
+      workspaceId,
       storageKey: body.storageKey,
       url: body.url,
       thumbnailUrl: body.thumbnailUrl || null,
-      mimeType: body.mimeType,
+      mimeType,
       type: body.type,
-      sizeBytes: body.sizeBytes,
+      sizeBytes,
       width: body.width || null,
       height: body.height || null,
       durationSeconds: body.durationSeconds || null,
@@ -171,6 +259,15 @@ export const confirmMediaUploadHandler: AppRouteHandler<ConfirmMediaUploadRoute>
       StatusCodes.HTTP_201_CREATED,
     );
   } catch (err) {
+    if (err instanceof EntitlementError) {
+      throw new HTTPException(err.statusCode as 402, {
+        res: c.json(
+          { message: err.message, code: err.decision.code, ...err.decision },
+          err.statusCode as 402,
+        ),
+      });
+    }
+
     logger.error("Error confirming media upload", {
       module: "media",
       action: "confirmMediaUploadHandler",

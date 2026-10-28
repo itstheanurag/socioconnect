@@ -14,12 +14,22 @@ import {
   DispatchStatusEnum,
   TransactionOutcomeEnum,
 } from "@/schema";
+import { WorkspacesRepository } from "./workspaces.repository";
 import { withMetrics } from "@/utils/metrics-wrapper";
 import { logger } from "@repo/shared";
 
 export interface CreatePostInput {
   post: NewPost;
   dispatches: Array<Omit<NewPostDispatch, "postId">>;
+}
+
+export interface UpdatePostInput {
+  title?: string | null;
+  content?: string;
+  tags?: string[];
+  linkUrl?: string | null;
+  mediaIds?: string[];
+  targets?: Array<Omit<NewPostDispatch, "postId">>;
 }
 
 export namespace PostsRepository {
@@ -32,7 +42,15 @@ export namespace PostsRepository {
   ): Promise<{ post: Post; dispatches: PostDispatch[] }> {
     const execute = async (tx: DBTransaction) => {
       // 1. Create master post
-      const [post] = await tx.insert(postsTable).values(input.post).returning();
+      const workspaceId =
+        input.post.workspaceId ??
+        (await WorkspacesRepository.ensurePersonalWorkspace(input.post.userId, undefined, { tx }))
+          .id;
+
+      const [post] = await tx
+        .insert(postsTable)
+        .values({ ...input.post, workspaceId })
+        .returning();
 
       // 2. Create target dispatches
       const dispatchValues = input.dispatches.map((d) => ({
@@ -60,6 +78,139 @@ export namespace PostsRepository {
     }
 
     return await db.transaction(execute);
+  }
+
+  /**
+   * Updates an editable draft. When targets are supplied, existing draft
+   * dispatches are replaced atomically.
+   */
+  export async function updateDraft(
+    postId: string,
+    input: UpdatePostInput,
+    options?: { tx?: DBTransaction },
+  ): Promise<{ post: Post; dispatches: PostDispatch[] }> {
+    const execute = async (tx: DBTransaction) => {
+      const postValues: Partial<NewPost> = { updatedAt: new Date() };
+
+      if (input.title !== undefined) postValues.title = input.title;
+      if (input.content !== undefined) postValues.content = input.content;
+      if (input.tags !== undefined) postValues.tags = input.tags;
+      if (input.linkUrl !== undefined) postValues.linkUrl = input.linkUrl;
+      if (input.mediaIds !== undefined) postValues.mediaIds = input.mediaIds;
+
+      const [post] = await tx
+        .update(postsTable)
+        .set(postValues)
+        .where(eq(postsTable.id, postId))
+        .returning();
+
+      let dispatches: PostDispatch[];
+
+      if (input.targets !== undefined) {
+        await tx.delete(postDispatchesTable).where(eq(postDispatchesTable.postId, postId));
+
+        dispatches =
+          input.targets.length > 0
+            ? await tx
+                .insert(postDispatchesTable)
+                .values(
+                  input.targets.map((target) => ({
+                    ...target,
+                    postId,
+                    status: DispatchStatusEnum.DRAFT,
+                  })),
+                )
+                .returning()
+            : [];
+      } else {
+        dispatches = await tx.query.postDispatchesTable.findMany({
+          where: eq(postDispatchesTable.postId, postId),
+        });
+      }
+
+      logger.audit("draft updated", {
+        module: "posts",
+        action: "repository:updateDraft",
+        postId,
+        targetCount: dispatches.length,
+        replacedTargets: input.targets !== undefined,
+      });
+
+      return { post, dispatches };
+    };
+
+    if (options?.tx) {
+      return execute(options.tx);
+    }
+
+    return db.transaction(execute);
+  }
+
+  export async function reschedulePost(
+    postId: string,
+    scheduledAt: Date,
+    options?: { tx?: DBTransaction },
+  ): Promise<Post> {
+    const queryClient = options?.tx || db;
+    const now = new Date();
+
+    const [post] = await queryClient
+      .update(postsTable)
+      .set({ scheduledAt, updatedAt: now })
+      .where(eq(postsTable.id, postId))
+      .returning();
+
+    await queryClient
+      .update(postDispatchesTable)
+      .set({ scheduledFor: scheduledAt, updatedAt: now })
+      .where(eq(postDispatchesTable.postId, postId));
+
+    logger.audit("post rescheduled", {
+      module: "posts",
+      action: "repository:reschedulePost",
+      postId,
+      scheduledAt: scheduledAt.toISOString(),
+    });
+
+    return post;
+  }
+
+  /**
+   * Cancels a draft or scheduled post and all of its dispatches.
+   */
+  export async function cancelPost(
+    postId: string,
+    options?: { tx?: DBTransaction },
+  ): Promise<Post> {
+    const queryClient = options?.tx || db;
+    const now = new Date();
+
+    const [post] = await queryClient
+      .update(postsTable)
+      .set({
+        status: PostStatusEnum.CANCELLED,
+        scheduledAt: null,
+        updatedAt: now,
+      })
+      .where(eq(postsTable.id, postId))
+      .returning();
+
+    await queryClient
+      .update(postDispatchesTable)
+      .set({
+        status: DispatchStatusEnum.CANCELLED,
+        nextRetryAt: null,
+        updatedAt: now,
+      })
+      .where(eq(postDispatchesTable.postId, postId));
+
+    logger.audit("post cancelled", {
+      module: "posts",
+      action: "repository:cancelPost",
+      postId,
+    });
+
+    return post;
   }
 
   /**
@@ -101,6 +252,102 @@ export namespace PostsRepository {
       queryClient.query.postsTable.findMany({
         where: and(
           eq(postsTable.userId, userId),
+          isNull(postsTable.deletedAt),
+          filters?.status ? eq(postsTable.status, filters.status) : undefined,
+        ),
+        orderBy: [desc(postsTable.createdAt)],
+        limit: filters?.limit || 50,
+        offset: filters?.offset || 0,
+        with: {
+          dispatches: {
+            with: {
+              account: true,
+              destination: true,
+            },
+          },
+        },
+      }),
+    );
+  }
+
+  /**
+   * Activates a draft or scheduled post after a publish intent is confirmed.
+   */
+  export async function activateForPublish(
+    postId: string,
+    input: { mode: "publish" | "schedule"; scheduledAt: Date },
+    options?: { tx?: DBTransaction },
+  ): Promise<Post> {
+    const queryClient = options?.tx || db;
+    const now = new Date();
+    const targetTime = input.mode === "schedule" ? input.scheduledAt : now;
+
+    const [post] = await queryClient
+      .update(postsTable)
+      .set({
+        status: input.mode === "schedule" ? PostStatusEnum.SCHEDULED : PostStatusEnum.DISPATCHING,
+        scheduledAt: targetTime,
+        updatedAt: now,
+      })
+      .where(eq(postsTable.id, postId))
+      .returning();
+
+    await queryClient
+      .update(postDispatchesTable)
+      .set({
+        status: DispatchStatusEnum.PENDING,
+        scheduledFor: targetTime,
+        nextRetryAt: null,
+        errorDetails: null,
+        dispatchedAt: null,
+        updatedAt: now,
+      })
+      .where(eq(postDispatchesTable.postId, postId));
+
+    logger.audit("post activated for publishing", {
+      module: "posts",
+      action: "repository:activateForPublish",
+      postId,
+      mode: input.mode,
+      scheduledAt: targetTime.toISOString(),
+    });
+
+    return post;
+  }
+
+  /**
+   * Finds a dispatch by ID with its post and account.
+   */
+  export async function findDispatchById(id: string, options?: { tx?: DBTransaction }) {
+    const queryClient = options?.tx || db;
+    return queryClient.query.postDispatchesTable.findFirst({
+      where: eq(postDispatchesTable.id, id),
+      with: {
+        post: true,
+        account: true,
+      },
+    });
+  }
+
+  /**
+   * Finds all posts for a workspace (with optional pagination & status filters)
+   */
+  export async function findAllByWorkspaceId(
+    workspaceId: string,
+    filters?: {
+      status?: PostStatusEnum;
+      startDate?: Date;
+      endDate?: Date;
+      limit?: number;
+      offset?: number;
+    },
+    options?: { tx?: DBTransaction },
+  ) {
+    const queryClient = options?.tx || db;
+    return await withMetrics("select", "posts", async () =>
+      queryClient.query.postsTable.findMany({
+        where: and(
+          eq(postsTable.workspaceId, workspaceId),
           isNull(postsTable.deletedAt),
           filters?.status ? eq(postsTable.status, filters.status) : undefined,
         ),

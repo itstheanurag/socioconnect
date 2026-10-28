@@ -3,6 +3,7 @@ import { relations } from "drizzle-orm";
 import { enumToPgEnum } from "@repo/shared";
 import { quotasSchema } from "./index";
 import { usersTable } from "@/schema/users/users.db";
+import { workspacesTable } from "@/schema/workspaces/workspaces.db";
 
 export enum PlanTierEnum {
   SOLO = "solo",
@@ -22,6 +23,9 @@ export const userQuotasTable = quotasSchema.table(
     userId: uuid("user_id")
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),
+    workspaceId: uuid("workspace_id").references(() => workspacesTable.id, {
+      onDelete: "cascade",
+    }),
 
     tier: planTierPgEnum("tier").notNull().default(PlanTierEnum.SOLO),
 
@@ -41,6 +45,7 @@ export const userQuotasTable = quotasSchema.table(
   },
   (table) => [
     uniqueIndex("user_quotas_user_id_idx").on(table.userId),
+    index("user_quotas_workspace_id_idx").on(table.workspaceId),
     index("user_quotas_tier_idx").on(table.tier),
   ],
 );

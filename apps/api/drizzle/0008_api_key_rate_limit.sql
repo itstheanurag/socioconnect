@@ -1,0 +1,1 @@
+ALTER TABLE "api_keys"."api_keys" ADD COLUMN "rate_limit_per_minute" integer DEFAULT 60 NOT NULL;

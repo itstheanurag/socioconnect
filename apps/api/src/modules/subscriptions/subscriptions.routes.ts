@@ -5,22 +5,19 @@ import {
   getCurrentSubscriptionHandler,
   getPlansCatalogRoute,
   getPlansCatalogHandler,
-} from "./handlers/get-subscription.handler";
-import {
   checkoutSubscriptionRoute,
   checkoutSubscriptionHandler,
-} from "./handlers/checkout-subscription.handler";
-import {
   cancelSubscriptionRoute,
   cancelSubscriptionHandler,
   resumeSubscriptionRoute,
   resumeSubscriptionHandler,
-} from "./handlers/manage-subscription.handler";
-import { getInvoicesRoute, getInvoicesHandler } from "./handlers/invoices.handler";
-import {
+  getInvoicesRoute,
+  getInvoicesHandler,
+  createPortalSessionRoute,
+  createPortalSessionHandler,
   postSubscriptionWebhookRoute,
   postSubscriptionWebhookHandler,
-} from "./handlers/webhook.handler";
+} from "./handlers";
 
 export const subscriptionRoutes = createRouter<AppBindings>();
 
@@ -30,4 +27,5 @@ subscriptionRoutes.openapi(checkoutSubscriptionRoute, checkoutSubscriptionHandle
 subscriptionRoutes.openapi(cancelSubscriptionRoute, cancelSubscriptionHandler);
 subscriptionRoutes.openapi(resumeSubscriptionRoute, resumeSubscriptionHandler);
 subscriptionRoutes.openapi(getInvoicesRoute, getInvoicesHandler);
+subscriptionRoutes.openapi(createPortalSessionRoute, createPortalSessionHandler);
 subscriptionRoutes.openapi(postSubscriptionWebhookRoute, postSubscriptionWebhookHandler);

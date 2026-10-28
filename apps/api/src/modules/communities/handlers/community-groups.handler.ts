@@ -1,10 +1,16 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { enforceUserMiddleware } from "@/middlewares/enforce-user.middleware";
-import { CommunitiesRepository, SocialPlatformEnum, type NewCommunityGroup } from "@repo/db";
+import {
+  AccountsRepository,
+  CommunitiesRepository,
+  SocialPlatformEnum,
+  type NewCommunityGroup,
+} from "@repo/db";
 import { errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
+import { resolveWorkspaceId } from "@/utils/workspace";
 
 // 1. List Community Groups
 export const getCommunityGroupsRoute = createRoute({
@@ -53,7 +59,8 @@ export const getCommunityGroupsHandler: AppRouteHandler<GetCommunityGroupsRoute>
   const user = c.get("user");
 
   try {
-    const rawGroups = await CommunitiesRepository.findAllGroupsByUserId(user.id);
+    const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
+    const rawGroups = await CommunitiesRepository.findAllGroupsByWorkspaceId(workspaceId);
 
     const groups = rawGroups.map((g) => ({
       id: g.id,
@@ -145,8 +152,22 @@ export const createCommunityGroupHandler: AppRouteHandler<CreateCommunityGroupRo
   const body = c.req.valid("json");
 
   try {
+    const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
+    const account = await AccountsRepository.findById(body.accountId);
+
+    if (
+      !account ||
+      account.userId !== user.id ||
+      (account.workspaceId && account.workspaceId !== workspaceId)
+    ) {
+      throw new HTTPException(StatusCodes.HTTP_404_NOT_FOUND, {
+        res: c.json({ message: "Account not found" }, StatusCodes.HTTP_404_NOT_FOUND),
+      });
+    }
+
     const group = await CommunitiesRepository.createGroup({
       userId: user.id,
+      workspaceId,
       accountId: body.accountId,
       platform: body.platform,
       name: body.name,

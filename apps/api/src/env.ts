@@ -58,6 +58,46 @@ const apiEnvSchema = baseEnvSchema.extend({
     .optional()
     .default("http://localhost:3000"),
 
+  // Billing - Dodo Payments (optional; billing routes return 503 when unset)
+  DODO_PAYMENTS_API_KEY: z.string().optional().default(""),
+  DODO_PAYMENTS_WEBHOOK_KEY: z.string().optional().default(""),
+  DODO_PAYMENTS_ENVIRONMENT: z.enum(["test_mode", "live_mode"]).optional().default("test_mode"),
+  DODO_PAYMENTS_SKIP_WEBHOOK_VERIFICATION: z
+    .string()
+    .optional()
+    .default("false")
+    .transform((value) => value === "true"),
+  DODO_PAYMENTS_RETURN_URL: z.string().url().optional(),
+  DODO_PAYMENTS_CANCEL_URL: z.string().url().optional(),
+
+  // Dodo product IDs, one per paid tier and billing interval.
+  DODO_PRODUCT_SOLO_MONTHLY: z.string().optional().default(""),
+  DODO_PRODUCT_SOLO_YEARLY: z.string().optional().default(""),
+  DODO_PRODUCT_CREATOR_PRO_MONTHLY: z.string().optional().default(""),
+  DODO_PRODUCT_CREATOR_PRO_YEARLY: z.string().optional().default(""),
+  DODO_PRODUCT_STUDIO_MONTHLY: z.string().optional().default(""),
+  DODO_PRODUCT_STUDIO_YEARLY: z.string().optional().default(""),
+  DODO_PRODUCT_AGENCY_MONTHLY: z.string().optional().default(""),
+  DODO_PRODUCT_AGENCY_YEARLY: z.string().optional().default(""),
+
+  // OAuth 2.1 / MCP
+  OAUTH_ISSUER: z.string().url().optional().default("http://localhost:8000"),
+  MCP_RESOURCE_URL: z.string().url().optional().default("http://localhost:8010/mcp"),
+  API_RESOURCE_URL: z.string().url().optional().default("http://localhost:8000"),
+  SERVICE_TOKEN_SECRET: z.string().optional().default(""),
+  OAUTH_ACCESS_TOKEN_TTL_SECONDS: z.coerce.number().int().min(60).max(3600).optional().default(900),
+  OAUTH_REFRESH_TOKEN_TTL_DAYS: z.coerce.number().int().min(1).max(90).optional().default(30),
+
+  // Marketplace review demo login (disabled by default)
+  DEMO_LOGIN_ENABLED: z
+    .string()
+    .optional()
+    .default("false")
+    .transform((value) => value === "true"),
+  DEMO_ACCOUNT_EMAIL: z.string().email().optional().default("demo@socioconnect.app"),
+  DEMO_ACCOUNT_PASSWORD: z.string().optional().default(""),
+  DEMO_ACCOUNT_NAME: z.string().optional().default("Demo Creator"),
+
   // Docker Services (optional, with defaults)
   POSTGRES_PORT: z.string().optional().default("5432"),
   PROMETHEUS_PORT: z.string().optional().default("9090"),
@@ -82,6 +122,30 @@ export const env = apiEnvSchema.parse({
   APPLE_REDIRECT_URI: process.env.APPLE_REDIRECT_URI,
   CORS_ORIGIN: process.env.CORS_ORIGIN,
   FRONTEND_URL: process.env.FRONTEND_URL,
+  DODO_PAYMENTS_API_KEY: process.env.DODO_PAYMENTS_API_KEY,
+  DODO_PAYMENTS_WEBHOOK_KEY: process.env.DODO_PAYMENTS_WEBHOOK_KEY,
+  DODO_PAYMENTS_ENVIRONMENT: process.env.DODO_PAYMENTS_ENVIRONMENT,
+  DODO_PAYMENTS_SKIP_WEBHOOK_VERIFICATION: process.env.DODO_PAYMENTS_SKIP_WEBHOOK_VERIFICATION,
+  DODO_PAYMENTS_RETURN_URL: process.env.DODO_PAYMENTS_RETURN_URL,
+  DODO_PAYMENTS_CANCEL_URL: process.env.DODO_PAYMENTS_CANCEL_URL,
+  DODO_PRODUCT_SOLO_MONTHLY: process.env.DODO_PRODUCT_SOLO_MONTHLY,
+  DODO_PRODUCT_SOLO_YEARLY: process.env.DODO_PRODUCT_SOLO_YEARLY,
+  DODO_PRODUCT_CREATOR_PRO_MONTHLY: process.env.DODO_PRODUCT_CREATOR_PRO_MONTHLY,
+  DODO_PRODUCT_CREATOR_PRO_YEARLY: process.env.DODO_PRODUCT_CREATOR_PRO_YEARLY,
+  DODO_PRODUCT_STUDIO_MONTHLY: process.env.DODO_PRODUCT_STUDIO_MONTHLY,
+  DODO_PRODUCT_STUDIO_YEARLY: process.env.DODO_PRODUCT_STUDIO_YEARLY,
+  DODO_PRODUCT_AGENCY_MONTHLY: process.env.DODO_PRODUCT_AGENCY_MONTHLY,
+  DODO_PRODUCT_AGENCY_YEARLY: process.env.DODO_PRODUCT_AGENCY_YEARLY,
+  OAUTH_ISSUER: process.env.OAUTH_ISSUER,
+  MCP_RESOURCE_URL: process.env.MCP_RESOURCE_URL,
+  API_RESOURCE_URL: process.env.API_RESOURCE_URL,
+  SERVICE_TOKEN_SECRET: process.env.SERVICE_TOKEN_SECRET,
+  OAUTH_ACCESS_TOKEN_TTL_SECONDS: process.env.OAUTH_ACCESS_TOKEN_TTL_SECONDS,
+  OAUTH_REFRESH_TOKEN_TTL_DAYS: process.env.OAUTH_REFRESH_TOKEN_TTL_DAYS,
+  DEMO_LOGIN_ENABLED: process.env.DEMO_LOGIN_ENABLED,
+  DEMO_ACCOUNT_EMAIL: process.env.DEMO_ACCOUNT_EMAIL,
+  DEMO_ACCOUNT_PASSWORD: process.env.DEMO_ACCOUNT_PASSWORD,
+  DEMO_ACCOUNT_NAME: process.env.DEMO_ACCOUNT_NAME,
   POSTGRES_PORT: process.env.POSTGRES_PORT,
   PROMETHEUS_PORT: process.env.PROMETHEUS_PORT,
   GRAFANA_PORT: process.env.GRAFANA_PORT,

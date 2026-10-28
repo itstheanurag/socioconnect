@@ -10,6 +10,8 @@ import { errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
+import { isAccountAllowed } from "@/utils/authz";
+import { resolveWorkspaceId } from "@/utils/workspace";
 
 export const syncDestinationsRoute = createRoute({
   method: "post",
@@ -49,8 +51,14 @@ export const syncDestinationsHandler: AppRouteHandler<SyncDestinationsRoute> = a
   const user = c.get("user");
 
   try {
+    const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
     const account = await AccountsRepository.findById(accountId);
-    if (!account || account.userId !== user.id) {
+    if (
+      !account ||
+      account.userId !== user.id ||
+      (account.workspaceId && account.workspaceId !== workspaceId) ||
+      !isAccountAllowed(c.var.auth, account.id)
+    ) {
       throw new HTTPException(StatusCodes.HTTP_404_NOT_FOUND, {
         res: c.json({ message: "Account not found" }, StatusCodes.HTTP_404_NOT_FOUND),
       });

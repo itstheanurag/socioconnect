@@ -1,0 +1,16 @@
+export {
+  type NewWorkspace,
+  type NewWorkspaceInvitation,
+  type NewWorkspaceMember,
+  type UpdateWorkspace,
+  type Workspace,
+  type WorkspaceInvitation,
+  type WorkspaceMember,
+  workspaceInvitationsTable,
+  workspaceMembersRelations,
+  workspaceMembersTable,
+  workspaceRolePgEnum,
+  workspacesRelations,
+  workspacesTable,
+  WorkspaceRole,
+} from "./workspaces.db";

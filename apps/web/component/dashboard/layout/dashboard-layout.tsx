@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { TopBar } from "./top-bar";
+import { SignalRail } from "./signal-rail";
 import { Sidebar } from "./sidebar";
 import { ContextualPanel } from "./contextual-panel";
 import { GlobalSearchModal } from "./global-search-modal";
@@ -17,6 +18,8 @@ import { AutomationsView } from "@/component/dashboard/views/automations-view";
 import { CommunitiesView } from "@/component/dashboard/views/communities-view";
 import { ConnectorsView } from "@/component/dashboard/views/connectors-view";
 import { AnalyticsView } from "@/component/dashboard/views/analytics-view";
+import { DevelopersView } from "@/component/dashboard/views/developers-view";
+import { TeamView } from "@/component/dashboard/views/team-view";
 import { SettingsView } from "@/component/dashboard/views/settings-view";
 
 // Mobile Bottom Navigation
@@ -25,6 +28,11 @@ import { DashboardSection } from "@/component/dashboard/types";
 
 export function DashboardLayout() {
   const { currentSection, setCurrentSection } = useDashboard();
+
+  useEffect(() => {
+    const section = new URLSearchParams(window.location.search).get("section");
+    if (section) setCurrentSection(section as DashboardSection);
+  }, [setCurrentSection]);
 
   const renderCurrentView = () => {
     switch (currentSection) {
@@ -46,6 +54,10 @@ export function DashboardLayout() {
         return <ConnectorsView />;
       case "analytics":
         return <AnalyticsView />;
+      case "developers":
+        return <DevelopersView />;
+      case "team":
+        return <TeamView />;
       case "settings":
         return <SettingsView />;
       default:
@@ -62,11 +74,8 @@ export function DashboardLayout() {
   ];
 
   return (
-    <div className="h-screen max-h-screen w-screen overflow-hidden bg-neutral-950 text-neutral-200 flex flex-col selection:bg-rose-500/30 selection:text-neutral-100 relative font-sans">
-      {/* Ambient background glows */}
-      <div className="fixed top-0 left-1/4 w-96 h-96 bg-rose-600/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="fixed bottom-0 right-1/4 w-[32rem] h-[32rem] bg-red-600/8 rounded-full blur-[140px] pointer-events-none" />
-      <div className="fixed inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
+    <div className="dashboard-shell h-screen max-h-screen w-screen overflow-hidden text-neutral-200 flex flex-col selection:bg-rose-500/30 selection:text-neutral-100 relative font-sans">
+      <div className="signal-grid fixed inset-0 pointer-events-none opacity-80" />
 
       {/* Strict Fixed Header */}
       <TopBar />
@@ -77,8 +86,11 @@ export function DashboardLayout() {
         <Sidebar />
 
         {/* Dominant Main Workspace Area with strict independent scroll */}
-        <main className="flex-1 min-h-0 h-full overflow-y-auto overflow-x-hidden px-4 sm:px-8 py-6 sm:py-8 max-w-7xl mx-auto w-full z-10 scrollbar-thin scrollbar-thumb-neutral-800 scrollbar-track-transparent">
-          {renderCurrentView()}
+        <main className="signal-scroll flex-1 min-h-0 h-full overflow-y-auto overflow-x-hidden px-4 sm:px-7 py-5 sm:py-6 w-full z-10">
+          <div className="mx-auto w-full max-w-[1440px]">
+            <SignalRail />
+            {renderCurrentView()}
+          </div>
         </main>
 
         {/* Contextual Right Panel */}
@@ -89,7 +101,7 @@ export function DashboardLayout() {
       <GlobalSearchModal />
 
       {/* Mobile Bottom Navigation Bar */}
-      <div className="md:hidden shrink-0 z-40 bg-neutral-900/90 backdrop-blur-xl border-t border-neutral-800 px-2 py-1.5 flex items-center justify-around">
+      <div className="md:hidden shrink-0 z-40 bg-neutral-900/95 backdrop-blur-xl border-t border-neutral-800 px-2 py-1.5 flex items-center justify-around">
         {mobileNavItems.map((item) => {
           const Icon = item.icon;
           const isActive = currentSection === item.id;

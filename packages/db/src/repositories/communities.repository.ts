@@ -27,10 +27,7 @@ export namespace CommunitiesRepository {
     options?: { tx?: DBTransaction },
   ): Promise<CommunityGroup> {
     const queryClient = options?.tx || db;
-    const [group] = await queryClient
-      .insert(communityGroupsTable)
-      .values(payload)
-      .returning();
+    const [group] = await queryClient.insert(communityGroupsTable).values(payload).returning();
 
     logger.audit("community group created", {
       module: "communities",
@@ -73,15 +70,31 @@ export namespace CommunitiesRepository {
   /**
    * Lists all community groups for a user
    */
-  export async function findAllGroupsByUserId(
-    userId: string,
+  export async function findAllGroupsByUserId(userId: string, options?: { tx?: DBTransaction }) {
+    const queryClient = options?.tx || db;
+    return await withMetrics("select", "community_groups", async () =>
+      queryClient.query.communityGroupsTable.findMany({
+        where: and(eq(communityGroupsTable.userId, userId), isNull(communityGroupsTable.deletedAt)),
+        orderBy: [desc(communityGroupsTable.createdAt)],
+        with: {
+          account: true,
+          automations: {
+            where: isNull(communityAutomationsTable.deletedAt),
+          },
+        },
+      }),
+    );
+  }
+
+  export async function findAllGroupsByWorkspaceId(
+    workspaceId: string,
     options?: { tx?: DBTransaction },
   ) {
     const queryClient = options?.tx || db;
     return await withMetrics("select", "community_groups", async () =>
       queryClient.query.communityGroupsTable.findMany({
         where: and(
-          eq(communityGroupsTable.userId, userId),
+          eq(communityGroupsTable.workspaceId, workspaceId),
           isNull(communityGroupsTable.deletedAt),
         ),
         orderBy: [desc(communityGroupsTable.createdAt)],

@@ -14,6 +14,8 @@ export const DashboardSectionSchema = z.enum([
   "communities",
   "connectors",
   "analytics",
+  "developers",
+  "team",
   "settings",
 ]);
 export type DashboardSection = z.infer<typeof DashboardSectionSchema>;

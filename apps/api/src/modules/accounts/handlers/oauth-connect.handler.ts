@@ -9,6 +9,8 @@ import { env } from "@/env";
 import { createSocialProviderRegistry, providerIdForPlatform } from "@/modules/provider-registry";
 import { createHash, randomBytes } from "crypto";
 import type { SocialPlatform } from "@repo/libraries";
+import { resolveWorkspaceId } from "@/utils/workspace";
+import { EntitlementError, EntitlementsService } from "@/modules/entitlements/entitlements.service";
 
 const providerRegistry = createSocialProviderRegistry();
 
@@ -134,16 +136,18 @@ export const postOAuthCallbackRoute = createRoute({
     body: {
       content: {
         "application/json": {
-          schema: z.object({
-            code: z.string().optional().openapi({ example: "4/0AeanS0..." }),
-            botToken: z.string().optional(),
-            redirectUri: z.url().optional(),
-            state: z.string().optional(),
-            codeVerifier: z.string().optional(),
-            chatId: z.string().optional(),
-          }).refine((value) => Boolean(value.code || value.botToken), {
-            message: "An OAuth code or Telegram bot token is required",
-          }),
+          schema: z
+            .object({
+              code: z.string().optional().openapi({ example: "4/0AeanS0..." }),
+              botToken: z.string().optional(),
+              redirectUri: z.url().optional(),
+              state: z.string().optional(),
+              codeVerifier: z.string().optional(),
+              chatId: z.string().optional(),
+            })
+            .refine((value) => Boolean(value.code || value.botToken), {
+              message: "An OAuth code or Telegram bot token is required",
+            }),
         },
       },
     },
@@ -222,6 +226,29 @@ export const postOAuthCallbackHandler: AppRouteHandler<PostOAuthCallbackRoute> =
       ? encrypt(credentials.refreshToken, env.ENCRYPTION_KEY)
       : undefined;
     const platformAccountId = credentials.accountId || profile.id;
+    const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
+    const existingAccount = await AccountsRepository.findByPlatformAccount(
+      user.id,
+      platform as SocialPlatformEnum,
+      platformAccountId,
+    );
+
+    if (existingAccount?.workspaceId && existingAccount.workspaceId !== workspaceId) {
+      throw new HTTPException(StatusCodes.HTTP_409_CONFLICT, {
+        res: c.json(
+          {
+            message: "This social account is already connected to another workspace",
+            code: "ACCOUNT_IN_ANOTHER_WORKSPACE",
+          },
+          StatusCodes.HTTP_409_CONFLICT,
+        ),
+      });
+    }
+
+    if (!existingAccount || !existingAccount.workspaceId) {
+      await EntitlementsService.assertCanAddChannel(workspaceId, 1);
+    }
+
     const username = profile.handle;
     const telegramLinkCode =
       platform === SocialPlatformEnum.TELEGRAM ? randomBytes(16).toString("base64url") : undefined;
@@ -230,6 +257,7 @@ export const postOAuthCallbackHandler: AppRouteHandler<PostOAuthCallbackRoute> =
 
     const account = await AccountsRepository.upsert({
       userId: user.id,
+      workspaceId,
       platform: platform as SocialPlatformEnum,
       platformAccountId,
       username,
@@ -279,7 +307,8 @@ export const postOAuthCallbackHandler: AppRouteHandler<PostOAuthCallbackRoute> =
         );
         telegramWebhookConfigured =
           webhookResponse.ok && Boolean(((await webhookResponse.json()) as { ok?: boolean }).ok);
-        if (!telegramWebhookConfigured) throw new Error("Telegram rejected the webhook configuration");
+        if (!telegramWebhookConfigured)
+          throw new Error("Telegram rejected the webhook configuration");
       }
     }
 
@@ -292,15 +321,23 @@ export const postOAuthCallbackHandler: AppRouteHandler<PostOAuthCallbackRoute> =
           username: account.username,
           status: account.status as ConnectedAccountStatus,
           ...(telegramLinkCode ? { telegramLinkCode } : {}),
-          ...(platform === SocialPlatformEnum.TELEGRAM
-            ? { telegramWebhookConfigured }
-            : {}),
+          ...(platform === SocialPlatformEnum.TELEGRAM ? { telegramWebhookConfigured } : {}),
         },
       },
       StatusCodes.HTTP_201_CREATED,
     );
   } catch (err) {
     if (err instanceof HTTPException) throw err;
+
+    if (err instanceof EntitlementError) {
+      throw new HTTPException(err.statusCode as 402, {
+        res: c.json(
+          { message: err.message, code: err.decision.code, ...err.decision },
+          err.statusCode as 402,
+        ),
+      });
+    }
+
     logger.error("Error exchanging OAuth code", {
       module: "accounts",
       action: "postOAuthCallbackHandler",

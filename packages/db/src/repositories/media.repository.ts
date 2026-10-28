@@ -1,6 +1,7 @@
-import { and, desc, eq, isNull } from "drizzle-orm";
+import { and, desc, eq, isNull, sql } from "drizzle-orm";
 import { type DBTransaction, db } from "@/connection";
 import { mediaAssetsTable, type MediaAsset, type NewMediaAsset, MediaTypeEnum } from "@/schema";
+import { WorkspacesRepository } from "./workspaces.repository";
 import { withMetrics } from "@/utils/metrics-wrapper";
 import { logger } from "@repo/shared";
 
@@ -14,8 +15,15 @@ export namespace MediaRepository {
   ): Promise<MediaAsset> {
     const queryClient = options?.tx || db;
     try {
+      const workspaceId =
+        payload.workspaceId ??
+        (await WorkspacesRepository.ensurePersonalWorkspace(payload.userId, undefined, options)).id;
+
       const result = await withMetrics("insert", "media_assets", async () =>
-        queryClient.insert(mediaAssetsTable).values(payload).returning(),
+        queryClient
+          .insert(mediaAssetsTable)
+          .values({ ...payload, workspaceId })
+          .returning(),
       );
       const [media] = result;
 
@@ -79,6 +87,58 @@ export namespace MediaRepository {
         offset: options?.offset || 0,
       });
     });
+  }
+
+  /**
+   * Finds media assets for a workspace with pagination and optional type filter
+   */
+  export async function findAllByWorkspaceId(
+    workspaceId: string,
+    options?: {
+      type?: MediaTypeEnum;
+      limit?: number;
+      offset?: number;
+      tx?: DBTransaction;
+    },
+  ): Promise<MediaAsset[]> {
+    const queryClient = options?.tx || db;
+    return await withMetrics("select", "media_assets", async () => {
+      const conditions = [
+        eq(mediaAssetsTable.workspaceId, workspaceId),
+        isNull(mediaAssetsTable.deletedAt),
+      ];
+
+      if (options?.type) {
+        conditions.push(eq(mediaAssetsTable.type, options.type));
+      }
+
+      return queryClient.query.mediaAssetsTable.findMany({
+        where: and(...conditions),
+        orderBy: [desc(mediaAssetsTable.createdAt)],
+        limit: options?.limit || 24,
+        offset: options?.offset || 0,
+      });
+    });
+  }
+
+  /**
+   * Sums active media bytes for a workspace.
+   */
+  export async function sumStorageBytesForWorkspace(
+    workspaceId: string,
+    options?: { tx?: DBTransaction },
+  ): Promise<number> {
+    const queryClient = options?.tx || db;
+    const [row] = await queryClient
+      .select({
+        value: sql<number>`coalesce(sum(${mediaAssetsTable.sizeBytes}), 0)`,
+      })
+      .from(mediaAssetsTable)
+      .where(
+        and(eq(mediaAssetsTable.workspaceId, workspaceId), isNull(mediaAssetsTable.deletedAt)),
+      );
+
+    return Number(row?.value ?? 0);
   }
 
   /**

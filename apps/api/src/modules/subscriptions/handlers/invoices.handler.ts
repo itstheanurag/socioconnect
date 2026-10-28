@@ -5,6 +5,7 @@ import { errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
+import { resolveBillingWorkspace } from "@/utils/workspace";
 
 export const getInvoicesRoute = createRoute({
   method: "get",
@@ -52,7 +53,8 @@ export const getInvoicesHandler: AppRouteHandler<GetInvoicesRoute> = async (c) =
   const user = c.get("user");
 
   try {
-    const rawInvoices = await SubscriptionsRepository.listInvoices(user.id);
+    const workspaceId = await resolveBillingWorkspace(user.id, c.var.auth);
+    const rawInvoices = await SubscriptionsRepository.listInvoicesForWorkspace(workspaceId);
 
     const invoices = rawInvoices.map((inv) => ({
       id: inv.id,

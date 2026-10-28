@@ -1,10 +1,11 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { enforceUserMiddleware } from "@/middlewares/enforce-user.middleware";
-import { QuotasRepository, AccountsRepository, PlanTierEnum } from "@repo/db";
+import { SubscriptionsRepository, AccountsRepository, SubscriptionTierEnum } from "@repo/db";
 import { errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
+import { resolveWorkspaceId } from "@/utils/workspace";
 
 export const getQuotasSummaryRoute = createRoute({
   method: "get",
@@ -22,7 +23,7 @@ export const getQuotasSummaryRoute = createRoute({
           schema: z.object({
             message: z.string(),
             payload: z.object({
-              tier: z.enum(PlanTierEnum),
+              tier: z.enum(SubscriptionTierEnum),
               channels: z.object({
                 connected: z.number().openapi({ example: 6 }),
                 max: z.number().openapi({ example: 10 }),
@@ -55,30 +56,32 @@ export const getQuotasSummaryHandler: AppRouteHandler<GetQuotasSummaryRoute> = a
   const user = c.get("user");
 
   try {
-    const quota = await QuotasRepository.getOrCreate(user.id);
-    const connectedAccounts = await AccountsRepository.findAllByUserId(user.id);
+    const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
+    const subscription =
+      await SubscriptionsRepository.refreshResourceUsageForWorkspace(workspaceId);
+    const connectedAccounts = await AccountsRepository.findAllByWorkspaceId(workspaceId);
 
     return c.json({
       message: "Quotas retrieved successfully",
       payload: {
-        tier: quota.tier as PlanTierEnum,
+        tier: subscription.tier as SubscriptionTierEnum,
         channels: {
           connected: connectedAccounts.length,
-          max: quota.maxChannels,
+          max: subscription.limits.maxChannels,
         },
         monthlyDrops: {
-          used: quota.monthlyDropsUsed,
-          max: quota.maxMonthlyDrops,
+          used: subscription.usage.monthlyDropsUsed,
+          max: subscription.limits.maxMonthlyDrops,
         },
         aiAdaptations: {
-          used: quota.aiAdaptationsUsed,
-          max: quota.maxAiAdaptations,
+          used: subscription.usage.aiCreditsUsed,
+          max: subscription.limits.maxAiCredits,
         },
         cdnStorage: {
-          usedBytes: quota.cdnStorageUsedBytes,
-          maxBytes: quota.maxCdnStorageBytes,
+          usedBytes: subscription.usage.cdnStorageUsedBytes,
+          maxBytes: subscription.limits.maxCdnStorageBytes,
         },
-        cycleResetsAt: quota.cycleResetsAt.toISOString(),
+        cycleResetsAt: subscription.currentPeriodEnd.toISOString(),
       },
     });
   } catch (err) {

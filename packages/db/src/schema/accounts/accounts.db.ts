@@ -3,6 +3,7 @@ import { relations } from "drizzle-orm";
 import { enumToPgEnum } from "@repo/shared";
 import { accountsSchema } from "./index";
 import { usersTable } from "@/schema/users/users.db";
+import { workspacesTable } from "@/schema/workspaces/workspaces.db";
 
 export enum SocialPlatformEnum {
   TELEGRAM = "telegram",
@@ -57,15 +58,9 @@ export enum ConnectedAccountStatus {
   DISCONNECTED = "disconnected",
 }
 
-export const socialPlatformPgEnum = pgEnum(
-  "social_platform",
-  enumToPgEnum(SocialPlatformEnum),
-);
+export const socialPlatformPgEnum = pgEnum("social_platform", enumToPgEnum(SocialPlatformEnum));
 
-export const accountStatusPgEnum = pgEnum(
-  "account_status",
-  enumToPgEnum(ConnectedAccountStatus),
-);
+export const accountStatusPgEnum = pgEnum("account_status", enumToPgEnum(ConnectedAccountStatus));
 
 export const connectedAccountsTable = accountsSchema.table(
   "connected_accounts",
@@ -74,6 +69,9 @@ export const connectedAccountsTable = accountsSchema.table(
     userId: uuid("user_id")
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),
+    workspaceId: uuid("workspace_id").references(() => workspacesTable.id, {
+      onDelete: "cascade",
+    }),
 
     platform: socialPlatformPgEnum("platform").notNull(),
     platformAccountId: text("platform_account_id").notNull(), // Provider unique ID (e.g. YouTube Channel ID)
@@ -107,8 +105,13 @@ export const connectedAccountsTable = accountsSchema.table(
     deletedAt: timestamp("deleted_at", { withTimezone: true }),
   },
   (table) => [
-    uniqueIndex("unique_user_platform_account_idx").on(table.userId, table.platform, table.platformAccountId),
+    uniqueIndex("unique_user_platform_account_idx").on(
+      table.userId,
+      table.platform,
+      table.platformAccountId,
+    ),
     index("connected_accounts_user_id_idx").on(table.userId),
+    index("connected_accounts_workspace_id_idx").on(table.workspaceId),
     index("connected_accounts_platform_idx").on(table.platform),
     index("connected_accounts_status_idx").on(table.status),
     index("connected_accounts_access_token_expires_at_idx").on(table.accessTokenExpiresAt),

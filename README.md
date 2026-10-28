@@ -67,9 +67,10 @@ socioconnect/
 │   │   ├── app/                # App Router (Landing, Dashboard, Sitemap, Robots)
 │   │   ├── component/          # Landing & Dashboard UI (Composer, Connectors, Automations)
 │   │   └── context/            # Authentication, Theme & Toast notification state
-│   └── api/                    # Bun + Hono REST API & Dispatch Orchestrator
-│       ├── src/modules/        # Auth, OAuth, Posts, Connectors, Providers
-│       └── src/routes/         # OpenAPI routes & Swagger/Scalar docs
+│   ├── api/                    # Bun + Hono REST API & Dispatch Orchestrator
+│   │   ├── src/modules/        # Auth, OAuth, Posts, Connectors, Providers
+│   │   └── src/routes/         # OpenAPI routes & Swagger/Scalar docs
+│   └── mcp/                    # Remote MCP server (OAuth 2.1 + agent tools)
 │
 ├── packages/
 │   ├── storage/                # Cloudflare R2 Presigned S3 client & MIME normalization
@@ -122,13 +123,14 @@ bun run dev
 
 ### Access Points
 
-| Service                  | URL                                                      | Description                  |
-| :----------------------- | :------------------------------------------------------- | :--------------------------- |
-| **Frontend Web App**     | [http://localhost:3000](http://localhost:3000)           | Next.js Landing & Dashboard  |
-| **Backend REST API**     | [http://localhost:8000](http://localhost:8000)           | Hono API Gateway             |
-| **Interactive API Docs** | [http://localhost:8000/docs](http://localhost:8000/docs) | Scalar OpenAPI Documentation |
-| **Grafana Dashboard**    | [http://localhost:8001](http://localhost:8001)           | Metrics & Loki Telemetry     |
-| **Prometheus**           | [http://localhost:9090](http://localhost:9090)           | System & Dispatch Metrics    |
+| Service                  | URL                                                      | Description                     |
+| :----------------------- | :------------------------------------------------------- | :------------------------------ |
+| **Frontend Web App**     | [http://localhost:3000](http://localhost:3000)           | Next.js Landing & Dashboard     |
+| **Backend REST API**     | [http://localhost:8000](http://localhost:8000)           | Hono API Gateway                |
+| **Interactive API Docs** | [http://localhost:8000/docs](http://localhost:8000/docs) | Scalar OpenAPI Documentation    |
+| **MCP Server**           | [http://localhost:8010/mcp](http://localhost:8010/mcp)   | Agent tools, prompts, resources |
+| **Grafana Dashboard**    | [http://localhost:8001](http://localhost:8001)           | Metrics & Loki Telemetry        |
+| **Prometheus**           | [http://localhost:9090](http://localhost:9090)           | System & Dispatch Metrics       |
 
 ---
 
@@ -137,8 +139,10 @@ bun run dev
 ```bash
 # Development
 bun run dev                     # Start all workspace services concurrently
-bun run dev --filter=web        # Start web frontend only
-bun run dev --filter=@repo/api  # Start backend API only
+bun run dev:web                 # Start web frontend only
+bun run dev:api                 # Start backend API only
+bun run dev:mcp                 # Start MCP server only
+bun run dev:clean               # Stop stale dev servers and the Turbo daemon
 
 # Build & Quality
 bun run build                   # Full monorepo production build
@@ -150,6 +154,10 @@ bun run db:generate             # Generate Drizzle schema migrations
 bun run db:migrate              # Apply migrations to database
 ```
 
+If port `8000`, `3000`, or `8010` stays busy after stopping a dev session, run
+`bun run dev:clean`. Turbo can leave child processes alive when a task is stopped
+without a terminal signal.
+
 ---
 
 ## 🔒 Security & Reliability
@@ -158,6 +166,41 @@ bun run db:migrate              # Apply migrations to database
 - **AES-256-GCM Encryption**: Platform access tokens and client secrets encrypted at rest in PostgreSQL.
 - **Resilient Rate Limiting**: Exponential backoff and token bucket dispatch queues per destination platform.
 - **Direct Presigned Uploads**: Zero media bytes touch backend servers; uploads stream directly to Cloudflare R2.
+
+---
+
+## 💳 Billing
+
+Subscriptions are handled by **Dodo Payments** (hosted checkout + webhooks) and
+belong to **workspaces**, not users. Every personal or team workspace has its
+own plan, usage, invoices, and billing portal. Plan entitlements are granted only
+from verified subscription webhooks, never from the checkout redirect.
+
+Production containers are defined in `docker-compose.prod.yml` (web, API, MCP,
+Caddy, and PostgreSQL). See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the
+deployment runbook and [docs/BILLING.md](docs/BILLING.md) for environment
+variables, Dodo product setup, webhook events, and local testing.
+
+---
+
+## 🤖 Agent Platform
+
+Public API keys, the remote MCP server, and the ChatGPT/Claude distribution plan
+are described in [docs/AGENT_PLATFORM.md](docs/AGENT_PLATFORM.md). The core rule
+is draft-first: agents can compose and validate freely, but every public post
+requires a confirmed publish intent.
+
+API key creation, scopes, account allowlists, and usage are documented in
+[docs/API_KEYS.md](docs/API_KEYS.md). The draft -> preview -> confirm publish
+flow is documented in [docs/PUBLISH_INTENTS.md](docs/PUBLISH_INTENTS.md). Audit and
+usage ledgers are documented in [docs/EVENTS.md](docs/EVENTS.md). MCP, OAuth, and
+agent connection setup are documented in [docs/MCP.md](docs/MCP.md).
+
+The ChatGPT/Codex/Claude marketplace package lives in
+[`plugins/socioconnect`](plugins/socioconnect), with local marketplace metadata at
+`.agents/plugins/marketplace.json`. Webhooks are documented in
+[docs/WEBHOOKS.md](docs/WEBHOOKS.md); the CLI and SDK are in
+[docs/CLI_SDK.md](docs/CLI_SDK.md).
 
 ---
 

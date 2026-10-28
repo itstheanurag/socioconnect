@@ -1,6 +1,7 @@
 import {
   SessionService,
   UsersService,
+  WorkspacesRepository,
   db,
   type DBTransaction,
   type SessionProvider,
@@ -136,6 +137,10 @@ async function executeOAuthCallbackTransaction(
     },
     { tx },
   );
+
+  await WorkspacesRepository.ensurePersonalWorkspace(user.id, `${user.firstName}'s workspace`, {
+    tx,
+  });
 
   // Encrypt tokens
   const {

@@ -1,10 +1,13 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { enforceUserMiddleware } from "@/middlewares/enforce-user.middleware";
-import { SocialPlatformEnum, QuotasRepository } from "@repo/db";
+import { SocialPlatformEnum } from "@repo/db";
 import { errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
+import { recordUsageEvent } from "@/utils/events";
+import { resolveWorkspaceId } from "@/utils/workspace";
+import { EntitlementError, EntitlementsService } from "@/modules/entitlements/entitlements.service";
 
 export const adaptPostRoute = createRoute({
   method: "post",
@@ -57,6 +60,9 @@ export const adaptPostHandler: AppRouteHandler<AdaptPostRoute> = async (c) => {
   const user = c.get("user");
 
   try {
+    const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
+    await EntitlementsService.assertCanUseAiCredits(workspaceId, 1);
+
     let adaptedContent = content;
     let suggestedTags: string[] = [];
     let maxCharacters = 280;
@@ -87,8 +93,12 @@ export const adaptPostHandler: AppRouteHandler<AdaptPostRoute> = async (c) => {
         maxCharacters = 5000;
     }
 
-    // Increment AI adaptation usage
-    await QuotasRepository.incrementAiAdaptations(user.id, 1);
+    await EntitlementsService.recordAiCreditUsage(workspaceId, 1);
+    await recordUsageEvent(c, {
+      operation: "ai_credit",
+      quantity: 1,
+      metadata: { targetPlatform, tone },
+    });
 
     return c.json({
       message: "Content adapted successfully",
@@ -100,6 +110,19 @@ export const adaptPostHandler: AppRouteHandler<AdaptPostRoute> = async (c) => {
       },
     });
   } catch (err) {
+    if (err instanceof EntitlementError) {
+      throw new HTTPException(err.statusCode as 402, {
+        res: c.json(
+          {
+            message: err.message,
+            code: err.decision.code,
+            ...err.decision,
+          },
+          err.statusCode as 402,
+        ),
+      });
+    }
+
     logger.error("Error adapting post with AI bot", {
       module: "bots",
       action: "adaptPostHandler",

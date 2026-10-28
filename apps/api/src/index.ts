@@ -20,12 +20,24 @@ import { postRoutes } from "./modules/posts/posts.routes";
 import { quotaRoutes } from "./modules/quotas/quotas.routes";
 import { botRoutes } from "./modules/bots/bots.routes";
 import { subscriptionRoutes } from "./modules/subscriptions/subscriptions.routes";
+import { apiKeyRoutes } from "./modules/api-keys/api-keys.routes";
+import { workspaceRoutes } from "./modules/workspaces/workspaces.routes";
+import { publishIntentRoutes } from "./modules/publish-intents/publish-intents.routes";
+import { oauthRoutes } from "./modules/oauth/oauth.routes";
+import { platformRoutes } from "./modules/platforms/platforms.routes";
+import { activityRoutes } from "./modules/activity/activity.routes";
+import { webhookRoutes } from "./modules/webhooks/webhooks.routes";
 import { mediaRoutes } from "./modules/media/media.routes";
 import { dispatchRoutes } from "./modules/dispatches/dispatches.routes";
 import { analyticsRoutes } from "./modules/analytics/analytics.routes";
 import { notificationRoutes } from "./modules/notifications/notifications.routes";
 import { communityRoutes } from "./modules/communities/communities.routes";
 import { getUserMiddleware } from "@/middlewares/get-user.middleware";
+import { apiKeyMiddleware } from "@/middlewares/api-key.middleware";
+import { apiKeyRateLimitMiddleware } from "@/middlewares/api-key-rate-limit.middleware";
+import { apiKeyScopeMiddleware } from "@/middlewares/api-key-scope.middleware";
+import { idempotencyMiddleware } from "@/middlewares/idempotency.middleware";
+import { serviceTokenMiddleware } from "@/middlewares/service-token.middleware";
 import { type AppBindings, type AppRouteHandler } from "./types";
 import { createRoute, z } from "@hono/zod-openapi";
 import { secureHeaders } from "hono/secure-headers";
@@ -65,6 +77,11 @@ app.use(metricsMiddleware());
 app.use(globalRateLimiter);
 
 app.use(getUserMiddleware);
+app.use(apiKeyMiddleware);
+app.use(apiKeyRateLimitMiddleware);
+app.use(serviceTokenMiddleware);
+app.use(apiKeyScopeMiddleware);
+app.use(idempotencyMiddleware);
 
 const getHealthRoute = createRoute({
   method: "get",
@@ -120,6 +137,13 @@ const routes = [
   analyticsRoutes,
   notificationRoutes,
   communityRoutes,
+  apiKeyRoutes,
+  workspaceRoutes,
+  publishIntentRoutes,
+  oauthRoutes,
+  platformRoutes,
+  activityRoutes,
+  webhookRoutes,
 ] as const;
 
 routes.forEach((route) => {
@@ -139,6 +163,14 @@ async function start() {
       fetch: app.fetch,
       port: +env.PORT,
     });
+    server.on("error", (error) => {
+      logger.error(`Failed to bind API port ${env.PORT}`, {
+        module: "system",
+        action: "startup",
+        error: error as Error,
+      });
+      process.exit(1);
+    });
     logger.info(`Server running on port ${env.PORT}`, {
       module: "system",
       action: "startup",
@@ -154,10 +186,14 @@ async function start() {
 }
 
 let server: ServerType;
+let shuttingDown = false;
 void start();
 
 // Stop server
 async function stop() {
+  if (shuttingDown) return;
+  shuttingDown = true;
+
   const shutdownTimeout = setTimeout(() => {
     logger.error("Shutdown timeout reached, forcing exit", {
       module: "system",
@@ -175,6 +211,12 @@ async function stop() {
       action: "shutdown",
       error: error as Error,
     });
+  }
+
+  // The dev hot-reload can close the listener before the handler runs.
+  if (!server || !server.listening) {
+    clearTimeout(shutdownTimeout);
+    process.exit(0);
   }
 
   // Close server after resources

@@ -1,6 +1,6 @@
 import { createRouter } from "@repo/shared";
 import type { AppBindings } from "@/types";
-import { getQuotasSummaryRoute, getQuotasSummaryHandler } from "./handlers/get-quotas.handler";
+import { getQuotasSummaryRoute, getQuotasSummaryHandler } from "./handlers";
 
 export const quotaRoutes = createRouter<AppBindings>();
 

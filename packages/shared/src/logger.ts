@@ -18,10 +18,13 @@ export type LoggerModules =
   | "bots"
   | "subscriptions"
   | "billing"
+  | "api-keys"
+  | "workspaces"
   | "dispatches"
   | "analytics"
   | "notifications"
-  | "communities";
+  | "communities"
+  | "webhooks";
 
 export interface LoggerMeta {
   module: LoggerModules;
@@ -57,8 +60,8 @@ function buildTransports(): TransportTargetOptions[] {
     });
   }
 
-  // Always ship to Loki if host is configured
-  if (baseEnv.LOKI_HOST) {
+  // Ship to Loki only when explicitly configured.
+  if (baseEnv.LOKI_HOST && baseEnv.LOKI_HOST.trim().length > 0) {
     targets.push({
       target: "pino-loki",
       level: baseEnv.LOG_LEVEL,
@@ -66,6 +69,8 @@ function buildTransports(): TransportTargetOptions[] {
         batching: true,
         interval: 5, // Send logs every 5 seconds
         host: baseEnv.LOKI_HOST,
+        // A down log collector must never crash or spam the API process.
+        silenceErrors: true,
         // Extract these fields as Loki labels for filtering
         labels: {
           application: "api",

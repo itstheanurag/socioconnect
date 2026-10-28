@@ -5,13 +5,11 @@ import {
   getPresignedUrlHandler,
   confirmMediaUploadRoute,
   confirmMediaUploadHandler,
-} from "./handlers/upload-url.handler";
-import {
   getMediaRoute,
   getMediaHandler,
   deleteMediaRoute,
   deleteMediaHandler,
-} from "./handlers/get-media.handler";
+} from "./handlers";
 
 export const mediaRoutes = createRouter<AppBindings>();
 

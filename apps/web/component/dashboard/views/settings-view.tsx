@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Globe, Sparkles, Save } from "lucide-react";
 import { useNotification } from "@/context/notification-context";
-import { useDashboard } from "@/component/dashboard/context/dashboard-context";
 import { CustomSelect, CustomSelectOption } from "@/component/dashboard/ui/custom-select";
 
 const TIMEZONE_OPTIONS: CustomSelectOption[] = [
@@ -15,13 +14,21 @@ const TIMEZONE_OPTIONS: CustomSelectOption[] = [
 ];
 
 export function SettingsView() {
-  const { activeWorkspace } = useDashboard();
   const { toast } = useNotification();
+  const [workspaceName, setWorkspaceName] = useState("Workspace");
 
   const [timezone, setTimezone] = useState("Asia/Kolkata (GMT+5:30)");
   const [autoThreadSplit, setAutoThreadSplit] = useState(true);
   const [autoRetry, setAutoRetry] = useState(true);
   const [notifyOnFailure, setNotifyOnFailure] = useState(true);
+
+  useEffect(() => {
+    import("@/lib/api-client").then(({ getCurrentWorkspace }) =>
+      getCurrentWorkspace().then((workspace) => {
+        if (workspace) setWorkspaceName(workspace.name);
+      }),
+    );
+  }, []);
 
   const handleSave = () => {
     toast.success("Settings Saved", "Your workspace publishing configurations have been updated.");
@@ -52,7 +59,7 @@ export function SettingsView() {
       </div>
 
       {/* General Settings */}
-      <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-6 shadow-xl space-y-4">
+      <div className="signal-card rounded-3xl backdrop-blur-xl p-6 shadow-xl space-y-4">
         <h3 className="font-display text-sm font-semibold text-neutral-100 flex items-center gap-2">
           <Globe className="w-4 h-4 text-rose-400" />
           <span>General Workspace Profile</span>
@@ -64,7 +71,7 @@ export function SettingsView() {
             <input
               type="text"
               readOnly
-              value={activeWorkspace.name}
+              value={workspaceName}
               className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-neutral-100 font-medium focus:outline-hidden"
             />
           </div>
@@ -83,7 +90,7 @@ export function SettingsView() {
       </div>
 
       {/* Publishing Intelligence Policies */}
-      <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-6 shadow-xl space-y-4">
+      <div className="signal-card rounded-3xl backdrop-blur-xl p-6 shadow-xl space-y-4">
         <h3 className="font-display text-sm font-semibold text-neutral-100 flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-amber-400" />
           <span>Automation &amp; Formatting Intelligence</span>

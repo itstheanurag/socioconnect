@@ -7,7 +7,7 @@ import {
   retryDispatchHandler,
   getDispatchTransactionsRoute,
   getDispatchTransactionsHandler,
-} from "./handlers/process-dispatches.handler";
+} from "./handlers";
 
 export const dispatchRoutes = createRouter<AppBindings>();
 

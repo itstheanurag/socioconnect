@@ -10,11 +10,15 @@ import {
   NotificationTypeEnum,
   NotificationPriorityEnum,
   SocialPlatformEnum,
+  PostStatusEnum,
 } from "@repo/db";
 import { decrypt, encrypt, errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
+import { isAccountAllowed } from "@/utils/authz";
+import { recordAuditEvent } from "@/utils/events";
+import { WebhookService } from "@/modules/webhooks/webhooks.service";
 import type {
   AuthCredentials,
   PublishResult,
@@ -44,7 +48,8 @@ function classifyPlatformError(err: unknown, platform: string): ExecutionError {
   const message = errorObj?.message || String(err);
   const statusCode = errorObj?.statusCode || errorObj?.status || 0;
   const stack = errorObj?.stack || "";
-  const rawResponse = errorObj?.response?.data || errorObj?.rawResponse || errorObj?.rawError || errorObj?.data;
+  const rawResponse =
+    errorObj?.response?.data || errorObj?.rawResponse || errorObj?.rawError || errorObj?.data;
   const classification = errorObj?.classification;
 
   // Rate Limiting (429)
@@ -328,7 +333,10 @@ export const processDueDispatchesHandler: AppRouteHandler<ProcessDueDispatchesRo
             await PostsRepository.updateDispatchResult(dispatch.id, {
               status: DispatchStatusEnum.PENDING,
               nextRetryAt: nextCheckAt,
-              errorDetails: { code: "PUBLISH_PROCESSING", message: "TikTok is processing the post" },
+              errorDetails: {
+                code: "PUBLISH_PROCESSING",
+                message: "TikTok is processing the post",
+              },
             });
             return {
               dispatchId: dispatch.id,
@@ -373,7 +381,9 @@ export const processDueDispatchesHandler: AppRouteHandler<ProcessDueDispatchesRo
         const externalPostUrl = result.externalPostUrl || null;
         const latencyMs = Date.now() - startTime;
         const responsePayload =
-          result.rawResponse && typeof result.rawResponse === "object" && !Array.isArray(result.rawResponse)
+          result.rawResponse &&
+          typeof result.rawResponse === "object" &&
+          !Array.isArray(result.rawResponse)
             ? (result.rawResponse as Record<string, unknown>)
             : { status: "OK", id: externalPostId, raw: result.rawResponse };
 
@@ -400,6 +410,23 @@ export const processDueDispatchesHandler: AppRouteHandler<ProcessDueDispatchesRo
           responsePayload,
           latencyMs,
         });
+
+        await WebhookService.emit(dispatch.post.workspaceId ?? "", "dispatch.succeeded", {
+          dispatchId: dispatch.id,
+          postId: dispatch.postId,
+          platform: dispatch.platform,
+          externalPostUrl,
+        });
+
+        const postAfterSuccess = await PostsRepository.findById(dispatch.postId);
+        if (postAfterSuccess?.status === PostStatusEnum.PUBLISHED) {
+          await WebhookService.emit(dispatch.post.workspaceId ?? "", "post.published", {
+            postId: dispatch.postId,
+            publishedAt: postAfterSuccess.publishedAt
+              ? postAfterSuccess.publishedAt.toISOString()
+              : null,
+          });
+        }
 
         return {
           dispatchId: dispatch.id,
@@ -466,11 +493,33 @@ export const processDueDispatchesHandler: AppRouteHandler<ProcessDueDispatchesRo
           nextRetryAt,
         });
 
+        if (nextStatus === DispatchStatusEnum.FAILED) {
+          await WebhookService.emit(dispatch.post.workspaceId ?? "", "dispatch.failed", {
+            dispatchId: dispatch.id,
+            postId: dispatch.postId,
+            platform: dispatch.platform,
+            code: classified.code,
+            message: classified.message,
+          });
+
+          const postAfterFailure = await PostsRepository.findById(dispatch.postId);
+          if (
+            postAfterFailure?.status === PostStatusEnum.FAILED ||
+            postAfterFailure?.status === PostStatusEnum.PARTIALLY_FAILED
+          ) {
+            await WebhookService.emit(dispatch.post.workspaceId ?? "", "post.failed", {
+              postId: dispatch.postId,
+              status: postAfterFailure.status,
+            });
+          }
+        }
+
         // If permanent failure or auth error, send in-app notification to creator
         if (!willRetry || classified.code === "AUTH_REVOKED") {
           try {
             await NotificationsRepository.create({
               userId: dispatch.account.userId,
+              workspaceId: dispatch.post.workspaceId ?? null,
               type:
                 classified.code === "AUTH_REVOKED"
                   ? NotificationTypeEnum.TOKEN_EXPIRING
@@ -579,13 +628,53 @@ export type RetryDispatchRoute = typeof retryDispatchRoute;
 
 export const retryDispatchHandler: AppRouteHandler<RetryDispatchRoute> = async (c) => {
   const { id } = c.req.valid("param");
+  const user = c.get("user");
 
   try {
+    const dispatch = await PostsRepository.findDispatchById(id);
+
+    if (
+      !dispatch ||
+      dispatch.post.userId !== user.id ||
+      !isAccountAllowed(c.var.auth, dispatch.accountId)
+    ) {
+      throw new HTTPException(StatusCodes.HTTP_404_NOT_FOUND, {
+        res: c.json({ message: "Dispatch not found" }, StatusCodes.HTTP_404_NOT_FOUND),
+      });
+    }
+
+    if (
+      dispatch.status === DispatchStatusEnum.DRAFT ||
+      dispatch.post.status === PostStatusEnum.DRAFT
+    ) {
+      throw new HTTPException(StatusCodes.HTTP_409_CONFLICT, {
+        res: c.json(
+          {
+            message: "Draft dispatches cannot be retried. Confirm a publish intent first.",
+            code: "DRAFT_DISPATCH_NOT_RETRYABLE",
+          },
+          StatusCodes.HTTP_409_CONFLICT,
+        ),
+      });
+    }
+
     const updated = await PostsRepository.updateDispatchResult(id, {
       status: DispatchStatusEnum.PENDING,
       externalPostId: null,
       nextRetryAt: null,
       errorDetails: {},
+    });
+
+    await recordAuditEvent(c, {
+      action: "dispatch.retried",
+      resourceType: "dispatch",
+      resourceId: updated.id,
+      metadata: { postId: updated.postId, platform: updated.platform },
+    });
+    await WebhookService.emit(dispatch.post.workspaceId ?? "", "dispatch.retried", {
+      dispatchId: updated.id,
+      postId: updated.postId,
+      platform: updated.platform,
     });
 
     return c.json({
@@ -596,6 +685,8 @@ export const retryDispatchHandler: AppRouteHandler<RetryDispatchRoute> = async (
       },
     });
   } catch (err) {
+    if (err instanceof HTTPException) throw err;
+
     logger.error("Error retrying dispatch", {
       module: "dispatches",
       action: "retryDispatchHandler",

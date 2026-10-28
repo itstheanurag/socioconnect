@@ -6,6 +6,13 @@ export * from "./schema";
 
 // Export repositories
 export { UsersRepository, UsersService } from "./repositories/users.repository";
+export { WorkspacesRepository } from "./repositories/workspaces.repository";
+export { ApiKeysRepository } from "./repositories/api-keys.repository";
+export { IdempotencyRepository } from "./repositories/idempotency.repository";
+export { PublishIntentsRepository } from "./repositories/publish-intents.repository";
+export { AuditRepository } from "./repositories/audit.repository";
+export { UsageRepository } from "./repositories/usage.repository";
+export { OAuthRepository } from "./repositories/oauth.repository";
 export { SessionRepository, SessionService } from "./repositories/session.repository";
 export { AccountsRepository, AccountsService } from "./repositories/accounts.repository";
 export { TelegramBotSessionsRepository } from "./repositories/telegram-bot-sessions.repository";
@@ -24,7 +31,9 @@ export {
   SubscriptionsRepository,
   SubscriptionsService,
   DEFAULT_PLAN_LIMITS,
+  type ProviderSubscriptionState,
 } from "./repositories/subscriptions.repository";
+export { BillingWebhookEventsRepository } from "./repositories/billing-webhook-events.repository";
 export { AnalyticsRepository, AnalyticsService } from "./repositories/analytics.repository";
 export {
   NotificationsRepository,
@@ -34,3 +43,4 @@ export { CommunitiesRepository, CommunitiesService } from "./repositories/commun
 
 // Export metrics utilities
 export { withMetrics } from "./utils/metrics-wrapper";
+export { WebhookRepository } from "./repositories/webhook.repository";

@@ -1,0 +1,21 @@
+{
+  "name": "@socioconnect/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "socioconnect": "./src/index.ts"
+  },
+  "scripts": {
+    "dev": "bun run src/index.ts",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@socioconnect/sdk": "*",
+    "dotenv": "^17.2.3"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.7.3"
+  }
+}

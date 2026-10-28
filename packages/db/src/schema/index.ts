@@ -1,3 +1,12 @@
+// Workspaces & API Keys Schema
+export * from "./workspaces";
+export * from "./api-keys";
+export * from "./oauth";
+
+// Audit & Usage Ledgers
+export * from "./audit";
+export * from "./usage";
+
 // Users Schema
 export { usersSchema } from "./users";
 export { type NewUser, usersTable, type UpdateUser, type User, UserRole } from "./users/users.db";
@@ -69,6 +78,28 @@ export {
   type DispatchTransaction,
   type NewDispatchTransaction,
 } from "./posts/dispatch-transactions.db";
+export {
+  publishIntentsTable,
+  publishIntentsRelations,
+  PublishIntentStateEnum,
+  PublishIntentModeEnum,
+  PublishIntentActorEnum,
+  publishIntentStatePgEnum,
+  publishIntentModePgEnum,
+  publishIntentActorPgEnum,
+  type PublishIntent,
+  type NewPublishIntent,
+  type UpdatePublishIntent,
+} from "./posts/publish-intents.db";
+
+// Idempotency
+export {
+  idempotencyKeysTable,
+  IdempotencyStateEnum,
+  type IdempotencyKey,
+  type NewIdempotencyKey,
+  type UpdateIdempotencyKey,
+} from "./idempotency/idempotency.db";
 
 // Media Assets Schema
 export { mediaSchema } from "./media";
@@ -120,6 +151,14 @@ export {
   type NewInvoice,
   type UpdateInvoice,
 } from "./subscriptions/invoices.db";
+export {
+  billingWebhookEventsTable,
+  BillingWebhookStatusEnum,
+  billingWebhookStatusPgEnum,
+  type BillingWebhookEvent,
+  type NewBillingWebhookEvent,
+  type UpdateBillingWebhookEvent,
+} from "./subscriptions/billing-webhook-events.db";
 
 // Analytics Schema
 export { analyticsSchema } from "./analytics";
@@ -166,3 +205,6 @@ export {
   type NewCommunityAutomation,
   type UpdateCommunityAutomation,
 } from "./communities/community-groups.db";
+
+// Webhooks
+export * from "./webhooks";

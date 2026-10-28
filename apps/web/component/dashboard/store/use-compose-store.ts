@@ -7,14 +7,14 @@ export const SAMPLE_MEDIA_LIBRARY: PostMedia[] = [
   {
     id: "lib-1",
     type: "image",
-    url: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80",
+    url: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&auto=format&fit=crop&q=80",
     name: "launch_gradient_visual.png",
     sizeMb: 2.1,
   },
   {
     id: "lib-2",
     type: "image",
-    url: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=800&auto=format&fit=crop&q=80",
+    url: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&auto=format&fit=crop&q=80",
     name: "feature_matrix.png",
     sizeMb: 1.8,
   },

@@ -5,6 +5,7 @@ import { errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
+import { resolveWorkspaceId } from "@/utils/workspace";
 
 // 1. List Notifications
 export const getNotificationsRoute = createRoute({
@@ -61,8 +62,9 @@ export const getNotificationsHandler: AppRouteHandler<GetNotificationsRoute> = a
   const user = c.get("user");
 
   try {
+    const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
     const { notifications: rawNotifications, unreadCount } =
-      await NotificationsRepository.findAllByUserId(user.id, {
+      await NotificationsRepository.findAllByWorkspaceId(workspaceId, {
         unreadOnly,
         limit,
       });

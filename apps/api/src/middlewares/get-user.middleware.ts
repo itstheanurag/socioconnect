@@ -1,7 +1,7 @@
 import { logger, verifyJwt } from "@repo/shared";
 import { type MiddlewareHandler } from "hono";
 import { env } from "@/env";
-import { SessionService, UsersService } from "@repo/db";
+import { SessionService, UsersService, WorkspacesRepository } from "@repo/db";
 import { getCookie } from "hono/cookie";
 import { type AppBindings } from "../types";
 
@@ -37,6 +37,18 @@ export const getUserMiddleware: MiddlewareHandler<AppBindings> = async (c, next)
           if (session) {
             c.set("session", session);
           }
+          if (user && session) {
+            const workspaceCookie = getCookie(c, "workspace_id");
+            const membership = workspaceCookie
+              ? await WorkspacesRepository.getMembership(workspaceCookie, user.id)
+              : null;
+
+            c.set("auth", {
+              type: "session",
+              scopes: null,
+              workspaceId: membership ? workspaceCookie : undefined,
+            });
+          }
         }
       } catch {
         // Stale or invalid JWT - do not block public requests or throw 500
@@ -45,7 +57,6 @@ export const getUserMiddleware: MiddlewareHandler<AppBindings> = async (c, next)
 
     return next();
   } catch (err) {
-    
     logger.error("Error in getUserMiddleware:", {
       action: "getUserMiddleware",
       error: err,

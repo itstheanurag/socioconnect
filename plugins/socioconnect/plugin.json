@@ -1,0 +1,39 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "socioconnect",
+  "version": "0.1.0",
+  "description": "Draft, preview, and publish content across 40+ social platforms with explicit approval before anything goes live.",
+  "author": {
+    "name": "SocioConnect",
+    "email": "support@socioconnect.app",
+    "url": "https://socioconnect.app"
+  },
+  "homepage": "https://socioconnect.app",
+  "repository": "https://github.com/itstheanurag/socioconnect",
+  "license": "MIT",
+  "keywords": ["social media", "publishing", "scheduling", "content", "mcp"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "SocioConnect",
+        "shortDescription": "Draft once, publish everywhere, with approval.",
+        "longDescription": "SocioConnect composes a single master draft, adapts it per platform, validates limits, and publishes or schedules across social accounts. Every public post requires an explicit preview and confirmation.",
+        "developerName": "SocioConnect",
+        "category": "Productivity",
+        "capabilities": ["Read", "Write"],
+        "websiteURL": "https://socioconnect.app",
+        "privacyPolicyURL": "https://socioconnect.app/privacy",
+        "termsOfServiceURL": "https://socioconnect.app/terms",
+        "defaultPrompt": [
+          "Draft and schedule next week's posts for my connected accounts.",
+          "Repurpose this blog post into an X thread, LinkedIn post, and newsletter.",
+          "Audit my schedule for gaps and duplicates."
+        ],
+        "brandColor": "#151412",
+        "composerIcon": "./assets/icon.png",
+        "logo": "./assets/logo.png"
+      },
+      "onboardingSkill": "./skills/setup/SKILL.md"
+    }
+  }
+}

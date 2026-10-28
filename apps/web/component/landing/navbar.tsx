@@ -36,7 +36,7 @@ export default function Navbar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-40 py-4">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <nav className="flex items-center justify-between px-4 sm:px-6 py-2.5 rounded-full backdrop-blur-xl bg-neutral-950/20 border border-neutral-800/20 shadow-sm">
+        <nav className="flex items-center justify-between p-3 rounded-full backdrop-blur-xl bg-neutral-950/20 border border-neutral-800/20 shadow-sm">
           {/* Logo with Motion Interactive Feedback */}
           <Link href="/" className="group">
             <motion.div
@@ -45,7 +45,7 @@ export default function Navbar() {
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 400, damping: 20 }}
             >
-              <div className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-red-600 shadow-md shadow-red-600/25">
+              <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-red-600 shadow-md shadow-red-600/25">
                 <Share2 className="w-5 h-5 text-neutral-100" />
                 <div className="absolute -inset-0.5 bg-red-500 rounded-xl blur-sm opacity-40 group-hover:opacity-75 transition duration-300 -z-10" />
               </div>
@@ -59,7 +59,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Navigation Links with Animated Pill Glider */}
-          <div className="hidden md:flex items-center gap-1 relative p-1">
+          <div className="relative hidden items-center gap-0.5 md:flex">
             {NAV_LINKS.map((link) => {
               const isActive = activeLink === link.name;
               return (
@@ -72,7 +72,7 @@ export default function Navbar() {
                   <Link
                     href={link.href}
                     onClick={() => setActiveLink(link.name)}
-                    className={`relative px-4 py-1.5 text-sm font-medium rounded-full transition-colors inline-block z-10 ${
+                    className={`relative z-10 inline-block rounded-full px-4 py-2.5 text-sm font-medium transition-colors ${
                       isActive
                         ? "text-neutral-100 font-semibold"
                         : "text-neutral-400 hover:text-neutral-200"
@@ -107,7 +107,7 @@ export default function Navbar() {
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-neutral-900/60 border border-neutral-800/60 hover:border-neutral-700/80 transition-all cursor-pointer text-sm font-medium text-neutral-100 backdrop-blur-md"
+                  className="flex items-center gap-2 rounded-full border border-neutral-800/60 bg-neutral-900/60 px-3 py-2 text-sm font-medium text-neutral-100 backdrop-blur-md transition-all hover:border-neutral-700/80 cursor-pointer"
                 >
                   {user.avatar ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -176,7 +176,7 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={openAuthModal}
-                  className="group relative inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold text-neutral-100 bg-red-600 hover:bg-red-500 shadow-lg shadow-red-600/25 transition-all duration-200 cursor-pointer"
+                  className="group relative inline-flex items-center gap-2 rounded-full bg-red-600 px-5 py-2.5 text-sm font-semibold text-neutral-100 shadow-lg shadow-red-600/25 transition-all duration-200 hover:bg-red-500 cursor-pointer"
                 >
                   <span>Get Started</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
@@ -190,7 +190,7 @@ export default function Navbar() {
             type="button"
             whileTap={{ scale: 0.9 }}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg text-neutral-300 hover:text-neutral-100 hover:bg-neutral-800/40 transition-colors"
+            className="rounded-lg p-2.5 text-neutral-300 transition-colors hover:bg-neutral-800/40 hover:text-neutral-100 md:hidden"
             aria-label="Toggle Navigation Menu"
           >
             <AnimatePresence mode="wait" initial={false}>

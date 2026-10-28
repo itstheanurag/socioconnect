@@ -2,7 +2,6 @@ import { createRoute, z } from "@hono/zod-openapi";
 import { enforceUserMiddleware } from "@/middlewares/enforce-user.middleware";
 import {
   PostsRepository,
-  QuotasRepository,
   PostStatusEnum,
   TimingStrategyEnum,
   DispatchStatusEnum,
@@ -12,6 +11,11 @@ import { errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
+import { isAccountAllowed } from "@/utils/authz";
+import { resolveWorkspaceId } from "@/utils/workspace";
+import { recordAuditEvent, recordUsageEvent } from "@/utils/events";
+import { WebhookService } from "@/modules/webhooks/webhooks.service";
+import { EntitlementError, EntitlementsService } from "@/modules/entitlements/entitlements.service";
 
 export const createPostRoute = createRoute({
   method: "post",
@@ -88,9 +92,34 @@ export const createPostHandler: AppRouteHandler<CreatePostRoute> = async (c) => 
   const user = c.get("user");
 
   try {
+    const auth = c.var.auth;
+    const workspaceId = await resolveWorkspaceId(user.id, auth);
+    const forbiddenTarget = body.targets.find(
+      (target) => !isAccountAllowed(auth, target.accountId),
+    );
+
+    if (forbiddenTarget) {
+      throw new HTTPException(StatusCodes.HTTP_403_FORBIDDEN, {
+        res: c.json(
+          {
+            message: "This API key is not allowed to publish to one or more target accounts",
+            code: "ACCOUNT_NOT_ALLOWED",
+            accountId: forbiddenTarget.accountId,
+          },
+          StatusCodes.HTTP_403_FORBIDDEN,
+        ),
+      });
+    }
+
     const scheduledDate = body.scheduledAt ? new Date(body.scheduledAt) : null;
-    const initialStatus =
-      scheduledDate && scheduledDate > new Date()
+    const isAgentDraft = c.var.auth?.type !== "session";
+    if (!isAgentDraft) {
+      await EntitlementsService.assertCanPublish(workspaceId, body.targets.length);
+    }
+
+    const initialStatus = isAgentDraft
+      ? PostStatusEnum.DRAFT
+      : scheduledDate && scheduledDate > new Date()
         ? PostStatusEnum.SCHEDULED
         : PostStatusEnum.DISPATCHING;
 
@@ -98,7 +127,7 @@ export const createPostHandler: AppRouteHandler<CreatePostRoute> = async (c) => 
       accountId: t.accountId,
       destinationId: t.destinationId,
       platform: t.platform,
-      status: DispatchStatusEnum.PENDING,
+      status: isAgentDraft ? DispatchStatusEnum.DRAFT : DispatchStatusEnum.PENDING,
       scheduledFor: t.scheduledFor ? new Date(t.scheduledFor) : scheduledDate || new Date(),
       customContent: t.customContent || null,
       customTitle: t.customTitle || null,
@@ -110,6 +139,7 @@ export const createPostHandler: AppRouteHandler<CreatePostRoute> = async (c) => 
     const { post, dispatches: createdDispatches } = await PostsRepository.createWithDispatches({
       post: {
         userId: user.id,
+        workspaceId,
         title: body.title || null,
         content: body.content,
         tags: body.tags,
@@ -122,8 +152,31 @@ export const createPostHandler: AppRouteHandler<CreatePostRoute> = async (c) => 
       dispatches,
     });
 
-    // Increment user quota counter
-    await QuotasRepository.incrementDrops(user.id, 1);
+    // Increment user quota counter only when a session request publishes or
+    // schedules immediately. API-key requests create drafts and are counted
+    // when a publish intent is confirmed.
+    if (!isAgentDraft) {
+      await EntitlementsService.recordPublishUsage(workspaceId, body.targets.length);
+    }
+
+    await recordUsageEvent(c, {
+      operation: isAgentDraft ? "draft_created" : "publish_operation",
+      quantity: isAgentDraft ? 0 : body.targets.length,
+      postId: post.id,
+      metadata: { status: post.status, destinations: body.targets.length },
+    });
+    await recordAuditEvent(c, {
+      action: isAgentDraft ? "post.draft_created" : "post.created",
+      resourceType: "post",
+      resourceId: post.id,
+      metadata: { status: post.status, destinations: body.targets.length },
+    });
+    await WebhookService.emit(post.workspaceId ?? "", "post.created", {
+      postId: post.id,
+      status: post.status,
+      scheduledAt: post.scheduledAt ? post.scheduledAt.toISOString() : null,
+      destinations: body.targets.length,
+    });
 
     return c.json(
       {
@@ -138,6 +191,21 @@ export const createPostHandler: AppRouteHandler<CreatePostRoute> = async (c) => 
       StatusCodes.HTTP_201_CREATED,
     );
   } catch (err) {
+    if (err instanceof HTTPException) throw err;
+
+    if (err instanceof EntitlementError) {
+      throw new HTTPException(err.statusCode as 402, {
+        res: c.json(
+          {
+            message: err.message,
+            code: err.decision.code,
+            ...err.decision,
+          },
+          err.statusCode as 402,
+        ),
+      });
+    }
+
     logger.error("Error creating post", {
       module: "posts",
       action: "createPostHandler",

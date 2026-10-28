@@ -86,3 +86,373 @@ export async function logoutUser(): Promise<boolean> {
     return false;
   }
 }
+
+// ---------------------------------------------------------------------------
+// API keys, workspaces, and agent activity
+// ---------------------------------------------------------------------------
+
+export interface ApiKeySummary {
+  id: string;
+  name: string;
+  prefix: string;
+  scopes: string[];
+  accountIds: string[];
+  environment: string;
+  rateLimitPerMinute: number;
+  lastUsedAt: string | null;
+  expiresAt: string | null;
+  createdAt: string;
+}
+
+export interface CreatedApiKey {
+  key: ApiKeySummary;
+  token: string;
+}
+
+export interface WorkspaceSummary {
+  id: string;
+  name: string;
+  slug: string;
+  isPersonal: boolean;
+  role: string;
+  createdAt: string;
+}
+
+export interface ActivityEvent {
+  id: string;
+  actorType: "user" | "api_key" | "oauth_client" | "system";
+  actorId: string | null;
+  action: string;
+  resourceType: string | null;
+  resourceId: string | null;
+  metadata: Record<string, unknown>;
+  createdAt: string;
+}
+
+export interface ActivityPayload {
+  events: ActivityEvent[];
+  usage: {
+    publishesThisMonth: number;
+    draftsThisMonth: number;
+    aiCreditsThisMonth: number;
+  };
+  generatedAt: string;
+}
+
+export interface QuotaSummary {
+  tier: string;
+  channels: { connected: number; max: number };
+  monthlyDrops: { used: number; max: number };
+  aiAdaptations: { used: number; max: number };
+  cdnStorage: { usedBytes: number; maxBytes: number };
+  cycleResetsAt: string;
+}
+
+async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    ...init,
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      ...(init?.headers || {}),
+    },
+    cache: "no-store",
+  });
+
+  const text = await response.text();
+  let body: unknown = null;
+  if (text) {
+    try {
+      body = JSON.parse(text);
+    } catch {
+      body = null;
+    }
+  }
+
+  if (!response.ok) {
+    const errorBody = body as { message?: string; code?: string } | null;
+    throw new Error(errorBody?.message || `Request failed with ${response.status}`);
+  }
+
+  return body as T;
+}
+
+export async function getApiKeys(): Promise<ApiKeySummary[]> {
+  const data = await apiFetch<{ payload: { keys: ApiKeySummary[] } }>("/v1/api-keys");
+  return data.payload.keys;
+}
+
+export async function createApiKey(input: {
+  name: string;
+  scopes: string[];
+  accountIds?: string[];
+  expiresAt?: string;
+}): Promise<CreatedApiKey> {
+  const data = await apiFetch<{ payload: CreatedApiKey }>("/v1/api-keys", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+  return data.payload;
+}
+
+export async function revokeApiKey(id: string): Promise<void> {
+  await apiFetch(`/v1/api-keys/${id}`, { method: "DELETE" });
+}
+
+export async function rotateApiKey(id: string): Promise<CreatedApiKey> {
+  const data = await apiFetch<{ payload: CreatedApiKey }>(`/v1/api-keys/${id}/rotate`, {
+    method: "POST",
+  });
+  return data.payload;
+}
+
+export async function getCurrentWorkspace(): Promise<WorkspaceSummary | null> {
+  try {
+    const data = await apiFetch<{ payload: { workspace: WorkspaceSummary } }>(
+      "/v1/workspaces/current",
+    );
+    return data.payload.workspace;
+  } catch {
+    return null;
+  }
+}
+
+export async function getActivity(limit = 20): Promise<ActivityPayload> {
+  const data = await apiFetch<{ payload: ActivityPayload }>(`/v1/activity?limit=${limit}`);
+  return data.payload;
+}
+
+export async function getQuotaSummary(): Promise<QuotaSummary> {
+  const data = await apiFetch<{ payload: QuotaSummary }>("/v1/quotas/summary");
+  return data.payload;
+}
+
+export interface AccountSummary {
+  id: string;
+  platform: string;
+  username: string;
+  displayName: string | null;
+  avatarUrl: string | null;
+  status: string;
+}
+
+export async function getAccounts(): Promise<AccountSummary[]> {
+  const data = await apiFetch<{ payload: { accounts: AccountSummary[] } }>("/v1/accounts");
+  return data.payload.accounts;
+}
+
+export interface WorkspaceMemberSummary {
+  userId: string;
+  email: string;
+  firstName: string;
+  lastName: string | null;
+  avatar: string | null;
+  role: "owner" | "admin" | "member";
+  joinedAt: string;
+}
+
+export interface WorkspaceInviteSummary {
+  id: string;
+  email: string;
+  role: "admin" | "member";
+  expiresAt: string;
+  acceptedAt: string | null;
+  createdAt: string;
+}
+
+export async function getWorkspaces(): Promise<WorkspaceSummary[]> {
+  const data = await apiFetch<{ payload: { workspaces: WorkspaceSummary[] } }>("/v1/workspaces");
+  return data.payload.workspaces;
+}
+
+export async function createWorkspace(name: string): Promise<WorkspaceSummary> {
+  const data = await apiFetch<{ payload: { workspace: WorkspaceSummary } }>("/v1/workspaces", {
+    method: "POST",
+    body: JSON.stringify({ name }),
+  });
+  return data.payload.workspace;
+}
+
+export async function switchWorkspace(id: string): Promise<void> {
+  await apiFetch(`/v1/workspaces/${id}/switch`, { method: "POST" });
+}
+
+export async function getWorkspaceMembers(id: string): Promise<WorkspaceMemberSummary[]> {
+  const data = await apiFetch<{ payload: { members: WorkspaceMemberSummary[] } }>(
+    `/v1/workspaces/${id}/members`,
+  );
+  return data.payload.members;
+}
+
+export async function inviteWorkspaceMember(
+  id: string,
+  input: { email: string; role?: "admin" | "member" },
+): Promise<{ invite: WorkspaceInviteSummary; acceptUrl: string }> {
+  const data = await apiFetch<{
+    payload: { invite: WorkspaceInviteSummary; acceptUrl: string };
+  }>(`/v1/workspaces/${id}/invites`, {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+  return data.payload;
+}
+
+export async function getWorkspaceInvites(id: string): Promise<WorkspaceInviteSummary[]> {
+  const data = await apiFetch<{ payload: { invites: WorkspaceInviteSummary[] } }>(
+    `/v1/workspaces/${id}/invites`,
+  );
+  return data.payload.invites;
+}
+
+export async function deleteWorkspaceInvite(workspaceId: string, inviteId: string): Promise<void> {
+  await apiFetch(`/v1/workspaces/${workspaceId}/invites/${inviteId}`, {
+    method: "DELETE",
+  });
+}
+
+export async function updateWorkspaceMemberRole(
+  workspaceId: string,
+  userId: string,
+  role: "admin" | "member",
+): Promise<void> {
+  await apiFetch(`/v1/workspaces/${workspaceId}/members/${userId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ role }),
+  });
+}
+
+export async function removeWorkspaceMember(workspaceId: string, userId: string): Promise<void> {
+  await apiFetch(`/v1/workspaces/${workspaceId}/members/${userId}`, {
+    method: "DELETE",
+  });
+}
+
+export async function acceptWorkspaceInvite(token: string): Promise<string> {
+  const data = await apiFetch<{ payload: { workspaceId: string } }>(
+    `/v1/workspace-invites/${encodeURIComponent(token)}/accept`,
+    { method: "POST" },
+  );
+  return data.payload.workspaceId;
+}
+
+// ---------------------------------------------------------------------------
+// Workspace billing
+// ---------------------------------------------------------------------------
+
+export interface SubscriptionLimits {
+  maxChannels: number;
+  maxMonthlyDrops: number;
+  maxAiCredits: number;
+  maxCdnStorageBytes: number;
+  maxTeamMembers: number;
+  hasDedicatedScheduler: boolean;
+  hasPrioritySupport: boolean;
+  hasCustomBranding: boolean;
+}
+
+export interface SubscriptionSummary {
+  id: string;
+  tier: string;
+  status: string;
+  billingInterval: "monthly" | "yearly";
+  currentPeriodStart: string;
+  currentPeriodEnd: string;
+  cancelAtPeriodEnd: boolean;
+  canceledAt: string | null;
+  hasBillingAccount: boolean;
+  limits: SubscriptionLimits;
+  usage: {
+    channelsUsed: number;
+    monthlyDropsUsed: number;
+    aiCreditsUsed: number;
+    cdnStorageUsedBytes: number;
+    teamMembersUsed: number;
+  };
+  percentageUsed: {
+    channels: number;
+    drops: number;
+    aiCredits: number;
+    cdnStorage: number;
+  };
+}
+
+export interface SubscriptionPlan {
+  tier: string;
+  name: string;
+  description: string;
+  popular?: boolean;
+  monthlyPriceDollars: number;
+  yearlyPriceDollars: number;
+  limits: SubscriptionLimits;
+  features: string[];
+}
+
+export interface CheckoutSession {
+  sessionId: string;
+  checkoutUrl: string;
+  tier: string;
+  interval: "monthly" | "yearly";
+}
+
+export interface BillingInvoice {
+  id: string;
+  invoiceNumber: string;
+  amountDueDollars: number;
+  amountPaidDollars: number;
+  currency: string;
+  status: string;
+  hostedInvoiceUrl: string | null;
+  invoicePdfUrl: string | null;
+  periodStart: string;
+  periodEnd: string;
+  paidAt: string | null;
+  createdAt: string;
+}
+
+export async function getSubscription(): Promise<SubscriptionSummary> {
+  const data = await apiFetch<{ payload: SubscriptionSummary }>("/v1/subscriptions/current");
+  return data.payload;
+}
+
+export async function getSubscriptionPlans(): Promise<SubscriptionPlan[]> {
+  const data = await apiFetch<{ payload: { plans: SubscriptionPlan[] } }>(
+    "/v1/subscriptions/plans",
+  );
+  return data.payload.plans;
+}
+
+export async function createCheckoutSession(input: {
+  tier: string;
+  interval: "monthly" | "yearly";
+  successUrl?: string;
+  cancelUrl?: string;
+}): Promise<CheckoutSession> {
+  const data = await apiFetch<{ payload: CheckoutSession }>("/v1/subscriptions/checkout", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+  return data.payload;
+}
+
+export async function createBillingPortalSession(returnUrl?: string): Promise<string> {
+  const data = await apiFetch<{ payload: { url: string } }>("/v1/subscriptions/portal", {
+    method: "POST",
+    body: JSON.stringify(returnUrl ? { returnUrl } : {}),
+  });
+  return data.payload.url;
+}
+
+export async function cancelSubscription(): Promise<void> {
+  await apiFetch("/v1/subscriptions/cancel", { method: "POST" });
+}
+
+export async function resumeSubscription(): Promise<void> {
+  await apiFetch("/v1/subscriptions/resume", { method: "POST" });
+}
+
+export async function getBillingInvoices(): Promise<BillingInvoice[]> {
+  const data = await apiFetch<{ payload: { invoices: BillingInvoice[] } }>(
+    "/v1/subscriptions/invoices",
+  );
+  return data.payload.invoices;
+}

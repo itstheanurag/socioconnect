@@ -4,6 +4,7 @@ import { enumToPgEnum } from "@repo/shared";
 import { communitiesSchema } from "./index";
 import { usersTable } from "@/schema/users/users.db";
 import { connectedAccountsTable, socialPlatformPgEnum } from "@/schema/accounts/accounts.db";
+import { workspacesTable } from "@/schema/workspaces/workspaces.db";
 
 export enum AutomationScheduleTypeEnum {
   DAILY = "daily",
@@ -37,6 +38,9 @@ export const communityGroupsTable = communitiesSchema.table(
     userId: uuid("user_id")
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),
+    workspaceId: uuid("workspace_id").references(() => workspacesTable.id, {
+      onDelete: "cascade",
+    }),
     accountId: uuid("account_id")
       .notNull()
       .references(() => connectedAccountsTable.id, { onDelete: "cascade" }),
@@ -59,6 +63,7 @@ export const communityGroupsTable = communitiesSchema.table(
   },
   (table) => [
     index("community_groups_user_id_idx").on(table.userId),
+    index("community_groups_workspace_id_idx").on(table.workspaceId),
     index("community_groups_account_id_idx").on(table.accountId),
     index("community_groups_platform_idx").on(table.platform),
   ],
@@ -117,34 +122,28 @@ export const communityAutomationsTable = communitiesSchema.table(
 );
 
 // Relations
-export const communityGroupsRelations = relations(
-  communityGroupsTable,
-  ({ one, many }) => ({
-    user: one(usersTable, {
-      fields: [communityGroupsTable.userId],
-      references: [usersTable.id],
-    }),
-    account: one(connectedAccountsTable, {
-      fields: [communityGroupsTable.accountId],
-      references: [connectedAccountsTable.id],
-    }),
-    automations: many(communityAutomationsTable),
+export const communityGroupsRelations = relations(communityGroupsTable, ({ one, many }) => ({
+  user: one(usersTable, {
+    fields: [communityGroupsTable.userId],
+    references: [usersTable.id],
   }),
-);
+  account: one(connectedAccountsTable, {
+    fields: [communityGroupsTable.accountId],
+    references: [connectedAccountsTable.id],
+  }),
+  automations: many(communityAutomationsTable),
+}));
 
-export const communityAutomationsRelations = relations(
-  communityAutomationsTable,
-  ({ one }) => ({
-    group: one(communityGroupsTable, {
-      fields: [communityAutomationsTable.groupId],
-      references: [communityGroupsTable.id],
-    }),
-    user: one(usersTable, {
-      fields: [communityAutomationsTable.userId],
-      references: [usersTable.id],
-    }),
+export const communityAutomationsRelations = relations(communityAutomationsTable, ({ one }) => ({
+  group: one(communityGroupsTable, {
+    fields: [communityAutomationsTable.groupId],
+    references: [communityGroupsTable.id],
   }),
-);
+  user: one(usersTable, {
+    fields: [communityAutomationsTable.userId],
+    references: [usersTable.id],
+  }),
+}));
 
 export type CommunityGroup = typeof communityGroupsTable.$inferSelect;
 export type NewCommunityGroup = typeof communityGroupsTable.$inferInsert;

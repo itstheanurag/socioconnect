@@ -22,6 +22,83 @@
       "when": 1782635172715,
       "tag": "0002_daily_doorman",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793159095119,
+      "tag": "0003_dodo_billing",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793161656835,
+      "tag": "0004_workspaces_api_keys",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793163408749,
+      "tag": "0005_idempotency_publish_intents",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793164263519,
+      "tag": "0006_audit_usage_events",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793164852144,
+      "tag": "0007_oauth_authorization_server",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1793168126185,
+      "tag": "0008_api_key_rate_limit",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1793170413849,
+      "tag": "0009_webhooks",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1793171053563,
+      "tag": "0010_workspace_invitations",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1793172124592,
+      "tag": "0011_notification_workspace",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1793173960932,
+      "tag": "0012_community_workspace",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1793174475422,
+      "tag": "0013_workspace_billing",
+      "breakpoints": true
     }
   ]
 }

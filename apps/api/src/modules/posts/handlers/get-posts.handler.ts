@@ -11,6 +11,8 @@ import { errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
+import { isAccountAllowed } from "@/utils/authz";
+import { resolveWorkspaceId } from "@/utils/workspace";
 
 // 1. List Posts with Filtering
 export const getPostsRoute = createRoute({
@@ -77,13 +79,22 @@ export const getPostsHandler: AppRouteHandler<GetPostsRoute> = async (c) => {
   const user = c.get("user");
 
   try {
-    const rawPosts = await PostsRepository.findAllByUserId(user.id, {
+    const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
+    const rawPosts = await PostsRepository.findAllByWorkspaceId(workspaceId, {
       status,
       limit,
       offset: (page - 1) * limit,
     });
 
-    const posts = rawPosts.map((p) => ({
+    const auth = c.var.auth;
+    const visiblePosts =
+      auth?.type === "api_key" && auth.accountIds?.length
+        ? (rawPosts as Array<{ dispatches: Array<{ accountId: string }> }>).filter((post) =>
+            post.dispatches.some((dispatch) => isAccountAllowed(auth, dispatch.accountId)),
+          )
+        : rawPosts;
+
+    const posts = visiblePosts.map((p) => ({
       id: p.id,
       title: p.title,
       content: p.content,
@@ -174,9 +185,27 @@ export const getPostByIdHandler: AppRouteHandler<GetPostByIdRoute> = async (c) =
   const user = c.get("user");
 
   try {
+    const workspaceId = await resolveWorkspaceId(user.id, c.var.auth);
     const post = await PostsRepository.findById(id);
 
-    if (!post || post.userId !== user.id) {
+    if (
+      !post ||
+      post.userId !== user.id ||
+      (post.workspaceId && post.workspaceId !== workspaceId)
+    ) {
+      throw new HTTPException(StatusCodes.HTTP_404_NOT_FOUND, {
+        res: c.json({ message: "Post not found" }, StatusCodes.HTTP_404_NOT_FOUND),
+      });
+    }
+
+    const auth = c.var.auth;
+    if (
+      auth?.type === "api_key" &&
+      auth.accountIds?.length &&
+      !(post.dispatches as Array<{ accountId: string }>).some((dispatch) =>
+        isAccountAllowed(auth, dispatch.accountId),
+      )
+    ) {
       throw new HTTPException(StatusCodes.HTTP_404_NOT_FOUND, {
         res: c.json({ message: "Post not found" }, StatusCodes.HTTP_404_NOT_FOUND),
       });

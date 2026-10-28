@@ -72,8 +72,8 @@ function generateInitialOccupancy(
   rows.forEach(({ row }) => {
     const rowSlots = positions.filter((position) => position.row === row);
     const shuffledSlots = deterministicShuffle(rowSlots, 42 + row * 100);
-    // Fill approximately 75-80% of each row
-    const target = Math.min(Math.round(rowSlots.length * 0.78), rowSlots.length);
+    // Fill most slots; leave a few empties so the grid keeps moving.
+    const target = Math.min(Math.round(rowSlots.length * 0.92), rowSlots.length);
 
     shuffledSlots.slice(0, target).forEach((slot) => {
       if (platformQueue.length === 0) {

@@ -69,12 +69,16 @@ export function HoneycombCard({
         ) : (
           <div
             key="empty"
-            className="h-full w-full rounded-2xl border border-dashed"
+            className="flex h-full w-full items-center justify-center rounded-2xl"
             style={{
-              borderColor: `rgba(255, 255, 255, ${Math.max(0.02, slot.borderAlpha * 0.4)})`,
-              backgroundColor: "rgba(255, 255, 255, 0.005)",
+              backgroundColor: "rgba(255, 255, 255, 0.008)",
             }}
-          />
+          >
+            <span
+              className="h-1 w-1 rounded-full bg-white"
+              style={{ opacity: Math.max(0.05, slot.borderAlpha * 0.55) }}
+            />
+          </div>
         )}
       </AnimatePresence>
     </div>

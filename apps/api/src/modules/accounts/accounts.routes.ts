@@ -1,14 +1,17 @@
 import { createRouter } from "@repo/shared";
 import type { AppBindings } from "@/types";
-import { getAccountsRoute, getAccountsHandler } from "./handlers/get-accounts.handler";
 import {
+  getAccountsRoute,
+  getAccountsHandler,
   getOAuthUrlRoute,
   getOAuthUrlHandler,
   postOAuthCallbackRoute,
   postOAuthCallbackHandler,
-} from "./handlers/oauth-connect.handler";
-import { deleteAccountRoute, deleteAccountHandler } from "./handlers/delete-account.handler";
-import { healthCheckAccountRoute, healthCheckAccountHandler } from "./handlers/health-check.handler";
+  deleteAccountRoute,
+  deleteAccountHandler,
+  healthCheckAccountRoute,
+  healthCheckAccountHandler,
+} from "./handlers";
 
 export const accountRoutes = createRouter<AppBindings>();
 

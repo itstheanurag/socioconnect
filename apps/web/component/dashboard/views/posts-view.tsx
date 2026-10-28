@@ -153,7 +153,7 @@ export function PostsView() {
       {/* Post List */}
       <div className="space-y-3">
         {filteredPosts.length === 0 ? (
-          <div className="rounded-3xl border border-neutral-800 bg-neutral-900/50 p-12 text-center space-y-3">
+          <div className="signal-card rounded-3xl p-12 text-center space-y-3">
             <FileText className="w-8 h-8 text-neutral-600 mx-auto" />
             <div className="text-sm font-semibold text-neutral-400">
               No posts found in this filter

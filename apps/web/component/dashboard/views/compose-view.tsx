@@ -349,7 +349,7 @@ export function ComposeView() {
           </div>
 
           {/* Platform Tabs: Base + Target-Specific Overrides */}
-          <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-4 shadow-xl">
+          <div className="signal-card rounded-3xl backdrop-blur-xl p-5 space-y-4 shadow-xl">
             <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
               <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-1 max-w-[calc(100%-80px)]">
                 <button
@@ -745,10 +745,10 @@ export function ComposeView() {
           </div>
 
           {/* Media & Cloudflare R2 Upload Manager */}
-          <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-4 shadow-xl">
+          <div className="signal-card rounded-3xl backdrop-blur-xl p-5 space-y-4 shadow-xl">
             <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
               <div className="flex items-center gap-2">
-                <Layers className="w-4 h-4 text-rose-400" />
+                <Layers className="w-4 h-4 text-neutral-400" />
                 <h3 className="font-display text-sm font-semibold text-neutral-100">
                   Media &amp; Cloudflare R2 Attachments
                 </h3>
@@ -836,7 +836,7 @@ export function ComposeView() {
             {/* Audio / Soundtrack Toggle */}
             <div className="flex items-center justify-between p-3 rounded-2xl bg-neutral-950/40 border border-neutral-800">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-pink-400">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-neutral-800 bg-neutral-900 text-neutral-400">
                   <Music className="w-4 h-4" />
                 </div>
                 <div>
@@ -865,10 +865,10 @@ export function ComposeView() {
         {/* Right Column (4 cols): Intelligent Platform Compatibility Engine & Scheduling */}
         <div className="lg:col-span-4 space-y-6">
           {/* Compatibility Engine Card */}
-          <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-4 shadow-xl">
+          <div className="signal-card rounded-3xl backdrop-blur-xl p-5 space-y-4 shadow-xl">
             <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-rose-400" />
+                <Sparkles className="w-4 h-4 text-neutral-400" />
                 <h3 className="font-display text-sm font-semibold text-neutral-100">
                   Platform Compatibility
                 </h3>
@@ -876,7 +876,7 @@ export function ComposeView() {
               <button
                 type="button"
                 onClick={() => openContextualPanel("compatibility_breakdown", compatibilityMap)}
-                className="text-[11px] font-mono text-rose-400 hover:text-rose-300 flex items-center gap-1 cursor-pointer"
+                className="flex items-center gap-1 font-mono text-[11px] text-neutral-500 transition-colors hover:text-neutral-300 cursor-pointer"
               >
                 <span>Full Spec</span>
                 <Info className="w-3 h-3" />
@@ -890,7 +890,7 @@ export function ComposeView() {
                 onClick={() => setIsAutoSelectPlatforms(true)}
                 className={`py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
                   isAutoSelectPlatforms
-                    ? "bg-rose-500/20 text-rose-300 shadow-xs"
+                    ? "bg-neutral-800 text-neutral-100 shadow-xs"
                     : "text-neutral-400 hover:text-neutral-200"
                 }`}
               >
@@ -965,7 +965,7 @@ export function ComposeView() {
                     {analysis.modificationsSummary &&
                       analysis.modificationsSummary.length > 0 &&
                       isSelected && (
-                        <p className="mt-2 text-[10px] text-amber-300/80 bg-amber-500/10 p-2 rounded-lg border border-amber-500/20 leading-snug">
+                        <p className="mt-2 rounded-lg border border-neutral-800 bg-neutral-950/60 p-2 text-[10px] leading-snug text-neutral-400">
                           {analysis.modificationsSummary[0]}
                         </p>
                       )}
@@ -976,7 +976,7 @@ export function ComposeView() {
           </div>
 
           {/* Communities & Scheduling Card */}
-          <div className="rounded-3xl border border-neutral-800 bg-neutral-900/80 backdrop-blur-xl p-5 space-y-4 shadow-xl">
+          <div className="signal-card rounded-3xl backdrop-blur-xl p-5 space-y-4 shadow-xl">
             <h3 className="font-display text-sm font-semibold text-neutral-100 border-b border-neutral-800 pb-3">
               Distribution &amp; Timing
             </h3>
@@ -1007,8 +1007,9 @@ export function ComposeView() {
                     >
                       <div className="flex items-center gap-2">
                         <span
-                          className="w-2 h-2 rounded-full"
-                          style={{ backgroundColor: comm.color }}
+                          className={`h-2 w-2 rounded-full ${
+                            isChecked ? "bg-rose-400" : "bg-neutral-600"
+                          }`}
                         />
                         <span className="font-medium">{comm.name}</span>
                       </div>

@@ -159,3 +159,97 @@ select option {
 .font-cursive {
   font-family: var(--font-cursive), cursive;
 }
+
+/* ---------------------------------------------------------------------------
+   Dashboard "Signal Room" theme
+   Warm graphite, coral signal, lime live states, icy queue accents.
+--------------------------------------------------------------------------- */
+.dashboard-shell {
+  --color-neutral-950: #0d0c0b;
+  --color-neutral-900: #151412;
+  --color-neutral-800: #2a2723;
+  --color-neutral-700: #3a352f;
+  --color-neutral-600: #5c544a;
+  --color-neutral-500: #857b6f;
+  --color-neutral-400: #a99f92;
+  --color-neutral-300: #cec5b8;
+  --color-neutral-200: #e7dfd3;
+  --color-neutral-100: #f6f1e7;
+
+  --color-rose-300: #ff9d94;
+  --color-rose-400: #ff7a6e;
+  --color-rose-500: #ff4d3d;
+  --color-rose-600: #e33b2c;
+
+  --color-red-500: #ff5a4a;
+  --color-red-600: #e33b2c;
+
+  --color-emerald-300: #d6f7a8;
+  --color-emerald-400: #b8e986;
+  --color-emerald-500: #9bd75f;
+
+  --color-sky-300: #b7ddff;
+  --color-sky-400: #8cc8ff;
+  --color-sky-500: #5aa9f5;
+
+  --color-amber-300: #ffd98a;
+  --color-amber-400: #f6c453;
+
+  background:
+    radial-gradient(ellipse 55% 35% at 12% 0%, rgba(255, 77, 61, 0.035), transparent 65%),
+    radial-gradient(ellipse 45% 30% at 88% 8%, rgba(140, 200, 255, 0.02), transparent 70%), #0d0c0b;
+  color: #f6f1e7;
+}
+
+.dashboard-shell .signal-grid {
+  background-image:
+    linear-gradient(to right, rgba(246, 241, 231, 0.028) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(246, 241, 231, 0.028) 1px, transparent 1px);
+  background-size: 3.5rem 3.5rem;
+  mask-image: radial-gradient(ellipse 70% 55% at 50% 0%, #000 55%, transparent 100%);
+}
+
+.dashboard-shell .signal-card {
+  position: relative;
+  border: 1px solid #2a2723;
+  background: linear-gradient(180deg, rgba(246, 241, 231, 0.025), transparent 40%), #151412;
+  box-shadow:
+    0 1px 0 rgba(246, 241, 231, 0.035) inset,
+    0 18px 40px -32px rgba(0, 0, 0, 0.8);
+}
+
+.dashboard-shell .signal-tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.dashboard-shell,
+.dashboard-shell * {
+  scrollbar-color: rgba(169, 159, 146, 0.22) transparent;
+}
+
+.dashboard-shell .signal-scroll::-webkit-scrollbar-thumb {
+  background: rgba(169, 159, 146, 0.22);
+}
+
+@keyframes signal-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(184, 233, 134, 0.35);
+  }
+  50% {
+    opacity: 0.65;
+    box-shadow: 0 0 0 5px rgba(184, 233, 134, 0);
+  }
+}
+
+.signal-live-dot {
+  animation: signal-pulse 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signal-live-dot {
+    animation: none;
+  }
+}

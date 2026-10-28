@@ -11,6 +11,7 @@ import { errorResponseSchemas, logger } from "@repo/shared";
 import type { AppRouteHandler } from "@/types";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "@repo/config";
+import { resolveWorkspaceMembership } from "@/utils/workspace";
 
 // 1. Get Current Subscription & Usage
 export const getCurrentSubscriptionRoute = createRoute({
@@ -18,9 +19,9 @@ export const getCurrentSubscriptionRoute = createRoute({
   middleware: [enforceUserMiddleware],
   path: "/v1/subscriptions/current",
   tags: ["Subscriptions"],
-  summary: "Get current subscription & usage",
+  summary: "Get current workspace subscription & usage",
   description:
-    "Retrieves active plan tier, limits, real-time usage meters, and billing cycle status",
+    "Retrieves the active workspace plan tier, limits, real-time usage meters, and billing cycle status",
   responses: {
     200: {
       description: "Subscription retrieved successfully",
@@ -37,6 +38,7 @@ export const getCurrentSubscriptionRoute = createRoute({
               currentPeriodEnd: z.string(),
               cancelAtPeriodEnd: z.boolean(),
               canceledAt: z.string().nullable(),
+              hasBillingAccount: z.boolean(),
               limits: z.object({
                 maxChannels: z.number(),
                 maxMonthlyDrops: z.number(),
@@ -77,7 +79,8 @@ export const getCurrentSubscriptionHandler: AppRouteHandler<GetCurrentSubscripti
   const user = c.get("user");
 
   try {
-    const sub = await SubscriptionsRepository.getOrCreate(user.id);
+    const { workspaceId } = await resolveWorkspaceMembership(user.id, c.var.auth);
+    const sub = await SubscriptionsRepository.refreshResourceUsageForWorkspace(workspaceId);
 
     const channelPct = Math.min(
       100,
@@ -107,6 +110,7 @@ export const getCurrentSubscriptionHandler: AppRouteHandler<GetCurrentSubscripti
         currentPeriodEnd: sub.currentPeriodEnd.toISOString(),
         cancelAtPeriodEnd: sub.cancelAtPeriodEnd,
         canceledAt: sub.canceledAt ? sub.canceledAt.toISOString() : null,
+        hasBillingAccount: Boolean(sub.externalCustomerId),
         limits: sub.limits,
         usage: sub.usage,
         percentageUsed: {
