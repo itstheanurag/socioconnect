@@ -139,8 +139,10 @@ bun run dev
 ```bash
 # Development
 bun run dev                     # Start all workspace services concurrently
-bun run dev --filter=web        # Start web frontend only
-bun run dev --filter=@repo/api  # Start backend API only
+bun run dev:web                 # Start web frontend only
+bun run dev:api                 # Start backend API only
+bun run dev:mcp                 # Start MCP server only
+bun run dev:clean               # Stop stale dev servers and the Turbo daemon
 
 # Build & Quality
 bun run build                   # Full monorepo production build
@@ -151,6 +153,10 @@ bun run lint                    # ESLint verification
 bun run db:generate             # Generate Drizzle schema migrations
 bun run db:migrate              # Apply migrations to database
 ```
+
+If port `8000`, `3000`, or `8010` stays busy after stopping a dev session, run
+`bun run dev:clean`. Turbo can leave child processes alive when a task is stopped
+without a terminal signal.
 
 ---
 

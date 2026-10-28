@@ -9,9 +9,11 @@
   ],
   "scripts": {
     "dev": "turbo dev",
-    "dev:api": "turbo dev --filter=@repo/api",
-    "dev:mcp": "turbo dev --filter=@repo/mcp",
+    "dev:api": "bun run --cwd apps/api dev",
+    "dev:mcp": "bun run --cwd apps/mcp dev",
     "dev:metrics": "turbo dev --filter=@repo/metrics",
+    "dev:web": "bun run --cwd apps/web dev",
+    "dev:clean": "bun run scripts/dev-clean.ts",
     "build": "turbo build",
     "db:generate": "turbo db:generate",
     "db:migrate": "turbo db:migrate",
