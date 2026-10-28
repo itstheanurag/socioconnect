@@ -7,7 +7,7 @@ import {
   markNotificationReadHandler,
   markAllNotificationsReadRoute,
   markAllNotificationsReadHandler,
-} from "./handlers/get-notifications.handler";
+} from "./handlers";
 
 export const notificationRoutes = createRouter<AppBindings>();
 

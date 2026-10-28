@@ -1,7 +1,11 @@
 import { createRouter } from "@repo/shared";
 import type { AppBindings } from "@/types";
-import { adaptPostRoute, adaptPostHandler } from "./handlers/adapt-post.handler";
-import { telegramWebhookRoute, telegramWebhookHandler } from "./handlers/telegram-webhook.handler";
+import {
+  adaptPostRoute,
+  adaptPostHandler,
+  telegramWebhookRoute,
+  telegramWebhookHandler,
+} from "./handlers";
 
 export const botRoutes = createRouter<AppBindings>();
 

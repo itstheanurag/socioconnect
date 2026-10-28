@@ -5,7 +5,7 @@ import {
   getAnalyticsOverviewHandler,
   getAnalyticsTimeseriesRoute,
   getAnalyticsTimeseriesHandler,
-} from "./handlers/get-analytics.handler";
+} from "./handlers";
 
 export const analyticsRoutes = createRouter<AppBindings>();
 

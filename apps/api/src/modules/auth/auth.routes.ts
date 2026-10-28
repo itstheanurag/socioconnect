@@ -1,28 +1,23 @@
 import { createRouter, authRateLimiter } from "@repo/shared";
-import { getOauthProviderRoute, getOauthHandler } from "./handlers/get-oauth.handler";
 import {
+  getOauthProviderRoute,
+  getOauthHandler,
   getOauthCallbackRoute,
   getOauthCallbackHandler,
-} from "./handlers/get-oauth-callback.handler";
-import {
   postOauthAppleCallbackRoute,
   postOauthAppleCallbackHandler,
-} from "./handlers/post-oauth-apple-callback.handler";
-import {
   postRefreshTokenRoute,
   postRefreshTokenHandler,
-} from "./handlers/post-refresh-token.handler";
-import {
   getOauthSessionEstablishRoute,
   getOauthSessionEstablishHandler,
-} from "./handlers/get-oauth-session-establish.handler";
-import { type AppBindings } from "../../types";
-import { getMeHandler, getMeRoute } from "./handlers/get-me.handler";
-import { getLogoutHandler, getLogoutRoute } from "./handlers/get-logout.handler";
-import {
+  getMeHandler,
+  getMeRoute,
+  getLogoutHandler,
+  getLogoutRoute,
   postDemoLoginRoute,
   postDemoLoginHandler,
-} from "./handlers/post-demo-login.handler";
+} from "./handlers";
+import { type AppBindings } from "../../types";
 
 const authRoutes = createRouter<AppBindings>();
 

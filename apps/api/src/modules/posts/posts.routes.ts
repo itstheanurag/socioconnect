@@ -1,18 +1,17 @@
 import { createRouter } from "@repo/shared";
 import type { AppBindings } from "@/types";
-import { createPostRoute, createPostHandler } from "./handlers/create-post.handler";
 import {
+  createPostRoute,
+  createPostHandler,
   getPostsRoute,
   getPostsHandler,
   getPostByIdRoute,
   getPostByIdHandler,
-} from "./handlers/get-posts.handler";
-import {
   updatePostRoute,
   updatePostHandler,
   cancelPostRoute,
   cancelPostHandler,
-} from "./handlers/update-post.handler";
+} from "./handlers";
 
 export const postRoutes = createRouter<AppBindings>();
 

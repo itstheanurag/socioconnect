@@ -7,15 +7,13 @@ import {
   createCommunityGroupHandler,
   deleteCommunityGroupRoute,
   deleteCommunityGroupHandler,
-} from "./handlers/community-groups.handler";
-import {
   getAutomationsRoute,
   getAutomationsHandler,
   createAutomationRoute,
   createAutomationHandler,
   triggerAutomationNowRoute,
   triggerAutomationNowHandler,
-} from "./handlers/community-automations.handler";
+} from "./handlers";
 
 export const communityRoutes = createRouter<AppBindings>();
 

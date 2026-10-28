@@ -77,6 +77,11 @@ app.all("/mcp", async (c) => {
   }
 });
 
-serve({ fetch: app.fetch, port: env.PORT }, (info) => {
+const server = serve({ fetch: app.fetch, port: env.PORT }, (info) => {
   console.log(`SocioConnect MCP server running on port ${info.port}`);
+});
+
+server.on("error", (error) => {
+  console.error(`Failed to bind MCP port ${env.PORT}:`, error.message);
+  process.exit(1);
 });

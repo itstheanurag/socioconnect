@@ -18,7 +18,8 @@ const envSchema = z.object({
 });
 
 export const env = envSchema.parse({
-  PORT: process.env.MCP_PORT ?? process.env.PORT,
+  // Never inherit PORT: the API owns 8000, MCP must use its own port.
+  PORT: process.env.MCP_PORT || undefined,
   API_BASE_URL: process.env.API_BASE_URL,
   APP_BASE_URL: process.env.APP_BASE_URL,
   OAUTH_ISSUER: process.env.OAUTH_ISSUER,

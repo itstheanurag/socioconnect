@@ -5,11 +5,9 @@ import {
   getAccountDestinationsHandler,
   getAllUserDestinationsRoute,
   getAllUserDestinationsHandler,
-} from "./handlers/get-destinations.handler";
-import {
   syncDestinationsRoute,
   syncDestinationsHandler,
-} from "./handlers/sync-destinations.handler";
+} from "./handlers";
 
 export const destinationRoutes = createRouter<AppBindings>();
 

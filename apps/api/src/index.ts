@@ -163,6 +163,14 @@ async function start() {
       fetch: app.fetch,
       port: +env.PORT,
     });
+    server.on("error", (error) => {
+      logger.error(`Failed to bind API port ${env.PORT}`, {
+        module: "system",
+        action: "startup",
+        error: error as Error,
+      });
+      process.exit(1);
+    });
     logger.info(`Server running on port ${env.PORT}`, {
       module: "system",
       action: "startup",
