@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { TopBar } from "./top-bar";
 import { Sidebar } from "./sidebar";
 import { ContextualPanel } from "./contextual-panel";
@@ -18,6 +18,7 @@ import { CommunitiesView } from "@/component/dashboard/views/communities-view";
 import { ConnectorsView } from "@/component/dashboard/views/connectors-view";
 import { AnalyticsView } from "@/component/dashboard/views/analytics-view";
 import { DevelopersView } from "@/component/dashboard/views/developers-view";
+import { TeamView } from "@/component/dashboard/views/team-view";
 import { SettingsView } from "@/component/dashboard/views/settings-view";
 
 // Mobile Bottom Navigation
@@ -26,6 +27,11 @@ import { DashboardSection } from "@/component/dashboard/types";
 
 export function DashboardLayout() {
   const { currentSection, setCurrentSection } = useDashboard();
+
+  useEffect(() => {
+    const section = new URLSearchParams(window.location.search).get("section");
+    if (section) setCurrentSection(section as DashboardSection);
+  }, [setCurrentSection]);
 
   const renderCurrentView = () => {
     switch (currentSection) {
@@ -49,6 +55,8 @@ export function DashboardLayout() {
         return <AnalyticsView />;
       case "developers":
         return <DevelopersView />;
+      case "team":
+        return <TeamView />;
       case "settings":
         return <SettingsView />;
       default:

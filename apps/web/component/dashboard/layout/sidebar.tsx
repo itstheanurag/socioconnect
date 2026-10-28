@@ -13,6 +13,7 @@ import {
   BarChart3,
   Settings,
   KeyRound,
+  Building2,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -133,8 +134,13 @@ export function Sidebar() {
       ],
     },
     {
-      groupLabel: "SETTINGS",
+      groupLabel: "WORKSPACE",
       items: [
+        {
+          id: "team",
+          label: "Team",
+          icon: Building2,
+        },
         {
           id: "settings",
           label: "Settings",

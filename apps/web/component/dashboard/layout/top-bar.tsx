@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Share2, Bell, ChevronDown, LogOut, Sparkles, ExternalLink } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from "@/context/auth-context";
+import { WorkspaceSwitcher } from "./workspace-switcher";
 
 export function TopBar() {
   const { user, logout } = useAuth();
@@ -48,6 +49,10 @@ export function TopBar() {
           </span>
         </span>
       </Link>
+
+      <div className="flex items-center gap-3">
+        <WorkspaceSwitcher />
+      </div>
 
       {/* Right: Notifications & Profile Section */}
       <div className="flex items-center gap-3">

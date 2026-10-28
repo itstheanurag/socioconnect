@@ -240,3 +240,97 @@ export async function getAccounts(): Promise<AccountSummary[]> {
   const data = await apiFetch<{ payload: { accounts: AccountSummary[] } }>("/v1/accounts");
   return data.payload.accounts;
 }
+
+export interface WorkspaceMemberSummary {
+  userId: string;
+  email: string;
+  firstName: string;
+  lastName: string | null;
+  avatar: string | null;
+  role: "owner" | "admin" | "member";
+  joinedAt: string;
+}
+
+export interface WorkspaceInviteSummary {
+  id: string;
+  email: string;
+  role: "admin" | "member";
+  expiresAt: string;
+  acceptedAt: string | null;
+  createdAt: string;
+}
+
+export async function getWorkspaces(): Promise<WorkspaceSummary[]> {
+  const data = await apiFetch<{ payload: { workspaces: WorkspaceSummary[] } }>("/v1/workspaces");
+  return data.payload.workspaces;
+}
+
+export async function createWorkspace(name: string): Promise<WorkspaceSummary> {
+  const data = await apiFetch<{ payload: { workspace: WorkspaceSummary } }>("/v1/workspaces", {
+    method: "POST",
+    body: JSON.stringify({ name }),
+  });
+  return data.payload.workspace;
+}
+
+export async function switchWorkspace(id: string): Promise<void> {
+  await apiFetch(`/v1/workspaces/${id}/switch`, { method: "POST" });
+}
+
+export async function getWorkspaceMembers(id: string): Promise<WorkspaceMemberSummary[]> {
+  const data = await apiFetch<{ payload: { members: WorkspaceMemberSummary[] } }>(
+    `/v1/workspaces/${id}/members`,
+  );
+  return data.payload.members;
+}
+
+export async function inviteWorkspaceMember(
+  id: string,
+  input: { email: string; role?: "admin" | "member" },
+): Promise<{ invite: WorkspaceInviteSummary; acceptUrl: string }> {
+  const data = await apiFetch<{
+    payload: { invite: WorkspaceInviteSummary; acceptUrl: string };
+  }>(`/v1/workspaces/${id}/invites`, {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+  return data.payload;
+}
+
+export async function getWorkspaceInvites(id: string): Promise<WorkspaceInviteSummary[]> {
+  const data = await apiFetch<{ payload: { invites: WorkspaceInviteSummary[] } }>(
+    `/v1/workspaces/${id}/invites`,
+  );
+  return data.payload.invites;
+}
+
+export async function deleteWorkspaceInvite(workspaceId: string, inviteId: string): Promise<void> {
+  await apiFetch(`/v1/workspaces/${workspaceId}/invites/${inviteId}`, {
+    method: "DELETE",
+  });
+}
+
+export async function updateWorkspaceMemberRole(
+  workspaceId: string,
+  userId: string,
+  role: "admin" | "member",
+): Promise<void> {
+  await apiFetch(`/v1/workspaces/${workspaceId}/members/${userId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ role }),
+  });
+}
+
+export async function removeWorkspaceMember(workspaceId: string, userId: string): Promise<void> {
+  await apiFetch(`/v1/workspaces/${workspaceId}/members/${userId}`, {
+    method: "DELETE",
+  });
+}
+
+export async function acceptWorkspaceInvite(token: string): Promise<string> {
+  const data = await apiFetch<{ payload: { workspaceId: string } }>(
+    `/v1/workspace-invites/${encodeURIComponent(token)}/accept`,
+    { method: "POST" },
+  );
+  return data.payload.workspaceId;
+}

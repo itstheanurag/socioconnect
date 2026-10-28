@@ -1,7 +1,7 @@
 import { logger, verifyJwt } from "@repo/shared";
 import { type MiddlewareHandler } from "hono";
 import { env } from "@/env";
-import { SessionService, UsersService } from "@repo/db";
+import { SessionService, UsersService, WorkspacesRepository } from "@repo/db";
 import { getCookie } from "hono/cookie";
 import { type AppBindings } from "../types";
 
@@ -38,7 +38,16 @@ export const getUserMiddleware: MiddlewareHandler<AppBindings> = async (c, next)
             c.set("session", session);
           }
           if (user && session) {
-            c.set("auth", { type: "session", scopes: null });
+            const workspaceCookie = getCookie(c, "workspace_id");
+            const membership = workspaceCookie
+              ? await WorkspacesRepository.getMembership(workspaceCookie, user.id)
+              : null;
+
+            c.set("auth", {
+              type: "session",
+              scopes: null,
+              workspaceId: membership ? workspaceCookie : undefined,
+            });
           }
         }
       } catch {
