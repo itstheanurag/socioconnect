@@ -1,0 +1,179 @@
+# MCP Server and OAuth
+
+`apps/mcp` is the public Model Context Protocol server. It exposes the
+agent-safe SocioConnect workflow to ChatGPT, Claude, Codex, Cursor, Claude Code,
+and any MCP-compatible client.
+
+It is a thin adapter: tools call the existing `/v1` API. The MCP process does not
+own business logic and does not connect to PostgreSQL.
+
+## What is implemented
+
+- Streamable HTTP MCP endpoint at `/mcp`
+- OAuth 2.1 authorization server (DCR, authorization code + PKCE S256, refresh rotation)
+- Protected resource metadata and `WWW-Authenticate` challenges
+- OAuth audience validation
+- Internal service-token exchange (the user's OAuth token is never forwarded to the API)
+- API-key bearer compatibility for private clients
+- Read, draft, intent, confirm, retry, and connection-link tools
+- MCP prompts and resources
+
+## Architecture
+
+```text
+ChatGPT / Claude / Cursor
+        |
+        |  OAuth access token (aud = MCP resource)
+        v
+   apps/mcp  --- verifies token, then mints short-lived service token
+        |
+        |  Authorization: Bearer <service token> (aud = API)
+        v
+   apps/api  --- normal scopes, workspace, idempotency, audit, usage
+```
+
+This avoids MCP token passthrough. The original OAuth token is only valid for the
+MCP resource; the API accepts only service tokens or API keys addressed to it.
+
+## Environment
+
+The MCP app loads the root `.env` and `apps/mcp/.env` if present.
+
+```bash
+# API
+OAUTH_ISSUER=http://localhost:8000
+MCP_RESOURCE_URL=http://localhost:8010/mcp
+API_RESOURCE_URL=http://localhost:8000
+SERVICE_TOKEN_SECRET=            # defaults to JWT_SECRET
+OAUTH_ACCESS_TOKEN_TTL_SECONDS=900
+OAUTH_REFRESH_TOKEN_TTL_DAYS=30
+
+# MCP
+MCP_PORT=8010
+API_BASE_URL=http://localhost:8000
+APP_BASE_URL=http://localhost:3000
+```
+
+`JWT_SECRET` must match between the API and MCP app.
+
+## Run locally
+
+```bash
+bun run dev:api
+bun run dev:mcp
+```
+
+Endpoints:
+
+| Service                     | URL                                                            |
+| --------------------------- | -------------------------------------------------------------- |
+| MCP                         | `http://localhost:8010/mcp`                                    |
+| MCP health                  | `http://localhost:8010/health`                                 |
+| Protected resource metadata | `http://localhost:8010/.well-known/oauth-protected-resource`   |
+| OAuth AS metadata           | `http://localhost:8000/.well-known/oauth-authorization-server` |
+| OAuth authorize             | `http://localhost:8000/oauth/authorize`                        |
+| OAuth token                 | `http://localhost:8000/oauth/token`                            |
+| Dynamic registration        | `http://localhost:8000/oauth/register`                         |
+
+## OAuth flow
+
+1. Client discovers `/.well-known/oauth-protected-resource` on the MCP host.
+2. Metadata points to the API authorization server.
+3. Client registers via DCR (`POST /oauth/register`) or uses a pre-registered client.
+4. Client sends the browser to `/oauth/authorize` with:
+   - `response_type=code`
+   - `client_id`
+   - `redirect_uri`
+   - `code_challenge` + `code_challenge_method=S256`
+   - `scope`
+   - `resource` (must equal `MCP_RESOURCE_URL`)
+   - optional `state`
+5. A signed-in user sees a consent page and authorizes.
+6. The API redirects back with `code` and `iss`.
+7. Client exchanges the code at `/oauth/token` with `code_verifier`.
+8. Access token is a 15-minute JWT with `aud` = MCP resource, `scope`, `workspace_id`.
+9. Refresh tokens rotate on every use.
+
+Scopes are the same as API keys: `profile:read`, `accounts:read`,
+`destinations:read`, `posts:read`, `posts:write`, `posts:publish`, `media:write`,
+`analytics:read`, `usage:read`, `notifications:read`, `webhooks:manage`.
+
+## MCP tools
+
+### Read
+
+- `get_profile` — profile + workspace; marked as the OpenAI profile tool
+- `list_accounts`
+- `list_destinations`
+- `get_platform_capabilities`
+- `list_posts`
+- `get_post`
+- `get_usage`
+- `get_connect_link`
+
+### Write
+
+- `create_draft` — creates a draft only
+- `create_publish_intent` — preview + short-lived approval intent
+- `confirm_publish_intent` — publish or schedule after approval
+- `retry_failed_dispatch` — retry one failed destination
+
+Publishing and retrying are annotated `destructiveHint: true` and
+`openWorldHint: true`.
+
+## Prompts
+
+- `weekly_content_plan`
+- `launch_announcement`
+
+## Resources
+
+- `socioconnect://workspace/profile`
+- `socioconnect://accounts`
+
+## Idempotency
+
+Every MCP write goes through the API's idempotency layer. The MCP tools accept an
+optional `idempotencyKey`; otherwise they generate one or derive it from the
+intent ID. Repeating a tool call with the same key returns the original result.
+
+## Testing
+
+```bash
+# 1. Create an API key through the API (session JWT required)
+# 2. Call the MCP endpoint with the key
+curl http://localhost:8010/mcp \
+  -H "Authorization: Bearer sck_test_..." \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'
+```
+
+Use the MCP Inspector:
+
+```bash
+npx @modelcontextprotocol/inspector
+```
+
+Transport: `Streamable HTTP`
+URL: `http://localhost:8010/mcp`
+Auth: API key or OAuth flow.
+
+## Marketplace status
+
+The server works with MCP clients today. Still required before public directory
+submission:
+
+- ChatGPT plugin package with skills and optional composer UI
+- public HTTPS domain and `/.well-known/openai-apps-challenge` verification
+- Claude connector listing + plugin bundle
+- privacy policy, support contact, and a no-MFA demo account
+- review scripts and expected outputs
+- multi-account profile behavior verified in ChatGPT
+
+## Limitations
+
+- Stateless transport; no resumable SSE event store.
+- `update_draft`, `cancel_scheduled_post`, and media upload tools are not exposed yet.
+- The consent page is server-rendered and minimal.
+- Access tokens are short-lived JWTs; refresh tokens are revocable, access tokens are not denylisted.

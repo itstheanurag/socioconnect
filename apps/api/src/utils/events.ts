@@ -30,8 +30,18 @@ export async function recordAuditEvent(
 
     await AuditRepository.record({
       workspaceId,
-      actorType: auth?.type === "api_key" ? AuditActorTypeEnum.API_KEY : AuditActorTypeEnum.USER,
-      actorId: auth?.apiKeyId ?? user.id,
+      actorType:
+        auth?.type === "api_key"
+          ? AuditActorTypeEnum.API_KEY
+          : auth?.type === "oauth"
+            ? AuditActorTypeEnum.OAUTH_CLIENT
+            : AuditActorTypeEnum.USER,
+      actorId:
+        auth?.type === "api_key"
+          ? (auth.apiKeyId ?? user.id)
+          : auth?.type === "oauth"
+            ? (auth.oauthClientId ?? user.id)
+            : user.id,
       action: input.action,
       resourceType: input.resourceType ?? null,
       resourceId: input.resourceId ?? null,
@@ -67,7 +77,12 @@ export async function recordUsageEvent(
     await UsageRepository.record({
       workspaceId,
       apiKeyId: auth?.apiKeyId ?? null,
-      source: auth?.type === "api_key" ? UsageSourceEnum.API : UsageSourceEnum.WEB,
+      source:
+        auth?.type === "api_key"
+          ? UsageSourceEnum.API
+          : auth?.type === "oauth"
+            ? UsageSourceEnum.MCP
+            : UsageSourceEnum.WEB,
       operation: input.operation,
       quantity: input.quantity ?? 1,
       postId: input.postId ?? null,

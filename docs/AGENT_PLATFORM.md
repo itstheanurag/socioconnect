@@ -19,8 +19,12 @@ Scope: public API, API keys, remote MCP server, ChatGPT/Claude distribution, age
 - [x] API-key `POST /v1/posts` creates drafts only; publishing requires an intent
 - [x] `audit_events` and `usage_events` ledgers with request metadata
 - [x] workspace-scoped reads for accounts, posts, destinations, and media
+- [x] OAuth 2.1 AS (DCR, PKCE, refresh rotation, protected resource metadata)
+- [x] `apps/mcp` with read/draft/intent/confirm tools, prompts, and resources
+- [x] service-token exchange so OAuth tokens are never passed through to the API
+- [ ] ChatGPT plugin package, Claude connector submission, and composer UI
 - [ ] workspace-scoped reads for billing, quotas, notifications, and communities
-- [ ] OAuth 2.1 AS and `apps/mcp` (Phase 2)
+- [ ] `update_draft`, `cancel_scheduled_post`, and media tools
 
 ---
 

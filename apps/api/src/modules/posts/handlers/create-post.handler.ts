@@ -109,8 +109,8 @@ export const createPostHandler: AppRouteHandler<CreatePostRoute> = async (c) => 
     }
 
     const scheduledDate = body.scheduledAt ? new Date(body.scheduledAt) : null;
-    const isApiKeyDraft = c.var.auth?.type === "api_key";
-    const initialStatus = isApiKeyDraft
+    const isAgentDraft = c.var.auth?.type !== "session";
+    const initialStatus = isAgentDraft
       ? PostStatusEnum.DRAFT
       : scheduledDate && scheduledDate > new Date()
         ? PostStatusEnum.SCHEDULED
@@ -120,7 +120,7 @@ export const createPostHandler: AppRouteHandler<CreatePostRoute> = async (c) => 
       accountId: t.accountId,
       destinationId: t.destinationId,
       platform: t.platform,
-      status: isApiKeyDraft ? DispatchStatusEnum.DRAFT : DispatchStatusEnum.PENDING,
+      status: isAgentDraft ? DispatchStatusEnum.DRAFT : DispatchStatusEnum.PENDING,
       scheduledFor: t.scheduledFor ? new Date(t.scheduledFor) : scheduledDate || new Date(),
       customContent: t.customContent || null,
       customTitle: t.customTitle || null,
@@ -147,18 +147,18 @@ export const createPostHandler: AppRouteHandler<CreatePostRoute> = async (c) => 
     // Increment user quota counter only when a session request publishes or
     // schedules immediately. API-key requests create drafts and are counted
     // when a publish intent is confirmed.
-    if (!isApiKeyDraft) {
+    if (!isAgentDraft) {
       await QuotasRepository.incrementDrops(user.id, body.targets.length);
     }
 
     await recordUsageEvent(c, {
-      operation: isApiKeyDraft ? "draft_created" : "publish_operation",
-      quantity: isApiKeyDraft ? 0 : body.targets.length,
+      operation: isAgentDraft ? "draft_created" : "publish_operation",
+      quantity: isAgentDraft ? 0 : body.targets.length,
       postId: post.id,
       metadata: { status: post.status, destinations: body.targets.length },
     });
     await recordAuditEvent(c, {
-      action: isApiKeyDraft ? "post.draft_created" : "post.created",
+      action: isAgentDraft ? "post.draft_created" : "post.created",
       resourceType: "post",
       resourceId: post.id,
       metadata: { status: post.status, destinations: body.targets.length },

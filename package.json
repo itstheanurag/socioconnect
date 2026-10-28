@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "turbo dev",
     "dev:api": "turbo dev --filter=@repo/api",
+    "dev:mcp": "turbo dev --filter=@repo/mcp",
     "dev:metrics": "turbo dev --filter=@repo/metrics",
     "build": "turbo build",
     "db:generate": "turbo db:generate",

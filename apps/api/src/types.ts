@@ -23,11 +23,12 @@ import { Session, User } from "@repo/db";
  * @see {@link file://@/middlewares/get-user.middleware.ts getUserMiddleware} - Populates user & session from JWT
  */
 export interface AuthContext {
-  type: "session" | "api_key";
-  /** Null for session auth (full user access), array for scoped API keys. */
+  type: "session" | "api_key" | "oauth";
+  /** Null for session auth (full user access), array for scoped credentials. */
   scopes: string[] | null;
   workspaceId?: string;
   apiKeyId?: string;
+  oauthClientId?: string;
   /** Optional account allowlist for API keys. Empty means all workspace accounts. */
   accountIds?: string[];
 }

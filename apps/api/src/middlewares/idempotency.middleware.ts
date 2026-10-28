@@ -50,11 +50,11 @@ export const idempotencyMiddleware: MiddlewareHandler<AppBindings> = async (c, n
   const idempotencyKey = c.req.header("Idempotency-Key");
 
   if (!idempotencyKey) {
-    if (auth.type === "api_key") {
+    if (auth.type !== "session") {
       throw new HTTPException(StatusCodes.HTTP_400_BAD_REQUEST, {
         res: c.json(
           {
-            message: "API-key writes require an Idempotency-Key header",
+            message: "API-key and OAuth writes require an Idempotency-Key header",
             code: "IDEMPOTENCY_KEY_REQUIRED",
           },
           StatusCodes.HTTP_400_BAD_REQUEST,

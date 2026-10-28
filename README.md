@@ -67,9 +67,10 @@ socioconnect/
 │   │   ├── app/                # App Router (Landing, Dashboard, Sitemap, Robots)
 │   │   ├── component/          # Landing & Dashboard UI (Composer, Connectors, Automations)
 │   │   └── context/            # Authentication, Theme & Toast notification state
-│   └── api/                    # Bun + Hono REST API & Dispatch Orchestrator
-│       ├── src/modules/        # Auth, OAuth, Posts, Connectors, Providers
-│       └── src/routes/         # OpenAPI routes & Swagger/Scalar docs
+│   ├── api/                    # Bun + Hono REST API & Dispatch Orchestrator
+│   │   ├── src/modules/        # Auth, OAuth, Posts, Connectors, Providers
+│   │   └── src/routes/         # OpenAPI routes & Swagger/Scalar docs
+│   └── mcp/                    # Remote MCP server (OAuth 2.1 + agent tools)
 │
 ├── packages/
 │   ├── storage/                # Cloudflare R2 Presigned S3 client & MIME normalization
@@ -122,13 +123,14 @@ bun run dev
 
 ### Access Points
 
-| Service                  | URL                                                      | Description                  |
-| :----------------------- | :------------------------------------------------------- | :--------------------------- |
-| **Frontend Web App**     | [http://localhost:3000](http://localhost:3000)           | Next.js Landing & Dashboard  |
-| **Backend REST API**     | [http://localhost:8000](http://localhost:8000)           | Hono API Gateway             |
-| **Interactive API Docs** | [http://localhost:8000/docs](http://localhost:8000/docs) | Scalar OpenAPI Documentation |
-| **Grafana Dashboard**    | [http://localhost:8001](http://localhost:8001)           | Metrics & Loki Telemetry     |
-| **Prometheus**           | [http://localhost:9090](http://localhost:9090)           | System & Dispatch Metrics    |
+| Service                  | URL                                                      | Description                     |
+| :----------------------- | :------------------------------------------------------- | :------------------------------ |
+| **Frontend Web App**     | [http://localhost:3000](http://localhost:3000)           | Next.js Landing & Dashboard     |
+| **Backend REST API**     | [http://localhost:8000](http://localhost:8000)           | Hono API Gateway                |
+| **Interactive API Docs** | [http://localhost:8000/docs](http://localhost:8000/docs) | Scalar OpenAPI Documentation    |
+| **MCP Server**           | [http://localhost:8010/mcp](http://localhost:8010/mcp)   | Agent tools, prompts, resources |
+| **Grafana Dashboard**    | [http://localhost:8001](http://localhost:8001)           | Metrics & Loki Telemetry        |
+| **Prometheus**           | [http://localhost:9090](http://localhost:9090)           | System & Dispatch Metrics       |
 
 ---
 
@@ -182,7 +184,8 @@ requires a confirmed publish intent.
 API key creation, scopes, account allowlists, and usage are documented in
 [docs/API_KEYS.md](docs/API_KEYS.md). The draft -> preview -> confirm publish
 flow is documented in [docs/PUBLISH_INTENTS.md](docs/PUBLISH_INTENTS.md). Audit and
-usage ledgers are documented in [docs/EVENTS.md](docs/EVENTS.md).
+usage ledgers are documented in [docs/EVENTS.md](docs/EVENTS.md). MCP, OAuth, and
+agent connection setup are documented in [docs/MCP.md](docs/MCP.md).
 
 ---
 

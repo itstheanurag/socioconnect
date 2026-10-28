@@ -1,6 +1,7 @@
 // Workspaces & API Keys Schema
 export * from "./workspaces";
 export * from "./api-keys";
+export * from "./oauth";
 
 // Audit & Usage Ledgers
 export * from "./audit";

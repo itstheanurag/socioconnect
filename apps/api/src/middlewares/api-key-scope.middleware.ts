@@ -22,6 +22,7 @@ const POLICIES: ScopePolicy[] = [
   { method: "GET", pattern: /^\/v1\/workspaces(?:\/.*)?$/, scope: "profile:read" },
 
   { method: "GET", pattern: /^\/v1\/accounts(?:\/.*)?$/, scope: "accounts:read" },
+  { method: "GET", pattern: /^\/v1\/platforms$/, scope: "accounts:read" },
   { method: "DELETE", pattern: /^\/v1\/accounts\/[^/]+$/, scope: "accounts:write" },
   {
     method: "POST",
@@ -101,7 +102,7 @@ function requiredScope(method: string, path: string): string | null {
 export const apiKeyScopeMiddleware: MiddlewareHandler<AppBindings> = async (c, next) => {
   const auth = c.var.auth;
 
-  if (!auth || auth.type !== "api_key") {
+  if (!auth || auth.type === "session") {
     return next();
   }
 

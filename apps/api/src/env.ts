@@ -80,6 +80,14 @@ const apiEnvSchema = baseEnvSchema.extend({
   DODO_PRODUCT_AGENCY_MONTHLY: z.string().optional().default(""),
   DODO_PRODUCT_AGENCY_YEARLY: z.string().optional().default(""),
 
+  // OAuth 2.1 / MCP
+  OAUTH_ISSUER: z.string().url().optional().default("http://localhost:8000"),
+  MCP_RESOURCE_URL: z.string().url().optional().default("http://localhost:8010/mcp"),
+  API_RESOURCE_URL: z.string().url().optional().default("http://localhost:8000"),
+  SERVICE_TOKEN_SECRET: z.string().optional().default(""),
+  OAUTH_ACCESS_TOKEN_TTL_SECONDS: z.coerce.number().int().min(60).max(3600).optional().default(900),
+  OAUTH_REFRESH_TOKEN_TTL_DAYS: z.coerce.number().int().min(1).max(90).optional().default(30),
+
   // Docker Services (optional, with defaults)
   POSTGRES_PORT: z.string().optional().default("5432"),
   PROMETHEUS_PORT: z.string().optional().default("9090"),
@@ -118,6 +126,12 @@ export const env = apiEnvSchema.parse({
   DODO_PRODUCT_STUDIO_YEARLY: process.env.DODO_PRODUCT_STUDIO_YEARLY,
   DODO_PRODUCT_AGENCY_MONTHLY: process.env.DODO_PRODUCT_AGENCY_MONTHLY,
   DODO_PRODUCT_AGENCY_YEARLY: process.env.DODO_PRODUCT_AGENCY_YEARLY,
+  OAUTH_ISSUER: process.env.OAUTH_ISSUER,
+  MCP_RESOURCE_URL: process.env.MCP_RESOURCE_URL,
+  API_RESOURCE_URL: process.env.API_RESOURCE_URL,
+  SERVICE_TOKEN_SECRET: process.env.SERVICE_TOKEN_SECRET,
+  OAUTH_ACCESS_TOKEN_TTL_SECONDS: process.env.OAUTH_ACCESS_TOKEN_TTL_SECONDS,
+  OAUTH_REFRESH_TOKEN_TTL_DAYS: process.env.OAUTH_REFRESH_TOKEN_TTL_DAYS,
   POSTGRES_PORT: process.env.POSTGRES_PORT,
   PROMETHEUS_PORT: process.env.PROMETHEUS_PORT,
   GRAFANA_PORT: process.env.GRAFANA_PORT,

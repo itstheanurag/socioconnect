@@ -7,6 +7,7 @@ export const auditSchema = pgSchema("audit");
 export enum AuditActorTypeEnum {
   USER = "user",
   API_KEY = "api_key",
+  OAUTH_CLIENT = "oauth_client",
   SYSTEM = "system",
 }
 
