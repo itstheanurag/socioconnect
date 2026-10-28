@@ -1,0 +1,28 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "socioconnect": {
+      "type": "streamable-http",
+      "url": "https://mcp.socioconnect.app/mcp",
+      "extensions": {
+        "com.openai": {
+          "auth": {
+            "type": "oauth",
+            "client": {
+              "mode": "dcr"
+            },
+            "baseScopes": [
+              "profile:read",
+              "accounts:read",
+              "destinations:read",
+              "posts:read",
+              "posts:write",
+              "posts:publish",
+              "usage:read"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

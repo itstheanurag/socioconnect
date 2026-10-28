@@ -187,6 +187,10 @@ flow is documented in [docs/PUBLISH_INTENTS.md](docs/PUBLISH_INTENTS.md). Audit 
 usage ledgers are documented in [docs/EVENTS.md](docs/EVENTS.md). MCP, OAuth, and
 agent connection setup are documented in [docs/MCP.md](docs/MCP.md).
 
+The ChatGPT/Codex/Claude marketplace package lives in
+[`plugins/socioconnect`](plugins/socioconnect), with local marketplace metadata at
+`.agents/plugins/marketplace.json`.
+
 ---
 
 ## 📜 License

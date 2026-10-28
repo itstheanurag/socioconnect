@@ -241,6 +241,7 @@ export const getPublishIntentRoute = createRoute({
             message: z.string(),
             payload: z.object({
               intent: intentSchema,
+              preview: z.record(z.string(), z.unknown()).optional(),
             }),
           }),
         },
@@ -268,6 +269,8 @@ export const getPublishIntentHandler: AppRouteHandler<GetPublishIntentRoute> = a
     current = await PublishIntentsRepository.markExpired(current.id);
   }
 
+  const post = await PostsRepository.findById(current.postId);
+
   return c.json({
     message: "Publish intent retrieved",
     payload: {
@@ -281,6 +284,7 @@ export const getPublishIntentHandler: AppRouteHandler<GetPublishIntentRoute> = a
         confirmedAt: current.confirmedAt ? current.confirmedAt.toISOString() : null,
         createdAt: current.createdAt.toISOString(),
       },
+      ...(post ? { preview: buildPreview(post) as unknown as Record<string, unknown> } : {}),
     },
   });
 };

@@ -116,6 +116,7 @@ Scopes are the same as API keys: `profile:read`, `accounts:read`,
 - `create_draft` — creates a draft only
 - `update_draft` — edits content or replaces targets while still a draft
 - `create_publish_intent` — preview + short-lived approval intent
+- `render_publish_preview` — interactive MCP Apps review card when supported
 - `confirm_publish_intent` — publish or schedule after approval
 - `cancel_scheduled_post` — cancel a draft or scheduled post
 - `retry_failed_dispatch` — retry one failed destination
@@ -132,6 +133,17 @@ Publishing and retrying are annotated `destructiveHint: true` and
 
 - `socioconnect://workspace/profile`
 - `socioconnect://accounts`
+- `ui://socioconnect/publish-preview/v1.html` — MCP Apps confirmation card
+
+## Preview UI
+
+`render_publish_preview` returns the intent and preview and is linked to the
+MCP Apps resource via `_meta.ui.resourceUri`. The card shows the post, each
+destination, character counts, warnings, and a single confirmation button.
+Text-only clients continue to use the preview returned by
+`create_publish_intent`.
+
+The card calls `confirm_publish_intent` with a deterministic idempotency key.
 
 ## Idempotency
 
@@ -163,15 +175,18 @@ Auth: API key or OAuth flow.
 
 ## Marketplace status
 
-The server works with MCP clients today. Still required before public directory
-submission:
+The server works with MCP clients today. The plugin package lives at
+`plugins/socioconnect` and includes the OpenAI manifest, Claude plugin bundle,
+skills, MCP config, local marketplace entry, and a preview widget.
 
-- ChatGPT plugin package with skills and optional composer UI
+Still required before public directory submission:
+
 - public HTTPS domain and `/.well-known/openai-apps-challenge` verification
-- Claude connector listing + plugin bundle
+- replace placeholder brand assets
 - privacy policy, support contact, and a no-MFA demo account
 - review scripts and expected outputs
 - multi-account profile behavior verified in ChatGPT
+- Claude connector + plugin bundle submission
 
 ## Limitations
 

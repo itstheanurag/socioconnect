@@ -4,6 +4,7 @@ import { z } from "zod";
 import { ApiError, apiRequest } from "./api-client";
 import type { McpAuth } from "./auth";
 import { env } from "./env";
+import { PUBLISH_PREVIEW_URI, publishPreviewHtml } from "./widgets/publish-preview";
 
 type ToolResult = {
   content: Array<{ type: "text"; text: string }>;
@@ -65,7 +66,7 @@ export function createMcpServer(auth: McpAuth): McpServer {
     { name: "socioconnect", version: "1.0.0" },
     {
       instructions:
-        "SocioConnect publishes content to many social platforms. Always create a draft first, then create a publish intent, show the preview to the user, and only confirm after explicit approval. Never claim a post was published unless confirm_publish_intent succeeded.",
+        "SocioConnect publishes content to many social platforms. Always create a draft first, then create a publish intent. Call render_publish_preview to show the preview when a UI is available, otherwise show the preview as text. Only confirm after explicit approval. Never claim a post was published unless confirm_publish_intent succeeded.",
     },
   );
 
@@ -376,6 +377,36 @@ export function createMcpServer(auth: McpAuth): McpServer {
   );
 
   server.registerTool(
+    "render_publish_preview",
+    {
+      title: "Render publish preview",
+      description:
+        "Show the interactive review card for a pending publish intent. Call this after create_publish_intent and before confirm_publish_intent when the host supports MCP Apps UI. The card contains a confirmation button.",
+      inputSchema: {
+        intentId: z.string().uuid(),
+      },
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: false },
+      _meta: {
+        ui: { resourceUri: PUBLISH_PREVIEW_URI },
+      },
+    },
+    async ({ intentId }) => {
+      try {
+        const response = await apiRequest<{
+          payload: { intent?: unknown; preview?: unknown };
+        }>(auth, "GET", `/v1/publish-intents/${encodeURIComponent(intentId)}`);
+
+        return ok({
+          intent: response.payload.intent,
+          preview: response.payload.preview,
+        });
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
     "confirm_publish_intent",
     {
       title: "Confirm publish intent",
@@ -536,6 +567,26 @@ export function createMcpServer(auth: McpAuth): McpServer {
         ],
       };
     },
+  );
+
+  server.registerResource(
+    "publish-preview",
+    PUBLISH_PREVIEW_URI,
+    {
+      title: "Publish preview",
+      description: "Interactive preview and confirmation card for publish intents",
+      mimeType: "text/html;profile=mcp-app",
+    },
+    async (uri) => ({
+      contents: [
+        {
+          uri: uri.href,
+          mimeType: "text/html;profile=mcp-app",
+          text: publishPreviewHtml,
+          _meta: { ui: { prefersBorder: true } },
+        },
+      ],
+    }),
   );
 
   return server;
